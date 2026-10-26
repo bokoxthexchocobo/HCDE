@@ -1,40 +1,19 @@
-# Chunk 861 — FraggleScript operator table and assign/short-circuit/compare-equality from `t_oper.cpp` (39–189).
+# Chunk 861 — FraggleScript operator table and assign/short-circuit/compare-equality from `t_oper.cpp` (39–189). Retired (2026-10-23): out-of-body credit removed; honest **85** < **150**.
 
 ## Scope
 
-FraggleScript operator table and assign/short-circuit/compare-equality from `t_oper.cpp` (39–189).
+FraggleScript operator table and assign/short-circuit/compare-equality from `t_oper.cpp` (39–189). Retired (2026-10-23): out-of-body credit removed; honest **85** < **150**.
 
 ## Native ranges
 
-- `src/playsim/fragglescript/t_oper.cpp` **FParser::operators[]** 39–65 (27 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **FParser::OPequals** 75–90 (16 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **FParser::OPor** 99–117 (19 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **FParser::OPand** 126–143 (18 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **FParser::OPcmp** 151–182 (32 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **oper separators** 66–74 (9 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **oper separators** 91–98 (8 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **oper separators** 118–125 (8 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **oper separators** 144–150 (7 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **oper separators** 183–189 (7 lines)
 
-**Credited native LOC:** 151 (tally `nativeLoc` 151).
-
-## Portfolio delta
-
-**Gross CLI band:** **151** lines in the UNCredited-range probe; tally credits **151** whole-function native LOC only.
-
-| | Native LOC |
-|---|---:|
-| **Gross** (CLI UNCredited band) | **151** |
-| **Credited** (whole functions, this row) | **151** |
-| **Overlap trim** | **0** |
-| **Net headline Δ** | **+151** (see `convertedBehaviorNative` in tally at land commit) |
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmFScriptParserOper861.cs`
-Managed LOC (tally): 98.
-Conversion commit: `68051a085d4aa8ffd88b20d98539839dde8f2891`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `99c0feec1771cbed737314216c514a11ddafd385`.
 
 ## Padding review (2026-10-21)
 
@@ -58,13 +37,17 @@ Conversion commit: `68051a085d4aa8ffd88b20d98539839dde8f2891`.
 | Row `nativeLoc` | **151** |
 | Net | **+151** vs post-**860** |
 
-**Post-review ratio:** 98/151 managed/native ≈ 65% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (861)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **151** |
+| **Out-of-body removed** | **66** |
+| **Honest** | **85** |
+
 
 ## Tests
 
-- `VmFScriptParserExprTests.OpEquals_AssignsVariable`
-- `VmFScriptParserExprTests.OpOr_ShortCircuitsSecondOperand`
-- `VmFScriptParserExprTests.OpCmp_Equality`
 
 ## Verified
 

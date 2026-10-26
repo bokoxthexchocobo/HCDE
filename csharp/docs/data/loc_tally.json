@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 49157,
+  "convertedThisRunNative": 49006,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 68906,
+  "convertedThisRunManaged": 68808,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 439469,
+  "remainingNative": 439620,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 67684,
+  "convertedBehaviorNative": 67533,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 68617,
-  "convertedBehaviorManaged": 78577,
+  "combinedBehaviorNative": 68466,
+  "convertedBehaviorManaged": 78479,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -29836,112 +29836,18 @@
     {
       "name": "fscript-oper-table-logic-chunk861",
       "bucket": "conversion",
-      "note": "FraggleScript operator table and assign/short-circuit/compare-equality from `t_oper.cpp` (39\u2013189).",
+      "note": "FraggleScript operator table and assign/short-circuit/compare-equality from `t_oper.cpp` (39\u2013189). Retired (2026-10-23): out-of-body credit removed; honest **85** < **150**.",
       "auditSeams": "`Operators[]` + `OpEquals`/`OpOr`/`OpAnd`/`OpCmp` in `VmFScriptParserOper861.cs`; eval loop in **859** `VmFScriptParserExprEval.cs`.",
       "auditRationale": "Native `t_oper` credit for table and assign/`||`/`&&`/`==` through `OPcmp`; band ends before `OPnotcmp` at line **190**.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_oper.cpp --start 39 --end 190 \u2192 UNCredited (152 lines), exit 0.",
-      "auditManagedLocJustification": "Exclusive `VmFScriptParserOper861.cs` (table + assign/`||`/`&&` + `OpCmp`).",
-      "auditPaddingReview": "**Band seam **189|190****: after `OPcmp` closing brace and separator; **`OPnotcmp` begins at 190** (whole function).\n\n**Native \u2192 managed (`VmFScriptParserOper861.cs`)**\n\n| Native (`t_oper.cpp`) | Managed |\n|-----------------------|---------|\n| `operators[]` **39\u201365** | `Operators` |\n| `OPequals` **75\u201390** | `OpEquals` |\n| `OPor` **99\u2013117** | `OpOr` |\n| `OPand` **126\u2013143** | `OpAnd` |\n| `OPcmp` **151\u2013182** | `OpCmp` |\n| (separators) **66\u201374**, **91\u201398**, **118\u2013125**, **144\u2013150**, **183\u2013189** | layout |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **151** |\n| Net | **+151** vs post-**860** |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmFScriptParserOper861.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/fragglescript/t_oper.cpp",
-          "symbol": "FParser::operators[]",
-          "start": 39,
-          "end": 65,
-          "tests": [
-            "VmFScriptParserExprTests.OpEquals_AssignsVariable",
-            "VmFScriptParserExprTests.OpOr_ShortCircuitsSecondOperand"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_oper.cpp",
-          "symbol": "FParser::OPequals",
-          "start": 75,
-          "end": 90,
-          "tests": [
-            "VmFScriptParserExprTests.OpEquals_AssignsVariable"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_oper.cpp",
-          "symbol": "FParser::OPor",
-          "start": 99,
-          "end": 117,
-          "tests": [
-            "VmFScriptParserExprTests.OpOr_ShortCircuitsSecondOperand"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_oper.cpp",
-          "symbol": "FParser::OPand",
-          "start": 126,
-          "end": 143,
-          "tests": [
-            "VmFScriptParserExprTests.OpOr_ShortCircuitsSecondOperand",
-            "VmFScriptParserExprTests.OpCmp_Equality"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_oper.cpp",
-          "symbol": "FParser::OPcmp",
-          "start": 151,
-          "end": 182,
-          "tests": [
-            "VmFScriptParserExprTests.OpCmp_Equality"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_oper.cpp",
-          "symbol": "oper separators",
-          "start": 66,
-          "end": 74,
-          "tests": [
-            "VmFScriptParserExprTests.OpEquals_AssignsVariable"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_oper.cpp",
-          "symbol": "oper separators",
-          "start": 91,
-          "end": 98,
-          "tests": [
-            "VmFScriptParserExprTests.OpOr_ShortCircuitsSecondOperand"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_oper.cpp",
-          "symbol": "oper separators",
-          "start": 118,
-          "end": 125,
-          "tests": [
-            "VmFScriptParserExprTests.OpCmp_Equality"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_oper.cpp",
-          "symbol": "oper separators",
-          "start": 144,
-          "end": 150,
-          "tests": [
-            "VmFScriptParserExprTests.OpCmp_Equality"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_oper.cpp",
-          "symbol": "oper separators",
-          "start": 183,
-          "end": 189,
-          "tests": [
-            "VmFScriptParserExprTests.OpCmp_Equality"
-          ]
-        }
-      ],
-      "nativeLoc": 151,
-      "managedLoc": 98,
-      "conversionManagedCommit": "68051a085d4aa8ffd88b20d98539839dde8f2891"
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "auditPaddingReview": "**Band seam **189|190****: after `OPcmp` closing brace and separator; **`OPnotcmp` begins at 190** (whole function).\n\n**Native \u2192 managed (`VmFScriptParserOper861.cs`)**\n\n| Native (`t_oper.cpp`) | Managed |\n|-----------------------|---------|\n| `operators[]` **39\u201365** | `Operators` |\n| `OPequals` **75\u201390** | `OpEquals` |\n| `OPor` **99\u2013117** | `OpOr` |\n| `OPand` **126\u2013143** | `OpAnd` |\n| `OPcmp` **151\u2013182** | `OpCmp` |\n| (separators) **66\u201374**, **91\u201398**, **118\u2013125**, **144\u2013150**, **183\u2013189** | layout |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **151** |\n| Net | **+151** vs post-**860** |\n\n### Out-of-body uncredit (861)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **151** |\n| **Out-of-body removed** | **66** |\n| **Honest** | **85** |\n",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "99c0feec1771cbed737314216c514a11ddafd385",
+      "retired": true
     },
     {
       "name": "fscript-oper-compare-arith-chunk862",
