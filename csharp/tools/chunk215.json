@@ -3,36 +3,12 @@
     "name": "umapinfo-token-chunk215",
     "bucket": "conversion",
     "managedLoc": 56,
-    "note": "UMapInfo multi-string, lump name, player action option.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/umapinfo.cpp",
-        "symbol": "ParseMultiString",
-        "start": 84,
-        "end": 111,
-        "tests": [
-          "VmUMapInfoTokenParserTests.TryParseMultiString_JoinsQuotedParts"
-        ]
-      },
-      {
-        "file": "src/gamedata/umapinfo.cpp",
-        "symbol": "ParseLumpName",
-        "start": 119,
-        "end": 129,
-        "tests": [
-          "VmUMapInfoTokenParserTests.TryParseMultiString_JoinsQuotedParts"
-        ]
-      },
-      {
-        "file": "src/gamedata/umapinfo.cpp",
-        "symbol": "ParsePlayerActionOption",
-        "start": 137,
-        "end": 155,
-        "tests": [
-          "VmUMapInfoTokenParserTests.TryParsePlayerActionOption_ParsesAllow"
-        ]
-      }
-    ],
-    "conversionManagedCommit": "be741dc66b574fb0abbe9db7bf57d7ea85af22d5"
+    "note": "UMapInfo multi-string, lump name, player action option. Retired (2026-10-23): out-of-body credit removed; honest **58** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (215)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **58** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **58** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 215 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
