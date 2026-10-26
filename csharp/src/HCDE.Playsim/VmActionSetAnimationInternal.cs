@@ -85,9 +85,160 @@ public static class VmActionSetAnimationInternal
 
     public static float FramerateAsFloat(double framerate) => (float)framerate;
 
-    public static bool PrintFramePastEnd(string which) => which.Length > 0;
-
     public static int ModelAnimLoopFlag() => 1;
 
-    public static int ModelAnimNoneFlag() => ModelAnimNone;
+    public enum SetAnimationEarlyExit
+    {
+        Continue,
+        ReturnFalseAlreadyNone,
+        ReturnFalseAfterClear,
+        ReturnFalseSameAnim,
+        ReturnFalseNotFound,
+        ReturnFalseBadFrame,
+        Success,
+    }
+
+    public enum FrameBoundsViolation
+    {
+        None,
+        Start,
+        Loop,
+        End,
+    }
+
+    public static SetAnimationEarlyExit TryHandleClearAnimation(string animName, int curFlags)
+    {
+        if (!IsClearAnimation(animName))
+            return SetAnimationEarlyExit.Continue;
+        if (AlreadyNone(curFlags))
+            return SetAnimationEarlyExit.ReturnFalseAlreadyNone;
+        return SetAnimationEarlyExit.ReturnFalseAfterClear;
+    }
+
+    public static FrameBoundsViolation CheckAnimationFrameBounds(int startFrame, int loopFrame, int endFrame, int len)
+    {
+        if (StartFramePastEnd(startFrame, len))
+            return FrameBoundsViolation.Start;
+        if (LoopFramePastEnd(loopFrame, len))
+            return FrameBoundsViolation.Loop;
+        if (EndFramePastEnd(endFrame, len))
+            return FrameBoundsViolation.End;
+        return FrameBoundsViolation.None;
+    }
+
+    public readonly record struct ResolvedAnimationFrames(
+        int FirstFrame,
+        int LastFrame,
+        int StartFrame,
+        int LoopFrame,
+        int LoopFlags,
+        float Framerate,
+        double StartTic,
+        double SwitchOffset);
+
+    public static double ResolveModelTic(double tic, double ticFrac, bool worldPaused, bool levelFrozen) =>
+        ModelTimerWithFrac(tic, ticFrac, WorldPausedOrFrozen(worldPaused, levelFrozen));
+
+    public static double ResolveAnimationFramerate(double requested, double modelFramerate) =>
+        NegativeFramerateUsesModel(requested) ? modelFramerate : requested;
+
+    public static ResolvedAnimationFrames BuildResolvedAnimation(
+        int animStart,
+        int animEnd,
+        int startFrame,
+        int loopFrame,
+        int endFrame,
+        int flags,
+        double framerate,
+        double tic,
+        int interpolateTics)
+    {
+        var instant = UseInstantPath(flags);
+        var floorTic = IntFloorTic(tic);
+        if (instant)
+            return new ResolvedAnimationFrames(
+                animStart,
+                ResolveLastFrame(endFrame, animEnd, animStart),
+                ResolveStartFrame(startFrame, animStart),
+                ResolveLoopFrame(loopFrame, animStart),
+                LoopFlagsFromSaf(flags),
+                FramerateAsFloat(framerate),
+                tic,
+                0);
+        var startTic = ComputeStartTic(floorTic, interpolateTics);
+        return new ResolvedAnimationFrames(
+            animStart,
+            ResolveLastFrame(endFrame, animEnd, animStart),
+            ResolveStartFrame(startFrame, animStart),
+            ResolveLoopFrame(loopFrame, animStart),
+            LoopFlagsFromSaf(flags),
+            FramerateAsFloat(framerate),
+            startTic,
+            ComputeSwitchOffset(startTic, tic));
+    }
+
+    public static bool ShouldCapturePrevAnimInterpolation(int flags, double startTic, double switchOffset, double tic) =>
+        !UseInstantPath(flags)
+        && ShouldUpdateInterpolation(startTic - switchOffset, IntFloorTic(tic))
+        && StartTicInFuture(startTic, tic);
+
+    public readonly record struct SetAnimationGateInput(
+        int Flags9,
+        bool HasBaseSpriteModelFrame,
+        string AnimName,
+        int FindResult,
+        int NotFound,
+        int CurFlags,
+        int CurFirstFrame,
+        int AnimStart,
+        int AnimEnd,
+        int StartFrame,
+        int LoopFrame,
+        int EndFrame,
+        int Flags,
+        double Framerate,
+        double ModelFramerate,
+        double Tic,
+        double TicFrac,
+        bool WorldPaused,
+        bool LevelFrozen,
+        int InterpolateTics);
+
+    public static (SetAnimationEarlyExit Exit, ResolvedAnimationFrames Frames) RunSetAnimationInternal(
+        SetAnimationGateInput input)
+    {
+        if (!RequiresDecoupledAnimations(input.Flags9))
+            return (SetAnimationEarlyExit.ReturnFalseBadFrame, default);
+        if (MissingModelDef(true, input.HasBaseSpriteModelFrame))
+            return (SetAnimationEarlyExit.ReturnFalseBadFrame, default);
+
+        var interpolate = NormalizeInterpolateTics(input.InterpolateTics);
+        var clear = TryHandleClearAnimation(input.AnimName, input.CurFlags);
+        if (clear != SetAnimationEarlyExit.Continue)
+            return (clear, default);
+
+        if (AnimationNotFound(input.FindResult, input.NotFound))
+            return (SetAnimationEarlyExit.ReturnFalseNotFound, default);
+
+        if (SameAnimationBlocked(input.Flags, input.CurFlags, input.CurFirstFrame, input.AnimStart))
+            return (SetAnimationEarlyExit.ReturnFalseSameAnim, default);
+
+        var framerate = ResolveAnimationFramerate(input.Framerate, input.ModelFramerate);
+        var len = AnimationLength(input.AnimEnd, input.AnimStart);
+        if (CheckAnimationFrameBounds(input.StartFrame, input.LoopFrame, input.EndFrame, len) != FrameBoundsViolation.None)
+            return (SetAnimationEarlyExit.ReturnFalseBadFrame, default);
+
+        var tic = ResolveModelTic(input.Tic, input.TicFrac, input.WorldPaused, input.LevelFrozen);
+        var frames = BuildResolvedAnimation(
+            input.AnimStart,
+            input.AnimEnd,
+            input.StartFrame,
+            input.LoopFrame,
+            input.EndFrame,
+            input.Flags,
+            framerate,
+            tic,
+            interpolate);
+        return (SetAnimationEarlyExit.Success, frames);
+    }
 }
