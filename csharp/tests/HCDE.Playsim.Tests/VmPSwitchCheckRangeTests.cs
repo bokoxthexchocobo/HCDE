@@ -21,4 +21,28 @@ public class VmPSwitchCheckRangeTests
         Assert.False(VmPSwitchCheckRange.StartButton(list, side, _ => { }));
         Assert.Equal(1, list[0].Timer);
     }
+
+    [Fact]
+    public void EffectiveSwitchFlags_ClearsMidtexWhenNoTexture()
+    {
+        var line = new VmPSwitchCheckRange.Line { Flags = VmPSwitchCheckRange.Ml3dmidtex };
+        Assert.Equal(0, VmPSwitchCheckRange.EffectiveSwitchFlags(line, false));
+    }
+
+    [Fact]
+    public void RunCheckSwitchRangePipeline_UsesTopSwitchPath()
+    {
+        var user = new VmPSwitchCheckRange.User { Top = 10, Z = 0 };
+        var line = new VmPSwitchCheckRange.Line
+        {
+            Flags = VmPSwitchCheckRange.MlCheckswitchrange,
+            OpenRange = 32,
+            TopIsSwitch = true,
+        };
+        var ctx = new VmPSwitchCheckRange.CheckContext
+        {
+            TopSwitchReachable = (_, _, _) => true,
+        };
+        Assert.True(VmPSwitchCheckRange.RunCheckSwitchRangePipeline(user, line, 0, ctx, true));
+    }
 }

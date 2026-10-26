@@ -42,29 +42,66 @@ public static class VmPSwitchCheckRange
         public Func<Line, int, double, double, bool>? MidtexReachable { get; init; }
     }
 
-    public static bool CheckSwitchRange(User user, Line line, int sideno, CheckContext ctx, bool hasMidTexture)
+    public static int EffectiveSwitchFlags(Line line, bool hasMidTexture)
     {
-        if ((line.Flags & (Ml3dmidtex | MlCheckswitchrange)) == 0)
-            return true;
         var flags = line.Flags;
         if (!hasMidTexture)
             flags &= ~Ml3dmidtex;
-        var pt = ctx.TouchPoint?.Invoke(line, sideno) ?? (user.X, user.Y);
-        if (line.OneSided || line.PolyobjWall)
-            return user.Top >= line.FloorZ && user.Z <= line.CeilingZ;
-        if (line.OpenRange <= 0)
-            return user.Top >= line.FloorZ && user.Z <= line.CeilingZ;
-        if (line.TopIsSwitch && ctx.TopSwitchReachable?.Invoke(line, user, line) == true)
-            return true;
-        if (line.BottomIsSwitch && ctx.BottomSwitchReachable?.Invoke(line, user, line) == true)
-            return true;
-        if ((flags & Ml3dmidtex) != 0 || line.MidIsSwitch)
-            return ctx.MidtexReachable?.Invoke(line, sideno, pt.x, pt.y) == true;
-        var compat = (user.CompatFlags2 & Compatf2Checkswitchrange) != 0;
-        return compat
+        return flags;
+    }
+
+    public static bool SwitchRangeChecksDisabled(int flags) =>
+        (flags & (Ml3dmidtex | MlCheckswitchrange)) == 0;
+
+    public static bool OneSidedSwitchReachable(User user, Line line) =>
+        user.Top >= line.FloorZ && user.Z <= line.CeilingZ;
+
+    public static bool OpenRangeCollapsed(User user, Line line) =>
+        line.OpenRange <= 0 && OneSidedSwitchReachable(user, line);
+
+    public static bool TryTopSwitchPath(User user, Line line, CheckContext ctx) =>
+        line.TopIsSwitch && ctx.TopSwitchReachable?.Invoke(line, user, line) == true;
+
+    public static bool TryBottomSwitchPath(User user, Line line, CheckContext ctx) =>
+        line.BottomIsSwitch && ctx.BottomSwitchReachable?.Invoke(line, user, line) == true;
+
+    public static bool TryMidtexSwitchPath(int flags, Line line, int sideno, User user, CheckContext ctx, double touchX, double touchY) =>
+        (flags & Ml3dmidtex) != 0 || line.MidIsSwitch
+            ? ctx.MidtexReachable?.Invoke(line, sideno, touchX, touchY) == true
+            : false;
+
+    public static bool FallbackOpenRangeReach(User user, Line line, bool compatMode) =>
+        compatMode
             ? user.Top >= line.OpenTop || user.Z <= line.OpenBottom
             : user.Top > line.OpenTop || user.Z < line.OpenBottom;
+
+    public static bool RunCheckSwitchRangePipeline(
+        User user,
+        Line line,
+        int sideno,
+        CheckContext ctx,
+        bool hasMidTexture)
+    {
+        var flags = EffectiveSwitchFlags(line, hasMidTexture);
+        if (SwitchRangeChecksDisabled(flags))
+            return true;
+        var pt = ctx.TouchPoint?.Invoke(line, sideno) ?? (user.X, user.Y);
+        if (line.OneSided || line.PolyobjWall)
+            return OneSidedSwitchReachable(user, line);
+        if (line.OpenRange <= 0)
+            return OneSidedSwitchReachable(user, line);
+        if (TryTopSwitchPath(user, line, ctx))
+            return true;
+        if (TryBottomSwitchPath(user, line, ctx))
+            return true;
+        if (TryMidtexSwitchPath(flags, line, sideno, user, ctx, pt.x, pt.y))
+            return true;
+        var compat = (user.CompatFlags2 & Compatf2Checkswitchrange) != 0;
+        return FallbackOpenRangeReach(user, line, compat);
     }
+
+    public static bool CheckSwitchRange(User user, Line line, int sideno, CheckContext ctx, bool hasMidTexture) =>
+        RunCheckSwitchRangePipeline(user, line, sideno, ctx, hasMidTexture);
 
     public sealed class ButtonThinker
     {
@@ -72,16 +109,26 @@ public static class VmPSwitchCheckRange
         public int Timer { get; set; }
     }
 
-    public static bool StartButton(IEnumerable<ButtonThinker> active, object side, Action<object>? create)
+    public static ButtonThinker? FindActiveButton(IEnumerable<ButtonThinker> active, object side)
     {
         foreach (var b in active)
         {
             if (ReferenceEquals(b.Side, side))
-            {
-                b.Timer = 1;
-                return false;
-            }
+                return b;
         }
+
+        return null;
+    }
+
+    public static bool StartButton(IEnumerable<ButtonThinker> active, object side, Action<object>? create)
+    {
+        var existing = FindActiveButton(active, side);
+        if (existing != null)
+        {
+            existing.Timer = 1;
+            return false;
+        }
+
         create?.Invoke(side);
         return true;
     }
