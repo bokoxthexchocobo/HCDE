@@ -166,6 +166,43 @@ public class VmFScriptParserSpecRestTests
     }
 
     [Fact]
+    public void SpecVariable_ConstDecl_CreatesVariable()
+    {
+        var script = new VmFScriptScript.FsScript();
+        var st = new VmFScriptParser.SpecRestState();
+        st.Expr.Script = script;
+        st.Expr.GlobalScript = script;
+        st.Expr.NumTokens = 2;
+        st.Expr.Tokens[0] = "const";
+        st.Expr.Tokens[1] = "pi";
+        st.Expr.TokenType[0] = VmFScriptParser.TokenNameExpr;
+        st.Expr.TokenType[1] = VmFScriptParser.TokenNameExpr;
+        Assert.True(VmFScriptParser.SpecVariable(st));
+        Assert.Equal(VmFScriptVariable.SvtConst, VmFScriptVariable.VariableForName(script, "pi")!.Type);
+    }
+
+    [Fact]
+    public void EvaluateFunction_LineSpec_InvokesRunLineSpecial()
+    {
+        var script = new VmFScriptScript.FsScript();
+        var ls = VmFScriptVariable.NewVariable(script, "door", VmFScriptVariable.SvtLinespec);
+        ls.LineSpecNumber = 42;
+        var seen = 0;
+        var st = new VmFScriptParser.SpecRestState { RunLineSpecial = n => seen = n };
+        st.Expr.Script = script;
+        st.Expr.GlobalScript = script;
+        st.Expr.NumTokens = 3;
+        st.Expr.Tokens[0] = "door";
+        st.Expr.Tokens[1] = "(";
+        st.Expr.Tokens[2] = ")";
+        st.Expr.TokenType[0] = VmFScriptParser.TokenFunctionExpr;
+        st.Expr.TokenType[1] = VmFScriptParser.TokenOperatorExpr;
+        st.Expr.TokenType[2] = VmFScriptParser.TokenOperatorExpr;
+        VmFScriptParser.EvaluateFunction(st, new VmFScriptParser.ScriptValue(), 0, 2);
+        Assert.Equal(42, seen);
+    }
+
+    [Fact]
     public void OpStructure_DotCallWithExtraArgument()
     {
         var script = new VmFScriptScript.FsScript();
