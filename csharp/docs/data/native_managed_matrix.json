@@ -31105,7 +31105,7 @@
         "auditRationale": "Faithful GL render-sector assignment and partner-seg validation after GL BSP load; `PointOnLine` matches node-builder epsilon test; `clearnodecache` backward delete order matches native.",
         "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 890 --band` \u2192 UNCredited, exit 0.",
         "auditManagedLocJustification": "Whole-function ports for three native symbols on one contiguous uncredited hull.",
-        "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `clearnodecache` **1196\u20131223** | **yes** |\n| `PointOnLine` **1247\u20131274** | **yes** |\n| `MapLoader::SetRenderSector` **1286\u20131396** | **yes** |\n\n| Managed | Native (`glnodes.cpp`) |\n|---------|----------------------|\n| `ClearNodeCache` (clearnodecache) | **1196\u20131223** |\n| `PointOnLine` | **1247\u20131274** |\n| `SetRenderSector` | **1286\u20131396** |\n\n### Padding map (hull **1196\u20131396**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **1224\u20131246**, **1275\u20131285** | comment/separator gaps between functions (in hull, no extra symbols) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **167** |\n| Net behavior-ported | **167** |\n",
+        "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `clearnodecache` **1196\u20131223** | **yes** |\n| `PointOnLine` **1247\u20131274** | **yes** |\n| `MapLoader::SetRenderSector` **1286\u20131396** | **yes** |\n\n| Managed | Native (`glnodes.cpp`) |\n|---------|----------------------|\n| `ClearNodeCache` (clearnodecache) | **1196\u20131223** |\n| `PointOnLine` | **1247\u20131274** |\n| `SetRenderSector` | **1286\u20131396** |\n\n### Padding map (hull **1196\u20131396**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **1224\u20131246**, **1275\u20131285** | comment/separator gaps between functions (in hull, no extra symbols) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **167** |\n| Net behavior-ported | **167** |\n\n### Out-of-body uncredit (890)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **167** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **167** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.MapLoader/VmMapLoaderGlRenderSector.cs"
         ],
@@ -31143,7 +31143,7 @@
         ],
         "nativeLoc": 167,
         "managedLoc": 264,
-        "conversionManagedCommit": "db80cd6ff56128ebd84c38c7ed929105ca6f8790"
+        "conversionManagedCommit": "fa247ab0a3757790c7558a5bf553fac934052c14"
       },
       {
         "name": "maploader-compatibility-chunk891",
