@@ -10,19 +10,16 @@
 - `src/playsim/fragglescript/t_func.cpp` **FParser::SF_MoveCeiling** 1655–1678 (24 lines)
 - `src/playsim/fragglescript/t_func.cpp` **FParser::SF_LightLevel** 1686–1722 (37 lines)
 - `src/playsim/fragglescript/t_func.cpp` **FParser::SF_FloorTexture** 1841–1875 (35 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF ceil/light separators** 1588–1594 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF ceil/light separators** 1647–1654 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF ceil/light separators** 1679–1685 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF ceil/light separators** 1723–1725 (3 lines)
+- `src/playsim/fragglescript/t_func.cpp` **FParser SF ceil/light separators** 1594–1594 (1 lines)
 - `src/playsim/fragglescript/t_func.cpp` **FParser SF ceil/light separators** 1836–1840 (5 lines)
 
-**Credited native LOC:** 178 (tally `nativeLoc` 178).
+**Credited native LOC:** 154 (tally `nativeLoc` 154).
 
 ## Managed
 
 `VmFScriptParserSfCeilLight.cs`, `VmFScriptInitFunctionsReg869.cs`
 Managed LOC (tally): 132.
-Conversion commit: `899ccbbb387c3ea8a60735ea5f0e24872d00a31a`.
+Conversion commit: `3afd19a8d4cdc67f33a9c1af06460d9a7df20e67`.
 
 ## Padding review (2026-10-21)
 
@@ -53,7 +50,16 @@ Conversion commit: `899ccbbb387c3ea8a60735ea5f0e24872d00a31a`.
 | Row `nativeLoc` | **178** |
 | **Net headline** | **+178** vs post-**868** |
 
-**Post-review ratio:** 132/178 managed/native ≈ 74% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (869)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **178** |
+| **Out-of-body removed** | **24** |
+| **Honest** | **154** |
+
+
+**Post-review ratio:** 132/154 managed/native ≈ 86% (src file LOC at HEAD; see tally).
 
 ## Tests
 

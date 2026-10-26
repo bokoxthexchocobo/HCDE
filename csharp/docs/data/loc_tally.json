@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 48495,
+  "convertedThisRunNative": 48471,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 68543,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 440131,
+  "remainingNative": 440155,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 67022,
+  "convertedBehaviorNative": 66998,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 67955,
+  "combinedBehaviorNative": 67931,
   "convertedBehaviorManaged": 78214,
   "baselineNative": 508086,
   "chunks": [
@@ -30234,7 +30234,7 @@
       "auditRationale": "First ceiling/light `t_func` band after **868**; `SF_FloorTexture` included for honest **150+** native credit; fade thinker deferred.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 1587 --end 1875 \u2192 UNCredited except **1726\u20131834** (`DLightLevel` + `SF_FadeLight`).",
       "auditManagedLocJustification": "`VmFScriptParserSfCeilLight.cs` + `VmFScriptInitFunctionsReg869.cs`.",
-      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported | Managed playsim callee |\n|---------------|-----------------|----------------------|\n| `SF_CeilingHeight` read/set | yes | `CeilingOf` / `Ceilings[]` + crush helper |\n| `SF_MoveCeiling` | yes | `LineSpecials.ExecuteCeilingSpecial` (280) |\n| `SF_LightLevel` | yes | `Lights[]` / `LightOf` |\n| `SF_FloorTexture` | yes | `LevelSector.FloorPic` |\n| `DLightLevel` / `SF_FadeLight` | **no** | deferred thinker |\n\n| Managed | Native (`t_func.cpp`) |\n|---------|----------------------|\n| `SfCeilingHeight` | **1595\u20131646** |\n| `SfMoveCeiling` | **1655\u20131678** |\n| `SfLightLevel` | **1686\u20131722** |\n| `SfFloorTexture` | **1841\u20131875** |\n| `VmFScriptInitFunctionsReg869.Register` | `NewFunction` rows |\n| (separators) | **1588\u20131594**, **1647\u20131654**, **1679\u20131685**, **1723\u20131725**, **1836\u20131840** |\n| (deferred, uncredited here) | **1726\u20131834** |\n\n### Chunk **869** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **178** |\n| **Net headline** | **+178** vs post-**868** |",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported | Managed playsim callee |\n|---------------|-----------------|----------------------|\n| `SF_CeilingHeight` read/set | yes | `CeilingOf` / `Ceilings[]` + crush helper |\n| `SF_MoveCeiling` | yes | `LineSpecials.ExecuteCeilingSpecial` (280) |\n| `SF_LightLevel` | yes | `Lights[]` / `LightOf` |\n| `SF_FloorTexture` | yes | `LevelSector.FloorPic` |\n| `DLightLevel` / `SF_FadeLight` | **no** | deferred thinker |\n\n| Managed | Native (`t_func.cpp`) |\n|---------|----------------------|\n| `SfCeilingHeight` | **1595\u20131646** |\n| `SfMoveCeiling` | **1655\u20131678** |\n| `SfLightLevel` | **1686\u20131722** |\n| `SfFloorTexture` | **1841\u20131875** |\n| `VmFScriptInitFunctionsReg869.Register` | `NewFunction` rows |\n| (separators) | **1588\u20131594**, **1647\u20131654**, **1679\u20131685**, **1723\u20131725**, **1836\u20131840** |\n| (deferred, uncredited here) | **1726\u20131834** |\n\n### Chunk **869** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **178** |\n| **Net headline** | **+178** vs post-**868** |\n\n### Out-of-body uncredit (869)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **178** |\n| **Out-of-body removed** | **24** |\n| **Honest** | **154** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmFScriptParserSfCeilLight.cs",
         "csharp/src/HCDE.Playsim/VmFScriptInitFunctionsReg869.cs"
@@ -30280,37 +30280,10 @@
         {
           "file": "src/playsim/fragglescript/t_func.cpp",
           "symbol": "FParser SF ceil/light separators",
-          "start": 1588,
+          "start": 1594,
           "end": 1594,
           "tests": [
             "VmFScriptParserSfCeilLightTests.SfCeilingHeight_ReadsSectorCeiling"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF ceil/light separators",
-          "start": 1647,
-          "end": 1654,
-          "tests": [
-            "VmFScriptParserSfCeilLightTests.SfMoveCeiling_StartsSectorMotion"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF ceil/light separators",
-          "start": 1679,
-          "end": 1685,
-          "tests": [
-            "VmFScriptParserSfCeilLightTests.SfLightLevel_ReadAndWrite"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF ceil/light separators",
-          "start": 1723,
-          "end": 1725,
-          "tests": [
-            "VmFScriptParserSfCeilLightTests.SfLightLevel_ReadAndWrite"
           ]
         },
         {
@@ -30323,9 +30296,9 @@
           ]
         }
       ],
-      "nativeLoc": 178,
+      "nativeLoc": 154,
       "managedLoc": 132,
-      "conversionManagedCommit": "899ccbbb387c3ea8a60735ea5f0e24872d00a31a"
+      "conversionManagedCommit": "3afd19a8d4cdc67f33a9c1af06460d9a7df20e67"
     },
     {
       "name": "fscript-parser-sf-tex-door-chunk870",
