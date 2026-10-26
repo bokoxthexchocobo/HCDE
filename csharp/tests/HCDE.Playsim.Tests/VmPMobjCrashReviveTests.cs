@@ -23,8 +23,31 @@ public class VmPMobjCrashReviveTests
                 VmPMobjCrashRevive.Mf3Ismonster, 0.001, 1.0)));
 
     [Fact]
-    public void Raise_BlocksPlayerPawn() =>
-        Assert.True(true);
+    public void Raise_BlocksPlayerPawn()
+    {
+        Assert.False(VmPMobjCrashRevive.TryGetRaiseState(
+            VmPMobjCrashRevive.MfCorpse, false, true, true, true, out _));
+    }
+
+    [Fact]
+    public void RunCrash_MarksCrashedEvenWithoutState()
+    {
+        var pick = new VmPMobjCrashRevive.CrashStatePick(0, 50, 10, false, false, false, true);
+        Assert.True(VmPMobjCrashRevive.RunCrash(
+            0, VmPMobjCrashRevive.MfCorpse, 0, 0, pick,
+            out var choice, out var flags3));
+        Assert.Equal(VmPMobjCrashRevive.CrashStateChoice.NormalGeneric, choice);
+        Assert.NotEqual(0, flags3 & VmPMobjCrashRevive.Mf3Crashed);
+    }
+
+    [Fact]
+    public void RunRevive_ClearsPoison()
+    {
+        var scratch = new VmPMobjCrashRevive.ReviveActorScratch { PoisonDamage = 5 };
+        VmPMobjCrashRevive.RunRevive(scratch, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 40, out _);
+        Assert.Equal(0, scratch.PoisonDamage);
+        Assert.Equal(40, scratch.Health);
+    }
 
     [Fact]
     public void Revive_FlagUnlink() =>

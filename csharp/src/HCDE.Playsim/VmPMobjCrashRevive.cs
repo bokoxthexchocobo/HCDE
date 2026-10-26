@@ -95,4 +95,145 @@ public static class VmPMobjCrashRevive
     public static int GibHealthDefault(int spawnHealth) => -spawnHealth;
 
     public static bool IsSentient(int health, bool hasSeeState) => health > 0 && hasSeeState;
+
+    public enum CrashStateChoice
+    {
+        None,
+        ExtremeTyped,
+        NormalTyped,
+        ExtremeGeneric,
+        NormalGeneric,
+    }
+
+    public static CrashStateChoice SelectCrashState(CrashStatePick ctx)
+    {
+        if (PickExtremeTypedCrash(ctx)) return CrashStateChoice.ExtremeTyped;
+        if (PickNormalTypedCrash(ctx)) return CrashStateChoice.NormalTyped;
+        if (PickExtremeGenericCrash(ctx)) return CrashStateChoice.ExtremeGeneric;
+        if (PickNormalGenericCrash(ctx)) return CrashStateChoice.NormalGeneric;
+        return CrashStateChoice.None;
+    }
+
+    public static bool RunCrash(
+        int flags6,
+        int flags,
+        int flags3,
+        int flags4,
+        CrashStatePick statePick,
+        out CrashStateChoice choice,
+        out int updatedFlags3)
+    {
+        choice = CrashStateChoice.None;
+        updatedFlags3 = flags3;
+        if (SkipCrashWhenDontCorpse(flags6))
+            return false;
+        if (!CrashEligible(flags, flags6, flags3, flags4))
+            return false;
+        choice = SelectCrashState(statePick);
+        updatedFlags3 = MarkCrashedFlags3(flags3);
+        return true;
+    }
+
+    public enum IdleStateSource
+    {
+        NamedIdle,
+        SpawnStateFallback,
+    }
+
+    public static IdleStateSource ResolveSetIdleSource(bool idleFound) =>
+        idleFound ? IdleStateSource.NamedIdle : IdleStateSource.SpawnStateFallback;
+
+    public static bool TryGetRaiseState(
+        int flags,
+        bool ticsNotMinusOne,
+        bool stateCanRaise,
+        bool isPlayerPawn,
+        bool raiseStateFound,
+        out bool allowed)
+    {
+        allowed = false;
+        if (!RaiseRequiresCorpse(flags))
+            return false;
+        if (RaiseBlockedByTics(ticsNotMinusOne, stateCanRaise))
+            return false;
+        if (RaiseBlockedByPlayerPawn(isPlayerPawn))
+            return false;
+        allowed = raiseStateFound;
+        return allowed;
+    }
+
+    public sealed class ReviveActorScratch
+    {
+        public int Flags { get; set; }
+        public int Flags2 { get; set; }
+        public int Flags3 { get; set; }
+        public int Flags4 { get; set; }
+        public int Flags5 { get; set; }
+        public int Flags6 { get; set; }
+        public int Flags7 { get; set; }
+        public int Flags8 { get; set; }
+        public int DamageType { get; set; }
+        public int Health { get; set; }
+        public int PoisonDamage { get; set; }
+        public int PoisonType { get; set; }
+        public int PoisonDuration { get; set; }
+        public int PoisonPeriod { get; set; }
+        public bool PlayerPoisonCount { get; set; }
+    }
+
+    public static void ApplyReviveFlagDefaults(ReviveActorScratch scratch, int defaultFlags, int defaultFlags2, int defaultFlags3, int defaultFlags4, int defaultFlags5, int defaultFlags6, int defaultFlags7, int defaultFlags8, int defaultDamageType)
+    {
+        scratch.Flags = defaultFlags;
+        scratch.Flags2 = defaultFlags2;
+        scratch.Flags3 = defaultFlags3;
+        scratch.Flags4 = defaultFlags4;
+        scratch.Flags5 = defaultFlags5;
+        scratch.Flags6 = defaultFlags6;
+        scratch.Flags7 = defaultFlags7;
+        scratch.Flags8 = defaultFlags8;
+        scratch.DamageType = defaultDamageType;
+    }
+
+    public static void ApplyReviveFriendlyFromSpawn(ReviveActorScratch scratch, int spawnFlags)
+    {
+        if (ReviveFriendlySpawnFlag(spawnFlags))
+            scratch.Flags |= MfFriendly;
+    }
+
+    public static void ClearRevivePoison(ReviveActorScratch scratch)
+    {
+        scratch.PoisonDamage = 0;
+        scratch.PoisonType = NameNone;
+        scratch.PoisonDuration = 0;
+        scratch.PoisonPeriod = 0;
+        scratch.PlayerPoisonCount = false;
+    }
+
+    public static void RunRevive(
+        ReviveActorScratch scratch,
+        int liveFlags,
+        int defaultFlags,
+        int spawnFlags,
+        int defaultFlags2,
+        int defaultFlags3,
+        int defaultFlags4,
+        int defaultFlags5,
+        int defaultFlags6,
+        int defaultFlags7,
+        int defaultFlags8,
+        int defaultDamageType,
+        int spawnHealth,
+        out bool needsUnlink)
+    {
+        needsUnlink = ReviveUnlinkNeeded(liveFlags, defaultFlags);
+        ApplyReviveFlagDefaults(scratch, defaultFlags, defaultFlags2, defaultFlags3, defaultFlags4, defaultFlags5, defaultFlags6, defaultFlags7, defaultFlags8, defaultDamageType);
+        ApplyReviveFriendlyFromSpawn(scratch, spawnFlags);
+        scratch.Health = spawnHealth;
+        ClearRevivePoison(scratch);
+    }
+
+    public static int ResolveGibHealth(bool virtualOverride, int virtualValue, int spawnHealth) =>
+        virtualOverride ? virtualValue : GibHealthDefault(spawnHealth);
+
+    public static bool CountsAsKillForRevive(bool countsAsKill) => countsAsKill;
 }
