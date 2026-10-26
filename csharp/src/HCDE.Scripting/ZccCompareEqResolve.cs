@@ -148,4 +148,56 @@ public static class ZccCompareEqResolve
     public static bool IncompatibleOperands(bool resolved) => !resolved;
 
     public static string ResultValueTypeBool() => "bool";
+
+    public readonly record struct CompareEqResolveInput(
+        int Op,
+        bool SameType,
+        bool LeftNumeric,
+        bool RightNumeric,
+        bool BothConstant,
+        string ValueType,
+        int IntLeft,
+        int IntRight,
+        double FloatLeft,
+        double FloatRight,
+        RegKind LeftReg,
+        int IntVal,
+        double FloatVal,
+        IntPtr PtrVal,
+        bool LeftStateLabel,
+        bool RightNullPtr);
+
+    public readonly record struct CompareEqResolveResult(
+        bool Failed,
+        bool FoldedConstant,
+        bool FoldedValue,
+        bool RewriteUnaryNot,
+        bool RewriteBoolCast,
+        bool UseTypePromotion,
+        string ResultType);
+
+    public static CompareEqResolveResult RunCompareEqResolvePipeline(CompareEqResolveInput input)
+    {
+        if (input.BothConstant
+            && TryFoldConstantCompare(input.Op, input.ValueType, input.IntLeft, input.IntRight, input.FloatLeft, input.FloatRight, out var folded))
+        {
+            return new CompareEqResolveResult(false, true, folded, false, false, false, ResultValueTypeBool());
+        }
+
+        if (TryGetNullConstant(input.LeftReg, input.IntVal, input.FloatVal, input.PtrVal, out var isNull))
+        {
+            if (ShouldRewriteEqToUnaryNot(input.Op, isNull))
+                return new CompareEqResolveResult(false, false, false, true, false, false, ResultValueTypeBool());
+            if (ShouldRewriteNeqToBoolCast(input.Op, isNull))
+                return new CompareEqResolveResult(false, false, false, false, true, false, ResultValueTypeBool());
+        }
+
+        if (CanCompareStateLabelToNull(input.LeftStateLabel, input.RightNullPtr))
+            return new CompareEqResolveResult(false, false, true, false, false, false, ResultValueTypeBool());
+
+        if (OperandTypesNeedPromotion(input.SameType, input.LeftNumeric, input.RightNumeric))
+            return new CompareEqResolveResult(false, false, false, false, false, true, ResultValueTypeBool());
+
+        return new CompareEqResolveResult(false, false, false, false, false, false, ResultValueTypeBool());
+    }
 }

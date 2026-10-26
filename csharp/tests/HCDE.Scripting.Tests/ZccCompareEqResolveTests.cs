@@ -25,4 +25,15 @@ public class ZccCompareEqResolveTests
     [Fact]
     public void ShouldRewriteEqToUnaryNot_WhenRightNull() =>
         Assert.True(ZccCompareEqResolve.ShouldRewriteEqToUnaryNot(ZccCompareEqResolve.TkEq, true));
+
+    [Fact]
+    public void RunCompareEqResolvePipeline_FoldsIntConstant()
+    {
+        var input = new ZccCompareEqResolve.CompareEqResolveInput(
+            ZccCompareEqResolve.TkEq, true, false, false, true, "int", 2, 2, 0, 0,
+            ZccCompareEqResolve.RegKind.Int, 0, 0, IntPtr.Zero, false, false);
+        var result = ZccCompareEqResolve.RunCompareEqResolvePipeline(input);
+        Assert.True(result.FoldedConstant);
+        Assert.True(result.FoldedValue);
+    }
 }
