@@ -3,18 +3,12 @@
     "name": "p-xlat-simple-chunk220",
     "bucket": "conversion",
     "managedLoc": 60,
-    "note": "TranslateLineDef simple line translation branch.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/p_xlat.cpp",
-        "symbol": "SimpleLineTranslations",
-        "start": 118,
-        "end": 177,
-        "tests": [
-          "VmXlatSimpleLineTranslateTests.TryApplySimpleTranslation_MapsSpecial"
-        ]
-      }
-    ],
-    "conversionManagedCommit": "3347e3a9e2e1bea4ffc9ef78f4b38d75846fdcf6"
+    "note": "TranslateLineDef simple line translation branch. Retired (2026-10-23): out-of-body credit removed; honest **60** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (220)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **60** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **60** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 220 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
