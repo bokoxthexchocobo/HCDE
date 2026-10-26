@@ -13,8 +13,8 @@
 ## Managed
 
 `VmFScriptInitFunctions.cs`
-Managed LOC (tally): 276.
-Conversion commit: `4f1f8fd212a6e8047dcb0fbf7b82d874e8d4243d`.
+Managed LOC (tally): 284.
+Conversion commit: `b9c5a89ac480373fa6f812428acb2fdd1debc1e5`.
 
 ## Padding review (2026-10-21)
 
@@ -47,7 +47,16 @@ Conversion commit: `4f1f8fd212a6e8047dcb0fbf7b82d874e8d4243d`.
 
 **851 correction (pre-land):** Removed erroneous credit of deferred-band bodies (`VmFScriptParserSfCamera.cs` / `VmFScriptParserSfCombat.cs`); `ConstructThinker` now calls `InitForThinker` (no empty `InitFunctions` seam).
 
-**Post-review ratio:** 276/215 managed/native ≈ 128% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (851)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **215** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **215** |
+
+
+**Post-review ratio:** 284/215 managed/native ≈ 132% (src file LOC at HEAD; see tally).
 
 ## Tests
 
