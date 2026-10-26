@@ -17,19 +17,41 @@ public static class VmPInteractionReactPain
     public const int NameElectric = 1;
     public const int NamePoisoncloud = 2;
 
+    public static void AutoUseHealth(Action<object?, int>? vm, object? playerMo, int saveHealth)
+    {
+        if (vm == null)
+            return;
+        vm(playerMo, saveHealth);
+    }
+
+    public static void AutoUseStrifeHealth(Action<object?>? vm, object? playerMo)
+    {
+        if (vm == null)
+            return;
+        vm(playerMo);
+    }
+
     public static bool MustForcePain(bool inflictorExists, int inflictorFlags6) =>
         inflictorExists && (inflictorFlags6 & Mf6Forcepain) != 0;
 
-    public static bool IsFakePain(int targetFlags7, int targetFlags5, int damage, bool inflictorExists, int inflictorFlags7) =>
-        ((targetFlags7 & Mf7Allowpain) != 0 || (targetFlags5 & Mf5Nodamage) != 0) && damage > 0 ||
-        inflictorExists && (inflictorFlags7 & Mf7Causepain) != 0;
+    public static bool IsFakePain(int targetFlags7, int targetFlags5, int damage, bool inflictorExists, int inflictorFlags7)
+    {
+        if (inflictorExists && (inflictorFlags7 & Mf7Causepain) != 0)
+            return true;
+        if (damage <= 0)
+            return false;
+        return (targetFlags7 & Mf7Allowpain) != 0 || (targetFlags5 & Mf5Nodamage) != 0;
+    }
 
     public static bool DeadOrNoDamage(bool targetNull, int health, int damage) =>
         targetNull || health < 1 || damage < 0;
 
-    public static bool GodmodeBlocksReact(int cheats, int flags5, int damage) =>
-        (cheats & CfGodmode2) != 0 || (flags5 & Mf5Nopain) != 0 ||
-        (cheats & CfGodmode) != 0 && damage < TelefragDamage;
+    public static bool GodmodeBlocksReact(int cheats, int flags5, int damage)
+    {
+        if ((cheats & CfGodmode2) != 0 || (flags5 & Mf5Nopain) != 0)
+            return true;
+        return (cheats & CfGodmode) != 0 && damage < TelefragDamage;
+    }
 
     public static bool WoundStateTriggers(int health, int woundHealth) => health <= woundHealth;
 
@@ -47,13 +69,33 @@ public static class VmPInteractionReactPain
         int flags,
         bool forcedPain,
         int damage,
-        int painThreshold) =>
-        !noPain && wakeup &&
-        (hasPlayer || !noSkillPain) && (flags & MfSkullfly) == 0 &&
-        (forcedPain || damage >= painThreshold);
+        int painThreshold)
+    {
+        if (noPain || !wakeup)
+            return false;
+        if (!hasPlayer && noSkillPain)
+            return false;
+        if ((flags & MfSkullfly) != 0)
+            return false;
+        return forcedPain || damage >= painThreshold;
+    }
 
     public static bool SetJustHit(bool justHit, bool targetIsSource, bool hasTarget, bool targetIsFriend) =>
         justHit && (targetIsSource || !hasTarget || !targetIsFriend);
+
+    public static bool ShouldClearReactionTime(bool wakeup, bool hasPlayer) => wakeup && !hasPlayer;
+
+    public static bool ShouldRetargetToSource(bool wakeup, bool hasSource, bool sourceIsTarget, bool okayToSwitch) =>
+        wakeup && hasSource && !sourceIsTarget && okayToSwitch;
+
+    public static bool ShouldRefreshSameTarget(bool wakeup, bool hasSource, bool sourceIsTarget) =>
+        wakeup && hasSource && sourceIsTarget;
+
+    public static bool ShouldJumpToSeeState(bool onSpawnState, bool hasSeeState) =>
+        onSpawnState && hasSeeState;
+
+    public static bool ShouldRememberLastEnemy(bool lastEnemyNull, bool lastEnemyHadPlayer, int tidToHate, int lastEnemyHealth) =>
+        lastEnemyNull || (!lastEnemyHadPlayer && tidToHate == 0) || lastEnemyHealth <= 0;
 
     public static bool TriggerPainBlocked(bool targetNull, int flags5, int health) =>
         targetNull || (flags5 & Mf5Nopain) != 0 || health < 1;
@@ -104,8 +146,8 @@ public static class VmPInteractionReactPain
             return true;
         }
 
-        var noPain = NoPainFlag(ctx.Flags, ctx.TargetFlags5Pain,
-            ctx.InflictorExists && (ctx.InflictorFlags5 & Mf5Painless) != 0);
+        var inflictorPainless = ctx.InflictorExists && (ctx.InflictorFlags5 & Mf5Painless) != 0;
+        var noPain = NoPainFlag(ctx.Flags, ctx.TargetFlags5Pain, inflictorPainless);
         var fakePain = IsFakePain(ctx.TargetFlags7, ctx.TargetFlags5, ctx.OriginalDamage,
             ctx.InflictorExists, ctx.InflictorFlags7);
         var forced = MustForcePain(ctx.InflictorExists, ctx.InflictorFlags6);
@@ -113,6 +155,7 @@ public static class VmPInteractionReactPain
         if (PainRollEligible(noPain, wakeup, ctx.HasPlayer, ctx.NoSkillPain, ctx.ActorFlags, forced,
                 ctx.Damage, ctx.PainThreshold))
         {
+            _ = ctx.InflictorPainTypeSet ? ctx.InflictorPainType : 0;
             justHit = true;
         }
 
@@ -140,6 +183,7 @@ public static class VmPInteractionReactPain
             return false;
         if (!PainRollSucceeded(ctx.ForcedPain, ctx.RandomRoll, ctx.PainChance))
             return false;
+
         if (ctx.Mod == NameElectric)
         {
             if (ElectricFlinchRoll(ctx.LightningRoll) && ctx.HasPainState)
@@ -151,10 +195,11 @@ public static class VmPInteractionReactPain
             return ElectricHowlRoll(ctx.Monster, ctx.LightningRoll);
         }
 
+        var justHit = true;
         if (ctx.HasPainState)
             flinched = true;
         if (ctx.Mod == NamePoisoncloud)
             _ = PoisonCloudHowlRoll(ctx.Monster, ctx.PoisonRoll);
-        return ctx.Zscript ? flinched : true;
+        return ctx.Zscript ? flinched : justHit;
     }
 }
