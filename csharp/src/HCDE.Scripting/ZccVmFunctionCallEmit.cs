@@ -45,4 +45,33 @@ public static class ZccVmFunctionCallEmit
     public static bool ShouldEmitOpRetNative(bool returnIt) => returnIt;
 
     public static bool MatchesDefaultArgRegTypeNative(int regType, int expectedRegType) => regType == expectedRegType;
+
+    public readonly record struct VmFunctionCallEmitInput(
+        int ReturnTypeCount,
+        bool FnPtrCall,
+        bool IsFinal,
+        bool NoVirtualIndex,
+        bool NoVirtualFlag,
+        int InnerSide,
+        int SelfSide,
+        int OuterSide,
+        int NumImplicits,
+        int SelfReg,
+        string FuncName,
+        bool IsConstant);
+
+    public static bool RunEmitProloguePipeline(VmFunctionCallEmitInput input)
+    {
+        if (ShouldEarlyCastReturnNative(input.ReturnTypeCount))
+            return true;
+        if (IsStaticCallNative(input.FnPtrCall, input.IsFinal, input.NoVirtualIndex, input.NoVirtualFlag))
+            return true;
+        if (ShouldEmitScopeBarrierNative(input.InnerSide, input.SelfSide, input.OuterSide))
+            return true;
+        return ShouldPassActionStatePointersNative(input.NumImplicits, NapConstantNative(), input.SelfReg);
+    }
+
+    public static bool RunCheckEmitCastPipeline(string funcName, bool isConstant) =>
+        CheckEmitCastReturnsTrueNative(funcName)
+        || ShouldEmitRetIntImmediateNative(isConstant, funcName);
 }

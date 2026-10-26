@@ -44,4 +44,57 @@ public static class ZccVmFunctionCallResolve
         !failed && returnTypeCount > 0;
 
     public static bool ShouldAssignVoidReturnTypeNative(int returnTypeCount) => returnTypeCount == 0;
+
+    public enum VmFunctionCallGuardFailure
+    {
+        None,
+        MissingSelf,
+        AbstractCall,
+        TooManyArgs,
+        NamedArgsInFnPtr,
+        NamedArgNotFound,
+        NamedArgOutOfOrder,
+    }
+
+    public readonly record struct VmFunctionCallGuardInput(
+        bool IsMethod,
+        object? Self,
+        bool NoVirtual,
+        bool IsAbstract,
+        int ArgCount,
+        int ImplicitArgs,
+        int ProtoArgCount,
+        bool IsVarArg,
+        bool FnPtrCall,
+        bool NamedNode,
+        int VersionMajor,
+        int VersionMinor,
+        IReadOnlyList<string> ArgNames,
+        string NamedArg,
+        int NamedArgIndex,
+        int CurrentArgIndex,
+        bool NamedArgOptional);
+
+    public static VmFunctionCallGuardFailure RunResolveGuardPipeline(VmFunctionCallGuardInput input)
+    {
+        if (RequiresSelfPointerNative(input.IsMethod, input.Self))
+            return VmFunctionCallGuardFailure.MissingSelf;
+        if (RejectsAbstractDirectCallNative(input.NoVirtual, input.IsAbstract))
+            return VmFunctionCallGuardFailure.AbstractCall;
+        if (TooManyArgumentsNative(input.ArgCount, input.ImplicitArgs, input.ProtoArgCount, input.IsVarArg))
+            return VmFunctionCallGuardFailure.TooManyArgs;
+        if (NamedArgsForbiddenInFnPtrNative(input.FnPtrCall, input.NamedNode))
+            return VmFunctionCallGuardFailure.NamedArgsInFnPtr;
+        if (input.NamedNode)
+        {
+            var relaxed = RelaxedNamedArgsNative(input.VersionMajor, input.VersionMinor);
+            var index = FindArgIndexByNameNative(input.ArgNames, input.NamedArg, input.ImplicitArgs);
+            if (NamedArgNotFoundNative(input.ArgNames.Count, index))
+                return VmFunctionCallGuardFailure.NamedArgNotFound;
+            if (NamedArgOutOfOrderNative(relaxed, input.NamedArgOptional, index, input.CurrentArgIndex))
+                return VmFunctionCallGuardFailure.NamedArgOutOfOrder;
+        }
+
+        return VmFunctionCallGuardFailure.None;
+    }
 }
