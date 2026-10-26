@@ -73,7 +73,15 @@ public static class VmAcsDoSetActorProperty
 
     public static bool HealthShouldDie(int value) => value <= 0;
 
-public static double AcsToDouble(int value) => value / 65536.0;
+    public static bool HealthDispatchBlocked(AActorRef? actor)
+    {
+        if (ActorIsNull(actor))
+            return true;
+        var a = actor!.Value;
+        return ShouldSkipHealthOnDead(a.Health, a.PlayerDead);
+    }
+
+    public static double AcsToDouble(int value) => value / 65536.0;
 
     public static float AcsToFloat(int value) => (float)AcsToDouble(value);
 
@@ -87,6 +95,26 @@ public static double AcsToDouble(int value) => value / 65536.0;
         countsAsKill ? totalMonsters + 1 : totalMonsters;
 
     public static int ApplyFriendlyFlag(int flags, bool value) => ToggleFlag(flags, MfFriendly, value);
+
+    public static (int BeforeToggle, int AfterToggle) FriendlyMonsterTotalAdjustment(int totalMonsters, bool countsAsKill)
+    {
+        var before = MonsterTotalBeforeFriendlyToggle(totalMonsters, countsAsKill);
+        var after = MonsterTotalAfterFriendlyToggle(before, countsAsKill);
+        return (before, after);
+    }
+
+    public static int ApplyFlagForProperty(int flags, Aprop property, bool on)
+    {
+        var mask = FlagMaskForProperty(property);
+        return mask == 0 ? flags : ToggleFlag(flags, mask, on);
+    }
+
+    public static bool UsesIntScalarAssign(Aprop property) =>
+        property is Aprop.Damage or Aprop.Score or Aprop.Mass or Aprop.Accuracy
+            or Aprop.Stamina or Aprop.ReactionTime or Aprop.FriendlySeeBlocks;
+
+    public static bool ViewHeightSyncsPlayerView(Aprop property, bool hasPlayer) =>
+        property == Aprop.ViewHeight && hasPlayer;
 
     public static bool RequiresPlayerPawn(Aprop property) =>
         property is Aprop.JumpZ or Aprop.SpawnHealth or Aprop.ViewHeight
@@ -203,4 +231,28 @@ public static double AcsToDouble(int value) => value / 65536.0;
     }
 
     public readonly record struct AActorRef(int Health, bool PlayerDead, bool HasPlayer, bool CountsAsKill);
+
+    public readonly record struct SetActorPropertyPlan(bool Abort, PropertyDispatchDescriptor Dispatch);
+
+    /// <summary>Native entry guards: null actor, default switch arm, dead health skip.</summary>
+    public static SetActorPropertyPlan PlanSetActorProperty(AActorRef? actor, Aprop property)
+    {
+        if (ActorIsNull(actor))
+            return new(true, default);
+
+        var dispatch = DescribePropertyDispatchNative(property);
+        if (dispatch.NoOp)
+            return new(true, dispatch);
+
+        if (dispatch.SkipWhenHealthDead && ShouldSkipHealthOnDead(actor!.Value.Health, actor.Value.PlayerDead))
+            return new(true, dispatch);
+
+        return new(false, dispatch);
+    }
+
+    public static bool DispatchUsesBehaviorString(Aprop property, PropertyDispatchDescriptor dispatch) =>
+        dispatch.BehaviorStringLookup || UsesBehaviorStringLookup(property);
+
+    public static bool DispatchAssignsAcsDouble(Aprop property, PropertyDispatchDescriptor dispatch) =>
+        dispatch.AssignAcsDouble || UsesAcsDouble(property);
 }
