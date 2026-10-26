@@ -1,29 +1,19 @@
-# Chunk 868 — `FParser::SF_SetCamera` … `SF_MoveFloor` from `fragglescript/t_func.cpp` (1381–1586); `SF_StartSectorSound` deferred.
+# Chunk 868 — `FParser::SF_SetCamera` … `SF_MoveFloor` from `fragglescript/t_func.cpp` (1381–1586); `SF_StartSectorSound` deferred. Retired (2026-10-23): out-of-body credit removed; honest **137** < **150**.
 
 ## Scope
 
-`FParser::SF_SetCamera` … `SF_MoveFloor` from `fragglescript/t_func.cpp` (1381–1586); `SF_StartSectorSound` deferred.
+`FParser::SF_SetCamera` … `SF_MoveFloor` from `fragglescript/t_func.cpp` (1381–1586); `SF_StartSectorSound` deferred. Retired (2026-10-23): out-of-body credit removed; honest **137** < **150**.
 
 ## Native ranges
 
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_SetCamera** 1391–1421 (31 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_ClearCamera** 1429–1443 (15 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_StartSound** 1456–1469 (14 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_FloorHeight** 1504–1556 (53 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_MoveFloor** 1565–1586 (22 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF cam/floor separators** 1381–1390 (10 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF cam/floor separators** 1422–1428 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF cam/floor separators** 1444–1455 (12 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF cam/floor separators** 1496–1503 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF cam/floor separators** 1557–1564 (8 lines)
 
-**Credited native LOC:** 180 (tally `nativeLoc` 180).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmFScriptParserSfCamFloor.cs`, `VmFScriptInitFunctionsReg868.cs`
-Managed LOC (tally): 166.
-Conversion commit: `92174e452630dc2db76ec56f31a1b5d7b65d10c3`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `017bd16cb8e22236b73115b7f3620230c213385a`.
 
 ## Padding review (2026-10-21)
 
@@ -70,16 +60,17 @@ Conversion commit: `92174e452630dc2db76ec56f31a1b5d7b65d10c3`.
 | Before | **215** | **283** |
 | After | **215** | **283** (one `Register` call; registration bodies in **868** file) |
 
-**Post-review ratio:** 166/180 managed/native ≈ 92% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (868)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **180** |
+| **Out-of-body removed** | **43** |
+| **Honest** | **137** |
+
 
 ## Tests
 
-- `VmFScriptParserSfCamFloorTests.SfSetCamera_SetsCameraThingId`
-- `VmFScriptParserSfCamFloorTests.SfClearCamera_RestoresSavedAngleAndZ`
-- `VmFScriptParserSfCamFloorTests.SfStartSound_OnActor_DoesNotThrow`
-- `VmFScriptParserSfCamFloorTests.SfFloorHeight_ReadsSectorFloor`
-- `VmFScriptParserSfCamFloorTests.SfFloorHeight_WriteUpdatesPlaysimFloor`
-- `VmFScriptParserSfCamFloorTests.SfMoveFloor_StartsSectorMotion`
 
 ## Verified
 
