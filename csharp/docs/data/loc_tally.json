@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 46436,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 71164,
+  "convertedThisRunManaged": 71243,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 64963,
   "recognitionBehaviorNative": 754,
   "combinedBehaviorNative": 65717,
-  "convertedBehaviorManaged": 80835,
+  "convertedBehaviorManaged": 80914,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -17997,8 +17997,8 @@
       "bucket": "conversion",
       "note": "Pregame host connection loop (`i_net.cpp` 3054\u20133364)",
       "auditSeams": "`GetConnection`, `TryProcessSetupConnectPacket`, kick/ban UI lists, and master update are injected. `HostCheckForConnectionsContext` is uncredited in `VmINetQueryModels.cs`.",
-      "auditRationale": "Single `HostCheckForConnectionsNative` mirrors the full native function (no split helpers).",
-      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `HostCheckForConnectionsNative` | `Host_CheckForConnections` 3054\u20133364 |\n\n### Out-of-body uncredit (630)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **311** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **311** |\n",
+      "auditRationale": "Phased host pregame loop mirrors `Host_CheckForConnections` with injected I/O seams.",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `HostCheckForConnectionsNative` | `Host_CheckForConnections` 3054\u20133364 |\n| `ApplyDedicatedAutostart` / `ProcessKickClients` / `ProcessBanClients` | dedicated + moderation **3059\u20131007** |\n| `ProcessInboundSetupPackets` / `ProcessHcdeServicePacket` | packet loop **3109\u20132223** |\n| `DriveClientSetupState` / `DriveWaitingClient` | client drive **3228\u2013355** |\n\n### Out-of-body uncredit (630)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **311** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **311** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmINetHostCheckConnections.cs"
       ],
@@ -18010,13 +18010,16 @@
           "end": 3364,
           "tests": [
             "VmINetHostCheckConnectionsTests.HostCheckForConnectionsNative_ReturnsReadyWhenFull",
-            "VmINetHostCheckConnectionsTests.HostCheckForConnectionsNative_RemovesKickedClient"
+            "VmINetHostCheckConnectionsTests.HostCheckForConnectionsNative_RemovesKickedClient",
+            "VmINetHostCheckConnectionsTests.ApplyDedicatedAutostart_EnablesWhenEnoughPlayers",
+            "VmINetHostCheckConnectionsTests.ShouldIgnoreHcdeServicePacket_WhenRemoteInvalid"
           ]
         }
       ],
       "nativeLoc": 311,
-      "managedLoc": 240,
-      "conversionManagedCommit": "c41e3d697ec645fd5f6d56abf09e6a26a111472e"
+      "managedLoc": 319,
+      "conversionManagedCommit": "0dea0485709e3784716e8ccc50749f31645931d6",
+      "auditManagedLocJustification": "Split pregame host loop into packet, HCDE service, and per-client drive phases without hosting `GetConnection` or master socket I/O."
     },
     {
       "name": "i-net-host-start-ack-chunk631",

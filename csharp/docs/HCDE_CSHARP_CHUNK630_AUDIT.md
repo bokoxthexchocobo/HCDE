@@ -13,14 +13,17 @@ Pregame host connection loop (`i_net.cpp` 3054–3364)
 ## Managed
 
 `VmINetHostCheckConnections.cs`
-Managed LOC (tally): 240.
-Conversion commit: `c41e3d697ec645fd5f6d56abf09e6a26a111472e`.
+Managed LOC (tally): 319.
+Conversion commit: `0dea0485709e3784716e8ccc50749f31645931d6`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`i_net.cpp`) |
 |---------|-------------------|
 | `HostCheckForConnectionsNative` | `Host_CheckForConnections` 3054–3364 |
+| `ApplyDedicatedAutostart` / `ProcessKickClients` / `ProcessBanClients` | dedicated + moderation **3059–1007** |
+| `ProcessInboundSetupPackets` / `ProcessHcdeServicePacket` | packet loop **3109–2223** |
+| `DriveClientSetupState` / `DriveWaitingClient` | client drive **3228–355** |
 
 ### Out-of-body uncredit (630)
 
@@ -31,12 +34,14 @@ Conversion commit: `c41e3d697ec645fd5f6d56abf09e6a26a111472e`.
 | **Honest** | **311** |
 
 
-**Post-review ratio:** 240/311 managed/native ≈ 77% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 319/311 managed/native ≈ 103% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmINetHostCheckConnectionsTests.HostCheckForConnectionsNative_ReturnsReadyWhenFull`
 - `VmINetHostCheckConnectionsTests.HostCheckForConnectionsNative_RemovesKickedClient`
+- `VmINetHostCheckConnectionsTests.ApplyDedicatedAutostart_EnablesWhenEnoughPlayers`
+- `VmINetHostCheckConnectionsTests.ShouldIgnoreHcdeServicePacket_WhenRemoteInvalid`
 
 ## Verified
 
@@ -48,4 +53,4 @@ Conversion commit: `c41e3d697ec645fd5f6d56abf09e6a26a111472e`.
 
 ## Credit rationale
 
-Single `HostCheckForConnectionsNative` mirrors the full native function (no split helpers).
+Phased host pregame loop mirrors `Host_CheckForConnections` with injected I/O seams.
