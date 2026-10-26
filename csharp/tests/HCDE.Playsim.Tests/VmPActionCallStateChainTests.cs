@@ -54,4 +54,46 @@ public class VmPActionCallStateChainTests
     {
         Assert.Equal(0, VmPActionCallStateChain.GetZAt(0, 0, 0, 0, 0, 0, hasSector: false, 0, 0, 0, 0));
     }
+
+    [Fact]
+    public void BuildReturnPlan_StateOnly_IsJumpOnly()
+    {
+        var state = new VmPActionCallStateChain.ChainState
+        {
+            ReturnTypesCount = 1,
+            ReturnType0 = VmPActionCallStateChain.TypeState,
+        };
+        var plan = VmPActionCallStateChain.BuildReturnPlan(state);
+        Assert.True(plan.JumpOnlyStateReturn);
+        Assert.False(VmPActionCallStateChain.DefaultActionRetval(plan));
+    }
+
+    [Fact]
+    public void GetZAt_CeilingNo3dNoPortal_UsesPlane()
+    {
+        var z = VmPActionCallStateChain.GetZAt(0, 0, 0, 0, 0,
+            VmPActionCallStateChain.GzfCeiling | VmPActionCallStateChain.GzfNo3dfloor | VmPActionCallStateChain.GzfNoportals,
+            hasSector: true, floorZ: 8, ceilingZ: 96, nextLowest: 4, nextHighest: 88);
+        Assert.Equal(96, z);
+    }
+
+    [Fact]
+    public void PrepareGetZAtPosition_AppliesOffsetAtYaw()
+    {
+        var px = 0.0;
+        var py = 0.0;
+        var ang = 0.0;
+        VmPActionCallStateChain.PrepareGetZAtPosition(ref px, ref py, ref ang, 10, 0, 0, 0);
+        Assert.Equal(10, px);
+        Assert.Equal(0, py);
+    }
+
+    [Fact]
+    public void BuildFloorClipFlags_MapsRestrictAndNoPortals()
+    {
+        var flags = VmPActionCallStateChain.Gzf3Drestrict | VmPActionCallStateChain.GzfNoportals;
+        Assert.Equal(
+            VmPActionCallStateChain.Ffcf3dRestrict | VmPActionCallStateChain.FfcfNoportals,
+            VmPActionCallStateChain.BuildFloorClipFlags(flags));
+    }
 }
