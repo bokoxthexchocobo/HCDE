@@ -1,25 +1,19 @@
-# Chunk 858 — FraggleScript legacy console emulation from `fragglescript/t_cmd.cpp` (1–186).
+# Chunk 858 — FraggleScript legacy console emulation from `fragglescript/t_cmd.cpp` (1–186). Retired (2026-10-23): out-of-body credit removed; honest **137** < **150**.
 
 ## Scope
 
-FraggleScript legacy console emulation from `fragglescript/t_cmd.cpp` (1–186).
+FraggleScript legacy console emulation from `fragglescript/t_cmd.cpp` (1–186). Retired (2026-10-23): out-of-body credit removed; honest **137** < **150**.
 
 ## Native ranges
 
-- `src/playsim/fragglescript/t_cmd.cpp` **FS_Gimme** 35–60 (26 lines)
-- `src/playsim/fragglescript/t_cmd.cpp` **FS_MapCmd** 69–101 (33 lines)
-- `src/playsim/fragglescript/t_cmd.cpp` **FS_EmulateCmd** 109–186 (78 lines)
-- `src/playsim/fragglescript/t_cmd.cpp` **t_cmd separators** 1–34 (34 lines)
-- `src/playsim/fragglescript/t_cmd.cpp` **t_cmd separators** 61–68 (8 lines)
-- `src/playsim/fragglescript/t_cmd.cpp` **t_cmd separators** 102–108 (7 lines)
 
-**Credited native LOC:** 186 (tally `nativeLoc` 186).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmFScriptCmd.cs`
-Managed LOC (tally): 212.
-Conversion commit: `5cb99aac9024861a4a308d866aacb36ef2771354`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `505e6013b4e2334529948cc3a12b841dd4c51605`.
 
 ## Padding review (2026-10-21)
 
@@ -45,14 +39,17 @@ Conversion commit: `5cb99aac9024861a4a308d866aacb36ef2771354`.
 | Row `nativeLoc` (gross **1–186**) | **186** |
 | **Net headline** | **+186** vs post-**853** |
 
-**Post-review ratio:** 212/186 managed/native ≈ 114% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (858)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **186** |
+| **Out-of-body removed** | **49** |
+| **Honest** | **137** |
+
 
 ## Tests
 
-- `VmFScriptCmdTests.Gimme_Health_NormalizesAndGives`
-- `VmFScriptCmdTests.MapCmd_ChangeLevelWithFlags`
-- `VmFScriptCmdTests.EmulateCmd_GimmeAndGravity`
-- `VmFScriptCmdTests.EmulateCmd_AllowJumpTogglesDmflags`
 
 ## Verified
 
