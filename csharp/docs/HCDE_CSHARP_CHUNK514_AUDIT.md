@@ -13,14 +13,15 @@ PatchWeapon whole function
 ## Managed
 
 `VmDehackedPatchWeaponDispatch.cs`
-Managed LOC (tally): 111.
-Conversion commit: `a254c4c33c0d8f53ac55ea29ff1f1760482d673d`.
+Managed LOC (tally): 286.
+Conversion commit: `639dd22f0fa69d050daf76e613b2f7b040267b46`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`d_dehacked.cpp`) |
 |---------|-------------------|
 | `IsWeaponSlotValid` / `ShouldMakeStateDefines` / `LineEndsWithFrameSuffix` / `TryMapFrameLabel` / `FrameLabelForPrefix` / `IsAmmoTypeKey` / `IsDecalKey` / `IsAmmoUseKey` / `IsMinAmmoKey` / `IsMbf21BitsKey` / `NormalizeAmmoTypeIndex` / `DecalLookupSucceeded` / `ParseMbf21NumericToken` / `TokenIsNumeric` / `ApplyMbf21Token` / `ParseMbf21Line` / `ReadyStateIsChainsaw` / `HasReadyState` / `ResolveReadySound` / `LoopContinues` / `WeaponTypeMissing` / `FormatUnknownWeaponKey` / `TryApplyWeaponFrameLine` | `PatchWeapon` 2253–2437 (2261: `if (weapNum >= 0 && weapNum < 9 && (unsigned)weapNum < WeaponNames.Si…`; 2264: `if (type != NULL)`; 2271: `if (type == NULL)`) |
+| `ClassifyWeaponPatchLine` / `ProcessWeaponPatchLine` / `WeaponPatchSession` / `DecodeMbf21WeaponBits` / `FinalizePatchWeapon` | main loop **2277–407**, MBF21 **2352–400**, tail **2409–434** |
 
 ### Out-of-body uncredit (514)
 
@@ -31,7 +32,7 @@ Conversion commit: `a254c4c33c0d8f53ac55ea29ff1f1760482d673d`.
 | **Honest** | **185** |
 
 
-**Post-review ratio:** 111/185 managed/native ≈ 60% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 286/185 managed/native ≈ 155% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -41,6 +42,9 @@ Conversion commit: `a254c4c33c0d8f53ac55ea29ff1f1760482d673d`.
 - `VmDehackedPatchWeaponDispatchTests.ParseMbf21Line_CombinesNumericAndName`
 - `VmDehackedPatchWeaponDispatchTests.ResolveReadySound_ChainsawUsesIdle`
 - `VmDehackedPatchWeaponDispatchTests.TryApplyWeaponFrameLine_RecordsBobbingReady`
+- `VmDehackedPatchWeaponDispatchTests.ClassifyWeaponPatchLine_RecognizesMbf21`
+- `VmDehackedPatchWeaponDispatchTests.DecodeMbf21WeaponBits_ClearsKickbackOnNegativeBit`
+- `VmDehackedPatchWeaponDispatchTests.ProcessWeaponPatchLine_SetsPatchedStatesOnFrame`
 
 ## Verified
 

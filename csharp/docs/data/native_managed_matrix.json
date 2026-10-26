@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 218830
+    "managedCSharpLoc": 219005
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 70687,
+    "convertedThisRunManaged": 70862,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 80358,
+    "convertedBehaviorManaged": 80533,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13749,14 +13749,18 @@
               "VmDehackedPatchWeaponDispatchTests.NormalizeAmmoTypeIndex_ClampsHigh",
               "VmDehackedPatchWeaponDispatchTests.ParseMbf21Line_CombinesNumericAndName",
               "VmDehackedPatchWeaponDispatchTests.ResolveReadySound_ChainsawUsesIdle",
-              "VmDehackedPatchWeaponDispatchTests.TryApplyWeaponFrameLine_RecordsBobbingReady"
+              "VmDehackedPatchWeaponDispatchTests.TryApplyWeaponFrameLine_RecordsBobbingReady",
+              "VmDehackedPatchWeaponDispatchTests.ClassifyWeaponPatchLine_RecognizesMbf21",
+              "VmDehackedPatchWeaponDispatchTests.DecodeMbf21WeaponBits_ClearsKickbackOnNegativeBit",
+              "VmDehackedPatchWeaponDispatchTests.ProcessWeaponPatchLine_SetsPatchedStatesOnFrame"
             ]
           }
         ],
         "nativeLoc": 185,
-        "managedLoc": 111,
-        "conversionManagedCommit": "a254c4c33c0d8f53ac55ea29ff1f1760482d673d",
-        "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|-------------------|\n| `IsWeaponSlotValid` / `ShouldMakeStateDefines` / `LineEndsWithFrameSuffix` / `TryMapFrameLabel` / `FrameLabelForPrefix` / `IsAmmoTypeKey` / `IsDecalKey` / `IsAmmoUseKey` / `IsMinAmmoKey` / `IsMbf21BitsKey` / `NormalizeAmmoTypeIndex` / `DecalLookupSucceeded` / `ParseMbf21NumericToken` / `TokenIsNumeric` / `ApplyMbf21Token` / `ParseMbf21Line` / `ReadyStateIsChainsaw` / `HasReadyState` / `ResolveReadySound` / `LoopContinues` / `WeaponTypeMissing` / `FormatUnknownWeaponKey` / `TryApplyWeaponFrameLine` | `PatchWeapon` 2253\u20132437 (2261: `if (weapNum >= 0 && weapNum < 9 && (unsigned)weapNum < WeaponNames.Si\u2026`; 2264: `if (type != NULL)`; 2271: `if (type == NULL)`) |\n\n### Out-of-body uncredit (514)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **185** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **185** |\n"
+        "managedLoc": 286,
+        "conversionManagedCommit": "639dd22f0fa69d050daf76e613b2f7b040267b46",
+        "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|-------------------|\n| `IsWeaponSlotValid` / `ShouldMakeStateDefines` / `LineEndsWithFrameSuffix` / `TryMapFrameLabel` / `FrameLabelForPrefix` / `IsAmmoTypeKey` / `IsDecalKey` / `IsAmmoUseKey` / `IsMinAmmoKey` / `IsMbf21BitsKey` / `NormalizeAmmoTypeIndex` / `DecalLookupSucceeded` / `ParseMbf21NumericToken` / `TokenIsNumeric` / `ApplyMbf21Token` / `ParseMbf21Line` / `ReadyStateIsChainsaw` / `HasReadyState` / `ResolveReadySound` / `LoopContinues` / `WeaponTypeMissing` / `FormatUnknownWeaponKey` / `TryApplyWeaponFrameLine` | `PatchWeapon` 2253\u20132437 (2261: `if (weapNum >= 0 && weapNum < 9 && (unsigned)weapNum < WeaponNames.Si\u2026`; 2264: `if (type != NULL)`; 2271: `if (type == NULL)`) |\n| `ClassifyWeaponPatchLine` / `ProcessWeaponPatchLine` / `WeaponPatchSession` / `DecodeMbf21WeaponBits` / `FinalizePatchWeapon` | main loop **2277\u2013407**, MBF21 **2352\u2013400**, tail **2409\u2013434** |\n\n### Out-of-body uncredit (514)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **185** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **185** |\n",
+        "auditManagedLocJustification": "`ProcessWeaponPatchLine` and `FinalizePatchWeapon` model the `PatchWeapon` read loop and chainsaw ready-sound tail without hosting `GetLine`, `FindState`, or `InstallStates`."
       },
       {
         "name": "p-acs-load-scripts-directory-chunk515",
