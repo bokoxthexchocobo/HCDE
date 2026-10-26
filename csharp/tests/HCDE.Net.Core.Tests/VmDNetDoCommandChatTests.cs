@@ -35,4 +35,32 @@ public class VmDNetDoCommandChatTests
         Assert.True(VmDNetDoCommandChat.ShouldRunSuicideCommandNative(
             gameState: 2, levelState: 2, paused: false, playerState: 0, deadState: 4));
 
+    [Fact]
+    public void EvaluateSayCase_BreaksWhenChatDisabled()
+    {
+        var (breakCase, _, _, _) = VmDNetDoCommandChat.EvaluateSayCase(
+            new VmDNetDoCommandChat.SayCaseInput(0, 0, 0, 0, false, false, 0, 0, false));
+        Assert.True(breakCase);
+    }
+
+    [Fact]
+    public void RunDoCommandCase_TauntFormatsSound()
+    {
+        var outcome = VmDNetDoCommandChat.RunDoCommandCase(new VmDNetDoCommandChat.DoCommandCaseInput(
+            VmDNetDoCommandChat.DoCommandCaseKind.Taunt,
+            default,
+            default,
+            "wave",
+            new object(),
+            0,
+            0,
+            0,
+            0,
+            false,
+            0,
+            0,
+            0,
+            0));
+        Assert.Equal("*taunt-wave", outcome.TauntSound);
+    }
 }
