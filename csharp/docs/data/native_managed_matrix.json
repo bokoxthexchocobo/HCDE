@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 221886
+    "managedCSharpLoc": 221917
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 73779,
+    "convertedThisRunManaged": 73810,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 83450,
+    "convertedBehaviorManaged": 83481,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -17897,8 +17897,8 @@
           }
         ],
         "nativeLoc": 217,
-        "managedLoc": 176,
-        "conversionManagedCommit": "5cb16e161c3b2079c0b16db87d6ba41b364e0f96"
+        "managedLoc": 207,
+        "conversionManagedCommit": "13a3e76a1217c5e2008139e271a3456efd27a600"
       },
       {
         "name": "i-net-get-packet-chunk626",
