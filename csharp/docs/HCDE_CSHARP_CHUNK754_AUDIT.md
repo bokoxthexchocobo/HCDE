@@ -31,29 +31,29 @@ Post-serialize through behavior transfer, link, and `InStateSequence` (`p_mobj.c
 ## Managed
 
 `VmPMobjPostSerializeBehaviors.cs`, `VmPMobjBehaviorTransfer.cs`
-Managed LOC (tally): 186.
-Conversion commit: `26752a25c0f8efc76b54533676d6706252503269`.
+Managed LOC (tally): 451.
+Conversion commit: `98222ecaf5f834099be573d49eac42cfc02d1dca`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`p_mobj.cpp`) |
 |---------|-------------------|
-| `PostSerializeClearTouchLists` / `ShouldRestorePlayerSkin` / `ShouldRestoreDefaultSpeed` | `AActor::PostSerialize` 431–455 |
+| `RunPostSerialize` / `PostSerializeClearTouchLists` / `ShouldRestorePlayerSkin` / `ShouldRestoreDefaultSpeed` | `AActor::PostSerialize` 431–455 |
 | `SerializeBehaviorOwnerFields` | `DBehavior::Serialize` 464–469 |
 | `RemoveBehaviorOnLevelDestroy` | `DBehavior::OnDestroy` 471–477 |
 | `RemoveBehaviorFound` | `AActor::RemoveBehavior` 479–495 |
 | (native macro only) | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, RemoveBehavior)` 502–507 |
-| `AddBehaviorAbstract` / `AddBehaviorCreatesNew` / `AddBehaviorReinitialize` | `AActor::AddBehavior` 509–554 |
+| `RunAddBehavior` / `AddBehaviorTypeRejected` / `AddBehaviorAbstract` / `AddBehaviorCreatesNew` / `AddBehaviorReinitialize` | `AActor::AddBehavior` 509–554 |
 | (native macro only) | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, AddBehavior)` 561–566 |
-| `TickBehaviorsQueuesNull` / `FlushBehaviorRemovals` | `AActor::TickBehaviors` 568–607 |
+| `RunTickBehaviors` / `TickBehaviorsQueuesNull` / `FlushBehaviorRemovals` | `AActor::TickBehaviors` 568–607 |
 | (native macro only) | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, TickBehaviors)` 614–619 |
 | `FindBehaviorInMap` | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, FindBehavior)` 626–631 |
-| `MoveBehaviorsRejected` / `TransferBehaviorOwner` / `RelinkBehaviorLevel` | `AActor::MoveBehaviors` 633–692 |
+| `RunMoveBehaviors` / `MoveBehaviorsRejected` / `TransferBehaviorOwner` / `RelinkBehaviorLevel` | `AActor::MoveBehaviors` 633–692 |
 | (native macro only) | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, MoveBehaviors)` 699–705 |
-| `ClearBehaviorsMatching` / `ClearAllBehaviorsWhenTypeNull` | `AActor::ClearBehaviors` 707–726 |
+| `RunClearBehaviors` / `ClearBehaviorsMatching` / `ClearAllBehaviorsWhenTypeNull` | `AActor::ClearBehaviors` 707–726 |
 | (native macro only) | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, ClearBehaviors)` 733–739 |
-| `UnlinkBehaviorNull` | `AActor::UnlinkBehaviorsFromLevel` 741–758 |
-| `UnlinkBehaviorNull` | `AActor::LinkBehaviorsToLevel` 760–777 |
+| `RunUnlinkBehaviorsFromLevel` / `UnlinkBehaviorNull` | `AActor::UnlinkBehaviorsFromLevel` 741–758 |
+| `RunLinkBehaviorsToLevel` | `AActor::LinkBehaviorsToLevel` 760–777 |
 | `InStateSequence` | `InStateSequence` 788–801 |
 | (native macro only) | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, InStateSequence)` 803–809 |
 | `IsMapActorInventory` | `AActor::IsMapActor` 818–822 |
@@ -67,7 +67,7 @@ Conversion commit: `26752a25c0f8efc76b54533676d6706252503269`.
 | **Honest** | **321** |
 
 
-**Post-review ratio:** 186/321 managed/native ≈ 58% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 451/321 managed/native ≈ 140% (src file LOC at HEAD; see tally).
 
 ## Tests
 
