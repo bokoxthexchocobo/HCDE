@@ -13,8 +13,8 @@ FxCompareEq::Resolve
 ## Managed
 
 `ZccCompareEqResolve.cs`
-Managed LOC (tally): 151.
-Conversion commit: `246ec0fa02de204b4fbebfb65872d9e14cd16e7c`.
+Managed LOC (tally): 203.
+Conversion commit: `0d2e2f99841e6cd183d9c5fd7128f924cb9884fe`.
 
 ## Padding review (2026-10-21)
 
@@ -31,7 +31,7 @@ Conversion commit: `246ec0fa02de204b4fbebfb65872d9e14cd16e7c`.
 | **Honest** | **217** |
 
 
-**Post-review ratio:** 151/217 managed/native ≈ 70% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 203/217 managed/native ≈ 94% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -41,6 +41,7 @@ Conversion commit: `246ec0fa02de204b4fbebfb65872d9e14cd16e7c`.
 - `ZccCompareEqResolveTests.TryGetNullConstant_IntZero`
 - `ZccCompareEqResolveTests.TryFoldConstantCompare_IntEquality`
 - `ZccCompareEqResolveTests.ShouldRewriteEqToUnaryNot_WhenRightNull`
+- `ZccCompareEqResolveTests.RunCompareEqResolvePipeline_FoldsIntConstant`
 
 ## Verified
 

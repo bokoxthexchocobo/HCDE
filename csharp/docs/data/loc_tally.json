@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 46436,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 71474,
+  "convertedThisRunManaged": 71608,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 64963,
   "recognitionBehaviorNative": 754,
   "combinedBehaviorNative": 65717,
-  "convertedBehaviorManaged": 81145,
+  "convertedBehaviorManaged": 81279,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -13902,7 +13902,8 @@
             "ZccCompareEqResolveTests.ShouldUnaryNotRight_EqAndZero",
             "ZccCompareEqResolveTests.TryGetNullConstant_IntZero",
             "ZccCompareEqResolveTests.TryFoldConstantCompare_IntEquality",
-            "ZccCompareEqResolveTests.ShouldRewriteEqToUnaryNot_WhenRightNull"
+            "ZccCompareEqResolveTests.ShouldRewriteEqToUnaryNot_WhenRightNull",
+            "ZccCompareEqResolveTests.RunCompareEqResolvePipeline_FoldsIntConstant"
           ]
         }
       ],
@@ -13910,9 +13911,10 @@
         "146c044cd1cea0095d9a7eac1d056848c0afccba"
       ],
       "nativeLoc": 217,
-      "managedLoc": 151,
-      "conversionManagedCommit": "246ec0fa02de204b4fbebfb65872d9e14cd16e7c",
-      "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|-------------------|\n| `IdenticalValueTypes` / `BothNumeric` / `IsApproxEqOperator` / `ApproxEqAllowedForRegType` / `BothConstant` / `FoldStringEqual` / `FoldFloatEqual` / `FoldIntEqual` / `LeftIntIsNull` / `LeftFloatIsNull` / `LeftPointerIsNull` / `ShouldUnaryNotRight` / `ShouldBoolCastRight` / `PointerTypesCompatible` / `StateLabelNullCompare` / `ValueTypeNil` / `StringConstToCharEligible` / `TranslationIdLegacyCast` / `CanImplicitCastStringToName` / `RequestAddressForPointerCompare` / `RightNumericLeftString` / `VectorTypesComparable` / `CanCompareStateLabelToNull` / `CanCompareNullToStateLabel` / `PointerRegTypesMatch` / `CompatiblePointersOrNull` / `ShouldPromoteAfterNumeric` / `SimplifyEqAgainstZero` / `SimplifyNeqAgainstZero` / `SkipZeroSimplifyWhenApprox` / `EmitStringCompareUsesApprox` / `CmpCheckFlag` / `CmpApproxFlag` / `ClassifyReg` / `TryGetNullConstant` / `TryFoldConstantCompare` / `ShouldRewriteEqToUnaryNot` / `ShouldRewriteNeqToBoolCast` / `OperandTypesNeedPromotion` / `IncompatibleOperands` / `ResultValueTypeBool` | `Resolve` 4175\u20134391 (4181: `if (!left || !right)`; 4184: `return nullptr;`; 4188: `if (left->ValueType != right->ValueType && !(left->IsVector2() && rig\u2026`) |\n\n### Out-of-body uncredit (519)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **217** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **217** |\n"
+      "managedLoc": 203,
+      "conversionManagedCommit": "0d2e2f99841e6cd183d9c5fd7128f924cb9884fe",
+      "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|-------------------|\n| `IdenticalValueTypes` / `BothNumeric` / `IsApproxEqOperator` / `ApproxEqAllowedForRegType` / `BothConstant` / `FoldStringEqual` / `FoldFloatEqual` / `FoldIntEqual` / `LeftIntIsNull` / `LeftFloatIsNull` / `LeftPointerIsNull` / `ShouldUnaryNotRight` / `ShouldBoolCastRight` / `PointerTypesCompatible` / `StateLabelNullCompare` / `ValueTypeNil` / `StringConstToCharEligible` / `TranslationIdLegacyCast` / `CanImplicitCastStringToName` / `RequestAddressForPointerCompare` / `RightNumericLeftString` / `VectorTypesComparable` / `CanCompareStateLabelToNull` / `CanCompareNullToStateLabel` / `PointerRegTypesMatch` / `CompatiblePointersOrNull` / `ShouldPromoteAfterNumeric` / `SimplifyEqAgainstZero` / `SimplifyNeqAgainstZero` / `SkipZeroSimplifyWhenApprox` / `EmitStringCompareUsesApprox` / `CmpCheckFlag` / `CmpApproxFlag` / `ClassifyReg` / `TryGetNullConstant` / `TryFoldConstantCompare` / `ShouldRewriteEqToUnaryNot` / `ShouldRewriteNeqToBoolCast` / `OperandTypesNeedPromotion` / `IncompatibleOperands` / `ResultValueTypeBool` | `Resolve` 4175\u20134391 (4181: `if (!left || !right)`; 4184: `return nullptr;`; 4188: `if (left->ValueType != right->ValueType && !(left->IsVector2() && rig\u2026`) |\n\n### Out-of-body uncredit (519)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **217** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **217** |\n",
+      "auditManagedLocJustification": "`RunCompareEqResolvePipeline` sequences `FxCompareEq::Resolve` without hosting `FxTypeCast` emission."
     },
     {
       "name": "d-dehacked-patchthing-loop-primary-chunk520",
@@ -16622,7 +16624,7 @@
       "note": "FxVMFunctionCall::Resolve guards + Emit/CheckEmitCast helpers (9814\u201310326)",
       "auditSeams": "`compileEnvironment.ResolveSpecialFunction`, `ScriptPosition.Message`, `FunctionCallEmitter`, and VM opcode emission are not hosted.",
       "auditRationale": "Faithful decision helpers for VM function call resolve guards, named arguments, return-type selection, emit static-call/scope/action-arg paths, and decorate cast kludge.",
-      "auditPaddingReview": "Former chunk 600 merged here (retired). Whole-function ports only; no LOC padding.\n\n| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `RequiresSelfPointerNative` | non-static method guard 9837\u20139841 |\n| `RejectsAbstractDirectCallNative` | abstract call guard 9851\u20139855 |\n| `TooManyArgumentsNative` / `NamedArgsForbiddenInFnPtrNative` | arity + fn-ptr named args 9861\u20139888 |\n| `RelaxedNamedArgsNative` / `FindArgIndexByNameNative` / `NamedArgOutOfOrderNative` | named-arg placement 9890\u20139935 |\n| `ShouldSetReturnTypeFromProtoNative` / `ShouldAssignVoidReturnTypeNative` | return type 10140\u201310153 |\n| `ShouldEarlyCastReturnNative` / `IsStaticCallNative` | `Emit` prologue 10169\u201310181 |\n| `ShouldEmitScopeBarrierNative` / `ShouldPassActionStatePointersNative` | method self + action args 10190\u201310228 |\n| `MatchesDefaultArgRegTypeNative` | default-arg `switch` cases 10251\u201310266 |\n| `IsDecorateCastKludgeNative` / `ShouldEmitRetIntImmediateNative` | `CheckEmitCast` 10296\u201310325 |\n| `NapConstantNative` | `static_assert(NAP == 3)` at 10217 (compile-time constant) |\n| `ShouldNullCheckFnPtrSelfNative` | `FnPtrCall` self branch issues `OP_NULLCHECK` 10231\u201310236 |\n| `ShouldEmitOpRetNative` | `CheckEmitCast` `returnit` fast-path 10302\u201310314 |\n\n### Out-of-body uncredit (599)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **162** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **162** |\n",
+      "auditPaddingReview": "Former chunk 600 merged here (retired). Whole-function ports only; no LOC padding.\n\n| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `RequiresSelfPointerNative` | non-static method guard 9837\u20139841 |\n| `RejectsAbstractDirectCallNative` | abstract call guard 9851\u20139855 |\n| `TooManyArgumentsNative` / `NamedArgsForbiddenInFnPtrNative` | arity + fn-ptr named args 9861\u20139888 |\n| `RelaxedNamedArgsNative` / `FindArgIndexByNameNative` / `NamedArgOutOfOrderNative` | named-arg placement 9890\u20139935 |\n| `ShouldSetReturnTypeFromProtoNative` / `ShouldAssignVoidReturnTypeNative` | return type 10140\u201310153 |\n| `ShouldEarlyCastReturnNative` / `IsStaticCallNative` | `Emit` prologue 10169\u201310181 |\n| `ShouldEmitScopeBarrierNative` / `ShouldPassActionStatePointersNative` | method self + action args 10190\u201310228 |\n| `MatchesDefaultArgRegTypeNative` | default-arg `switch` cases 10251\u201310266 |\n| `IsDecorateCastKludgeNative` / `ShouldEmitRetIntImmediateNative` | `CheckEmitCast` 10296\u201310325 |\n| `NapConstantNative` | `static_assert(NAP == 3)` at 10217 (compile-time constant) |\n| `ShouldNullCheckFnPtrSelfNative` | `FnPtrCall` self branch issues `OP_NULLCHECK` 10231\u201310236 |\n| `ShouldEmitOpRetNative` | `CheckEmitCast` `returnit` fast-path 10302\u201310314 |\n| `RunResolveGuardPipeline` / `RunEmitProloguePipeline` | resolve + emit orchestration **9837\u201310325** |\n\n### Out-of-body uncredit (599)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **162** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **162** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Scripting/ZccVmFunctionCallResolve.cs",
         "csharp/src/HCDE.Scripting/ZccVmFunctionCallEmit.cs"
@@ -16634,7 +16636,9 @@
           "start": 9837,
           "end": 9841,
           "tests": [
-            "ZccVmFunctionCallResolveTests.RelaxedNamedArgsNative_At413"
+            "ZccVmFunctionCallResolveTests.RelaxedNamedArgsNative_At413",
+            "ZccVmFunctionCallResolveTests.RunResolveGuardPipeline_FlagsMissingSelf",
+            "ZccVmFunctionCallEmitPipelineTests.RunEmitProloguePipeline_AllowsScopeBarrier"
           ]
         },
         {
@@ -16720,8 +16724,8 @@
         }
       ],
       "nativeLoc": 162,
-      "conversionManagedCommit": "f6967d6b7b738da076945866a620269a83c4d28c",
-      "managedLoc": 95
+      "conversionManagedCommit": "81499489de6ab4197882117ba7d2cbcad1e7cab4",
+      "managedLoc": 177
     },
     {
       "name": "zcc-vm-function-call-emit-chunk600",
