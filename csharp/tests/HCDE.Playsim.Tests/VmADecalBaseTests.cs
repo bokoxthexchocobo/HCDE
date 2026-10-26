@@ -69,4 +69,41 @@ public class VmADecalBaseTests
         Assert.Equal(7, tex);
         Assert.NotEqual(0, d.RenderFlags & VmADecalBase.RfRelMid);
     }
+
+    [Fact]
+    public void ClassifyStickPlacement_LowerWhenAboveFloor()
+    {
+        var branch = VmADecalBase.ClassifyStickPlacement(8, 10, 20, false, true);
+        Assert.Equal(VmADecalBase.StickPlacementBranch.Lower, branch);
+    }
+
+    [Fact]
+    public void ResolveFfTexture_PrefersUpperFlag()
+    {
+        var tex = VmADecalBase.ResolveFfTexture(
+            VmADecalBase.FfUppertexture,
+            () => 1,
+            () => 2,
+            () => 3);
+        Assert.Equal(1, tex);
+    }
+
+    [Fact]
+    public void RunSerializeFieldsPipeline_CopiesState()
+    {
+        var d = new VmADecalBase.DecalState { Z = 4, PicNum = 9, Side = new object() };
+        var sink = new VmADecalBase.DecalSerializeSink();
+        VmADecalBase.RunSerializeFieldsPipeline(d, sink);
+        Assert.Equal(4, sink.Z);
+        Assert.Equal(9, sink.PicNum);
+        Assert.Same(d.Side, sink.Side);
+    }
+
+    [Fact]
+    public void RunOnDestroyPipeline_InvokesRemove()
+    {
+        var removed = false;
+        VmADecalBase.RunOnDestroyPipeline(new VmADecalBase.DecalState(), _ => removed = true, null);
+        Assert.True(removed);
+    }
 }
