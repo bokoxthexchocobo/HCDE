@@ -1780,8 +1780,19 @@ public class Actor : Thinker
         if (Simulation is AuthoritySimulation managedSim && ActorPmobjTickBridge.UsesManagedTick(this))
         {
             if (!CheckNoDelay()) return;
+            var freezeBefore = FreezeTics;
             ActorPmobjTickBridge.Execute(managedSim, this);
             if (Destroyed) return;
+            if (freezeBefore > 0 && FreezeTics < freezeBefore)
+            {
+                base.Tick();
+                return;
+            }
+            if (NoInteraction)
+            {
+                base.Tick();
+                return;
+            }
             if (PickupDelay > 0 && --PickupDelay == 0)
             {
                 SpecialPickup = PickupCatalog.IsPickup(DoomEdNum, Simulation?.RavenHealthPickups ?? false);
@@ -1793,7 +1804,7 @@ public class Actor : Thinker
             if (Destroyed) return;
             SectorDamage.Tick(managedSim, this);
             TerrainDamage.Tick(managedSim, this);
-            if (!Destroyed && Stealth)
+            if (!Destroyed && Stealth && !VisibilityPulse)
                 RenderStyle = RenderStyle with { Flags = (byte)(RenderStyle.Flags & ~2) };
             base.Tick();
             return;

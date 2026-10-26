@@ -5,7 +5,12 @@ namespace HCDE.Playsim;
 /// <summary>Live playsim wire from <see cref="Actor"/> to <see cref="VmPMobjActorTick"/> (chunk 728).</summary>
 public static class ActorPmobjTickBridge
 {
-    public static bool UsesManagedTick(Actor actor) => actor is not ProjectileActor;
+    public static bool UsesManagedTick(Actor actor)
+    {
+        if (actor is ProjectileActor or PlayerPawn or IceChunkActor)
+            return false;
+        return actor.Brain != null;
+    }
 
     public static void Execute(AuthoritySimulation sim, Actor actor)
     {
@@ -114,7 +119,7 @@ public static class ActorPmobjTickBridge
             BotTickEligible = false,
             CoopAuthorityVisual = false,
             InvasionMirrorBlocking = false,
-            TickBehaviors = () => RunBehaviors(sim, actor),
+            TickBehaviors = () => RunBehaviors(sim, actor, mo),
             WalkInventoryDoEffect = null,
             AdvanceDecoupledModelAnim = null,
             SpawnRocketSmoke = null,
@@ -150,7 +155,7 @@ public static class ActorPmobjTickBridge
         return flags;
     }
 
-    static void RunBehaviors(AuthoritySimulation sim, Actor actor)
+    static void RunBehaviors(AuthoritySimulation sim, Actor actor, VmPMobjActorTick.TickActor mo)
     {
         if (actor.PendingSpawnDeath)
         {
@@ -167,6 +172,7 @@ public static class ActorPmobjTickBridge
             else if (!actor.IsDead)
                 actor.Brain?.AdvanceRaiseFrame();
         }
+        mo.Destroyed = actor.Destroyed;
     }
 
     static IReadOnlyList<VmPMobjActorTick.SectorCarryNode> BuildTouchingSectors(AuthoritySimulation sim, Actor actor)

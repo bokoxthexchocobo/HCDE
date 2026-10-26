@@ -211,6 +211,9 @@ public static class VmPMobjActorTick
         if (!mo.Frozen)
             st.TickBehaviors?.Invoke();
 
+        if (mo.Destroyed)
+            return;
+
         if ((mo.Flags5 & Mf5Nointeraction) != 0)
         {
             TickNoInteraction(st, mo);

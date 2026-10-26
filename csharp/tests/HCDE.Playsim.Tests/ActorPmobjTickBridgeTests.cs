@@ -5,13 +5,18 @@ namespace HCDE.Playsim.Tests;
 public class ActorPmobjTickBridgeTests
 {
     [Fact]
-    public void UsesManagedTick_IsFalseForProjectiles()
+    public void UsesManagedTick_IsFalseForProjectilesAndPlayers()
     {
         var sim = OpenRoom();
         var player = sim.Players.Single();
         var projectile = sim.SpawnProjectile(player, ProjectileKind.Rocket);
+        var bot = sim.AddBot(32, 32);
+        var brainless = sim.AddBot(48, 48);
+        brainless.Brain = null;
         Assert.False(ActorPmobjTickBridge.UsesManagedTick(projectile));
-        Assert.True(ActorPmobjTickBridge.UsesManagedTick(player));
+        Assert.False(ActorPmobjTickBridge.UsesManagedTick(player));
+        Assert.True(ActorPmobjTickBridge.UsesManagedTick(bot));
+        Assert.False(ActorPmobjTickBridge.UsesManagedTick(brainless));
     }
 
     [Fact]
