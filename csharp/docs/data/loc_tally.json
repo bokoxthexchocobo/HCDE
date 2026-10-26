@@ -680,7 +680,7 @@
       "bucket": "recognition",
       "nativeLoc": 0,
       "managedLoc": 0,
-      "note": "p_mobj.cpp movement/thinker paths already in ActorPhysics/ProjectileActor (run 9 re-audit). Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port.",
+      "note": "p_mobj.cpp movement/thinker paths already in ActorPhysics/ProjectileActor (run 9 re-audit). Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port.",
       "nativeRanges": []
     },
     {
@@ -22250,7 +22250,7 @@
       "bucket": "conversion",
       "note": "Whole `AActor::Tick` (`p_mobj.cpp` 4523\u20135075).",
       "auditSingleFunctionOversizeException": true,
-      "auditSeams": "Live playsim: `ActorPmobjTickBridge` \u2192 `VmPMobjActorTick.Tick` for non-projectile actors; sector carry post-thinker via `ActorPhysics.ApplySectorScroll`. Inventory `DoEffect`, `P_BounceActor`, `P_ExplodeMissile`, and sector actions remain injected.",
+      "auditSeams": "`TickBehaviors`, inventory `DoEffect`, scroll carry, `P_XYMovement`, `P_CheckOnmobj`, `P_ZMovement`, `P_BounceActor`, `P_ExplodeMissile`, and sector actions are injected.",
       "auditRationale": "Single-function oversize exception (~553 native LOC): thinker tick through XY/Z movement.",
       "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `Tick` | `AActor::Tick` 4523\u20135075 |\n| `TickNoInteraction` | MF5_NOINTERACTION 4587\u20134637 |\n| `AccumulateSectorCarry` / `AddPlayerScrollSpecial` | scroll carry 4787\u20134924 |\n| `ApplySteepSlopePush` | steep floor push 4926\u20134963 |\n| `HandleRocketGrenadeTrail` | smoke trails 4680\u20134711 |\n| `ApplyVerticalFriction` / `PulseVisibility` | 4719\u20134778 |\n| `AverageSectorScroll` | scroll average 4913\u20134922 |\n| `HandleVerticalMotion` / `HandleOnMobj` | Z/onmobj 5006\u20135075 |\n| `MissileNeedsMinVelocity` | 4970\u20134972 |\n\n### Out-of-body uncredit (728)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **553** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **553** |\n",
       "managedSourceFiles": [
@@ -22275,7 +22275,7 @@
       ],
       "nativeLoc": 553,
       "managedLoc": 614,
-      "conversionManagedCommit": "ddd18e8a07c4028dfd8bbc31ccd7b503b7955575"
+      "conversionManagedCommit": "3cfb58993ddf81aa690f5d953133b36e01659141"
     },
     {
       "name": "p-interaction-damage-mobj-chunk729",
