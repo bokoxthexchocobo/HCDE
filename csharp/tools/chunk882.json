@@ -2,43 +2,42 @@
   {
     "name": "bot-game-lifecycle-chunk882",
     "bucket": "conversion",
-    "note": "Cajun `FCajunMaster` lifecycle, spawn scheduling, net add-bot, and default `LoadBots` from `b_game.cpp` (117–656; excludes destructor, platform path helpers, `ADD_STAT`).",
-    "auditSeams": "Headless authority: `HeadlessGameSession.Tick` calls `VmBBotGame.Main` then `AuthoritySimulation.DrainNetDemoCommands` (native `Net_DoCommand` `DEM_ADDBOT` → `TryAddBot`). `SpawnBot` uses `Net_WriteInt8`/`Net_WriteString` on `NetDemoEventBytes`. CCMD `addbot` calls `VmBBotGame.SpawnBot` + drain directly (no `CcmdHost` branch). `DoAddBot` → `TryAddCajunBotPlayer`.",
+    "note": "Cajun `FCajunMaster` lifecycle, spawn scheduling, net add-bot, and default `LoadBots` from `b_game.cpp` (117\u2013656; excludes destructor, platform path helpers, `ADD_STAT`).",
+    "auditSeams": "Headless authority: `HeadlessGameSession.Tick` calls `VmBBotGame.Main` then `AuthoritySimulation.DrainNetDemoCommands` (native `Net_DoCommand` `DEM_ADDBOT` \u2192 `TryAddBot`). `SpawnBot` uses `Net_WriteInt8`/`Net_WriteString` on `NetDemoEventBytes`. CCMD `addbot` calls `VmBBotGame.SpawnBot` + drain directly (no `CcmdHost` branch). `DoAddBot` \u2192 `TryAddCajunBotPlayer`.",
     "auditRationale": "Whole uncredited `b_game.cpp` TU (**665** lines) adjacent to landed **877** `b_bot.cpp`; dense spawn/net/lifecycle without overlapping **875** movement credit.",
-    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 882 --band → UNCredited, exit 0.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 882 --band \u2192 UNCredited, exit 0.",
     "auditManagedLocJustification": "`VmBBotGame.cs`; `AuthoritySimulation.TryAddCajunBotPlayer`; `HeadlessGameSession` / `VmBBotCcmd` call sites.",
-    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `FCajunMaster::Main` | yes |\n| `FCajunMaster::Init` / `End` | yes |\n| `FCajunMaster::SpawnBot` | yes |\n| `FCajunMaster::TryAddBot` / `DoAddBot` | yes |\n| `FCajunMaster::RemoveAllBots` / `ForgetBots` | yes |\n| `FCajunMaster::LoadBots` (default bots path) | yes |\n| `M_GetCajunPath` (**479–514**) | **no** (platform IO deferred) |\n| `ADD_STAT(bots)` (**658–665**) | **no** (stats only) |\n\n| Managed | Native (`b_game.cpp`) |\n|---------|----------------------|\n| `Main` | **117–145** |\n| `Init` | **147–179** |\n| `End` | **182–207** |\n| `SpawnBot` | **222–322** |\n| `TryAddBot` | **324–366** |\n| `DoAddBot` | **368–404** |\n| `RemoveAllBots` | **406–442** |\n| `ForgetBots` | **465–477** |\n| `LoadBots` (default seed) | **516–541** |\n| color suffix statics | **85–109** |\n\n**Padding map (retired from credit, not ported)**\n\n| Native lines | Reason |\n|--------------|--------|\n| **209–221**, **443–464**, **542–657** | blank separators / file tail outside claimed behavior |\n| **111–115**, **323**, **367**, **405**, **444–464** (in-band), **478**, **515**, destructor **658–665** | uncredited neighbors left for later rows |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` (chunk JSON ranges) | **370** |\n| Net behavior-ported | **370** |\n| Retired padding (excluded from JSON) | **151** |\n\n**Chunk 877 managed overlap (no native re-credit)**\n\n| | |\n|--|--|\n| Native credited to **877** (`b_bot.cpp` **1–304**) | **unchanged** — **882** claims **zero** `b_bot.cpp` lines |\n| Native credited to **882** (`b_game.cpp` bands above) | **unchanged** — **877** claims **zero** `b_game.cpp` lines |\n| `VmBBot.BotInfoNode.Info` / `Skill` (+2 fields) | **877** tally `managedLoc` **368→379**; supports `LoadBots`/`SpawnBot` only |\n| `VmBBotCcmd.RunAddBotCcmd` | calls `VmBBotGame.SpawnBot` when `Cajun`+`Simulation` set; **877** CCMD body lines **146–170** still accurate |\n| **877** behavior table | still valid (`DBot::Tick`/`Think` **no**, four CCMDs **yes**) |",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `FCajunMaster::Main` | yes |\n| `FCajunMaster::Init` / `End` | yes |\n| `FCajunMaster::SpawnBot` | yes |\n| `FCajunMaster::TryAddBot` / `DoAddBot` | yes |\n| `FCajunMaster::RemoveAllBots` / `ForgetBots` | yes |\n| `FCajunMaster::LoadBots` (default bots path) | yes |\n| `M_GetCajunPath` (**479\u2013514**) | **no** (platform IO deferred) |\n| `ADD_STAT(bots)` (**658\u2013665**) | **no** (stats only) |\n\n| Managed | Native (`b_game.cpp`) |\n|---------|----------------------|\n| `Main` | **117\u2013145** |\n| `Init` | **147\u2013179** |\n| `End` | **182\u2013207** |\n| `SpawnBot` | **222\u2013322** |\n| `TryAddBot` | **324\u2013366** |\n| `DoAddBot` | **368\u2013404** |\n| `RemoveAllBots` | **406\u2013442** |\n| `ForgetBots` | **465\u2013477** |\n| `LoadBots` (default seed) | **516\u2013541** |\n| color suffix statics | **85\u2013109** |\n\n**Padding map (retired from credit, not ported)**\n\n| Native lines | Reason |\n|--------------|--------|\n| **209\u2013221**, **443\u2013464**, **542\u2013657** | blank separators / file tail outside claimed behavior |\n| **111\u2013115**, **323**, **367**, **405**, **444\u2013464** (in-band), **478**, **515**, destructor **658\u2013665** | uncredited neighbors left for later rows |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` (chunk JSON ranges) | **370** |\n| Net behavior-ported | **370** |\n| Retired padding (excluded from JSON) | **151** |\n\n**Chunk 877 managed overlap (no native re-credit)**\n\n| | |\n|--|--|\n| Native credited to **877** (`b_bot.cpp` **1\u2013304**) | **unchanged** \u2014 **882** claims **zero** `b_bot.cpp` lines |\n| Native credited to **882** (`b_game.cpp` bands above) | **unchanged** \u2014 **877** claims **zero** `b_game.cpp` lines |\n| `VmBBot.BotInfoNode.Info` / `Skill` (+2 fields) | **877** tally `managedLoc` **368\u2192379**; supports `LoadBots`/`SpawnBot` only |\n| `VmBBotCcmd.RunAddBotCcmd` | calls `VmBBotGame.SpawnBot` when `Cajun`+`Simulation` set; **877** CCMD body lines **146\u2013170** still accurate |\n| **877** behavior table | still valid (`DBot::Tick`/`Think` **no**, four CCMDs **yes**) |\n\n### Out-of-body uncredit (882)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **370** |\n| **Out-of-body removed** | **25** |\n| **Honest** | **345** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmBBotGame.cs"
     ],
     "nativeRanges": [
       {
         "file": "src/playsim/bots/b_game.cpp",
-        "symbol": "b_game statics",
-        "start": 85,
-        "end": 109,
-        "tests": ["VmBBotGameTests.LoadBots_SeedsDefaultBots"]
-      },
-      {
-        "file": "src/playsim/bots/b_game.cpp",
         "symbol": "FCajunMaster::Main",
         "start": 117,
         "end": 145,
-        "tests": ["VmBBotGameTests.Main_DecrementsJoinTimerAndSchedulesSpawn"]
+        "tests": [
+          "VmBBotGameTests.Main_DecrementsJoinTimerAndSchedulesSpawn"
+        ]
       },
       {
         "file": "src/playsim/bots/b_game.cpp",
         "symbol": "FCajunMaster::Init",
         "start": 147,
         "end": 179,
-        "tests": ["VmBBotGameTests.LoadBots_SeedsDefaultBots"]
+        "tests": [
+          "VmBBotGameTests.LoadBots_SeedsDefaultBots"
+        ]
       },
       {
         "file": "src/playsim/bots/b_game.cpp",
         "symbol": "FCajunMaster::End",
         "start": 182,
         "end": 207,
-        "tests": ["VmBBotGameTests.Main_DecrementsJoinTimerAndSchedulesSpawn"]
+        "tests": [
+          "VmBBotGameTests.Main_DecrementsJoinTimerAndSchedulesSpawn"
+        ]
       },
       {
         "file": "src/playsim/bots/b_game.cpp",
@@ -55,35 +54,45 @@
         "symbol": "FCajunMaster::TryAddBot",
         "start": 324,
         "end": 366,
-        "tests": ["VmBBotGameTests.DoAddBot_AddsCajunPlayerSlot"]
+        "tests": [
+          "VmBBotGameTests.DoAddBot_AddsCajunPlayerSlot"
+        ]
       },
       {
         "file": "src/playsim/bots/b_game.cpp",
         "symbol": "FCajunMaster::DoAddBot",
         "start": 368,
         "end": 404,
-        "tests": ["VmBBotGameTests.DoAddBot_AddsCajunPlayerSlot"]
+        "tests": [
+          "VmBBotGameTests.DoAddBot_AddsCajunPlayerSlot"
+        ]
       },
       {
         "file": "src/playsim/bots/b_game.cpp",
         "symbol": "FCajunMaster::RemoveAllBots",
         "start": 406,
         "end": 442,
-        "tests": ["VmBBotGameTests.RemoveAllBots_ClearsCajunPlayers"]
+        "tests": [
+          "VmBBotGameTests.RemoveAllBots_ClearsCajunPlayers"
+        ]
       },
       {
         "file": "src/playsim/bots/b_game.cpp",
         "symbol": "FCajunMaster::ForgetBots",
         "start": 465,
         "end": 477,
-        "tests": ["VmBBotGameTests.LoadBots_SeedsDefaultBots"]
+        "tests": [
+          "VmBBotGameTests.LoadBots_SeedsDefaultBots"
+        ]
       },
       {
         "file": "src/playsim/bots/b_game.cpp",
         "symbol": "FCajunMaster::LoadBots default seed",
         "start": 516,
         "end": 541,
-        "tests": ["VmBBotGameTests.LoadBots_SeedsDefaultBots"]
+        "tests": [
+          "VmBBotGameTests.LoadBots_SeedsDefaultBots"
+        ]
       }
     ]
   }
