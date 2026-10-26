@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 51076,
+  "convertedThisRunNative": 51015,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 70415,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 437550,
+  "remainingNative": 437611,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 69603,
+  "convertedBehaviorNative": 69542,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 70536,
+  "combinedBehaviorNative": 70475,
   "convertedBehaviorManaged": 80086,
   "baselineNative": 508086,
   "chunks": [
@@ -29108,7 +29108,7 @@
       "auditRationale": "Legacy Fraggle inventory band after **843** math; **1381\u20132241** sector/camera band remains deferred.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 2394 --end 2684 --chunk 844 --band \u2192 UNCredited, exit 0.",
       "auditManagedLocJustification": "Faithful ports in `VmFScriptParserSfInventory.cs`.",
-      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_PlayerKeys` | yes |\n| `SF_PlayerAmmo` | yes |\n| `SF_MaxPlayerAmmo` | yes |\n| `SF_PlayerWeapon` | yes |\n| `SF_PlayerSelectedWeapon` | yes |\n| `SF_GiveInventory` | yes |\n| `SF_TakeInventory` | yes |\n| `SF_CheckInventory` | yes |\n| `SF_SetWeapon` | yes |\n\n| Managed | Native (`t_func.cpp` 2394\u20132684) |\n|---------|-------------------------|\n| `SfPlayerKeys` | **2394\u20132427** |\n| `SfPlayerAmmo` | **2436\u20132444** |\n| `SfMaxPlayerAmmo` | **2453\u20132461** |\n| `SfPlayerWeapon` | **2471\u20132547** |\n| `SfPlayerSelectedWeapon` | **2556\u20132600** |\n| `SfGiveInventory` | **2608\u20132623** |\n| `SfTakeInventory` | **2631\u20132646** |\n| `SfCheckInventory` | **2654\u20132669** |\n| `SfSetWeapon` | **2677\u20132684** |\n| (separators) | **2428\u20132435**, **2445\u20132452**, **2462\u20132470**, **2548\u20132555**, **2601\u20132607**, **2624\u20132630**, **2647\u20132653**, **2670\u20132676** |",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_PlayerKeys` | yes |\n| `SF_PlayerAmmo` | yes |\n| `SF_MaxPlayerAmmo` | yes |\n| `SF_PlayerWeapon` | yes |\n| `SF_PlayerSelectedWeapon` | yes |\n| `SF_GiveInventory` | yes |\n| `SF_TakeInventory` | yes |\n| `SF_CheckInventory` | yes |\n| `SF_SetWeapon` | yes |\n\n| Managed | Native (`t_func.cpp` 2394\u20132684) |\n|---------|-------------------------|\n| `SfPlayerKeys` | **2394\u20132427** |\n| `SfPlayerAmmo` | **2436\u20132444** |\n| `SfMaxPlayerAmmo` | **2453\u20132461** |\n| `SfPlayerWeapon` | **2471\u20132547** |\n| `SfPlayerSelectedWeapon` | **2556\u20132600** |\n| `SfGiveInventory` | **2608\u20132623** |\n| `SfTakeInventory` | **2631\u20132646** |\n| `SfCheckInventory` | **2654\u20132669** |\n| `SfSetWeapon` | **2677\u20132684** |\n| (separators) | **2428\u20132435**, **2445\u20132452**, **2462\u20132470**, **2548\u20132555**, **2601\u20132607**, **2624\u20132630**, **2647\u20132653**, **2670\u20132676** |\n\n### Out-of-body uncredit (844)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **291** |\n| **Out-of-body removed** | **61** |\n| **Honest** | **230** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmFScriptParserSfInventory.cs"
       ],
@@ -29194,83 +29194,11 @@
           "tests": [
             "VmFScriptParserSfInventoryTests.SfSetWeapon_SelectsOwned"
           ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF inventory separators",
-          "start": 2428,
-          "end": 2435,
-          "tests": [
-            "VmFScriptParserSfInventoryTests.SfPlayerAmmo_ReadBullets"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF inventory separators",
-          "start": 2445,
-          "end": 2452,
-          "tests": [
-            "VmFScriptParserSfInventoryTests.SfMaxPlayerAmmo_ReturnsCap"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF inventory separators",
-          "start": 2462,
-          "end": 2470,
-          "tests": [
-            "VmFScriptParserSfInventoryTests.SfPlayerWeapon_OwnsShotgun"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF inventory separators",
-          "start": 2548,
-          "end": 2555,
-          "tests": [
-            "VmFScriptParserSfInventoryTests.SfPlayerSelectedWeapon_ReturnsSelectedIndex"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF inventory separators",
-          "start": 2601,
-          "end": 2607,
-          "tests": [
-            "VmFScriptParserSfInventoryTests.SfGiveInventory_GivesKey"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF inventory separators",
-          "start": 2624,
-          "end": 2630,
-          "tests": [
-            "VmFScriptParserSfInventoryTests.SfGiveInventory_GivesKey"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF inventory separators",
-          "start": 2647,
-          "end": 2653,
-          "tests": [
-            "VmFScriptParserSfInventoryTests.SfCheckInventory_FindsArmor"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF inventory separators",
-          "start": 2670,
-          "end": 2676,
-          "tests": [
-            "VmFScriptParserSfInventoryTests.SfSetWeapon_SelectsOwned"
-          ]
         }
       ],
-      "nativeLoc": 291,
+      "nativeLoc": 230,
       "managedLoc": 266,
-      "conversionManagedCommit": "3ba546f5e11ba00f04d58bc844847e869e6632d6"
+      "conversionManagedCommit": "93e33e70639818caa77d2476dc5fd92730542a68"
     },
     {
       "name": "fscript-parser-sf-act-value-chunk845",
