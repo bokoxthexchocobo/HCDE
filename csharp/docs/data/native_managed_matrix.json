@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 218149
+    "managedCSharpLoc": 218338
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 70006,
+    "convertedThisRunManaged": 70195,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 79677,
+    "convertedBehaviorManaged": 79866,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -12640,7 +12640,8 @@
               "VmPMapTraceBleedTests.SkipBleed_WhenNoBloodFlag",
               "VmPMapTraceBleedTests.PlanBleed_LowDamageCanSkip",
               "VmPMapTraceBleedTests.PlanBleed_HighDamageSmearChance",
-              "VmPMapTraceBleedTests.DefaultBleedDistance_Fallback172"
+              "VmPMapTraceBleedTests.DefaultBleedDistance_Fallback172",
+              "VmPMapTraceBleedTests.TryPrepareWallDecal_DimsColor"
             ]
           },
           {
@@ -12649,7 +12650,8 @@
             "start": 5329,
             "end": 5332,
             "tests": [
-              "VmPMapTraceBleedTests.MissileBleed_SkipsBloodless"
+              "VmPMapTraceBleedTests.MissileBleed_SkipsBloodless",
+              "VmPMapTraceBleedTests.RunMissileTargetBleed_ComputesPitch"
             ]
           },
           {
@@ -12686,7 +12688,8 @@
             "end": 5487,
             "tests": [
               "VmPMapTraceBleedTests.RailHit_SkipsThruActors",
-              "VmPMapTraceBleedTests.RailHit_StopsAtInvuln"
+              "VmPMapTraceBleedTests.RailHit_StopsAtInvuln",
+              "VmPMapTraceBleedTests.ProcessRailHitPolicy_StopsOnWall"
             ]
           },
           {
@@ -12701,9 +12704,10 @@
           }
         ],
         "nativeLoc": 263,
-        "managedLoc": 177,
-        "conversionManagedCommit": "b87f14f481cd2cc9ad07e7e3b43514f4e7005e60",
-        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `BloodSplatsDisabled` / `SkipBleedActor` / `DefaultBleedDistance` / `JitterAngle` / `RandomBleedPitch` / `RandomBleedAngle` | `P_TraceBleed` 5245\u20135327 (5247: `if (!cl_bloodsplats)`; 5248: `return;`; 5254: `if ((actor->flags & MF_NOBLOOD) ||`) |\n| `MissileBleedSkip` / `PitchFromMissileVel` | `P_TraceBleed` 5329\u20135361 (5344: `if (target == NULL || missile->flags3 & MF3_BLOODLESSIMPACT)`; 5346: `return;`; 5349: `if (missile->Vel.Z != 0)`) |\n| `LineTargetBleedSkip` | `P_TraceBleed` 5369\u20135394 (5371: `if (t->linetarget == NULL || puff->flags3 & MF3_BLOODLESSIMPACT)`; 5373: `return;`; 5388: `if (target != NULL)`) |\n| `WallHitCreatesDecal` / `EvaluateRailActorHit` / `PortalCrossing` / `NonActorHitStops` / `RailTraceFlags` / `RailShootZ` / `RailPuffFlags` / `RailStopAtOne` / `RailBleedAllowed` | `ProcessRailHit` 5426\u20135487 (5429: `if (res.HitType == TRACE_CrossingPortal)`; 5436: `return TRACE_Continue;`; 5439: `if (res.HitType != TRACE_HitActor)`) |\n| `P_RailAttack` | `P_RailAttack` 5495\u20135567 (5500: `if (puffclass == NULL)`; 5513: `if (source->Level->localEventManager->WorldRailgunPreFired(damagetype\u2026`; 5515: `return;`) |\n\n### Out-of-body uncredit (482)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **277** |\n| **Out-of-body removed** | **14** |\n| **Honest** | **263** |\n"
+        "managedLoc": 366,
+        "conversionManagedCommit": "5eff1ff6b3f96a575884d3be9fc84ad74b373fdd",
+        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `BloodSplatsDisabled` / `SkipBleedActor` / `DefaultBleedDistance` / `JitterAngle` / `RandomBleedPitch` / `RandomBleedAngle` | `P_TraceBleed` 5245\u20135327 (5247: `if (!cl_bloodsplats)`; 5248: `return;`; 5254: `if ((actor->flags & MF_NOBLOOD) ||`) |\n| `MissileBleedSkip` / `PitchFromMissileVel` | `P_TraceBleed` 5329\u20135361 (5344: `if (target == NULL || missile->flags3 & MF3_BLOODLESSIMPACT)`; 5346: `return;`; 5349: `if (missile->Vel.Z != 0)`) |\n| `LineTargetBleedSkip` | `P_TraceBleed` 5369\u20135394 (5371: `if (t->linetarget == NULL || puff->flags3 & MF3_BLOODLESSIMPACT)`; 5373: `return;`; 5388: `if (target != NULL)`) |\n| `WallHitCreatesDecal` / `EvaluateRailActorHit` / `PortalCrossing` / `NonActorHitStops` / `RailTraceFlags` / `RailShootZ` / `RailPuffFlags` / `RailStopAtOne` / `RailBleedAllowed` | `ProcessRailHit` 5426\u20135487 (5429: `if (res.HitType == TRACE_CrossingPortal)`; 5436: `return TRACE_Continue;`; 5439: `if (res.HitType != TRACE_HitActor)`) |\n| `P_RailAttack` | `P_RailAttack` 5495\u20135567 (5500: `if (puffclass == NULL)`; 5513: `if (source->Level->localEventManager->WorldRailgunPreFired(damagetype\u2026`; 5515: `return;`) |\n| `ShouldRunTraceBleed` / `PlanBleedSprayPass` / `BuildBleedTraceIteration` / `TryPrepareWallDecal` / `RunMissileTargetBleed` / `RunLineTargetBleed` / `RunActorOnlyBleed` / `ProcessRailHitPolicy` / `AfterRailActorRecorded` / `BuildRailAttackSetup` / `RunTraceBleedSprayLoop` | bleed spray loop **5294\u20135326**, overload dispatch **5329\u20135394**, `ProcessRailHit` **5426\u20135487**, rail setup **5524\u20135567** |\n\n### Out-of-body uncredit (482)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **277** |\n| **Out-of-body removed** | **14** |\n| **Honest** | **263** |\n",
+        "auditManagedLocJustification": "Bleed spray loop and rail `ProcessRailHit`/`P_RailAttack` setup helpers mirror control flow without hosting `Trace`, `DImpactDecal::StaticCreate`, or `pr_tracebleed`."
       },
       {
         "name": "p-mobj-postbegin-destroy-chunk483",

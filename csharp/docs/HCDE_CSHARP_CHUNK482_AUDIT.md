@@ -19,8 +19,8 @@ P_TraceBleed overloads and ProcessRailHit skip/stop policy
 ## Managed
 
 `VmPMapTraceBleed.cs`
-Managed LOC (tally): 177.
-Conversion commit: `b87f14f481cd2cc9ad07e7e3b43514f4e7005e60`.
+Managed LOC (tally): 366.
+Conversion commit: `5eff1ff6b3f96a575884d3be9fc84ad74b373fdd`.
 
 ## Padding review (2026-10-21)
 
@@ -31,6 +31,7 @@ Conversion commit: `b87f14f481cd2cc9ad07e7e3b43514f4e7005e60`.
 | `LineTargetBleedSkip` | `P_TraceBleed` 5369–5394 (5371: `if (t->linetarget == NULL || puff->flags3 & MF3_BLOODLESSIMPACT)`; 5373: `return;`; 5388: `if (target != NULL)`) |
 | `WallHitCreatesDecal` / `EvaluateRailActorHit` / `PortalCrossing` / `NonActorHitStops` / `RailTraceFlags` / `RailShootZ` / `RailPuffFlags` / `RailStopAtOne` / `RailBleedAllowed` | `ProcessRailHit` 5426–5487 (5429: `if (res.HitType == TRACE_CrossingPortal)`; 5436: `return TRACE_Continue;`; 5439: `if (res.HitType != TRACE_HitActor)`) |
 | `P_RailAttack` | `P_RailAttack` 5495–5567 (5500: `if (puffclass == NULL)`; 5513: `if (source->Level->localEventManager->WorldRailgunPreFired(damagetype…`; 5515: `return;`) |
+| `ShouldRunTraceBleed` / `PlanBleedSprayPass` / `BuildBleedTraceIteration` / `TryPrepareWallDecal` / `RunMissileTargetBleed` / `RunLineTargetBleed` / `RunActorOnlyBleed` / `ProcessRailHitPolicy` / `AfterRailActorRecorded` / `BuildRailAttackSetup` / `RunTraceBleedSprayLoop` | bleed spray loop **5294–5326**, overload dispatch **5329–5394**, `ProcessRailHit` **5426–5487**, rail setup **5524–5567** |
 
 ### Out-of-body uncredit (482)
 
@@ -41,7 +42,7 @@ Conversion commit: `b87f14f481cd2cc9ad07e7e3b43514f4e7005e60`.
 | **Honest** | **263** |
 
 
-**Post-review ratio:** 177/263 managed/native ≈ 67% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 366/263 managed/native ≈ 139% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -49,10 +50,13 @@ Conversion commit: `b87f14f481cd2cc9ad07e7e3b43514f4e7005e60`.
 - `VmPMapTraceBleedTests.PlanBleed_LowDamageCanSkip`
 - `VmPMapTraceBleedTests.PlanBleed_HighDamageSmearChance`
 - `VmPMapTraceBleedTests.DefaultBleedDistance_Fallback172`
+- `VmPMapTraceBleedTests.TryPrepareWallDecal_DimsColor`
 - `VmPMapTraceBleedTests.MissileBleed_SkipsBloodless`
+- `VmPMapTraceBleedTests.RunMissileTargetBleed_ComputesPitch`
 - `VmPMapTraceBleedTests.LineTargetBleed_SkipsNullTarget`
 - `VmPMapTraceBleedTests.RailHit_SkipsThruActors`
 - `VmPMapTraceBleedTests.RailHit_StopsAtInvuln`
+- `VmPMapTraceBleedTests.ProcessRailHitPolicy_StopsOnWall`
 - `VmPMapTraceBleedTests.RailShootZ_AddsAttackOffsetWhenNotCenterZ`
 - `VmPMapTraceBleedTests.BuildRailData_ClearsThruWhenNoAllowFlag`
 
