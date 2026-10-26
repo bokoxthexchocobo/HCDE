@@ -47,8 +47,6 @@ public static class VmPMapBounceTraverse
 
     public static bool UseBounceState(int bounceFlags) => (bounceFlags & BounceUseBounceState) != 0;
 
-    public static bool ShouldSkipNonLineIntercept(bool isLine) => !isLine;
-
     public static bool ShouldContinuePastBackSide(bool oneSidedBlocks, bool pointOnBackSide) =>
         oneSidedBlocks && pointOnBackSide;
 
