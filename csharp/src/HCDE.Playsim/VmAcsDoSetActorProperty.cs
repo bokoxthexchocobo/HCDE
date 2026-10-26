@@ -73,14 +73,6 @@ public static class VmAcsDoSetActorProperty
 
     public static bool HealthShouldDie(int value) => value <= 0;
 
-    public static bool HealthDispatchBlocked(AActorRef? actor)
-    {
-        if (ActorIsNull(actor))
-            return true;
-        var a = actor!.Value;
-        return ShouldSkipHealthOnDead(a.Health, a.PlayerDead);
-    }
-
     public static double AcsToDouble(int value) => value / 65536.0;
 
     public static float AcsToFloat(int value) => (float)AcsToDouble(value);
@@ -96,11 +88,35 @@ public static class VmAcsDoSetActorProperty
 
     public static int ApplyFriendlyFlag(int flags, bool value) => ToggleFlag(flags, MfFriendly, value);
 
-    public static (int BeforeToggle, int AfterToggle) FriendlyMonsterTotalAdjustment(int totalMonsters, bool countsAsKill)
+    /// <summary>Native <c>APROP_Friendly</c> flag + kill-count bookkeeping (<c>p_acs.cpp</c> 4254–4265).</summary>
+    public static void ApplyFriendlyPropertyNative(
+        int flags,
+        bool value,
+        bool countsAsKill,
+        int totalMonsters,
+        out int newFlags,
+        out int totalMonstersBefore,
+        out int totalMonstersAfter)
     {
-        var before = MonsterTotalBeforeFriendlyToggle(totalMonsters, countsAsKill);
-        var after = MonsterTotalAfterFriendlyToggle(before, countsAsKill);
-        return (before, after);
+        totalMonstersBefore = MonsterTotalBeforeFriendlyToggle(totalMonsters, countsAsKill);
+        if (value)
+            newFlags = flags | MfFriendly;
+        else
+            newFlags = flags & ~MfFriendly;
+        totalMonstersAfter = MonsterTotalAfterFriendlyToggle(totalMonstersBefore, countsAsKill);
+    }
+
+    /// <summary>Native health branch entry: null actor or dead skip (<c>p_acs.cpp</c> 4168–4178).</summary>
+    public static bool ShouldApplyHealthProperty(AActorRef? actor, out AActorRef resolved)
+    {
+        if (actor is null)
+        {
+            resolved = default;
+            return false;
+        }
+
+        resolved = actor.Value;
+        return !ShouldSkipHealthOnDead(resolved.Health, resolved.PlayerDead);
     }
 
     public static int ApplyFlagForProperty(int flags, Aprop property, bool on)
@@ -204,6 +220,7 @@ public static class VmAcsDoSetActorProperty
                 => new(false, false, false, false, false, false, false, false, true, false, false, false, false, 0, FlagField.Flags),
             Aprop.SoundClass => new(false, false, false, false, false, false, true, true, true, false, false, false, false, 0, FlagField.Flags),
             Aprop.MasterTid => new(false, false, false, false, false, false, false, false, false, true, false, false, false, 0, FlagField.Flags),
+            Aprop.TargetTid or Aprop.TracerTid => new(true, false, false, false, false, false, false, false, false, false, false, false, false, 0, FlagField.Flags),
             Aprop.ScaleX or Aprop.ScaleY => new(false, false, false, false, false, false, false, false, false, false, false, true, false, 0, FlagField.Flags),
             Aprop.StencilColor => new(false, false, false, false, false, false, false, false, false, false, false, false, true, 0, FlagField.Flags),
             _ => new(true, false, false, false, false, false, false, false, false, false, false, false, false, 0, FlagField.Flags),
@@ -231,28 +248,4 @@ public static class VmAcsDoSetActorProperty
     }
 
     public readonly record struct AActorRef(int Health, bool PlayerDead, bool HasPlayer, bool CountsAsKill);
-
-    public readonly record struct ActorPropertyDispatchOutcome(bool Abort, PropertyDispatchDescriptor Dispatch);
-
-    /// <summary>Native entry guards: null actor, default switch arm, dead health skip.</summary>
-    public static ActorPropertyDispatchOutcome EvaluateActorPropertyDispatch(AActorRef? actor, Aprop property)
-    {
-        if (ActorIsNull(actor))
-            return new(true, default);
-
-        var dispatch = DescribePropertyDispatchNative(property);
-        if (dispatch.NoOp)
-            return new(true, dispatch);
-
-        if (dispatch.SkipWhenHealthDead && ShouldSkipHealthOnDead(actor!.Value.Health, actor.Value.PlayerDead))
-            return new(true, dispatch);
-
-        return new(false, dispatch);
-    }
-
-    public static bool DispatchUsesBehaviorString(Aprop property, PropertyDispatchDescriptor dispatch) =>
-        dispatch.BehaviorStringLookup || UsesBehaviorStringLookup(property);
-
-    public static bool DispatchAssignsAcsDouble(Aprop property, PropertyDispatchDescriptor dispatch) =>
-        dispatch.AssignAcsDouble || UsesAcsDouble(property);
 }
