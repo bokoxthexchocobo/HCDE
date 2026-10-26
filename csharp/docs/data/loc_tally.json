@@ -6,14 +6,14 @@
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 68214,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-  "recognitionThisRunNative": -4507,
+  "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 440878,
+  "remainingNative": 441057,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
   "convertedBehaviorNative": 66275,
-  "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 67208,
+  "recognitionBehaviorNative": 754,
+  "combinedBehaviorNative": 67029,
   "convertedBehaviorManaged": 77885,
   "baselineNative": 508086,
   "chunks": [
@@ -4421,37 +4421,14 @@
       "name": "legacy-archives-chunk104",
       "bucket": "recognition",
       "managedLoc": 0,
-      "note": "VmGrp/VmHog/VmRff readers in b051701e; chunk 71ea4f56 publicized types and added VmLegacyArchiveReaderTests only.",
-      "nativeRanges": [
-        {
-          "file": "src/common/filesystem/source/file_hog.cpp",
-          "symbol": "OpenHog",
-          "start": 34,
-          "end": 96,
-          "tests": [
-            "VmLegacyArchiveReaderTests.HogArchiveReader_ReadsSingleEntry"
-          ]
-        },
-        {
-          "file": "src/common/filesystem/source/file_grp.cpp",
-          "symbol": "OpenGrp",
-          "start": 63,
-          "end": 110,
-          "tests": [
-            "VmLegacyArchiveReaderTests.GrpArchiveReader_ReadsKenSilvermanHeader"
-          ]
-        },
-        {
-          "file": "src/common/filesystem/source/file_rff.cpp",
-          "symbol": "OpenRFF",
-          "start": 83,
-          "end": 150,
-          "tests": [
-            "VmLegacyArchiveReaderTests.RffArchiveReader_DecryptsDirectoryAndPayloadPrefix"
-          ]
-        }
-      ],
-      "nativeLoc": 179
+      "note": "VmGrp/VmHog/VmRff readers in b051701e; chunk 71ea4f56 publicized types and added VmLegacyArchiveReaderTests only. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "ecb9a86ca654bb3d5e4aa9be2ec87cf23b503b2c",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (104)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **179** |\n| **Out-of-body removed** | **179** |\n| **Honest** | **0** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "imgztexture-chunk105",
