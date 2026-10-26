@@ -1,32 +1,19 @@
-# Chunk 845 — `FParser::SF_ObjAwaken` … `SF_ObjDead` from `fragglescript/t_func.cpp` (2778–3047).
+# Chunk 845 — `FParser::SF_ObjAwaken` … `SF_ObjDead` from `fragglescript/t_func.cpp` (2778–3047). Retired (2026-10-23): out-of-body credit removed; honest **122** < **150**.
 
 ## Scope
 
-`FParser::SF_ObjAwaken` … `SF_ObjDead` from `fragglescript/t_func.cpp` (2778–3047).
+`FParser::SF_ObjAwaken` … `SF_ObjDead` from `fragglescript/t_func.cpp` (2778–3047). Retired (2026-10-23): out-of-body credit removed; honest **122** < **150**.
 
 ## Native ranges
 
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_ObjAwaken** 2778–2795 (18 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_AmbientSound** 2805–2811 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_ExitSecret** 2822–2825 (4 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_MobjValue** 2834–2841 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_StringValue** 2843–2857 (15 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_IntValue** 2859–2866 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_FixedValue** 2868–2875 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_SetObjPosition** 2944–2959 (16 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_ObjDead** 3029–3047 (19 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF act separators** 2796–2804 (9 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF act separators** 2812–2821 (10 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF act separators** 2826–2833 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF act separators** 2960–3028 (69 lines)
 
-**Credited native LOC:** 199 (tally `nativeLoc` 199).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmFScriptParserSfAct.cs`
-Managed LOC (tally): 120.
-Conversion commit: `d0da127a752c9dd05bcf35d557c9edacb0ccf9b5`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `64dcca94eddb30a748baaa302df36754e2c32fef`.
 
 ## Padding review (2026-10-21)
 
@@ -59,20 +46,17 @@ Shared-file stubs credited in chunk 846 (padding allowlist): `SfSkinColor`, `SfP
 | `SfObjDead` | **3029–3047** |
 | (separators / deferred native) | **2796–2804**, **2812–2821**, **2826–2833**, **2960–3028**; **2876–2943** uncredited until combat band |
 
-**Post-review ratio:** 120/199 managed/native ≈ 60% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (845)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **199** |
+| **Out-of-body removed** | **77** |
+| **Honest** | **122** |
+
 
 ## Tests
 
-- `VmFScriptParserSfActTests.SfObjAwaken_ActivatesTrigger`
-- `VmFScriptParserSfActTests.SfAmbientSound_QueuesGlobal`
-- `VmFScriptParserSfActTests.SfExitSecret_MarksSecretExit`
-- `VmFScriptParserSfActTests.SfMobjValue_ReturnsMobj`
-- `VmFScriptParserSfActTests.SfStringValue_CoercesInt`
-- `VmFScriptParserSfActTests.SfIntValue_FromInt`
-- `VmFScriptParserSfActTests.SfFixedValue_FromInt`
-- `VmFScriptParserSfActTests.SfSetObjPosition_MovesActor`
-- `VmFScriptParserSfActTests.SfObjDead_DeadActor`
-- `VmFScriptParserSfActTests.SfObjDead_CorpseFlag`
 
 ## Verified
 
