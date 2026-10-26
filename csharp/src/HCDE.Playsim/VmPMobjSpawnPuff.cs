@@ -99,4 +99,117 @@ public static class VmPMobjSpawnPuff
         && UseMeleeState(ctx.Flags, ctx.MeleeState);
 
     public static bool SkipEffectsWhenTemporary(int flags) => (flags & PfTemporary) != 0;
+
+    public static double ApplyPuffPositionZ(double z, int flags, int random2) =>
+        ApplyRandomZJitter(flags) ? z + random2 / 64.0 : z;
+
+    public static int ApplyPuffTicsRandomize(int tics, int flags4, int randomRoll) =>
+        RandomizePuffTics(flags4) && tics > 0
+            ? ClampPuffTics(tics - (randomRoll & 3))
+            : tics;
+
+    public enum PuffCrashSelection
+    {
+        None,
+        SkyDeath,
+        WallCrash,
+        ExtremeDeath,
+        Melee,
+    }
+
+    public static PuffCrashSelection SelectPuffCrashState(CrashStatePickContext ctx)
+    {
+        if (PickSkyCrash(ctx))
+            return PuffCrashSelection.SkyDeath;
+        if (PickMissCrash(ctx))
+            return PuffCrashSelection.WallCrash;
+        if (PickBleedCrash(ctx))
+            return PuffCrashSelection.ExtremeDeath;
+        if (PickMeleeCrash(ctx))
+            return PuffCrashSelection.Melee;
+        return PuffCrashSelection.None;
+    }
+
+    public readonly record struct PuffVictimLinkFlags(bool SetTarget, bool SetMaster, bool SetTracer);
+
+    public static PuffVictimLinkFlags PlanVictimLinks(int flags7, bool hasVictim) =>
+        new(
+            AssignVictimTarget(flags7, hasVictim),
+            AssignVictimMaster(flags7, hasVictim),
+            AssignVictimTracer(flags7, hasVictim));
+
+    public readonly record struct PuffSoundEffects(bool PlaySeeSound, bool PlayAttackSound, bool MeleeRumble);
+
+    public static PuffSoundEffects PlanPuffSounds(
+        int flags,
+        bool seeSoundValid,
+        bool attackSoundValid,
+        bool meleeFromPlayer) =>
+        new(
+            PlaySeeSoundOnHit(flags, seeSoundValid),
+            PlayAttackSoundFallback(flags, seeSoundValid, attackSoundValid),
+            meleeFromPlayer);
+
+    public readonly record struct PuffParticleEffects(bool DrawSplash, bool HidePuff, bool SkipAll);
+
+    public static PuffParticleEffects PlanPuffParticles(int flags, PuffParticleContext ctx) =>
+        SkipEffectsWhenTemporary(flags)
+            ? new PuffParticleEffects(false, false, true)
+            : new PuffParticleEffects(
+                DrawSplashParticles(ctx),
+                HidePuffAfterSplash(ctx),
+                false);
+
+    public readonly record struct PuffPostSpawnOutcome(
+        double YawDegrees,
+        bool MarkPuffFlag,
+        bool AssignOwnerAsTarget,
+        PuffVictimLinkFlags VictimLinks,
+        PuffCrashSelection Crash,
+        PuffParticleEffects Particles,
+        PuffSoundEffects Sounds,
+        int Tics);
+
+    public static PuffPostSpawnOutcome BuildPuffPostSpawnOutcome(
+        int flags,
+        int flags4,
+        int flags5,
+        int flags7,
+        double hitDirDeg,
+        int baseTics,
+        int ticsRandomRoll,
+        bool hasVictim,
+        bool hasSkyState,
+        bool hasCrashState,
+        bool hasExtremeState,
+        bool hasMeleeState,
+        PuffParticleContext particleCtx,
+        bool seeSoundValid,
+        bool attackSoundValid,
+        bool meleeFromPlayer)
+    {
+        var crashCtx = new CrashStatePickContext(flags, hasSkyState, hasCrashState, hasExtremeState, hasMeleeState);
+        return new PuffPostSpawnOutcome(
+            OppositeHitYaw(hitDirDeg),
+            true,
+            AssignOwnerTarget(flags5),
+            PlanVictimLinks(flags7, hasVictim),
+            SelectPuffCrashState(crashCtx),
+            PlanPuffParticles(flags, particleCtx),
+            PlanPuffSounds(flags, seeSoundValid, attackSoundValid, meleeFromPlayer),
+            ApplyPuffTicsRandomize(baseTics, flags4, ticsRandomRoll));
+    }
+
+    public readonly record struct SpawnPuffActionArgs(
+        object? PuffType,
+        double X,
+        double Y,
+        double Z,
+        double HitDirDeg,
+        double ParticleDirDeg,
+        int UpDown,
+        int Flags,
+        object? Victim);
+
+    public static bool SpawnPuffActionRequiresType(object? puffType) => PuffTypeValid(puffType is not null);
 }

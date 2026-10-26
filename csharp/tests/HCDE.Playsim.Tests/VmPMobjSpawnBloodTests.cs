@@ -37,8 +37,11 @@ public class VmPMobjSpawnBloodTests
             new VmPMobjSpawnBlood.RipperSplashContext(1, 20)));
 
     [Fact]
-    public void Blood_PickStateWhenNoSpray() =>
-        Assert.True(VmPMobjSpawnBlood.ShouldPickStateAfterSpray(false));
+    public void PlanBloodDamageState_UsesSprayWhenFound()
+    {
+        var pick = VmPMobjSpawnBlood.PlanBloodDamageState(20, VmPMobjSpawnBlood.GameStrife, true);
+        Assert.True(pick.UseSprayState);
+    }
 
     [Fact]
     public void Blood_SelectAdvanceSkipsSpray() =>
@@ -49,4 +52,31 @@ public class VmPMobjSpawnBloodTests
     public void Blood_ContinueWalkWhileAdvanceLeft() =>
         Assert.True(VmPMobjSpawnBlood.ContinueParentWalk(
             new VmPMobjSpawnBlood.ParentStateWalkStep(false, 2, true, true)));
+
+    [Fact]
+    public void WalkParentChain_FindsOwnedAdvance()
+    {
+        var chain = new[]
+        {
+            new VmPMobjSpawnBlood.BloodClassStateNode
+            {
+                OwnsSpawnState = true,
+                OwnsSpawnOffset = off => off == 2,
+            },
+        };
+        Assert.Equal(2, VmPMobjSpawnBlood.WalkParentChainForBloodAdvance(chain, 2));
+    }
+
+    [Fact]
+    public void PlanBloodSplatter_OppositeSplashAngle()
+    {
+        var plan = VmPMobjSpawnBlood.PlanBloodSplatter(2, 0, 0, 64, -64, 90, 0);
+        Assert.Equal(1, plan.VelX);
+        Assert.Equal(-1, plan.VelY);
+        Assert.Equal(-90, plan.SplashAngleDeg);
+    }
+
+    [Fact]
+    public void ResolveBloodTypeCvar_ClearsWhenParticlesDisabled() =>
+        Assert.Equal(0, VmPMobjSpawnBlood.ResolveBloodTypeCvar(2, 0));
 }
