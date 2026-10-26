@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 219751
+    "managedCSharpLoc": 219960
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 71608,
+    "convertedThisRunManaged": 71817,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 81279,
+    "convertedBehaviorManaged": 81488,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -21084,7 +21084,7 @@
         "note": "Whole `FTraceInfo::TraceTraverse` (`p_trace.cpp` 776\u2013944).",
         "auditSeams": "`FPathTraverse`, `LineCheck`, `ThingCheck`, and plane finish helpers invoked via delegates.",
         "auditRationale": "Main trace path loop after portal entry chunk 688.",
-        "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTraceTraverse` | `TraceTraverse` 776\u2013944 |\n\n### Out-of-body uncredit (692)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **169** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **169** |\n",
+        "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `TraceTraverse` | `TraceTraverse` **776\u2013944** |\n| `TryRecord3DWaterSplash` / `RunInterceptTraverseLoop` / `RunInterceptStep` | intercept loop **785\u2013859** |\n| `TryEnterFloorPortal` / `TryEnterCeilingPortal` | sector portals **812\u2013835** |\n| `ShouldTryLinePortal` / `LinePortalAllowed` | line portal **837\u2013851** |\n| `RunFinishSectorPlanes` | floor/ceiling plane finish **861\u2013873** |\n| `RunHeightSecWaterCross` | heightsec water **878\u2013895** |\n| `RunFinalizeMissWhenNoHit` | miss completion **896\u2013907** |\n| `RunAssignFfloorOnPlaneHit` / `FindFfloorOnFloorHit` / `FindFfloorOnCeilingHit` | 3D floor on plane hit **911\u2013941** |\n\n### Out-of-body uncredit (692)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **169** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **169** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPTraceTraverse.cs"
         ],
@@ -21096,13 +21096,17 @@
             "end": 944,
             "tests": [
               "VmPTraceTraverseTests.TraceTraverse_EntersLinePortalAndSkipsLineCheck",
-              "VmPTraceTraverseTests.TraceTraverse_FinalizeMissWhenNoHit"
+              "VmPTraceTraverseTests.TraceTraverse_FinalizeMissWhenNoHit",
+              "VmPTraceTraverseTests.TraceTraverse_Records3DWaterSplashOncePerSector",
+              "VmPTraceTraverseTests.TraceTraverse_AssignsFfloorOnFloorHit",
+              "VmPTraceTraverseTests.LinePortalAllowed_RespectsPortalRestrict"
             ]
           }
         ],
         "nativeLoc": 169,
-        "managedLoc": 106,
-        "conversionManagedCommit": "fd03eed8e20dc744ac44e68781ca141ddecfa2d9"
+        "managedLoc": 315,
+        "conversionManagedCommit": "d9552d76a44591b47c64acc55e3f6f179b90bb38",
+        "auditManagedLocJustification": "Phased intercept loop, 3D-water splash, heightsec water, miss finalize, and ffloor-on-plane helpers mirror `TraceTraverse` without hosting `LineCheck` / `ThingCheck` bodies."
       },
       {
         "name": "p-trace-thing-plane-edit-chunk693",

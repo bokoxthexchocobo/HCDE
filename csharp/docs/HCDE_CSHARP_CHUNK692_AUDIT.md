@@ -13,14 +13,21 @@ Whole `FTraceInfo::TraceTraverse` (`p_trace.cpp` 776–944).
 ## Managed
 
 `VmPTraceTraverse.cs`
-Managed LOC (tally): 106.
-Conversion commit: `fd03eed8e20dc744ac44e68781ca141ddecfa2d9`.
+Managed LOC (tally): 315.
+Conversion commit: `d9552d76a44591b47c64acc55e3f6f179b90bb38`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`p_trace.cpp`) |
 |---------|----------------------|
-| `VmPTraceTraverse` | `TraceTraverse` 776–944 |
+| `TraceTraverse` | `TraceTraverse` **776–944** |
+| `TryRecord3DWaterSplash` / `RunInterceptTraverseLoop` / `RunInterceptStep` | intercept loop **785–859** |
+| `TryEnterFloorPortal` / `TryEnterCeilingPortal` | sector portals **812–835** |
+| `ShouldTryLinePortal` / `LinePortalAllowed` | line portal **837–851** |
+| `RunFinishSectorPlanes` | floor/ceiling plane finish **861–873** |
+| `RunHeightSecWaterCross` | heightsec water **878–895** |
+| `RunFinalizeMissWhenNoHit` | miss completion **896–907** |
+| `RunAssignFfloorOnPlaneHit` / `FindFfloorOnFloorHit` / `FindFfloorOnCeilingHit` | 3D floor on plane hit **911–941** |
 
 ### Out-of-body uncredit (692)
 
@@ -31,12 +38,15 @@ Conversion commit: `fd03eed8e20dc744ac44e68781ca141ddecfa2d9`.
 | **Honest** | **169** |
 
 
-**Post-review ratio:** 106/169 managed/native ≈ 63% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 315/169 managed/native ≈ 186% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmPTraceTraverseTests.TraceTraverse_EntersLinePortalAndSkipsLineCheck`
 - `VmPTraceTraverseTests.TraceTraverse_FinalizeMissWhenNoHit`
+- `VmPTraceTraverseTests.TraceTraverse_Records3DWaterSplashOncePerSector`
+- `VmPTraceTraverseTests.TraceTraverse_AssignsFfloorOnFloorHit`
+- `VmPTraceTraverseTests.LinePortalAllowed_RespectsPortalRestrict`
 
 ## Verified
 
