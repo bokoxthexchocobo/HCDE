@@ -6,17 +6,17 @@
 
 ## Native ranges
 
-- `src/maploader/compatibility.cpp` **SkipZandronumCompatCommand** 204–214 (11 lines)
+- `src/maploader/compatibility.cpp` **SkipZandronumCompatCommand** 204–213 (10 lines)
 - `src/maploader/compatibility.cpp` **ParseCompatibility** 224–315 (92 lines)
 - `src/maploader/compatibility.cpp` **MapLoader::CheckCompatibility** 323–391 (69 lines)
 
-**Credited native LOC:** 172 (tally `nativeLoc` 172).
+**Credited native LOC:** 171 (tally `nativeLoc` 171).
 
 ## Managed
 
 `VmMapLoaderCompatibility.cs`
 Managed LOC (tally): 497.
-Conversion commit: `04af1789b7865cf7f85655283d867e6f085dcee5`.
+Conversion commit: `933d8d6c517f25d99d1fd3bfa052777c93294d27`.
 
 ## Padding review (2026-10-21)
 
@@ -53,8 +53,16 @@ Conversion commit: `04af1789b7865cf7f85655283d867e6f085dcee5`.
 | Gross native (`nativeLoc` sum of ranges) | **172** |
 | Net behavior-ported | **172** |
 
+### Out-of-body uncredit (891)
 
-**Post-review ratio:** 497/172 managed/native ≈ 289% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **172** |
+| **Out-of-body removed** | **1** |
+| **Honest** | **171** |
+
+
+**Post-review ratio:** 497/171 managed/native ≈ 291% (src file LOC at HEAD; see tally).
 
 ## Tests
 
