@@ -31,39 +31,71 @@ public static class VmFScriptVariable
         public Action<string> ScriptError { get; init; } = _ => { };
     }
 
-    public static int IntValue(ScriptValue v) =>
-        v.Type == SvtString ? int.Parse(v.String, CultureInfo.InvariantCulture) :
-        v.Type == SvtFixed ? (int)(v.FixedBits / 65536.0) :
-        v.Type == SvtMobj ? -1 : v.IntValue;
+    public static int IntValue(ScriptValue v)
+    {
+        if (v.Type == SvtString)
+            return int.Parse(v.String, CultureInfo.InvariantCulture);
+        if (v.Type == SvtFixed)
+            return (int)(v.FixedBits / 65536.0);
+        if (v.Type == SvtMobj)
+            return -1;
+        return v.IntValue;
+    }
 
-    public static long FixedValue(ScriptValue v) =>
-        v.Type == SvtFixed ? v.FixedBits :
-        v.Type == SvtString ? (long)(double.Parse(v.String, CultureInfo.InvariantCulture) * 65536.0) :
-        v.Type == SvtMobj ? -65536 : v.IntValue * 65536L;
+    public static long FixedValue(ScriptValue v)
+    {
+        if (v.Type == SvtFixed)
+            return v.FixedBits;
+        if (v.Type == SvtString)
+            return (long)(double.Parse(v.String, CultureInfo.InvariantCulture) * 65536.0);
+        if (v.Type == SvtMobj)
+            return -65536;
+        return v.IntValue * 65536L;
+    }
 
-    public static double FloatValue(ScriptValue v) =>
-        v.Type == SvtString ? double.Parse(v.String, CultureInfo.InvariantCulture) :
-        v.Type == SvtFixed ? v.FixedBits / 65536.0 :
-        v.Type == SvtMobj ? -1.0 : v.IntValue;
+    public static double FloatValue(ScriptValue v)
+    {
+        if (v.Type == SvtString)
+            return double.Parse(v.String, CultureInfo.InvariantCulture);
+        if (v.Type == SvtFixed)
+            return v.FixedBits / 65536.0;
+        if (v.Type == SvtMobj)
+            return -1.0;
+        return v.IntValue;
+    }
 
-    public static string StringValue(ScriptValue v, VariableHost host) =>
-        v.Type switch
+    public static string StringValue(ScriptValue v, VariableHost host)
+    {
+        switch (v.Type)
         {
-            SvtString => v.String,
-            SvtMobj => v.Mobj == null ? "" : host.ActorClassName(v.Mobj),
-            SvtFixed => (v.FixedBits / 65536.0).ToString(CultureInfo.InvariantCulture),
-            _ => v.IntValue.ToString(CultureInfo.InvariantCulture),
-        };
+            case SvtString:
+                return v.String;
+            case SvtMobj:
+                return v.Mobj == null ? "" : host.ActorClassName(v.Mobj);
+            case SvtFixed:
+                return (v.FixedBits / 65536.0).ToString(CultureInfo.InvariantCulture);
+            case SvtInt:
+            default:
+                return v.IntValue.ToString(CultureInfo.InvariantCulture);
+        }
+    }
 
     public static object? ActorValue(VariableHost host, ScriptValue svalue)
     {
         if (svalue.Type == SvtMobj)
-            return svalue.Mobj == null || !host.IsMapActor(svalue.Mobj) ? null : svalue.Mobj;
+        {
+            if (svalue.Mobj == null || !host.IsMapActor(svalue.Mobj))
+                return null;
+            return svalue.Mobj;
+        }
+
         var idx = IntValue(svalue);
         if (idx < 0 || idx >= host.SpawnedThings.Count)
             return null;
         var thing = host.SpawnedThings[idx];
-        return thing == null || !host.IsMapActor(thing) ? null : thing;
+        if (thing == null || !host.IsMapActor(thing))
+            return null;
+        return thing;
     }
 
     public static void GetValue(VmFScriptScript.FsVariable variable, ScriptValue dst)
@@ -108,7 +140,10 @@ public static class VmFScriptVariable
                 variable.IntValue = IntValue(src);
                 break;
             case SvtString:
-                variable.String = src.Type == SvtString ? src.String : StringValue(src, host);
+                if (src.Type == SvtString)
+                    variable.String = src.String;
+                else
+                    variable.String = StringValue(src, host);
                 break;
             case SvtFixed:
                 variable.FixedBits = FixedValue(src);
@@ -148,24 +183,36 @@ public static class VmFScriptVariable
 
     public static VmFScriptScript.FsVariable? VariableForName(VmFScriptScript.FsScript script, string name)
     {
-        for (var cur = script.Variables[VariableHash(name)]; cur != null; cur = cur.Next)
-            if (cur.Name == name)
-                return cur;
+        var slot = VariableHash(name);
+        var current = script.Variables[slot];
+        while (current != null)
+        {
+            if (current.Name == name)
+                return current;
+            current = current.Next;
+        }
+
         return null;
     }
 
     public static VmFScriptScript.FsVariable? FindVariable(
         VmFScriptScript.FsScript script,
         string name,
-        VmFScriptScript.FsScript? global) 
+        VmFScriptScript.FsScript? global)
     {
-        for (var cur = script; cur != null;)
+        var current = script;
+        while (current != null)
         {
-            var hit = VariableForName(cur, name);
+            var hit = VariableForName(current, name);
             if (hit != null)
                 return hit;
-            cur = cur.Parent == null && global != null && cur != global ? global : cur.Parent;
+
+            if (current.Parent == null && global != null && current != global)
+                current = global;
+            else
+                current = current.Parent;
         }
+
         return null;
     }
 
@@ -173,16 +220,18 @@ public static class VmFScriptVariable
     {
         for (var i = 0; i < VmFScriptScript.VariableSlots; i++)
         {
-            var cur = script.Variables[i];
-            while (cur != null)
+            var current = script.Variables[i];
+            while (current != null)
             {
-                if (cur.Type == VmFScriptScript.SvtLabel && !complete)
+                if (current.Type == VmFScriptScript.SvtLabel && !complete)
                     break;
-                var next = cur.Next;
-                destroy(cur);
-                cur = next;
+
+                var next = current.Next;
+                destroy(current);
+                current = next;
             }
-            script.Variables[i] = cur;
+
+            script.Variables[i] = current;
         }
     }
 
