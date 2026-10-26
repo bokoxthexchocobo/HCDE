@@ -64,7 +64,7 @@ public static class VmDNetInvasionSnapshotApply
     public readonly record struct InvasionWaveMerge(int IncomingSpawned, int IncomingCleared);
 
     public static bool TraceGametypeOverride(byte stateRaw, bool invasionEnabled) =>
-        InvasionModeDisabledLocally(invasionEnabled) && AcceptSnapshotWhenGametypeZero(stateRaw);
+        !invasionEnabled && AcceptSnapshotWhenGametypeZero(stateRaw);
 
     public static int InvasionSnapshotHeaderV1Size() => 40;
 
@@ -119,7 +119,7 @@ public static class VmDNetInvasionSnapshotApply
 
     public static bool RunInvasionDisabledGametypeGate(byte stateRaw, bool invasionEnabled, Action? traceGametypeOverride)
     {
-        if (!InvasionModeDisabledLocally(invasionEnabled))
+        if (invasionEnabled)
             return true;
         if (!AcceptSnapshotWhenGametypeZero(stateRaw))
             return false;
