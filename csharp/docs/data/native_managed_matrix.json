@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 219005
+    "managedCSharpLoc": 219180
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 70862,
+    "convertedThisRunManaged": 71037,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 80533,
+    "convertedBehaviorManaged": 80708,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -16758,7 +16758,7 @@
         "note": "Net_DoCommand whole `case` blocks: SAY through SUICIDE (8553\u20138741); CENTERVIEW credited on chunk616 Merged: [602, 604].",
         "auditSeams": "`Printf`, `S_Sound`, `P_TeleportMove`, `ChangeLevel`, and `cht_*` are not hosted.",
         "auditRationale": "Each native range is a full `case DEM_*` block (or cheat guard slice) chosen before measuring; gaps 8622\u20138644 are unported print/music/info cases.",
-        "auditPaddingReview": "Case-boundary credit only (not tuned to 150). `MustConsumeSetInvPaddingWhenRejectedNative` / `ShouldBreakAfterSayWhenDisabledNative` mirror native `if`/`break` at 8560\u20138561 and 8689\u20138691.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldDropSayNative` / chat visibility helpers | `DEM_SAY` 8553\u20138598 |\n| `FormatTauntSoundNative` / `ShouldPlayTauntOnPawnNative` | `DEM_TAUNT` 8600\u20138620 |\n| `ShouldExecuteGiveCheatNative` / `ShouldLogRemoteGiveNative` | `DEM_GIVECHEAT` 8646\u20138671 |\n| `ShouldExecuteTakeCheatNative` | `DEM_TAKECHEAT` 8673\u20138680 |\n| `ShouldExecuteSetInvCheatNative` / `MustConsumeSetInvPaddingWhenRejectedNative` | `DEM_SETINV` 8682\u20138693 |\n| `ShouldExecuteWarpCheatNative` | `DEM_WARPCHEAT` 8695\u20138705 |\n| `ShouldExecuteGenericCheatNative` | `DEM_GENERICCHEAT` 8707\u20138725 |\n| `ApplyChangemapCheatFlagNative` | `DEM_CHANGEMAP`/`DEM_CHANGEMAP2` 8727\u20138737 |\n| `ShouldRunSuicideCommandNative` | `DEM_SUICIDE` 8739\u20138741 |\n\n### Out-of-body uncredit (601)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **157** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **157** |\n",
+        "auditPaddingReview": "Case-boundary credit only (not tuned to 150). `MustConsumeSetInvPaddingWhenRejectedNative` / `ShouldBreakAfterSayWhenDisabledNative` mirror native `if`/`break` at 8560\u20138561 and 8689\u20138691.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldDropSayNative` / chat visibility helpers | `DEM_SAY` 8553\u20138598 |\n| `FormatTauntSoundNative` / `ShouldPlayTauntOnPawnNative` | `DEM_TAUNT` 8600\u20138620 |\n| `ShouldExecuteGiveCheatNative` / `ShouldLogRemoteGiveNative` | `DEM_GIVECHEAT` 8646\u20138671 |\n| `ShouldExecuteTakeCheatNative` | `DEM_TAKECHEAT` 8673\u20138680 |\n| `ShouldExecuteSetInvCheatNative` / `MustConsumeSetInvPaddingWhenRejectedNative` | `DEM_SETINV` 8682\u20138693 |\n| `ShouldExecuteWarpCheatNative` | `DEM_WARPCHEAT` 8695\u20138705 |\n| `ShouldExecuteGenericCheatNative` | `DEM_GENERICCHEAT` 8707\u20138725 |\n| `ApplyChangemapCheatFlagNative` | `DEM_CHANGEMAP`/`DEM_CHANGEMAP2` 8727\u20138737 |\n| `ShouldRunSuicideCommandNative` | `DEM_SUICIDE` 8739\u20138741 |\n| `EvaluateSayCase` / `EvaluateGiveCheatCase` / `RunDoCommandCase` | per-case `switch` orchestration **8553\u20138741** |\n\n### Out-of-body uncredit (601)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **157** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **157** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Net.Core/VmDNetDoCommandChat.cs"
         ],
@@ -16769,7 +16769,9 @@
             "start": 8553,
             "end": 8598,
             "tests": [
-              "VmDNetDoCommandChatTests.ShouldDropSayNative_WhenChatDisabled"
+              "VmDNetDoCommandChatTests.ShouldDropSayNative_WhenChatDisabled",
+              "VmDNetDoCommandChatTests.EvaluateSayCase_BreaksWhenChatDisabled",
+              "VmDNetDoCommandChatTests.RunDoCommandCase_TauntFormatsSound"
             ]
           },
           {
@@ -16846,9 +16848,9 @@
           }
         ],
         "nativeLoc": 157,
-        "conversionManagedCommit": "5d5cc3fed32c0870969dded44e24ca2550c56dd3",
-        "managedLoc": 83,
-        "auditManagedLocJustification": "Credits `Net_DoCommand` SAY\u2013SUICIDE case guards only; world-loop and legacy-payload VMs live on other chunk rows."
+        "conversionManagedCommit": "50c3286372e01f66804babaac950cab8de3fa9e8",
+        "managedLoc": 258,
+        "auditManagedLocJustification": "`RunDoCommandCase` sequences SAY\u2013SUICIDE case guards without hosting `Printf`, `cht_*`, or `ChangeLevel`."
       },
       {
         "name": "p-spec-remainder-closure-chunk450",

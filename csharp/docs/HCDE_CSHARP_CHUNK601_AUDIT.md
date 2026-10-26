@@ -21,8 +21,8 @@ Net_DoCommand whole `case` blocks: SAY through SUICIDE (8553–8741); CENTERVIEW
 ## Managed
 
 `VmDNetDoCommandChat.cs`
-Managed LOC (tally): 83.
-Conversion commit: `5d5cc3fed32c0870969dded44e24ca2550c56dd3`.
+Managed LOC (tally): 258.
+Conversion commit: `50c3286372e01f66804babaac950cab8de3fa9e8`.
 
 ## Padding review (2026-10-21)
 
@@ -39,6 +39,7 @@ Case-boundary credit only (not tuned to 150). `MustConsumeSetInvPaddingWhenRejec
 | `ShouldExecuteGenericCheatNative` | `DEM_GENERICCHEAT` 8707–8725 |
 | `ApplyChangemapCheatFlagNative` | `DEM_CHANGEMAP`/`DEM_CHANGEMAP2` 8727–8737 |
 | `ShouldRunSuicideCommandNative` | `DEM_SUICIDE` 8739–8741 |
+| `EvaluateSayCase` / `EvaluateGiveCheatCase` / `RunDoCommandCase` | per-case `switch` orchestration **8553–8741** |
 
 ### Out-of-body uncredit (601)
 
@@ -49,11 +50,13 @@ Case-boundary credit only (not tuned to 150). `MustConsumeSetInvPaddingWhenRejec
 | **Honest** | **157** |
 
 
-**Post-review ratio:** 83/157 managed/native ≈ 53% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 258/157 managed/native ≈ 164% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmDNetDoCommandChatTests.ShouldDropSayNative_WhenChatDisabled`
+- `VmDNetDoCommandChatTests.EvaluateSayCase_BreaksWhenChatDisabled`
+- `VmDNetDoCommandChatTests.RunDoCommandCase_TauntFormatsSound`
 
 ## Verified
 
