@@ -13,14 +13,22 @@ HCDEApplyInvasionSnapshot
 ## Managed
 
 `VmDNetInvasionSnapshotApply.cs`
-Managed LOC (tally): 97.
-Conversion commit: `330afd54a5f690af6c4a785a0b586f0d4aba3254`.
+Managed LOC (tally): 343.
+Conversion commit: `1d132c033f60e30f292da6a59e400da186bb4fa7`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`d_net.cpp`) |
 |---------|-------------------|
-| `ExpectActorDeltas` / `HeaderBytesAvailable` / `MagicMatches` / `InvasionModeDisabledLocally` / `AcceptSnapshotWhenGametypeZero` / `VersionHasSpawnMetadata` / `SnapshotHeaderSize` / `VersionAllowed` / `ReservedZero` / `FlagsAllowed` / `StateRawAllowed` / `SpawnFlagsAllowed` / `SpawnFallbackSourceAllowed` / `ClampNonNegative` / `BossWaveFlags` / `UsingFallback` / `ShouldApplyAuthorityEvents` / `ShouldApplyActorDeltas` / `TraceGametypeOverride` / `InvasionSnapshotHeaderV1Size` / `InvasionSnapshotHeaderV2Size` / `InvasionSnapshotVersionOffset` / `InvasionSnapshotFlagsOffset` / `InvasionSnapshotStateOffset` / `InvasionSnapshotReservedOffset` / `InvasionSnapshotStateTicsOffset` / `ReadFieldsSucceeded` / `SpawnMetadataReadSucceeded` / `ReservedSpawnBytesZero` / `ReplicatedActiveMonsters` / `WaveDirectorSpawned` / `WaveDirectorCleared` / `SpawnDirectoryBudget` / `SpawnDirectoryTag` / `PreviousStateDiffers` / `PreviousWaveDiffers` | `HCDEApplyInvasionSnapshot` 3351–3510 (3353: `if (!HCDEIsValidLiveClient(clientNum))`; 3354: `return false;`; 3355: `if (!HCDELivePeerHasCapability(clientNum, HCDELiveCapInvasionSnapshot…`) |
+| `ApplyInvasionSnapshot` / `RunApplyInvasionSnapshotPipeline` | `HCDEApplyInvasionSnapshot` **3351–3510** |
+| `RunClientCapabilityGate` | client + capability guards **3353–359** |
+| `RunInitialHeaderValidation` / `RunHeaderValidationPipeline` / `TryReadSnapshotHeader` | magic + header size **3361–383** |
+| `RunInvasionDisabledGametypeGate` / `TraceGametypeOverride` | disabled-mode gametype **3371–378** (local `!invasionEnabled`) |
+| `ValidateSnapshotHeaderBytes` / `RunSnapshotHeaderValidation` | version/flags/state **3384–390** |
+| `RunSpawnMetadataPipeline` / `ValidateSpawnMetadataBlock` | v2 spawn metadata **3417–435** |
+| `BuildPayloadFromFields` / `PendingWaveFromState` | mirror field merge **3449–471** |
+| `RunEmbeddedReplayPipeline` | authority + actor deltas **3475–489** |
+| prior decision helpers (`VersionAllowed`, `ClampNonNegative`, …) | shared predicates **3357–end** |
 
 ### Out-of-body uncredit (516)
 
@@ -31,7 +39,7 @@ Conversion commit: `330afd54a5f690af6c4a785a0b586f0d4aba3254`.
 | **Honest** | **160** |
 
 
-**Post-review ratio:** 97/160 managed/native ≈ 61% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 343/160 managed/native ≈ 214% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -39,6 +47,10 @@ Conversion commit: `330afd54a5f690af6c4a785a0b586f0d4aba3254`.
 - `VmDNetInvasionSnapshotApplyTests.SpawnFlagsAllowed_RejectsUnknownBits`
 - `VmDNetInvasionSnapshotApplyTests.ClampNonNegative_Floors`
 - `VmDNetInvasionSnapshotApplyTests.TraceGametypeOverride_WhenDisabledAndActiveState`
+- `VmDNetInvasionSnapshotApplyTests.PendingWaveFromState_OnlyCountdownCarriesWave`
+- `VmDNetInvasionSnapshotApplyTests.RunHeaderValidationPipeline_RejectsBadReserved`
+- `VmDNetInvasionSnapshotApplyTests.RunApplyInvasionSnapshotPipeline_AppliesV1Snapshot`
+- `VmDNetInvasionSnapshotApplyTests.ValidateSpawnMetadataBlock_RejectsReservedBytes`
 
 ## Verified
 

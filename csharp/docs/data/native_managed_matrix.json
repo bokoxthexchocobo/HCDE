@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 219960
+    "managedCSharpLoc": 220206
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 71817,
+    "convertedThisRunManaged": 72063,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 81488,
+    "convertedBehaviorManaged": 81734,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13818,7 +13818,11 @@
               "VmDNetInvasionSnapshotApplyTests.VersionAllowed_AcceptsV1AndV2",
               "VmDNetInvasionSnapshotApplyTests.SpawnFlagsAllowed_RejectsUnknownBits",
               "VmDNetInvasionSnapshotApplyTests.ClampNonNegative_Floors",
-              "VmDNetInvasionSnapshotApplyTests.TraceGametypeOverride_WhenDisabledAndActiveState"
+              "VmDNetInvasionSnapshotApplyTests.TraceGametypeOverride_WhenDisabledAndActiveState",
+              "VmDNetInvasionSnapshotApplyTests.PendingWaveFromState_OnlyCountdownCarriesWave",
+              "VmDNetInvasionSnapshotApplyTests.RunHeaderValidationPipeline_RejectsBadReserved",
+              "VmDNetInvasionSnapshotApplyTests.RunApplyInvasionSnapshotPipeline_AppliesV1Snapshot",
+              "VmDNetInvasionSnapshotApplyTests.ValidateSpawnMetadataBlock_RejectsReservedBytes"
             ]
           }
         ],
@@ -13826,9 +13830,10 @@
           "a57fe1a04c51e20b2953c7143f5a39bf075d3c59"
         ],
         "nativeLoc": 160,
-        "managedLoc": 97,
-        "conversionManagedCommit": "330afd54a5f690af6c4a785a0b586f0d4aba3254",
-        "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ExpectActorDeltas` / `HeaderBytesAvailable` / `MagicMatches` / `InvasionModeDisabledLocally` / `AcceptSnapshotWhenGametypeZero` / `VersionHasSpawnMetadata` / `SnapshotHeaderSize` / `VersionAllowed` / `ReservedZero` / `FlagsAllowed` / `StateRawAllowed` / `SpawnFlagsAllowed` / `SpawnFallbackSourceAllowed` / `ClampNonNegative` / `BossWaveFlags` / `UsingFallback` / `ShouldApplyAuthorityEvents` / `ShouldApplyActorDeltas` / `TraceGametypeOverride` / `InvasionSnapshotHeaderV1Size` / `InvasionSnapshotHeaderV2Size` / `InvasionSnapshotVersionOffset` / `InvasionSnapshotFlagsOffset` / `InvasionSnapshotStateOffset` / `InvasionSnapshotReservedOffset` / `InvasionSnapshotStateTicsOffset` / `ReadFieldsSucceeded` / `SpawnMetadataReadSucceeded` / `ReservedSpawnBytesZero` / `ReplicatedActiveMonsters` / `WaveDirectorSpawned` / `WaveDirectorCleared` / `SpawnDirectoryBudget` / `SpawnDirectoryTag` / `PreviousStateDiffers` / `PreviousWaveDiffers` | `HCDEApplyInvasionSnapshot` 3351\u20133510 (3353: `if (!HCDEIsValidLiveClient(clientNum))`; 3354: `return false;`; 3355: `if (!HCDELivePeerHasCapability(clientNum, HCDELiveCapInvasionSnapshot\u2026`) |\n\n### Out-of-body uncredit (516)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **160** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **160** |\n"
+        "managedLoc": 343,
+        "conversionManagedCommit": "1d132c033f60e30f292da6a59e400da186bb4fa7",
+        "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ApplyInvasionSnapshot` / `RunApplyInvasionSnapshotPipeline` | `HCDEApplyInvasionSnapshot` **3351\u20133510** |\n| `RunClientCapabilityGate` | client + capability guards **3353\u2013359** |\n| `RunInitialHeaderValidation` / `RunHeaderValidationPipeline` / `TryReadSnapshotHeader` | magic + header size **3361\u2013383** |\n| `RunInvasionDisabledGametypeGate` / `TraceGametypeOverride` | disabled-mode gametype **3371\u2013378** (local `!invasionEnabled`) |\n| `ValidateSnapshotHeaderBytes` / `RunSnapshotHeaderValidation` | version/flags/state **3384\u2013390** |\n| `RunSpawnMetadataPipeline` / `ValidateSpawnMetadataBlock` | v2 spawn metadata **3417\u2013435** |\n| `BuildPayloadFromFields` / `PendingWaveFromState` | mirror field merge **3449\u2013471** |\n| `RunEmbeddedReplayPipeline` | authority + actor deltas **3475\u2013489** |\n| prior decision helpers (`VersionAllowed`, `ClampNonNegative`, \u2026) | shared predicates **3357\u2013end** |\n\n### Out-of-body uncredit (516)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **160** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **160** |\n",
+        "auditManagedLocJustification": "Phased header validation, gametype gate, spawn-metadata branch, mirror apply hook, and embedded authority/actor replay mirror `HCDEApplyInvasionSnapshot` without hosting field readers or net globals."
       },
       {
         "name": "p-action-set-animation-internal-chunk517",
