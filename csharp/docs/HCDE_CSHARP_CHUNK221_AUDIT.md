@@ -1,28 +1,35 @@
-# Chunk 221 — UMAPINFO extended properties, map lump ingest, CommitUMapinfo.
+# Chunk 221 — UMAPINFO extended properties, map lump ingest, CommitUMapinfo. Retired (2026-10-24): thin managed at HEAD — surviving **0** < **170** (50% of honest **339**).
 
 ## Scope
 
-UMAPINFO extended properties, map lump ingest, CommitUMapinfo.
+UMAPINFO extended properties, map lump ingest, CommitUMapinfo. Retired (2026-10-24): thin managed at HEAD — surviving **0** < **170** (50% of honest **339**).
 
 ## Native ranges
 
-- `src/gamedata/umapinfo.cpp` **ParseStandardProperty intertext through freeaim** 270–394 (125 lines)
-- `src/gamedata/umapinfo.cpp` **ParseMapEntry** 402–414 (13 lines)
-- `src/gamedata/umapinfo.cpp` **ParseUMapInfo** 422–471 (50 lines)
-- `src/gamedata/umapinfo.cpp` **CommitUMapinfo** 475–625 (151 lines)
 
-**Credited native LOC:** 339 (tally `nativeLoc` 339).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmUMapInfoEpisodeParser.cs`, `VmUMapInfoParser.cs`, `VmUMapInfoParserTests.cs`, `VmUMapInfoStandardPropertyParser.cs`
-Managed LOC (tally): 220.
-Conversion commit: `b299de9f9f6a4002d0a0235eaad04f685337cec4`.
+`VmDehackedDehSuppLumpGate.cs`, `VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `c881d1dce5ff069f2ed2509fd8006efd4610cab5`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (221)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **339** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **339** |
+
 
 ## Tests
 
-- `VmUMapInfoParserTests.CommitToLevelInfo_AppliesInterText`
-- `VmUMapInfoParserTests.TryParseMapBlock_ReadsBossAction`
 
 ## Verified
 

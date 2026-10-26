@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 46775,
+    "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 67355,
+    "convertedThisRunManaged": 67135,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 442030,
+    "remainingNative": 442369,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 65302,
+    "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 66056,
-    "convertedBehaviorManaged": 77026,
+    "combinedBehaviorNative": 65717,
+    "convertedBehaviorManaged": 76806,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8372,48 +8372,15 @@
       {
         "name": "umapinfo-parse-commit-chunk221",
         "bucket": "conversion",
-        "managedLoc": 220,
-        "note": "UMAPINFO extended properties, map lump ingest, CommitUMapinfo.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/umapinfo.cpp",
-            "symbol": "ParseStandardProperty intertext through freeaim",
-            "start": 270,
-            "end": 394,
-            "tests": [
-              "VmUMapInfoParserTests.CommitToLevelInfo_AppliesInterText"
-            ]
-          },
-          {
-            "file": "src/gamedata/umapinfo.cpp",
-            "symbol": "ParseMapEntry",
-            "start": 402,
-            "end": 414,
-            "tests": [
-              "VmUMapInfoParserTests.TryParseMapBlock_ReadsBossAction"
-            ]
-          },
-          {
-            "file": "src/gamedata/umapinfo.cpp",
-            "symbol": "ParseUMapInfo",
-            "start": 422,
-            "end": 471,
-            "tests": [
-              "VmUMapInfoParserTests.TryParseMapBlock_ReadsBossAction"
-            ]
-          },
-          {
-            "file": "src/gamedata/umapinfo.cpp",
-            "symbol": "CommitUMapinfo",
-            "start": 475,
-            "end": 625,
-            "tests": [
-              "VmUMapInfoParserTests.CommitToLevelInfo_AppliesInterText"
-            ]
-          }
-        ],
-        "nativeLoc": 339,
-        "conversionManagedCommit": "b299de9f9f6a4002d0a0235eaad04f685337cec4"
+        "managedLoc": 0,
+        "note": "UMAPINFO extended properties, map lump ingest, CommitUMapinfo. Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **170** (50% of honest **339**).",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "c881d1dce5ff069f2ed2509fd8006efd4610cab5",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (221)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **339** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **339** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "umapinfo-schema-doomed-spawn-chunk222",
