@@ -13,14 +13,14 @@ Net_TrySkipCommand
 ## Managed
 
 `VmDNetTrySkipCommand.cs`
-Managed LOC (tally): 142.
-Conversion commit: `17cc3a4b3238140e4e9edab359f0bf7af90d0185`.
+Managed LOC (tally): 424.
+Conversion commit: `427b184767dbd133815ec94ece132c08689be29d`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`d_net.cpp`) |
 |---------|-------------------|
-| `TryReadCStringBytes` / `SkipCStringPlus` / `TryComputeSkip` / `TrySkipSay` / `TrySkipAddBot` / `TrySkipGiveCheat` / `TrySkipSetInv` / `TrySkipNetEvent` / `TrySkipZscCmd` / `TrySkipSummon2` / `TrySkipChangeMap2` / `TrySkipCStringOnly` / `TrySkipFixed` / `TrySkipRunScript` / `TrySkipRunNamedScript` / `TrySkipSinFChanged` / `TrySkipSetSlot` / `TrySkipAddSlot` / `CanAdvance` / `AdvanceCursor` / `UnknownCommand` | `Net_TrySkipCommand` 9261–9506 (9266: `if (offset > stream.Size())`; 9267: `return false;`; 9272: `if (terminator == nullptr)`) |
+| `Dem*` constants / `TryReadCStringBytes` / `TryComputeCommandSkip` / `TrySkipCommand` / `TrySkip*FromStream` / `TrySkipCStringAtZero` / `TrySkipSaveGame` / `IsZeroPayloadCommand` / per-opcode `TrySkip*` helpers / `CanAdvance` / `AdvanceCursor` / `UnknownCommand` | `Net_TrySkipCommand` 9261–9506 (9264–9277: CString scan; 9280–9496: opcode switch; 9498–9499: default; 9502–9504: skip bound) |
 
 ### Out-of-body uncredit (518)
 
@@ -31,13 +31,16 @@ Conversion commit: `17cc3a4b3238140e4e9edab359f0bf7af90d0185`.
 | **Honest** | **246** |
 
 
-**Post-review ratio:** 142/246 managed/native ≈ 58% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 424/246 managed/native ≈ 172% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmDNetTrySkipCommandTests.TryReadCStringBytes_FindsTerminator`
 - `VmDNetTrySkipCommandTests.TrySkipZscCmd_AddsBigEndianLength`
 - `VmDNetTrySkipCommandTests.CanAdvance_RejectsOverflow`
+- `VmDNetTrySkipCommandTests.TrySkipCommand_Say_skipsVariantByteAndCString`
+- `VmDNetTrySkipCommandTests.TrySkipCommand_UnknownOpcode_fails`
+- `VmDNetTrySkipCommandTests.TrySkipCommand_Suicide_zeroSkip`
 
 ## Verified
 

@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 46436,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 68651,
+  "convertedThisRunManaged": 68933,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 64963,
   "recognitionBehaviorNative": 754,
   "combinedBehaviorNative": 65717,
-  "convertedBehaviorManaged": 78322,
+  "convertedBehaviorManaged": 78604,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -13836,7 +13836,10 @@
           "tests": [
             "VmDNetTrySkipCommandTests.TryReadCStringBytes_FindsTerminator",
             "VmDNetTrySkipCommandTests.TrySkipZscCmd_AddsBigEndianLength",
-            "VmDNetTrySkipCommandTests.CanAdvance_RejectsOverflow"
+            "VmDNetTrySkipCommandTests.CanAdvance_RejectsOverflow",
+            "VmDNetTrySkipCommandTests.TrySkipCommand_Say_skipsVariantByteAndCString",
+            "VmDNetTrySkipCommandTests.TrySkipCommand_UnknownOpcode_fails",
+            "VmDNetTrySkipCommandTests.TrySkipCommand_Suicide_zeroSkip"
           ]
         }
       ],
@@ -13844,9 +13847,10 @@
         "6be1eae4616cd7b5cf1a2c0692d6dafd95367b26"
       ],
       "nativeLoc": 246,
-      "managedLoc": 142,
-      "conversionManagedCommit": "17cc3a4b3238140e4e9edab359f0bf7af90d0185",
-      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `TryReadCStringBytes` / `SkipCStringPlus` / `TryComputeSkip` / `TrySkipSay` / `TrySkipAddBot` / `TrySkipGiveCheat` / `TrySkipSetInv` / `TrySkipNetEvent` / `TrySkipZscCmd` / `TrySkipSummon2` / `TrySkipChangeMap2` / `TrySkipCStringOnly` / `TrySkipFixed` / `TrySkipRunScript` / `TrySkipRunNamedScript` / `TrySkipSinFChanged` / `TrySkipSetSlot` / `TrySkipAddSlot` / `CanAdvance` / `AdvanceCursor` / `UnknownCommand` | `Net_TrySkipCommand` 9261\u20139506 (9266: `if (offset > stream.Size())`; 9267: `return false;`; 9272: `if (terminator == nullptr)`) |\n\n### Out-of-body uncredit (518)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **246** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **246** |\n"
+      "managedLoc": 424,
+      "conversionManagedCommit": "427b184767dbd133815ec94ece132c08689be29d",
+      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `Dem*` constants / `TryReadCStringBytes` / `TryComputeCommandSkip` / `TrySkipCommand` / `TrySkip*FromStream` / `TrySkipCStringAtZero` / `TrySkipSaveGame` / `IsZeroPayloadCommand` / per-opcode `TrySkip*` helpers / `CanAdvance` / `AdvanceCursor` / `UnknownCommand` | `Net_TrySkipCommand` 9261\u20139506 (9264\u20139277: CString scan; 9280\u20139496: opcode switch; 9498\u20139499: default; 9502\u20139504: skip bound) |\n\n### Out-of-body uncredit (518)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **246** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **246** |\n",
+      "auditManagedLocJustification": "Full `Net_TrySkipCommand` switch is ported with explicit `Dem_*` opcode constants and per-command skip helpers; managed LOC exceeds native because C# names each case instead of inline `break` arms."
     },
     {
       "name": "codegen-compare-eq-resolve-chunk519",
