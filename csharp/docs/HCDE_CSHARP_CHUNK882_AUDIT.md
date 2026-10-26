@@ -6,7 +6,6 @@ Cajun `FCajunMaster` lifecycle, spawn scheduling, net add-bot, and default `Load
 
 ## Native ranges
 
-- `src/playsim/bots/b_game.cpp` **b_game statics** 85–109 (25 lines)
 - `src/playsim/bots/b_game.cpp` **FCajunMaster::Main** 117–145 (29 lines)
 - `src/playsim/bots/b_game.cpp` **FCajunMaster::Init** 147–179 (33 lines)
 - `src/playsim/bots/b_game.cpp` **FCajunMaster::End** 182–207 (26 lines)
@@ -17,13 +16,13 @@ Cajun `FCajunMaster` lifecycle, spawn scheduling, net add-bot, and default `Load
 - `src/playsim/bots/b_game.cpp` **FCajunMaster::ForgetBots** 465–477 (13 lines)
 - `src/playsim/bots/b_game.cpp` **FCajunMaster::LoadBots default seed** 516–541 (26 lines)
 
-**Credited native LOC:** 370 (tally `nativeLoc` 370).
+**Credited native LOC:** 345 (tally `nativeLoc` 345).
 
 ## Managed
 
 `VmBBotGame.cs`
-Managed LOC (tally): 347.
-Conversion commit: `27976bc2a916b65e3471a06137f7a44e2b7d60a2`.
+Managed LOC (tally): 380.
+Conversion commit: `60d8c1c62c51fd9272dcaf3627760e34f15f3efe`.
 
 ## Padding review (2026-10-21)
 
@@ -78,12 +77,21 @@ Conversion commit: `27976bc2a916b65e3471a06137f7a44e2b7d60a2`.
 | `VmBBotCcmd.RunAddBotCcmd` | calls `VmBBotGame.SpawnBot` when `Cajun`+`Simulation` set; **877** CCMD body lines **146–170** still accurate |
 | **877** behavior table | still valid (`DBot::Tick`/`Think` **no**, four CCMDs **yes**) |
 
-**Post-review ratio:** 347/370 managed/native ≈ 94% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (882)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **370** |
+| **Out-of-body removed** | **25** |
+| **Honest** | **345** |
+
+
+**Post-review ratio:** 380/345 managed/native ≈ 110% (src file LOC at HEAD; see tally).
 
 ## Tests
 
-- `VmBBotGameTests.LoadBots_SeedsDefaultBots`
 - `VmBBotGameTests.Main_DecrementsJoinTimerAndSchedulesSpawn`
+- `VmBBotGameTests.LoadBots_SeedsDefaultBots`
 - `VmBBotGameTests.SpawnBot_WritesDemAddBotAndDrainAddsPlayer`
 - `VmBBotGameTests.SpawnBot_FailsWhenNamedBotMissing`
 - `VmBBotGameTests.DoAddBot_AddsCajunPlayerSlot`
