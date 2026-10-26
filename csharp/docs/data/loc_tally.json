@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 46436,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 72989,
+  "convertedThisRunManaged": 73134,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 64963,
   "recognitionBehaviorNative": 754,
   "combinedBehaviorNative": 65717,
-  "convertedBehaviorManaged": 82660,
+  "convertedBehaviorManaged": 82805,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -26793,7 +26793,7 @@
       "auditRationale": "First tally credit for HCDE predicted weapon psprite gating and physics relink snapshot used during prediction rewind.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_user.cpp --start 112 --end 386 \u2192 UNCredited (275 lines CLI), exit 0.",
       "auditManagedLocJustification": "Weapon gates plus sector-list relink helpers mirror `FPhysicsLinkBackup` ctor/Restore control flow.",
-      "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|----------------------|\n| `ClientPredictsLocalWeapon` | **112\u2013119** |\n| `ShouldTickWeaponPsprites` | **126\u2013139** |\n| `NetShouldTickWeaponPsprites` | **141\u2013147** |\n| `PhysicsLinkBackup` capture/restore | **218\u2013386** |\n\n### Out-of-body uncredit (815)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **197** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **197** |\n",
+      "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|----------------------|\n| `ClientPredictsLocalWeapon` | **112\u2013119** |\n| `ShouldTickWeaponPsprites` | **126\u2013139** |\n| `NetShouldTickWeaponPsprites` | **141\u2013147** |\n| `PhysicsLinkBackup.CaptureFromTouching` / `IndexOnSectorThingList` | **218\u2013261** |\n| `PhysicsLinkBackup.Restore` / `RelinkSectorThingNode` / `RelinkActorSectorThingList` / `RelinkBlockmapNode` | **263\u2013386** |\n\n### Out-of-body uncredit (815)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **197** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **197** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPUserHcdeWeaponPhysics.cs"
       ],
@@ -26842,14 +26842,17 @@
           "start": 263,
           "end": 386,
           "tests": [
+            "VmPUserHcdeWeaponPhysicsTests.Restore_RelinksTouchingSectorNodeAfterReorder",
+            "VmPUserHcdeWeaponPhysicsTests.Restore_DropsTouchingNodeFromUnknownSector",
+            "VmPUserHcdeWeaponPhysicsTests.Restore_RelinksActorInSectorThingList",
             "VmPUserHcdeWeaponPhysicsTests.IndexOnSectorThingList_FindsThingPosition",
             "VmPUserHcdeWeaponPhysicsTests.CaptureFromTouching_RecordsSectorIndices"
           ]
         }
       ],
       "nativeLoc": 197,
-      "managedLoc": 143,
-      "conversionManagedCommit": "e6b9ba6c0e9ec40f94bc25187913a9bfe4f1f86e"
+      "managedLoc": 288,
+      "conversionManagedCommit": "53e1dd596778ccffe8ce89a5a795b595a8c4baa6"
     },
     {
       "name": "r-interpolate-core-plane-chunk816",

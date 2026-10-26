@@ -17,8 +17,8 @@
 ## Managed
 
 `VmPUserHcdeWeaponPhysics.cs`
-Managed LOC (tally): 143.
-Conversion commit: `12dff0bbfd323c5c18fb60544e4c0f650994e18b`.
+Managed LOC (tally): 288.
+Conversion commit: `53e1dd596778ccffe8ce89a5a795b595a8c4baa6`.
 
 ## Padding review (2026-10-21)
 
@@ -27,7 +27,8 @@ Conversion commit: `12dff0bbfd323c5c18fb60544e4c0f650994e18b`.
 | `ClientPredictsLocalWeapon` | **112–119** |
 | `ShouldTickWeaponPsprites` | **126–139** |
 | `NetShouldTickWeaponPsprites` | **141–147** |
-| `PhysicsLinkBackup` capture/restore | **218–386** |
+| `PhysicsLinkBackup.CaptureFromTouching` / `IndexOnSectorThingList` | **218–261** |
+| `PhysicsLinkBackup.Restore` / `RelinkSectorThingNode` / `RelinkActorSectorThingList` / `RelinkBlockmapNode` | **263–386** |
 
 ### Out-of-body uncredit (815)
 
@@ -38,7 +39,7 @@ Conversion commit: `12dff0bbfd323c5c18fb60544e4c0f650994e18b`.
 | **Honest** | **197** |
 
 
-**Post-review ratio:** 143/197 managed/native ≈ 73% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 288/197 managed/native ≈ 146% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -47,6 +48,9 @@ Conversion commit: `12dff0bbfd323c5c18fb60544e4c0f650994e18b`.
 - `VmPUserHcdeWeaponPhysicsTests.ShouldTickWeaponPsprites_TicksOnNewPredictTic`
 - `VmPUserHcdeWeaponPhysicsTests.CaptureFromTouching_RecordsSectorIndices`
 - `VmPUserHcdeWeaponPhysicsTests.IndexOnSectorThingList_FindsThingPosition`
+- `VmPUserHcdeWeaponPhysicsTests.Restore_RelinksTouchingSectorNodeAfterReorder`
+- `VmPUserHcdeWeaponPhysicsTests.Restore_DropsTouchingNodeFromUnknownSector`
+- `VmPUserHcdeWeaponPhysicsTests.Restore_RelinksActorInSectorThingList`
 
 ## Verified
 
