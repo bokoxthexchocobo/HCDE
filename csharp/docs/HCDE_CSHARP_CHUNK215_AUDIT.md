@@ -1,27 +1,35 @@
-# Chunk 215 — UMapInfo multi-string, lump name, player action option.
+# Chunk 215 — UMapInfo multi-string, lump name, player action option. Retired (2026-10-23): out-of-body credit removed; honest **58** < **150**.
 
 ## Scope
 
-UMapInfo multi-string, lump name, player action option.
+UMapInfo multi-string, lump name, player action option. Retired (2026-10-23): out-of-body credit removed; honest **58** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/umapinfo.cpp` **ParseMultiString** 84–111 (28 lines)
-- `src/gamedata/umapinfo.cpp` **ParseLumpName** 119–129 (11 lines)
-- `src/gamedata/umapinfo.cpp` **ParsePlayerActionOption** 137–155 (19 lines)
 
-**Credited native LOC:** 58 (tally `nativeLoc` 58).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmUMapInfoTokenParser.cs`
-Managed LOC (tally): 56.
-Conversion commit: `be741dc66b574fb0abbe9db7bf57d7ea85af22d5`.
+`VmDehackedDehSuppLumpGate.cs`
+Managed LOC (tally): 0.
+Conversion commit: `0de54e407fc6127b82c1c181ac30d754c0f281a4`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (215)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **58** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **58** |
+
 
 ## Tests
 
-- `VmUMapInfoTokenParserTests.TryParseMultiString_JoinsQuotedParts`
-- `VmUMapInfoTokenParserTests.TryParsePlayerActionOption_ParsesAllow`
 
 ## Verified
 

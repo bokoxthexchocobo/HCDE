@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 47081,
+    "convertedThisRunNative": 47023,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 67659,
+    "convertedThisRunManaged": 67603,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 441724,
+    "remainingNative": 441782,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 65608,
+    "convertedBehaviorNative": 65550,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 66362,
-    "convertedBehaviorManaged": 77330,
+    "combinedBehaviorNative": 66304,
+    "convertedBehaviorManaged": 77274,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8292,39 +8292,15 @@
       {
         "name": "umapinfo-token-chunk215",
         "bucket": "conversion",
-        "managedLoc": 56,
-        "note": "UMapInfo multi-string, lump name, player action option.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/umapinfo.cpp",
-            "symbol": "ParseMultiString",
-            "start": 84,
-            "end": 111,
-            "tests": [
-              "VmUMapInfoTokenParserTests.TryParseMultiString_JoinsQuotedParts"
-            ]
-          },
-          {
-            "file": "src/gamedata/umapinfo.cpp",
-            "symbol": "ParseLumpName",
-            "start": 119,
-            "end": 129,
-            "tests": [
-              "VmUMapInfoTokenParserTests.TryParseMultiString_JoinsQuotedParts"
-            ]
-          },
-          {
-            "file": "src/gamedata/umapinfo.cpp",
-            "symbol": "ParsePlayerActionOption",
-            "start": 137,
-            "end": 155,
-            "tests": [
-              "VmUMapInfoTokenParserTests.TryParsePlayerActionOption_ParsesAllow"
-            ]
-          }
-        ],
-        "conversionManagedCommit": "be741dc66b574fb0abbe9db7bf57d7ea85af22d5",
-        "nativeLoc": 58
+        "managedLoc": 0,
+        "note": "UMapInfo multi-string, lump name, player action option. Retired (2026-10-23): out-of-body credit removed; honest **58** < **150**.",
+        "nativeRanges": [],
+        "conversionManagedCommit": "0de54e407fc6127b82c1c181ac30d754c0f281a4",
+        "nativeLoc": 0,
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (215)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **58** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **58** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "doomfont-planner-chunk216",
