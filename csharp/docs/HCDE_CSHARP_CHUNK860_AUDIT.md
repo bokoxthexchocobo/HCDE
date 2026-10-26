@@ -20,8 +20,8 @@ FraggleScript variable/script specials from `fragglescript/t_spec.cpp` (231–60
 ## Managed
 
 `VmFScriptParserSpecRest.cs`
-Managed LOC (tally): 276.
-Conversion commit: `4a4abb50062265fd930024139364b0fce598815f`.
+Managed LOC (tally): 357.
+Conversion commit: `4fa511de8d9c332ce9fbaf7f4e4236dd5a56b458`.
 
 ## Padding review (2026-10-21)
 
@@ -41,6 +41,7 @@ Conversion commit: `4a4abb50062265fd930024139364b0fce598815f`.
 | `CopyChildScriptSectionBody` / `SpecScript` | **367–429** |
 | `CollectCommaSeparatedArguments` / `ResolveGlobalCallable` / `InvokeCallable` / `EvaluateFunction` | **443–519** |
 | `OpStructure` | **534–605** |
+| `RunEvaluateFunctionPipeline` / `RunOpStructurePipeline` / `AttachChildScriptFromSection` | orchestration **367–429**, **443–519**, **534–605** |
 | (separators) | **222–230**, **266–273**, **288–294**, **351–366**, **430–442**, **520–533** |
 
 ### Gross vs net
@@ -59,7 +60,7 @@ Conversion commit: `4a4abb50062265fd930024139364b0fce598815f`.
 | **Honest** | **344** |
 
 
-**Post-review ratio:** 276/344 managed/native ≈ 80% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 357/344 managed/native ≈ 104% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -72,6 +73,8 @@ Conversion commit: `4a4abb50062265fd930024139364b0fce598815f`.
 - `VmFScriptParserSpecRestTests.EvaluateFunction_LineSpec_InvokesRunLineSpecial`
 - `VmFScriptParserSpecRestTests.OpStructure_InvokesDotCall`
 - `VmFScriptParserSpecRestTests.OpStructure_DotCallWithExtraArgument`
+- `VmFScriptParserSpecRestTests.ValidateFunctionCallSyntax_RejectsMissingParen`
+- `VmFScriptParserSpecRestTests.CreateVariable_BlocksMobjInChildScript`
 
 ## Verified
 
