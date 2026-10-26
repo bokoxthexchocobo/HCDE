@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 216061
+    "managedCSharpLoc": 216299
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 67918,
+    "convertedThisRunManaged": 68156,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 77589,
+    "convertedBehaviorManaged": 77827,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13614,14 +13614,16 @@
               "VmPUserPredictClientTests.Replay_SkipsWhenCaughtUp",
               "VmPUserPredictClientTests.Window_ClampReducesStart",
               "VmPUserPredictClientTests.Rubberband_TriggersOnDistance",
-              "VmPUserPredictClientTests.TryBuildWindow_CapsEnd"
+              "VmPUserPredictClientTests.TryBuildWindow_CapsEnd",
+              "VmPUserPredictClientTests.RunEntryGates_SinglePlayerTearsDown",
+              "VmPUserPredictClientTests.RunPredictClient_ReplaysWindow"
             ]
           }
         ],
         "nativeLoc": 374,
-        "managedLoc": 243,
-        "conversionManagedCommit": "6ba33037dc9047233f8ff240c9803fe51adcf6b7",
-        "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|-------------------|\n| `SinglePlayerTearsDownPrediction` / `SkipWhenNotInLevel` / `SkipReservedServerSlot` / `ConsolePlayerOutOfRange` / `ShouldEnablePrediction` / `SkipReplayWhenCaughtUp` / `SkipReplayWhenNotLive` / `SkipReplayWhenJustSpawned` / `ClampPredictionEnd` / `EmptyPredictionWindow` / `ClampPredictionStart` / `CanRubberband` / `RubberbandDistanceExceeded` / `RubberbandHitLimit` / `ReseedWeaponPspriteTic` / `AdvanceWeaponPspriteWhenPredicting` / `WeaponPspriteTicWatermark` / `ShouldClearPredictingCheat` / `ShouldSkipPredictionReplay` / `TryBuildPredictionWindow` / `EvaluateRubberband` / `LastPredictedFromBase` / `RecordReplayDiag` / `AccumulateReplayYaw` / `ApplyPortalOffsetWhenSectorPresent` / `LocalCmdIndex` / `WeaponTickForIndex` / `RubberbandLerpPath` / `PausedSetsNoInterpolate` / `FoldYawDegrees` / `ReplayInputDegreesFromBam` / `PhantomYawDegrees` / `ShouldLogYawDiag` / `ShouldLogMoveDiag` / `ShouldLogPitchSummary` / `PitchClampHit` / `NonZeroReplayPitch` / `CountZeroedPitch` / `AccumulateReplayCmd` / `FinalizePredictionTick` | `P_PredictClient` 2021\u20132394 (2023: `if (!netgame)`; 2026: `if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS)`; 2030: `return;`) |\n\n### Out-of-body uncredit (509)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **374** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **374** |\n",
+        "managedLoc": 481,
+        "conversionManagedCommit": "242fb2f66837ec7217d737e5921649e445eddf10",
+        "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|-------------------|\n| `RunPredictClient` / `RunEntryGates` / `PredictClientContext` / `SinglePlayerTearsDownPrediction` / `SkipWhenNotInLevel` / `SkipReservedServerSlot` / `ConsolePlayerOutOfRange` / `ShouldEnablePrediction` / `SkipReplayWhenCaughtUp` / `SkipReplayWhenNotLive` / `SkipReplayWhenJustSpawned` / `ClampPredictionEnd` / `EmptyPredictionWindow` / `ClampPredictionStart` / `CanRubberband` / `RubberbandDistanceExceeded` / `RubberbandHitLimit` / `ReseedWeaponPspriteTic` / `AdvanceWeaponPspriteWhenPredicting` / `WeaponPspriteTicWatermark` / `ShouldClearPredictingCheat` / `ShouldSkipPredictionReplay` / `TryBuildPredictionWindow` / `EvaluateRubberband` / `LastPredictedFromBase` / `RecordReplayDiag` / `AccumulateReplayYaw` / `ApplyPortalOffsetWhenSectorPresent` / `LocalCmdIndex` / `WeaponTickForIndex` / `RubberbandLerpPath` / `PausedSetsNoInterpolate` / `FoldYawDegrees` / `ReplayInputDegreesFromBam` / `PhantomYawDegrees` / `ShouldLogYawDiag` / `ShouldLogMoveDiag` / `ShouldLogPitchSummary` / `PitchClampHit` / `NonZeroReplayPitch` / `CountZeroedPitch` / `AccumulateReplayCmd` / `FinalizePredictionTick` | `P_PredictClient` 2021\u20132394 (2023: `if (!netgame)`; 2026: `if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS)`; 2030: `return;`) |\n\n### Out-of-body uncredit (509)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **374** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **374** |\n",
         "auditManagedLocJustification": "`P_PredictClient` replay/window/rubberband policy is a long native control-flow; managed code names each gate (netgame, reserved slot, catch-up) without padding helpers."
       },
       {

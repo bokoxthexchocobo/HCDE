@@ -13,14 +13,14 @@ P_PredictClient
 ## Managed
 
 `VmPUserPredictClient.cs`
-Managed LOC (tally): 243.
-Conversion commit: `6ba33037dc9047233f8ff240c9803fe51adcf6b7`.
+Managed LOC (tally): 481.
+Conversion commit: `242fb2f66837ec7217d737e5921649e445eddf10`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`p_user.cpp`) |
 |---------|-------------------|
-| `SinglePlayerTearsDownPrediction` / `SkipWhenNotInLevel` / `SkipReservedServerSlot` / `ConsolePlayerOutOfRange` / `ShouldEnablePrediction` / `SkipReplayWhenCaughtUp` / `SkipReplayWhenNotLive` / `SkipReplayWhenJustSpawned` / `ClampPredictionEnd` / `EmptyPredictionWindow` / `ClampPredictionStart` / `CanRubberband` / `RubberbandDistanceExceeded` / `RubberbandHitLimit` / `ReseedWeaponPspriteTic` / `AdvanceWeaponPspriteWhenPredicting` / `WeaponPspriteTicWatermark` / `ShouldClearPredictingCheat` / `ShouldSkipPredictionReplay` / `TryBuildPredictionWindow` / `EvaluateRubberband` / `LastPredictedFromBase` / `RecordReplayDiag` / `AccumulateReplayYaw` / `ApplyPortalOffsetWhenSectorPresent` / `LocalCmdIndex` / `WeaponTickForIndex` / `RubberbandLerpPath` / `PausedSetsNoInterpolate` / `FoldYawDegrees` / `ReplayInputDegreesFromBam` / `PhantomYawDegrees` / `ShouldLogYawDiag` / `ShouldLogMoveDiag` / `ShouldLogPitchSummary` / `PitchClampHit` / `NonZeroReplayPitch` / `CountZeroedPitch` / `AccumulateReplayCmd` / `FinalizePredictionTick` | `P_PredictClient` 2021–2394 (2023: `if (!netgame)`; 2026: `if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS)`; 2030: `return;`) |
+| `RunPredictClient` / `RunEntryGates` / `PredictClientContext` / `SinglePlayerTearsDownPrediction` / `SkipWhenNotInLevel` / `SkipReservedServerSlot` / `ConsolePlayerOutOfRange` / `ShouldEnablePrediction` / `SkipReplayWhenCaughtUp` / `SkipReplayWhenNotLive` / `SkipReplayWhenJustSpawned` / `ClampPredictionEnd` / `EmptyPredictionWindow` / `ClampPredictionStart` / `CanRubberband` / `RubberbandDistanceExceeded` / `RubberbandHitLimit` / `ReseedWeaponPspriteTic` / `AdvanceWeaponPspriteWhenPredicting` / `WeaponPspriteTicWatermark` / `ShouldClearPredictingCheat` / `ShouldSkipPredictionReplay` / `TryBuildPredictionWindow` / `EvaluateRubberband` / `LastPredictedFromBase` / `RecordReplayDiag` / `AccumulateReplayYaw` / `ApplyPortalOffsetWhenSectorPresent` / `LocalCmdIndex` / `WeaponTickForIndex` / `RubberbandLerpPath` / `PausedSetsNoInterpolate` / `FoldYawDegrees` / `ReplayInputDegreesFromBam` / `PhantomYawDegrees` / `ShouldLogYawDiag` / `ShouldLogMoveDiag` / `ShouldLogPitchSummary` / `PitchClampHit` / `NonZeroReplayPitch` / `CountZeroedPitch` / `AccumulateReplayCmd` / `FinalizePredictionTick` | `P_PredictClient` 2021–2394 (2023: `if (!netgame)`; 2026: `if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS)`; 2030: `return;`) |
 
 ### Out-of-body uncredit (509)
 
@@ -31,7 +31,7 @@ Conversion commit: `6ba33037dc9047233f8ff240c9803fe51adcf6b7`.
 | **Honest** | **374** |
 
 
-**Post-review ratio:** 243/374 managed/native ≈ 65% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 481/374 managed/native ≈ 129% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -40,6 +40,8 @@ Conversion commit: `6ba33037dc9047233f8ff240c9803fe51adcf6b7`.
 - `VmPUserPredictClientTests.Window_ClampReducesStart`
 - `VmPUserPredictClientTests.Rubberband_TriggersOnDistance`
 - `VmPUserPredictClientTests.TryBuildWindow_CapsEnd`
+- `VmPUserPredictClientTests.RunEntryGates_SinglePlayerTearsDown`
+- `VmPUserPredictClientTests.RunPredictClient_ReplaysWindow`
 
 ## Verified
 
