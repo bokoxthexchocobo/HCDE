@@ -16,7 +16,7 @@
 
 `VmMapLoaderLoadGlSegs.cs`
 Managed LOC (tally): 252.
-Conversion commit: `fbddd7e0bfa8c081522d4475f46f17bbbda841b0`.
+Conversion commit: `c004b38c30cd14748afeae5aa2887f498fcb1496`.
 
 ## Padding review (2026-10-21)
 
@@ -46,6 +46,14 @@ Conversion commit: `fbddd7e0bfa8c081522d4475f46f17bbbda841b0`.
 |--|------:|
 | Gross native (`nativeLoc` sum of ranges) | **167** |
 | Net behavior-ported | **167** |
+
+### Out-of-body uncredit (888)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **167** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **167** |
 
 
 **Post-review ratio:** 252/167 managed/native ≈ 151% (src file LOC at HEAD; see tally).

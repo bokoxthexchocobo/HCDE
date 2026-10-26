@@ -31017,7 +31017,7 @@
         "auditRationale": "Faithful GL node seg loader for classic `glseg_t` and `gNd3`/`glseg3_t` paths; vertex remap helpers are whole-function ports on the same row.",
         "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 888 --band` \u2192 UNCredited, exit 0.",
         "auditManagedLocJustification": "`VmMapLoaderLoadGlSegs.cs` (~250 LOC) for three native symbols; reuses existing `MapLoaderLineFlags.TwoSided` constant from `VmMapLoaderZNodeLoad.cs` (not credited on this row).",
-        "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `MapLoader::checkGLVertex` **241\u2013246** | **yes** |\n| `MapLoader::checkGLVertex3` **248\u2013253** | **yes** |\n| `MapLoader::LoadGLSegs` **261\u2013415** | **yes** |\n\n| Managed | Native (`glnodes.cpp`) |\n|---------|----------------------|\n| `CheckGlVertex` | **241\u2013246** |\n| `CheckGlVertex3` | **248\u2013253** |\n| `LoadGlSegs` | **261\u2013415** |\n\n### Padding map (hull **241\u2013415**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **247**, **254\u2013260** | comment/separator gaps between functions (in hull, no extra symbols) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **167** |\n| Net behavior-ported | **167** |\n",
+        "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `MapLoader::checkGLVertex` **241\u2013246** | **yes** |\n| `MapLoader::checkGLVertex3` **248\u2013253** | **yes** |\n| `MapLoader::LoadGLSegs` **261\u2013415** | **yes** |\n\n| Managed | Native (`glnodes.cpp`) |\n|---------|----------------------|\n| `CheckGlVertex` | **241\u2013246** |\n| `CheckGlVertex3` | **248\u2013253** |\n| `LoadGlSegs` | **261\u2013415** |\n\n### Padding map (hull **241\u2013415**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **247**, **254\u2013260** | comment/separator gaps between functions (in hull, no extra symbols) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **167** |\n| Net behavior-ported | **167** |\n\n### Out-of-body uncredit (888)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **167** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **167** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.MapLoader/VmMapLoaderLoadGlSegs.cs"
         ],
@@ -31055,7 +31055,7 @@
         ],
         "nativeLoc": 167,
         "managedLoc": 252,
-        "conversionManagedCommit": "fbddd7e0bfa8c081522d4475f46f17bbbda841b0"
+        "conversionManagedCommit": "c004b38c30cd14748afeae5aa2887f498fcb1496"
       },
       {
         "name": "maploader-gl-subsectors-nodes-chunk889",
