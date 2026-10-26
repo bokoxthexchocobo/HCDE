@@ -275,7 +275,7 @@ public static bool HasReadyState(int? readyStateNum) => readyStateNum.HasValue;
             readySound = ResolveReadySound(session.ReadyStateNum!.Value, input.ChainsawStateNum, input.SawIdleSoundId);
 
         var ammoUse = session.AmmoUse;
-        if (ClearAmmoUseWhenNoType(input.AmmoTypeSet))
+        if (!input.AmmoTypeSet)
             ammoUse = 0;
         else if (ammoUse == 0)
             ammoUse = DefaultAmmoUseWhenMissing(ammoUse);

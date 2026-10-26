@@ -156,7 +156,7 @@ public static class VmPMobjCrashRevive
             return false;
         if (RaiseBlockedByTics(ticsNotMinusOne, stateCanRaise))
             return false;
-        if (RaiseBlockedByPlayerPawn(isPlayerPawn))
+        if (isPlayerPawn)
             return false;
         allowed = raiseStateFound;
         return allowed;
@@ -234,6 +234,4 @@ public static class VmPMobjCrashRevive
 
     public static int ResolveGibHealth(bool virtualOverride, int virtualValue, int spawnHealth) =>
         virtualOverride ? virtualValue : GibHealthDefault(spawnHealth);
-
-    public static bool CountsAsKillForRevive(bool countsAsKill) => countsAsKill;
 }

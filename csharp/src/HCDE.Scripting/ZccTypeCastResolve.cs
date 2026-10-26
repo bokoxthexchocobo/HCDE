@@ -161,10 +161,6 @@ public static class ZccTypeCastResolve
     public static bool InvalidCastTargetOrBase(bool targetError, bool baseError, bool baseTypeNull) =>
         targetError || baseError || baseTypeNull;
 
-    public static bool TargetIsVoid(bool targetVoid) => targetVoid;
-
-    public static bool BaseIsVoid(bool baseVoid) => baseVoid;
-
     public enum CastDelegateKind
     {
         None,
@@ -281,7 +277,7 @@ public static class ZccTypeCastResolve
 
         if (InvalidCastTargetOrBase(input.TargetError, input.BaseError, input.BaseTypeNull))
             return (TypeCastResolveStage.FailAndDelete, CastDelegateKind.None, ResolveCastPath.Error);
-        if (TargetIsVoid(input.TargetVoid) || BaseIsVoid(input.BaseVoid))
+        if (input.TargetVoid || input.BaseVoid)
             return (TypeCastResolveStage.UnsupportedError, CastDelegateKind.None, ResolveCastPath.Error);
         if (input.SameType)
             return (TypeCastResolveStage.BaseReturn, CastDelegateKind.None, ResolveCastPath.SameType);
