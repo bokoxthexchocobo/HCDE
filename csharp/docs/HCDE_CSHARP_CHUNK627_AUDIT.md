@@ -19,8 +19,8 @@
 ## Managed
 
 `VmINetNetCmdSetup.cs`
-Managed LOC (tally): 154.
-Conversion commit: `1c5d5ed516cd406a8f9edfb1d2fa80c57c3a96f6`.
+Managed LOC (tally): 213.
+Conversion commit: `8218c2dcbb259fadd86b8299ca096c502fed6e94`.
 
 ## Padding review (2026-10-21)
 
@@ -43,7 +43,7 @@ Conversion commit: `1c5d5ed516cd406a8f9edfb1d2fa80c57c3a96f6`.
 | **Honest** | **181** |
 
 
-**Post-review ratio:** 154/181 managed/native ≈ 85% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 213/181 managed/native ≈ 118% (src file LOC at HEAD; see tally).
 
 ## Tests
 
