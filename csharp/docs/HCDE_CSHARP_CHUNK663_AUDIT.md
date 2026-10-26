@@ -13,14 +13,16 @@ Whole `SightCheck::PTR_SightTraverse` (`p_sight.cpp` 210–384).
 ## Managed
 
 `VmPSightPtrSightTraverse.cs`
-Managed LOC (tally): 115.
-Conversion commit: `9bcb9d15e20046831c2bfa62ec1057989ea6bbff`.
+Managed LOC (tally): 281.
+Conversion commit: `fb19249b7bc817ef76aee6e34864ca51df092761`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`p_sight.cpp`) |
 |---------|----------------------|
-| `PtrSightTraverse` / `SightTraverseContext` | `PTR_SightTraverse` 210–384 |
+| `PtrSightTraverse` + opening/portal/3D-floor phases | `PTR_SightTraverse` 210–384 |
+| `EvaluateSight3dFloors` / `SightFFloorAtHit` | 3D-floor loop 297–377 |
+| `SwapPortalFlagsSides` | `SightOpening::SwapSides` 73–76 |
 
 ### Out-of-body uncredit (663)
 
@@ -31,12 +33,19 @@ Conversion commit: `9bcb9d15e20046831c2bfa62ec1057989ea6bbff`.
 | **Honest** | **175** |
 
 
-**Post-review ratio:** 115/175 managed/native ≈ 66% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 281/175 managed/native ≈ 161% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmPSightPtrSightTraverseTests.PtrSightTraverse_ClosedDoorStops`
 - `VmPSightPtrSightTraverseTests.PtrSightTraverse_UpdatesSlopes`
+- `VmPSightPtrSightTraverseTests.PtrSightTraverse_CompatSameSectorSkips`
+- `VmPSightPtrSightTraverseTests.PtrSightTraverse_FracZeroContinues`
+- `VmPSightPtrSightTraverseTests.PtrSightTraverse_LinkedPortalQueuesAndStops`
+- `VmPSightPtrSightTraverseTests.PtrSightTraverse_LineBlocksSightCollapsesOpening`
+- `VmPSightPtrSightTraverseTests.PtrSightTraverse_3dFloorBlocksViewCone`
+- `VmPSightPtrSightTraverseTests.PtrSightTraverse_SwapPortalFlagsSides`
+- `VmPSightPtrSightTraverseTests.PtrSightTraverse_FinalizesLastZ`
 
 ## Verified
 

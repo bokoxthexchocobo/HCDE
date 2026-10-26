@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 46436,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 72659,
+  "convertedThisRunManaged": 72825,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 64963,
   "recognitionBehaviorNative": 754,
   "combinedBehaviorNative": 65717,
-  "convertedBehaviorManaged": 82330,
+  "convertedBehaviorManaged": 82496,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -19986,7 +19986,7 @@
       "note": "Whole `SightCheck::PTR_SightTraverse` (`p_sight.cpp` 210\u2013384).",
       "auditSeams": "`P_SightOpening`, 3D-floor evaluation, and intercept lists stay native.",
       "auditRationale": "Fresh sight TU; traverse slope/portal logic hosted.",
-      "auditPaddingReview": "| Managed | Native (`p_sight.cpp`) |\n|---------|----------------------|\n| `PtrSightTraverse` / `SightTraverseContext` | `PTR_SightTraverse` 210\u2013384 |\n\n### Out-of-body uncredit (663)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **175** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **175** |\n",
+      "auditPaddingReview": "| Managed | Native (`p_sight.cpp`) |\n|---------|----------------------|\n| `PtrSightTraverse` + opening/portal/3D-floor phases | `PTR_SightTraverse` 210\u2013384 |\n| `EvaluateSight3dFloors` / `SightFFloorAtHit` | 3D-floor loop 297\u2013377 |\n| `SwapPortalFlagsSides` | `SightOpening::SwapSides` 73\u201376 |\n\n### Out-of-body uncredit (663)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **175** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **175** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPSightPtrSightTraverse.cs"
       ],
@@ -19998,13 +19998,21 @@
           "end": 384,
           "tests": [
             "VmPSightPtrSightTraverseTests.PtrSightTraverse_ClosedDoorStops",
-            "VmPSightPtrSightTraverseTests.PtrSightTraverse_UpdatesSlopes"
+            "VmPSightPtrSightTraverseTests.PtrSightTraverse_UpdatesSlopes",
+            "VmPSightPtrSightTraverseTests.PtrSightTraverse_CompatSameSectorSkips",
+            "VmPSightPtrSightTraverseTests.PtrSightTraverse_FracZeroContinues",
+            "VmPSightPtrSightTraverseTests.PtrSightTraverse_LinkedPortalQueuesAndStops",
+            "VmPSightPtrSightTraverseTests.PtrSightTraverse_LineBlocksSightCollapsesOpening",
+            "VmPSightPtrSightTraverseTests.PtrSightTraverse_3dFloorBlocksViewCone",
+            "VmPSightPtrSightTraverseTests.PtrSightTraverse_SwapPortalFlagsSides",
+            "VmPSightPtrSightTraverseTests.PtrSightTraverse_FinalizesLastZ"
           ]
         }
       ],
       "nativeLoc": 175,
-      "managedLoc": 115,
-      "conversionManagedCommit": "9bcb9d15e20046831c2bfa62ec1057989ea6bbff"
+      "managedLoc": 281,
+      "conversionManagedCommit": "fb19249b7bc817ef76aee6e34864ca51df092761",
+      "auditManagedLocJustification": "Phased opening, portal-queue, linked-portal, and managed 3D-floor rover loops mirror `PTR_SightTraverse` without hosting `P_SightOpening` or intercept iteration."
     },
     {
       "name": "d-net-blackbox-record-chunk648",
