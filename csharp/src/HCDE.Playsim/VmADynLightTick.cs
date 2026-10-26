@@ -10,6 +10,7 @@ public static class VmADynLightTick
     public const int PointLight = 4;
     public const int Ticrate = 35;
     public const int MfUnmorphed = 1 << 20;
+    public const int Mf5Nointeraction = 1;
 
     public sealed class LightState
     {
@@ -25,7 +26,10 @@ public static class VmADynLightTick
         public object? Sector { get; set; }
         public double X { get; set; }
         public double Y { get; set; }
+        public double Z { get; set; }
         public float Radius { get; set; }
+        public bool IsSpot { get; set; }
+        public bool ExplicitPitch { get; set; }
     }
 
     public static void ReleaseLight(Action unlinkList, Action destroyInstance, Action returnToPool)
@@ -35,11 +39,12 @@ public static class VmADynLightTick
         returnToPool();
     }
 
-    public static void Activate(LightState light, Func<int> intensity, Func<int> secondaryIntensity, Func<int> timer, Action<float, float, float, bool> cyclerSet)
+    public static void Activate(LightState light, Func<int> intensity, Func<int> secondaryIntensity, Func<int> timer, Action<float, float, float, bool> cyclerSet, Func<float>? cyclerVal = null)
     {
         light.Active = true;
         light.CurrentRadius = intensity();
         light.TickCount = 0;
+
         if (light.LightType == PulseLight)
         {
             var pulseTime = light.SpecialF1 / Ticrate;
@@ -48,6 +53,8 @@ public static class VmADynLightTick
                 cyclerSet(secondaryIntensity(), intensity(), pulseTime, true);
             else
                 cyclerSet(intensity(), secondaryIntensity(), pulseTime, true);
+            if (cyclerVal != null)
+                light.CurrentRadius = cyclerVal();
         }
 
         if (light.CurrentRadius <= 0)
@@ -142,17 +149,60 @@ public static class VmADynLightTick
         return true;
     }
 
-    public static void UpdateLocation(LightState light, Func<bool> isActive, Func<(double x, double y)> targetPos, Action<double, double, float, float> relink)
+    public static (double x, double y) RotateOffset(double yawSin, double yawCos, double offX, double offY) =>
+        (offX * yawCos + offY * yawSin, offX * yawSin - offY * yawCos);
+
+    public static double ClampZBetweenPlanes(double z, double floorZ, double ceilingZ, bool noInteraction)
+    {
+        if (noInteraction)
+            return z;
+        if (z < floorZ + 5)
+            return floorZ + 5;
+        if (z > ceilingZ - 5)
+            return ceilingZ - 5;
+        return z;
+    }
+
+    public static float RelinkRadius(int lightType, int intensity, int secondaryIntensity, float currentRadius)
+    {
+        float intensityMax;
+        if (lightType == FlickerLight || lightType == RandomFlickerLight || lightType == PulseLight)
+            intensityMax = Math.Max(intensity, secondaryIntensity);
+        else
+            intensityMax = currentRadius;
+
+        var radius = intensityMax * 2.0f;
+        if (radius < currentRadius * 2)
+            radius = currentRadius * 2;
+        return radius;
+    }
+
+    public static bool ShouldRelink(double oldX, double oldY, float oldRadius, double newX, double newY, float newRadius) =>
+        newX != oldX || newY != oldY || newRadius != oldRadius;
+
+    public static void UpdateLocation(
+        LightState light,
+        Func<bool> isActive,
+        Func<(double x, double y, double z, double floorZ, double ceilingZ, int targetFlags, double yawSin, double yawCos, double bobZ, double offX, double offY, double offZ)> targetSample,
+        Func<int> intensity,
+        Func<int> secondaryIntensity,
+        Action<double, double, float, float> relink)
     {
         var oldX = light.X;
         var oldY = light.Y;
         var oldRadius = light.Radius;
         if (!isActive())
             return;
-        var pos = targetPos();
-        light.X = pos.x;
-        light.Y = pos.y;
-        light.Radius = light.CurrentRadius;
-        relink(oldX, oldY, oldRadius, light.Radius);
+
+        var sample = targetSample();
+        var (rotX, rotY) = RotateOffset(sample.yawSin, sample.yawCos, sample.offX, sample.offY);
+        light.X = sample.x + rotX;
+        light.Y = sample.y + rotY;
+        light.Z = ClampZBetweenPlanes(sample.z + sample.offZ + sample.bobZ, sample.floorZ, sample.ceilingZ,
+            (sample.targetFlags & Mf5Nointeraction) != 0);
+
+        light.Radius = RelinkRadius(light.LightType, intensity(), secondaryIntensity(), light.CurrentRadius);
+        if (ShouldRelink(oldX, oldY, oldRadius, light.X, light.Y, light.Radius))
+            relink(oldX, oldY, oldRadius, light.Radius);
     }
 }

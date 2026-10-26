@@ -72,7 +72,13 @@ public class VmADynLightTickTests
     {
         var light = new VmADynLightTick.LightState { Active = true, CurrentRadius = 5 };
         var relinked = false;
-        VmADynLightTick.UpdateLocation(light, () => true, () => (3, 4), (_, _, _, _) => relinked = true);
+        VmADynLightTick.UpdateLocation(
+            light,
+            () => true,
+            () => (3, 4, 0, 0, 256, 0, 0, 1, 0, 0, 0, 0),
+            () => 5,
+            () => 0,
+            (_, _, _, _) => relinked = true);
         Assert.True(relinked);
         Assert.Equal(3, light.X);
     }
