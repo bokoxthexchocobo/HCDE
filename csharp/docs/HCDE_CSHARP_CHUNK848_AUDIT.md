@@ -1,31 +1,19 @@
-# Chunk 848 — `FParser::SF_SpawnMissile` … `SF_PlayerAddFrag` from `fragglescript/t_func.cpp` (3048–3237).
+# Chunk 848 — `FParser::SF_SpawnMissile` … `SF_PlayerAddFrag` from `fragglescript/t_func.cpp` (3048–3237). Retired (2026-10-23): out-of-body credit removed; honest **144** < **150**.
 
 ## Scope
 
-`FParser::SF_SpawnMissile` … `SF_PlayerAddFrag` from `fragglescript/t_func.cpp` (3048–3237).
+`FParser::SF_SpawnMissile` … `SF_PlayerAddFrag` from `fragglescript/t_func.cpp` (3048–3237). Retired (2026-10-23): out-of-body credit removed; honest **144** < **150**.
 
 ## Native ranges
 
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_SpawnMissile** 3055–3069 (15 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_MapThingNumExist** 3077–3098 (22 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_MapThings** 3106–3112 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_ObjState** 3121–3156 (36 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_LineFlag** 3166–3200 (35 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_PlayerAddFrag** 3209–3237 (29 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF legacy separators** 3048–3054 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF legacy separators** 3070–3076 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF legacy separators** 3099–3105 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF legacy separators** 3113–3120 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF legacy separators** 3157–3165 (9 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF legacy separators** 3201–3208 (8 lines)
 
-**Credited native LOC:** 190 (tally `nativeLoc` 190).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmFScriptParserSfLegacy.cs`
-Managed LOC (tally): 156.
-Conversion commit: `8a8e1476fc1e700f4acfd2c3c93d8111c4cd6714`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `8bbedef76ace0729b380d5ecabfea273d94fd130`.
 
 ## Padding review (2026-10-21)
 
@@ -50,16 +38,17 @@ Conversion commit: `8a8e1476fc1e700f4acfd2c3c93d8111c4cd6714`.
 | `SfPlayerAddFrag` | **3209–3237** |
 | (separators) | **3048–3054**, **3070–3076**, **3099–3105**, **3113–3120**, **3157–3165**, **3201–3208** |
 
-**Post-review ratio:** 156/190 managed/native ≈ 82% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (848)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **190** |
+| **Out-of-body removed** | **46** |
+| **Honest** | **144** |
+
 
 ## Tests
 
-- `VmFScriptParserSfLegacyTests.SfSpawnMissile_SpawnsAtTarget`
-- `VmFScriptParserSfLegacyTests.SfMapThingNumExist_ValidIndex`
-- `VmFScriptParserSfLegacyTests.SfMapThings_ReturnsCount`
-- `VmFScriptParserSfLegacyTests.SfObjState_SetsSeeState`
-- `VmFScriptParserSfLegacyTests.SfLineFlag_ReadWriteBlocking`
-- `VmFScriptParserSfLegacyTests.SfPlayerAddFrag_IncrementsFragCount`
 
 ## Verified
 
