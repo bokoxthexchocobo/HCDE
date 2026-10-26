@@ -8,6 +8,8 @@ public static partial class VmFScriptParser
         var left = new ScriptValue();
         var right = new ScriptValue();
         EvaluateLeftRight(ctx, left, right, start, n, stop);
+
+        // haleyjd: 8-17
         if (left.Type == VmFScriptVariable.SvtFixed || right.Type == VmFScriptVariable.SvtFixed)
         {
             var fr = FloatValue(right);
@@ -65,17 +67,11 @@ public static partial class VmFScriptParser
     private static void OpNotBin(ExprFrame ctx, ScriptValue result, int start, int n, int stop)
     {
         EvaluateExpression(ctx, result, n + 1, stop);
-        result.Type = SvtInt;
         result.IntValue = ~IntValue(result);
+        result.Type = SvtInt;
     }
 
-    private static void OpIncrement(ExprFrame ctx, ScriptValue result, int start, int n, int stop) =>
-        OpIncDec(ctx, result, start, n, stop, +1);
-
-    private static void OpDecrement(ExprFrame ctx, ScriptValue result, int start, int n, int stop) =>
-        OpIncDec(ctx, result, start, n, stop, -1);
-
-    private static void OpIncDec(ExprFrame ctx, ScriptValue result, int start, int n, int stop, int delta)
+    private static void OpIncrement(ExprFrame ctx, ScriptValue result, int start, int n, int stop)
     {
         if (start == n)
         {
@@ -85,18 +81,20 @@ public static partial class VmFScriptParser
                 ctx.ScriptError($"unknown variable '{ctx.Tokens[stop]}'\n");
                 return;
             }
-            var tmp = new VmFScriptVariable.ScriptValue();
-            VmFScriptVariable.GetValue(var, tmp);
-            CopyFromVariableValue(tmp, result);
+
+            var scratch = new VmFScriptVariable.ScriptValue();
+            VmFScriptVariable.GetValue(var, scratch);
+            CopyFromVariableValue(scratch, result);
+
             if (var.Type != VmFScriptVariable.SvtFixed)
             {
                 result.Type = SvtInt;
-                result.IntValue = IntValue(result) + delta;
+                result.IntValue = IntValue(result) + 1;
                 VmFScriptVariable.SetValue(ctx.VarHost, var, ToVar(result));
             }
             else
             {
-                result.SetDouble(FloatValue(result) + delta);
+                result.SetDouble(FloatValue(result) + 1);
                 VmFScriptVariable.SetValue(ctx.VarHost, var, ToVar(result));
             }
         }
@@ -108,21 +106,82 @@ public static partial class VmFScriptParser
                 ctx.ScriptError($"unknown variable '{ctx.Tokens[start]}'\n");
                 return;
             }
-            var tmp = new VmFScriptVariable.ScriptValue();
-            VmFScriptVariable.GetValue(var, tmp);
-            CopyFromVariableValue(tmp, result);
+
+            var scratch = new VmFScriptVariable.ScriptValue();
+            VmFScriptVariable.GetValue(var, scratch);
+            CopyFromVariableValue(scratch, result);
+
             var newValue = new VmFScriptVariable.ScriptValue();
             if (var.Type != VmFScriptVariable.SvtFixed)
             {
                 newValue.Type = VmFScriptVariable.SvtInt;
-                newValue.IntValue = IntValue(result) + delta;
+                newValue.IntValue = IntValue(result) + 1;
+                VmFScriptVariable.SetValue(ctx.VarHost, var, newValue);
             }
             else
             {
                 newValue.Type = VmFScriptVariable.SvtFixed;
-                newValue.FixedBits = (long)((FloatValue(result) + delta) * 65536.0);
+                newValue.FixedBits = (long)((FloatValue(result) + 1) * 65536.0);
+                VmFScriptVariable.SetValue(ctx.VarHost, var, newValue);
             }
-            VmFScriptVariable.SetValue(ctx.VarHost, var, newValue);
+        }
+        else
+            ctx.ScriptError("incorrect arguments to ++ operator\n");
+    }
+
+    private static void OpDecrement(ExprFrame ctx, ScriptValue result, int start, int n, int stop)
+    {
+        if (start == n)
+        {
+            var var = LookupVariable(ctx, ctx.Tokens[stop]);
+            if (var == null)
+            {
+                ctx.ScriptError($"unknown variable '{ctx.Tokens[stop]}'\n");
+                return;
+            }
+
+            var scratch = new VmFScriptVariable.ScriptValue();
+            VmFScriptVariable.GetValue(var, scratch);
+            CopyFromVariableValue(scratch, result);
+
+            if (var.Type != VmFScriptVariable.SvtFixed)
+            {
+                result.Type = SvtInt;
+                result.IntValue = IntValue(result) - 1;
+                VmFScriptVariable.SetValue(ctx.VarHost, var, ToVar(result));
+            }
+            else
+            {
+                result.SetDouble(FloatValue(result) - 1);
+                VmFScriptVariable.SetValue(ctx.VarHost, var, ToVar(result));
+            }
+        }
+        else if (stop == n)
+        {
+            var var = LookupVariable(ctx, ctx.Tokens[start]);
+            if (var == null)
+            {
+                ctx.ScriptError($"unknown variable '{ctx.Tokens[start]}'\n");
+                return;
+            }
+
+            var scratch = new VmFScriptVariable.ScriptValue();
+            VmFScriptVariable.GetValue(var, scratch);
+            CopyFromVariableValue(scratch, result);
+
+            var newValue = new VmFScriptVariable.ScriptValue();
+            if (var.Type != VmFScriptVariable.SvtFixed)
+            {
+                newValue.Type = VmFScriptVariable.SvtInt;
+                newValue.IntValue = IntValue(result) - 1;
+                VmFScriptVariable.SetValue(ctx.VarHost, var, newValue);
+            }
+            else
+            {
+                newValue.Type = VmFScriptVariable.SvtFixed;
+                newValue.FixedBits = (long)((FloatValue(result) - 1) * 65536.0);
+                VmFScriptVariable.SetValue(ctx.VarHost, var, newValue);
+            }
         }
         else
             ctx.ScriptError("incorrect arguments to ++ operator\n");
@@ -134,9 +193,10 @@ public static partial class VmFScriptParser
         var right = new ScriptValue();
         EvaluateLeftRight(ctx, left, right, start, n, stop);
         result.Type = SvtInt;
-        result.IntValue = (left.Type == VmFScriptVariable.SvtFixed || right.Type == VmFScriptVariable.SvtFixed
-            ? FixedValue(left) <= FixedValue(right)
-            : IntValue(left) <= IntValue(right)) ? 1 : 0;
+        if (left.Type == VmFScriptVariable.SvtFixed || right.Type == VmFScriptVariable.SvtFixed)
+            result.IntValue = FixedValue(left) <= FixedValue(right) ? 1 : 0;
+        else
+            result.IntValue = IntValue(left) <= IntValue(right) ? 1 : 0;
     }
 
     private static void OpGreaterThanOrEqual(ExprFrame ctx, ScriptValue result, int start, int n, int stop)
@@ -145,9 +205,10 @@ public static partial class VmFScriptParser
         var right = new ScriptValue();
         EvaluateLeftRight(ctx, left, right, start, n, stop);
         result.Type = SvtInt;
-        result.IntValue = (left.Type == VmFScriptVariable.SvtFixed || right.Type == VmFScriptVariable.SvtFixed
-            ? FixedValue(left) >= FixedValue(right)
-            : IntValue(left) >= IntValue(right)) ? 1 : 0;
+        if (left.Type == VmFScriptVariable.SvtFixed || right.Type == VmFScriptVariable.SvtFixed)
+            result.IntValue = FixedValue(left) >= FixedValue(right) ? 1 : 0;
+        else
+            result.IntValue = IntValue(left) >= IntValue(right) ? 1 : 0;
     }
 
     private static void OpStructureDispatch(ExprFrame ctx, ScriptValue result, int start, int n, int stop)
@@ -157,6 +218,7 @@ public static partial class VmFScriptParser
             ctx.ScriptError("structure operator not available\n");
             return;
         }
+
         OpStructure(st, result, start, n, stop);
     }
 }
