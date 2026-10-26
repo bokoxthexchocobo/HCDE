@@ -3,44 +3,12 @@
     "name": "umapinfo-parse-commit-chunk221",
     "bucket": "conversion",
     "managedLoc": 220,
-    "note": "UMAPINFO extended properties, map lump ingest, CommitUMapinfo.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/umapinfo.cpp",
-        "symbol": "ParseStandardProperty intertext through freeaim",
-        "start": 270,
-        "end": 394,
-        "tests": [
-          "VmUMapInfoParserTests.CommitToLevelInfo_AppliesInterText"
-        ]
-      },
-      {
-        "file": "src/gamedata/umapinfo.cpp",
-        "symbol": "ParseMapEntry",
-        "start": 402,
-        "end": 414,
-        "tests": [
-          "VmUMapInfoParserTests.TryParseMapBlock_ReadsBossAction"
-        ]
-      },
-      {
-        "file": "src/gamedata/umapinfo.cpp",
-        "symbol": "ParseUMapInfo",
-        "start": 422,
-        "end": 471,
-        "tests": [
-          "VmUMapInfoParserTests.TryParseMapBlock_ReadsBossAction"
-        ]
-      },
-      {
-        "file": "src/gamedata/umapinfo.cpp",
-        "symbol": "CommitUMapinfo",
-        "start": 475,
-        "end": 625,
-        "tests": [
-          "VmUMapInfoParserTests.CommitToLevelInfo_AppliesInterText"
-        ]
-      }
-    ]
+    "note": "UMAPINFO extended properties, map lump ingest, CommitUMapinfo. Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **170** (50% of honest **339**).",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (221)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **339** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **339** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`check_port_coverage.sh` thin managed: surviving 0 < need 170 (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
