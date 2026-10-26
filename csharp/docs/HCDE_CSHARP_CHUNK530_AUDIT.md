@@ -28,8 +28,8 @@ A_ChangeFlag, CheckFlag, A_ChangeCountFlags, raise family, A_SetAngle/Pitch/Roll
 ## Managed
 
 `VmActionRaiseAndCountFlags.cs`
-Managed LOC (tally): 101.
-Conversion commit: `9b3429f7a6ba0e4bf351c45d9a9cbea839f89f94`.
+Managed LOC (tally): 210.
+Conversion commit: `56c32560db2b44133c90e71500088ab1495cc302`.
 
 ## Padding review (2026-10-21)
 
@@ -37,14 +37,12 @@ Conversion commit: `9b3429f7a6ba0e4bf351c45d9a9cbea839f89f94`.
 
 | Managed | Native (`p_actionfunctions.cpp`) |
 |---------|----------------------------------|
+| `RunChangeCountFlags` / `PlanChangeCountFlags` / `ApplyKillCount` / `CountsAsKill` | `A_ChangeCountFlags` **2794–2825** |
+| `TryRaiseMaster` / `RaiseChildrenOnLevel` / `RaiseSiblingsOnLevel` / `RaiseSelf` | `A_RaiseMaster` **2833–2843**; `A_RaiseChildren` **2850–2865**; `A_RaiseSiblings` **2873–2891**; `A_RaiseSelf` **2899–2904** |
+| `DecideMonsterRefire` / refire helpers | `A_MonsterRefire` **2938–2957** |
+| `TrySetAngle` / `TrySetPitch` / `TrySetRoll` / `TrySetViewAngle` / `TrySetViewPitch` | `A_SetAngle` **2968–2981**; `A_SetPitch` **2991–3004**; `A_SetRoll` **3015–3028**; `SetViewAngleNative` **3038–3086** |
 | `CheckFlagResult` | `CheckFlag` **2789–2790** |
-| `PlanCountFlags` / `ApplyKillCount` / `CountsAsKill` | `A_ChangeCountFlags` **2801–2824** |
-| `ChildUsesMaster` | `A_RaiseChildren` **2860** |
-| `SiblingSharesMaster` | `A_RaiseSiblings` **2885–2887** |
-| `RefireProbabilityFails` / `RefireTargetInvalid` / `RefireContinuesFiring` | `A_MonsterRefire` **2946–2956** |
-| `SetAngleOnRef` / `SetPitchOnRef` / `SetRollOnRef` | **2975–3025** |
-| `SetViewAngleOnRef` / `SetViewPitchOnRef` | **3038–3086** |
-| `RefNull` | pointer null guards **2975**, **2998**, **3021** |
+| `RefNull` | pointer null guards **2838**, **2881**, **2975**, **2998**, **3021**, **3041**, **3070** |
 
 ### Out-of-body uncredit (530)
 
@@ -55,16 +53,19 @@ Conversion commit: `9b3429f7a6ba0e4bf351c45d9a9cbea839f89f94`.
 | **Honest** | **197** |
 
 
-**Post-review ratio:** 101/197 managed/native ≈ 51% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 210/197 managed/native ≈ 107% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmActionRaiseAndCountFlagsTests.CheckFlagResult_RequiresOwner`
 - `VmActionRaiseAndCountFlagsTests.ApplyKillCount_DecrementsWhenCountedAlive`
+- `VmActionRaiseAndCountFlagsTests.RunChangeCountFlags_UpdatesLevelTotals`
+- `VmActionRaiseAndCountFlagsTests.RaiseChildrenOnLevel_RaisesMatchingMaster`
+- `VmActionRaiseAndCountFlagsTests.DecideMonsterRefire_JumpsWhenSightBlocked`
 - `VmActionRaiseAndCountFlagsTests.SiblingSharesMaster_ExcludesSelf`
 - `VmActionRaiseAndCountFlagsTests.RefireProbabilityFails_WhenRollLow`
 - `VmActionRaiseAndCountFlagsTests.RefireTargetInvalid_WhenNoSight`
-- `VmActionRaiseAndCountFlagsTests.SetViewAngleOnRef_WhenPresent`
+- `VmActionRaiseAndCountFlagsTests.TrySetViewAngle_InvokesSetterWhenRefPresent`
 
 ## Verified
 

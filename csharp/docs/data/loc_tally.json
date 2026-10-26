@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 46436,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 69124,
+  "convertedThisRunManaged": 69233,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 64963,
   "recognitionBehaviorNative": 754,
   "combinedBehaviorNative": 65717,
-  "convertedBehaviorManaged": 78795,
+  "convertedBehaviorManaged": 78904,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -14184,7 +14184,10 @@
           "start": 2794,
           "end": 2826,
           "tests": [
-            "VmActionRaiseAndCountFlagsTests.ApplyKillCount_DecrementsWhenCountedAlive"
+            "VmActionRaiseAndCountFlagsTests.ApplyKillCount_DecrementsWhenCountedAlive",
+            "VmActionRaiseAndCountFlagsTests.RunChangeCountFlags_UpdatesLevelTotals",
+            "VmActionRaiseAndCountFlagsTests.RaiseChildrenOnLevel_RaisesMatchingMaster",
+            "VmActionRaiseAndCountFlagsTests.DecideMonsterRefire_JumpsWhenSightBlocked"
           ]
         },
         {
@@ -14247,7 +14250,7 @@
           "start": 3038,
           "end": 3045,
           "tests": [
-            "VmActionRaiseAndCountFlagsTests.SetViewAngleOnRef_WhenPresent"
+            "VmActionRaiseAndCountFlagsTests.TrySetViewAngle_InvokesSetterWhenRefPresent"
           ]
         },
         {
@@ -14256,7 +14259,7 @@
           "start": 3047,
           "end": 3057,
           "tests": [
-            "VmActionRaiseAndCountFlagsTests.SetViewAngleOnRef_WhenPresent"
+            "VmActionRaiseAndCountFlagsTests.TrySetViewAngle_InvokesSetterWhenRefPresent"
           ]
         },
         {
@@ -14265,7 +14268,7 @@
           "start": 3067,
           "end": 3074,
           "tests": [
-            "VmActionRaiseAndCountFlagsTests.SetViewAngleOnRef_WhenPresent"
+            "VmActionRaiseAndCountFlagsTests.TrySetViewAngle_InvokesSetterWhenRefPresent"
           ]
         },
         {
@@ -14274,7 +14277,7 @@
           "start": 3076,
           "end": 3086,
           "tests": [
-            "VmActionRaiseAndCountFlagsTests.SetViewAngleOnRef_WhenPresent"
+            "VmActionRaiseAndCountFlagsTests.TrySetViewAngle_InvokesSetterWhenRefPresent"
           ]
         },
         {
@@ -14306,9 +14309,10 @@
         }
       ],
       "nativeLoc": 197,
-      "managedLoc": 101,
-      "conversionManagedCommit": "9b3429f7a6ba0e4bf351c45d9a9cbea839f89f94",
-      "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits count-flag/raise/orientation bands **2767\u20133028** plus `SetViewAngleNative`/`SetViewPitchNative` **3038\u20133086** (`p_actionfunctions.cpp`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `CheckFlagResult` | `CheckFlag` **2789\u20132790** |\n| `PlanCountFlags` / `ApplyKillCount` / `CountsAsKill` | `A_ChangeCountFlags` **2801\u20132824** |\n| `ChildUsesMaster` | `A_RaiseChildren` **2860** |\n| `SiblingSharesMaster` | `A_RaiseSiblings` **2885\u20132887** |\n| `RefireProbabilityFails` / `RefireTargetInvalid` / `RefireContinuesFiring` | `A_MonsterRefire` **2946\u20132956** |\n| `SetAngleOnRef` / `SetPitchOnRef` / `SetRollOnRef` | **2975\u20133025** |\n| `SetViewAngleOnRef` / `SetViewPitchOnRef` | **3038\u20133086** |\n| `RefNull` | pointer null guards **2975**, **2998**, **3021** |\n\n### Out-of-body uncredit (530)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **199** |\n| **Out-of-body removed** | **2** |\n| **Honest** | **197** |\n"
+      "managedLoc": 210,
+      "conversionManagedCommit": "56c32560db2b44133c90e71500088ab1495cc302",
+      "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits count-flag/raise/orientation bands **2767\u20133028** plus `SetViewAngleNative`/`SetViewPitchNative` **3038\u20133086** (`p_actionfunctions.cpp`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RunChangeCountFlags` / `PlanChangeCountFlags` / `ApplyKillCount` / `CountsAsKill` | `A_ChangeCountFlags` **2794\u20132825** |\n| `TryRaiseMaster` / `RaiseChildrenOnLevel` / `RaiseSiblingsOnLevel` / `RaiseSelf` | `A_RaiseMaster` **2833\u20132843**; `A_RaiseChildren` **2850\u20132865**; `A_RaiseSiblings` **2873\u20132891**; `A_RaiseSelf` **2899\u20132904** |\n| `DecideMonsterRefire` / refire helpers | `A_MonsterRefire` **2938\u20132957** |\n| `TrySetAngle` / `TrySetPitch` / `TrySetRoll` / `TrySetViewAngle` / `TrySetViewPitch` | `A_SetAngle` **2968\u20132981**; `A_SetPitch` **2991\u20133004**; `A_SetRoll` **3015\u20133028**; `SetViewAngleNative` **3038\u20133086** |\n| `CheckFlagResult` | `CheckFlag` **2789\u20132790** |\n| `RefNull` | pointer null guards **2838**, **2881**, **2975**, **2998**, **3021**, **3041**, **3070** |\n\n### Out-of-body uncredit (530)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **199** |\n| **Out-of-body removed** | **2** |\n| **Honest** | **197** |\n",
+      "auditManagedLocJustification": "Raise iterators and count-flag level totals mirror native control flow; `TrySet*` delegates host `SetAngle`/`SetPitch`/`SetRoll`/`SetView*` without inlining engine calls."
     },
     {
       "name": "p-acs-string-pool-chunk531",
