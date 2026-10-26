@@ -2,23 +2,14 @@
   {
     "name": "fscript-parser-sf-level-chunk847",
     "bucket": "conversion",
-    "note": "`FParser::SF_LevelNum` … `SF_SetColor` from `fragglescript/t_func.cpp` (3541–3698).",
+    "note": "`FParser::SF_LevelNum` \u2026 `SF_SetColor` from `fragglescript/t_func.cpp` (3541\u20133698). Retired (2026-10-23): out-of-body credit removed; honest **127** < **150**.",
     "auditSeams": "Uses `AuthoritySimulation`, `DoomActorCatalog`, `AcsThingCountReplacementPolicy`, and `LevelSector.ColormapLightColor` for script sector tint.",
-    "auditRationale": "Portable GZDoom query band after **846** trig; **1381–2241** remains deferred.",
-    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 847 --band → UNCredited, exit 0.",
-    "auditManagedLocJustification": "Faithful ports in `VmFScriptParserSfLevel.cs`.",
-    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_LevelNum` | yes |\n| `SF_MobjRadius` | yes |\n| `SF_MobjHeight` | yes |\n| `SF_ThingCount` | yes |\n| `SF_SetColor` | yes |\n\n| Managed | Native (`t_func.cpp` 3541–3698) |\n|---------|-------------------------|\n| `SfLevelNum` | **3541–3545** |\n| `SfMobjRadius` | **3554–3568** |\n| `SfMobjHeight` | **3577–3591** |\n| `SfThingCount` | **3600–3652** |\n| `SfSetColor` | **3660–3698** |\n| (separators) | **3546–3553**, **3569–3576**, **3592–3599**, **3653–3659** |",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmFScriptParserSfLevel.cs"],
-    "nativeRanges": [
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_LevelNum", "start": 3541, "end": 3545, "tests": ["VmFScriptParserSfLevelTests.SfLevelNum_ReadsMapLevelNumber"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_MobjRadius", "start": 3554, "end": 3568, "tests": ["VmFScriptParserSfLevelTests.SfMobjRadius_ReadWrite"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_MobjHeight", "start": 3577, "end": 3591, "tests": ["VmFScriptParserSfLevelTests.SfMobjRadius_ReadWrite"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_ThingCount", "start": 3600, "end": 3652, "tests": ["VmFScriptParserSfLevelTests.SfThingCount_CountsZombiemen"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_SetColor", "start": 3660, "end": 3698, "tests": ["VmFScriptParserSfLevelTests.SfSetColor_TaggedSector"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF level separators", "start": 3546, "end": 3553, "tests": ["VmFScriptParserSfLevelTests.SfMobjRadius_ReadWrite"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF level separators", "start": 3569, "end": 3576, "tests": ["VmFScriptParserSfLevelTests.SfMobjRadius_ReadWrite"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF level separators", "start": 3592, "end": 3599, "tests": ["VmFScriptParserSfLevelTests.SfThingCount_CountsZombiemen"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF level separators", "start": 3653, "end": 3659, "tests": ["VmFScriptParserSfLevelTests.SfSetColor_TaggedSector"]}
-    ]
+    "auditRationale": "Portable GZDoom query band after **846** trig; **1381\u20132241** remains deferred.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 847 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_LevelNum` | yes |\n| `SF_MobjRadius` | yes |\n| `SF_MobjHeight` | yes |\n| `SF_ThingCount` | yes |\n| `SF_SetColor` | yes |\n\n| Managed | Native (`t_func.cpp` 3541\u20133698) |\n|---------|-------------------------|\n| `SfLevelNum` | **3541\u20133545** |\n| `SfMobjRadius` | **3554\u20133568** |\n| `SfMobjHeight` | **3577\u20133591** |\n| `SfThingCount` | **3600\u20133652** |\n| `SfSetColor` | **3660\u20133698** |\n| (separators) | **3546\u20133553**, **3569\u20133576**, **3592\u20133599**, **3653\u20133659** |\n\n### Out-of-body uncredit (847)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **158** |\n| **Out-of-body removed** | **31** |\n| **Honest** | **127** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
   }
 ]
