@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 50427,
+    "convertedThisRunNative": 50277,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 69984,
+    "convertedThisRunManaged": 69897,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 438199,
+    "remainingNative": 438349,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 68954,
+    "convertedBehaviorNative": 68804,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 69887,
-    "convertedBehaviorManaged": 79655,
+    "combinedBehaviorNative": 69737,
+    "convertedBehaviorManaged": 79568,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -29448,119 +29448,18 @@
       {
         "name": "fscript-parser-sf-gzd-shot-chunk849",
         "bucket": "conversion",
-        "note": "`FParser::SF_SpawnShot2` \u2026 `SaveCurrentScript` from `fragglescript/t_func.cpp` (3700\u20133849).",
+        "note": "`FParser::SF_SpawnShot2` \u2026 `SaveCurrentScript` from `fragglescript/t_func.cpp` (3700\u20133849). Retired (2026-10-23): out-of-body credit removed; honest **102** < **150**.",
         "auditSeams": "Uses `SpawnProjectile`, `TagManager` sector tags, line id lookup, `LineSpecials.TryActivate`, and `VmFScriptThinker.AddRunningScript`.",
         "auditRationale": "GZDoom spawn/kill/line band after **847** `setcolor`; script wait tail in **850**.",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 849 --band \u2192 UNCredited, exit 0.",
-        "auditManagedLocJustification": "Faithful ports in `VmFScriptParserSfGzd.cs`.",
-        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_SpawnShot2` | yes |\n| `SF_KillInSector` | yes |\n| `SF_SetLineTrigger` | yes |\n| `RunLineSpecial` | yes |\n| `SaveCurrentScript` | yes |\n\n| Managed | Native (`t_func.cpp` 3700\u20133849) |\n|---------|-------------------------|\n| `SfSpawnShot2` | **3707\u20133743** |\n| `SfKillInSector` | **3753\u20133766** |\n| `SfSetLineTrigger` | **3776\u20133799** |\n| `SfRunLineSpecial` | **3808\u20133821** |\n| `SaveCurrentScript` | **3830\u20133842** |\n| (separators) | **3700\u20133706**, **3744\u20133752**, **3767\u20133775**, **3800\u20133807**, **3822\u20133829**, **3843\u20133849** |",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmFScriptParserSfGzd.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/fragglescript/t_func.cpp",
-            "symbol": "FParser::SF_SpawnShot2",
-            "start": 3707,
-            "end": 3743,
-            "tests": [
-              "VmFScriptParserSfGzdTests.SfSpawnShot2_SpawnsProjectile"
-            ]
-          },
-          {
-            "file": "src/playsim/fragglescript/t_func.cpp",
-            "symbol": "FParser::SF_KillInSector",
-            "start": 3753,
-            "end": 3766,
-            "tests": [
-              "VmFScriptParserSfGzdTests.SfKillInSector_MassacresMonstersInTag"
-            ]
-          },
-          {
-            "file": "src/playsim/fragglescript/t_func.cpp",
-            "symbol": "FParser::SF_SetLineTrigger",
-            "start": 3776,
-            "end": 3799,
-            "tests": [
-              "VmFScriptParserSfGzdTests.SfSetLineTrigger_SetsSpecialOnId"
-            ]
-          },
-          {
-            "file": "src/playsim/fragglescript/t_func.cpp",
-            "symbol": "FParser::RunLineSpecial",
-            "start": 3808,
-            "end": 3821,
-            "tests": [
-              "VmFScriptParserSfGzdTests.SfRunLineSpecial_ExecutesDoor"
-            ]
-          },
-          {
-            "file": "src/playsim/fragglescript/t_func.cpp",
-            "symbol": "FParser::SaveCurrentScript",
-            "start": 3830,
-            "end": 3842,
-            "tests": [
-              "VmFScriptParserSfGzdTests.SaveCurrentScript_EnqueuesRunner"
-            ]
-          },
-          {
-            "file": "src/playsim/fragglescript/t_func.cpp",
-            "symbol": "FParser SF gzd separators",
-            "start": 3700,
-            "end": 3706,
-            "tests": [
-              "VmFScriptParserSfGzdTests.SfSpawnShot2_SpawnsProjectile"
-            ]
-          },
-          {
-            "file": "src/playsim/fragglescript/t_func.cpp",
-            "symbol": "FParser SF gzd separators",
-            "start": 3744,
-            "end": 3752,
-            "tests": [
-              "VmFScriptParserSfGzdTests.SfKillInSector_MassacresMonstersInTag"
-            ]
-          },
-          {
-            "file": "src/playsim/fragglescript/t_func.cpp",
-            "symbol": "FParser SF gzd separators",
-            "start": 3767,
-            "end": 3775,
-            "tests": [
-              "VmFScriptParserSfGzdTests.SfSetLineTrigger_SetsSpecialOnId"
-            ]
-          },
-          {
-            "file": "src/playsim/fragglescript/t_func.cpp",
-            "symbol": "FParser SF gzd separators",
-            "start": 3800,
-            "end": 3807,
-            "tests": [
-              "VmFScriptParserSfGzdTests.SfRunLineSpecial_ExecutesDoor"
-            ]
-          },
-          {
-            "file": "src/playsim/fragglescript/t_func.cpp",
-            "symbol": "FParser SF gzd separators",
-            "start": 3822,
-            "end": 3829,
-            "tests": [
-              "VmFScriptParserSfGzdTests.SaveCurrentScript_EnqueuesRunner"
-            ]
-          },
-          {
-            "file": "src/playsim/fragglescript/t_func.cpp",
-            "symbol": "FParser SF gzd separators",
-            "start": 3843,
-            "end": 3849,
-            "tests": [
-              "VmFScriptParserSfGzdTests.SaveCurrentScript_EnqueuesRunner"
-            ]
-          }
-        ],
-        "nativeLoc": 150,
-        "managedLoc": 87,
-        "conversionManagedCommit": "996516d0507b16fc379648749caab09fb253960a"
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_SpawnShot2` | yes |\n| `SF_KillInSector` | yes |\n| `SF_SetLineTrigger` | yes |\n| `RunLineSpecial` | yes |\n| `SaveCurrentScript` | yes |\n\n| Managed | Native (`t_func.cpp` 3700\u20133849) |\n|---------|-------------------------|\n| `SfSpawnShot2` | **3707\u20133743** |\n| `SfKillInSector` | **3753\u20133766** |\n| `SfSetLineTrigger` | **3776\u20133799** |\n| `SfRunLineSpecial` | **3808\u20133821** |\n| `SaveCurrentScript` | **3830\u20133842** |\n| (separators) | **3700\u20133706**, **3744\u20133752**, **3767\u20133775**, **3800\u20133807**, **3822\u20133829**, **3843\u20133849** |\n\n### Out-of-body uncredit (849)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **48** |\n| **Honest** | **102** |\n",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "fd1d19f8ac22191c339ce0107d502594970bd4a0",
+        "retired": true
       },
       {
         "name": "fscript-parser-sf-wait-chunk850",
