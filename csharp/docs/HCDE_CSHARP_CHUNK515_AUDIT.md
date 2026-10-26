@@ -13,14 +13,15 @@ FBehavior::LoadScriptsDirectory
 ## Managed
 
 `VmAcsLoadScriptsDirectory.cs`
-Managed LOC (tally): 111.
-Conversion commit: `2800f4188f14a4d26521f8ce6e0c06eb5849cd4b`.
+Managed LOC (tally): 362.
+Conversion commit: `d7c1d96b55b18e217ccdf50eeeaf26452c10979b`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`p_acs.cpp`) |
 |---------|-------------------|
 | `DecodeOldScriptNumber` / `DecodeOldScriptType` / `CountEnhancedScriptsBy12` / `CountLittleEnhancedScriptsBy8` / `IsAcsMagicHeader` / `ShouldSkipEnhancedChunks` / `InitScriptVarCount` / `ShouldSortScripts` / `IsDuplicateScriptNumber` / `ShouldSwapClosedFirst` / `SnamIndexToNameTableIndex` / `IsNamedScriptNumber` / `SaryChunkLargeEnough` / `FlagChunkEntryCount` / `LoopHasMoreFlagEntries` / `CompareScriptNumber` / `EnhancedUsesIntermediateLayout` / `MapOldScriptEntry` / `MapEnhancedScriptEntry` / `TryResolveDuplicateSwap` / `FindChunkPresent` / `EnhancedScriptEntrySize` / `ScriptDirectoryHeaderSkipWords` / `PtrOffsetAfterCount` / `HasScriptDirectoryChunk` / `OldFormatDuplicateScanEnabled` / `MaxScriptIndex` / `CanCompareAdjacent` / `SflgChunkPayloadOffset` / `SvctChunkPayloadOffset` / `SaryScriptNumberOffset` / `SnamStringTableOffset` / `SnamLookupBaseIndex` / `ResolveSnamStringOffset` / `ScriptPtrFound` / `ApplyScriptFlags` / `ApplyVarCount` / `VarCountChunkPresent` / `ArrayChunkPresent` / `NameChunkPresent` / `ContinueSaryWalk` / `ResetScriptsDirectory` | `LoadScriptsDirectory` 2794–2991 (2817: `if (NumScripts != 0)`; 2839: `if (scripts.b == NULL)`; 2843: `else if (*(uint32_t *)Data != MAKE_ID('A','C','S',0))`) |
+| `ScriptPtrSlot` / `ScriptsDirectoryScratch` / `ResolveEnhancedScriptCount` / `PopulateOldFormatDirectory` / `PopulateEnhancedFormatDirectory` / `InitializeScriptDefaults` / `SortScriptsInPlace` / `ResolveOldFormatAdjacentDuplicates` / `ApplySflgChunkEntries` / `ApplySvctChunkEntries` / `WalkSaryChunks` / `ApplySnamNameIndices` / `RunLoadScriptsDirectory` | format switch **2812–2881**, default init **2888–2992**, duplicate swap **2902–2917**, SFLG/SVCT/SARY/SNAM passes **2920–2990** |
 
 ### Out-of-body uncredit (515)
 
@@ -31,7 +32,7 @@ Conversion commit: `2800f4188f14a4d26521f8ce6e0c06eb5849cd4b`.
 | **Honest** | **198** |
 
 
-**Post-review ratio:** 111/198 managed/native ≈ 56% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 362/198 managed/native ≈ 183% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -40,6 +41,9 @@ Conversion commit: `2800f4188f14a4d26521f8ce6e0c06eb5849cd4b`.
 - `VmAcsLoadScriptsDirectoryTests.TryResolveDuplicateSwap_ClosedWins`
 - `VmAcsLoadScriptsDirectoryTests.SnamIndexToNameTableIndex_Negative`
 - `VmAcsLoadScriptsDirectoryTests.ShouldSkipEnhancedChunks_OldFormat`
+- `VmAcsLoadScriptsDirectoryTests.ResolveEnhancedScriptCount_UsesEightByteStrideForMagicHeader`
+- `VmAcsLoadScriptsDirectoryTests.RunLoadScriptsDirectory_OldFormat_SortsAndSwapsClosedDuplicate`
+- `VmAcsLoadScriptsDirectoryTests.ApplySflgChunkEntries_UpdatesFlagsWhenScriptExists`
 
 ## Verified
 
