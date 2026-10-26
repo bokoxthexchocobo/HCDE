@@ -34,6 +34,8 @@
         ]
       }
     ],
-    "conversionManagedCommit": "3d6420bfddee21fec233f8daada070db07036996"
+    "conversionManagedCommit": "3d6420bfddee21fec233f8daada070db07036996",
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (208)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **196** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **196** |\n",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 208 --band` after out-of-body trim."
   }
 ]
