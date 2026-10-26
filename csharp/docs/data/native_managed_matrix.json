@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 221587
+    "managedCSharpLoc": 221636
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 73480,
+    "convertedThisRunManaged": 73529,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 83151,
+    "convertedBehaviorManaged": 83200,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -29536,8 +29536,8 @@
         ],
         "auditSingleFunctionOversizeException": true,
         "nativeLoc": 264,
-        "managedLoc": 221,
-        "conversionManagedCommit": "e6b9ba6c0e9ec40f94bc25187913a9bfe4f1f86e"
+        "managedLoc": 270,
+        "conversionManagedCommit": "51e0fee870ca32a3f03081f8eaf245bca2086121"
       },
       {
         "name": "fscript-prepro-chunk857",

@@ -27,8 +27,8 @@ FraggleScript variables from `fragglescript/t_variable.cpp` (1–424).
 ## Managed
 
 `VmFScriptVariable.cs`
-Managed LOC (tally): 221.
-Conversion commit: `05582feae59ed50ce80f19d013d79829b5ae5c6c`.
+Managed LOC (tally): 270.
+Conversion commit: `51e0fee870ca32a3f03081f8eaf245bca2086121`.
 
 ## Padding review (2026-10-21)
 
@@ -49,7 +49,7 @@ Gross **424** net +424 vs **854**.
 | **Honest** | **264** |
 
 
-**Post-review ratio:** 221/264 managed/native ≈ 84% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 270/264 managed/native ≈ 102% (src file LOC at HEAD; see tally).
 
 ## Tests
 
