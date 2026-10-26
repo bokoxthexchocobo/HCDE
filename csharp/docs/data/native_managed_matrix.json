@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 217650
+    "managedCSharpLoc": 217675
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 69507,
+    "convertedThisRunManaged": 69532,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 79178,
+    "convertedBehaviorManaged": 79203,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -29516,7 +29516,7 @@
         "auditRationale": "Second `t_spec` band; completes `EvaluateFunction` and native `.` (`OPstructure`).",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 860 --band \u2192 UNCredited, exit 0.",
         "auditManagedLocJustification": "`VmFScriptParserSpecRest.cs`.",
-        "auditPaddingReview": "**Behavior ported**\n\n| Native | Ported |\n|--------|--------|\n| `CreateVariable` / `ParseVarLine` / `spec_variable` | yes |\n| `spec_script` | yes |\n| `EvaluateFunction` | yes |\n| `OPstructure` (`.`) | yes |\n\n| Managed | Native (`t_spec.cpp`) |\n|---------|----------------------|\n| `CreateVariable` | **231\u2013265** |\n| `ParseVarLine` | **274\u2013287** |\n| `spec_variable` | **295\u2013350** |\n| `spec_script` | **367\u2013429** |\n| `EvaluateFunction` | **443\u2013519** |\n| `OpStructure` | **534\u2013605** |\n| (separators) | **222\u2013230**, **266\u2013273**, **288\u2013294**, **351\u2013366**, **430\u2013442**, **520\u2013533** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **384** |\n| Net | **+384** vs post-**859** |\n\n### Out-of-body uncredit (860)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **384** |\n| **Out-of-body removed** | **40** |\n| **Honest** | **344** |\n",
+        "auditPaddingReview": "**Behavior ported**\n\n| Native | Ported |\n|--------|--------|\n| `CreateVariable` / `ParseVarLine` / `spec_variable` | yes |\n| `spec_script` | yes |\n| `EvaluateFunction` | yes |\n| `OPstructure` (`.`) | yes |\n\n| Managed | Native (`t_spec.cpp`) |\n|---------|----------------------|\n| `ParseVariableDeclarationHeader` / `SpecVariable` | **295\u2013350** |\n| `CreateVariable` / `ParseVarLine` | **231\u2013287** |\n| `CopyChildScriptSectionBody` / `SpecScript` | **367\u2013429** |\n| `CollectCommaSeparatedArguments` / `ResolveGlobalCallable` / `InvokeCallable` / `EvaluateFunction` | **443\u2013519** |\n| `OpStructure` | **534\u2013605** |\n| (separators) | **222\u2013230**, **266\u2013273**, **288\u2013294**, **351\u2013366**, **430\u2013442**, **520\u2013533** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **384** |\n| Net | **+384** vs post-**859** |\n\n### Out-of-body uncredit (860)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **384** |\n| **Out-of-body removed** | **40** |\n| **Honest** | **344** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmFScriptParserSpecRest.cs"
         ],
@@ -29527,7 +29527,8 @@
             "start": 231,
             "end": 265,
             "tests": [
-              "VmFScriptParserSpecRestTests.SpecVariable_IntDecl_CreatesVariable"
+              "VmFScriptParserSpecRestTests.SpecVariable_IntDecl_CreatesVariable",
+              "VmFScriptParserSpecRestTests.SpecVariable_ConstDecl_CreatesVariable"
             ]
           },
           {
@@ -29536,7 +29537,8 @@
             "start": 274,
             "end": 287,
             "tests": [
-              "VmFScriptParserSpecRestTests.SpecVariable_IntDecl_CreatesVariable"
+              "VmFScriptParserSpecRestTests.SpecVariable_IntDecl_CreatesVariable",
+              "VmFScriptParserSpecRestTests.SpecVariable_ConstDecl_CreatesVariable"
             ]
           },
           {
@@ -29545,7 +29547,8 @@
             "start": 295,
             "end": 350,
             "tests": [
-              "VmFScriptParserSpecRestTests.SpecVariable_IntDecl_CreatesVariable"
+              "VmFScriptParserSpecRestTests.SpecVariable_IntDecl_CreatesVariable",
+              "VmFScriptParserSpecRestTests.SpecVariable_ConstDecl_CreatesVariable"
             ]
           },
           {
@@ -29565,7 +29568,8 @@
             "end": 519,
             "tests": [
               "VmFScriptParserSpecRestTests.EvaluateFunction_InvokesHandler",
-              "VmFScriptParserSpecRestTests.EvaluateFunction_PassesArgumentValues"
+              "VmFScriptParserSpecRestTests.EvaluateFunction_PassesArgumentValues",
+              "VmFScriptParserSpecRestTests.EvaluateFunction_LineSpec_InvokesRunLineSpecial"
             ]
           },
           {
@@ -29598,8 +29602,8 @@
           }
         ],
         "nativeLoc": 344,
-        "managedLoc": 251,
-        "conversionManagedCommit": "d8a5f449288238242957000ca0d87334b7d383d5"
+        "managedLoc": 276,
+        "conversionManagedCommit": "4a4abb50062265fd930024139364b0fce598815f"
       },
       {
         "name": "fscript-oper-table-logic-chunk861",

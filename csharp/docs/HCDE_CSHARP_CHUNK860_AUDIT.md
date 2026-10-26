@@ -20,8 +20,8 @@ FraggleScript variable/script specials from `fragglescript/t_spec.cpp` (231–60
 ## Managed
 
 `VmFScriptParserSpecRest.cs`
-Managed LOC (tally): 251.
-Conversion commit: `d8a5f449288238242957000ca0d87334b7d383d5`.
+Managed LOC (tally): 276.
+Conversion commit: `4a4abb50062265fd930024139364b0fce598815f`.
 
 ## Padding review (2026-10-21)
 
@@ -36,11 +36,10 @@ Conversion commit: `d8a5f449288238242957000ca0d87334b7d383d5`.
 
 | Managed | Native (`t_spec.cpp`) |
 |---------|----------------------|
-| `CreateVariable` | **231–265** |
-| `ParseVarLine` | **274–287** |
-| `spec_variable` | **295–350** |
-| `spec_script` | **367–429** |
-| `EvaluateFunction` | **443–519** |
+| `ParseVariableDeclarationHeader` / `SpecVariable` | **295–350** |
+| `CreateVariable` / `ParseVarLine` | **231–287** |
+| `CopyChildScriptSectionBody` / `SpecScript` | **367–429** |
+| `CollectCommaSeparatedArguments` / `ResolveGlobalCallable` / `InvokeCallable` / `EvaluateFunction` | **443–519** |
 | `OpStructure` | **534–605** |
 | (separators) | **222–230**, **266–273**, **288–294**, **351–366**, **430–442**, **520–533** |
 
@@ -60,15 +59,17 @@ Conversion commit: `d8a5f449288238242957000ca0d87334b7d383d5`.
 | **Honest** | **344** |
 
 
-**Post-review ratio:** 251/344 managed/native ≈ 73% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 276/344 managed/native ≈ 80% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmFScriptParserSpecRestTests.SpecVariable_IntDecl_CreatesVariable`
+- `VmFScriptParserSpecRestTests.SpecVariable_ConstDecl_CreatesVariable`
 - `VmFScriptParserSpecRestTests.SpecScript_StoresChildAndAdvancesRover`
 - `VmFScriptParserSpecRestTests.SpecScript_CopiesSectionBodyIntoChildData`
 - `VmFScriptParserSpecRestTests.EvaluateFunction_InvokesHandler`
 - `VmFScriptParserSpecRestTests.EvaluateFunction_PassesArgumentValues`
+- `VmFScriptParserSpecRestTests.EvaluateFunction_LineSpec_InvokesRunLineSpecial`
 - `VmFScriptParserSpecRestTests.OpStructure_InvokesDotCall`
 - `VmFScriptParserSpecRestTests.OpStructure_DotCallWithExtraArgument`
 
