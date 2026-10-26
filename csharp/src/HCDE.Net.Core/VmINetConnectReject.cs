@@ -3,6 +3,11 @@ namespace HCDE.Net.Core;
 /// <summary>Setup rejection and client add (<c>i_net.cpp</c> 2525–2676).</summary>
 public static class VmINetConnectReject
 {
+    public const byte VeEngine = 0;
+    public const byte VeFileUnknown = 1;
+    public const byte VeFileMissing = 2;
+    public const byte VeFileOrder = 3;
+
     public static void RejectConnectionNative(
         byte ncmdSetup,
         byte reason,
@@ -16,6 +21,17 @@ public static class VmINetConnectReject
         sendPacket?.Invoke();
     }
 
+    public static IReadOnlyList<string>? SelectVerificationFileListNative(in VerificationErrorPayload error)
+    {
+        if (error.ErrorCode == VeFileUnknown)
+            return error.UnknownFiles;
+        if (error.ErrorCode == VeFileOrder)
+            return error.ExpectedOrder;
+        if (error.ErrorCode == VeFileMissing)
+            return error.MissingFiles;
+        return null;
+    }
+
     public static void SendVerificationErrorNative(
         byte ncmdSetup,
         byte preVerificationError,
@@ -25,7 +41,8 @@ public static class VmINetConnectReject
         ref int netBufferLength,
         int maxMsgLen,
         Action? sendPacket,
-        Action<string>? debugMark)
+        Action<string>? debugMark,
+        Action<string>? printTruncated)
     {
         netBuffer[0] = ncmdSetup;
         netBuffer[1] = preVerificationError;
@@ -39,36 +56,44 @@ public static class VmINetConnectReject
             netBuffer[7] = error.NetMinor;
             netBuffer[8] = error.NetRevision;
             netBufferLength = 9;
+            sendPacket?.Invoke();
+            return;
         }
-        else
+
+        var files = SelectVerificationFileListNative(in error);
+        if (files is null || files.Count == 0)
         {
-            var files = error.FileList;
-            if (files is null || files.Count == 0)
-            {
-                debugMark?.Invoke($"verification error payload type {error.ErrorCode} has no list");
-                netBuffer[3] = netBuffer[4] = netBuffer[5] = netBuffer[6] = 0;
-                netBufferLength = 7;
-                sendPacket?.Invoke();
-                return;
-            }
-            var offset = 7;
-            var count = 0u;
-            foreach (var file in files)
-            {
-                var bytes = System.Text.Encoding.UTF8.GetBytes(file);
-                if (offset + bytes.Length + 1 > maxMsgLen)
-                    break;
-                bytes.CopyTo(netBuffer.Slice(offset));
-                offset += bytes.Length;
-                netBuffer[offset++] = 0;
-                count++;
-            }
-            netBuffer[3] = (byte)(count >> 24);
-            netBuffer[4] = (byte)(count >> 16);
-            netBuffer[5] = (byte)(count >> 8);
-            netBuffer[6] = (byte)count;
-            netBufferLength = offset;
+            debugMark?.Invoke($"verification error payload type {error.ErrorCode} has no list");
+            netBuffer[3] = netBuffer[4] = netBuffer[5] = netBuffer[6] = 0;
+            netBufferLength = 7;
+            sendPacket?.Invoke();
+            return;
         }
+
+        var offset = 7;
+        var count = 0u;
+        foreach (var file in files)
+        {
+            var bytes = System.Text.Encoding.UTF8.GetBytes(file);
+            var len = bytes.Length + 1;
+            if (offset + len > maxMsgLen)
+            {
+                debugMark?.Invoke($"verification error truncated after {count} entries");
+                printTruncated?.Invoke("Verification error reply truncated to fit packet size\n");
+                break;
+            }
+
+            bytes.CopyTo(netBuffer.Slice(offset));
+            netBuffer[offset + bytes.Length] = 0;
+            offset += len;
+            count++;
+        }
+
+        netBuffer[3] = (byte)(count >> 24);
+        netBuffer[4] = (byte)(count >> 16);
+        netBuffer[5] = (byte)(count >> 8);
+        netBuffer[6] = (byte)count;
+        netBufferLength = offset;
         sendPacket?.Invoke();
     }
 
@@ -76,31 +101,80 @@ public static class VmINetConnectReject
         int client,
         bool runtimeJoin,
         HcdeConnectInfoPacket connectInfo,
+        int maxClients,
+        uint peerAddress,
+        ushort peerPort,
+        byte cstatReady,
+        byte cstatWaiting,
+        Func<int, byte>? getClientStatus,
+        Func<uint, ushort, int, ulong>? makeSessionToken,
+        Func<int, bool>? isServerReservedSlot,
+        Func<int, bool>? playerHasLivePawnOrCamera,
         Action<int>? resetClientState,
         Action<int>? clearConnectedSlot,
-        Action<int, byte>? setStatusConnecting,
-        Action<int, uint>? setSessionToken,
+        Action<int, byte>? setClientStatus,
+        Action<int, uint, ushort>? setConnectedAddress,
+        Action<int, ulong>? setSessionToken,
         Action<int, bool, byte, byte>? setHcdeConnectFields,
         Action<int, bool>? setRuntimeJoinFlag,
         Action<int>? addNetworkClient,
-        Action<int, bool>? resetRuntimePlayerState,
+        Action<int, bool>? setPlayeringame,
+        Action<int, bool>? setPlayerWaiting,
+        Action<int, bool>? setPlayerInconsistant,
+        Action<int, bool>? setSettingsController,
+        Action<int, byte, string>? setPlayerState,
+        byte playerStateGone,
+        byte playerStateDead,
         Action<int>? netClientUpdated,
-        Action<int, int>? demoteReadyClientsToWaiting)
+        Action<string>? netLog,
+        Action<string>? admissionPolicyBugLog)
     {
         resetClientState?.Invoke(client);
         clearConnectedSlot?.Invoke(client);
-        setStatusConnecting?.Invoke(client, 1);
-        setSessionToken?.Invoke(client, 0);
-        if (connectInfo.Present)
-            setHcdeConnectFields?.Invoke(client, true, connectInfo.Version, connectInfo.Flags);
+        setClientStatus?.Invoke(client, 1);
+        setConnectedAddress?.Invoke(client, peerAddress, peerPort);
+        var token = makeSessionToken?.Invoke(peerAddress, peerPort, client) ?? 0;
+        setSessionToken?.Invoke(client, token);
+        setHcdeConnectFields?.Invoke(client, connectInfo.Present, connectInfo.Version, connectInfo.Flags);
         setRuntimeJoinFlag?.Invoke(client, runtimeJoin);
         addNetworkClient?.Invoke(client);
-        if (runtimeJoin)
-            resetRuntimePlayerState?.Invoke(client, true);
+
+        if (runtimeJoin && isServerReservedSlot?.Invoke(client) != true)
+        {
+            setPlayeringame?.Invoke(client, false);
+            setPlayerWaiting?.Invoke(client, false);
+            setPlayerInconsistant?.Invoke(client, false);
+            setSettingsController?.Invoke(client, false);
+            if (playerHasLivePawnOrCamera?.Invoke(client) == true)
+                setPlayerState?.Invoke(client, playerStateGone, "runtime_connect_transport_reset");
+            else
+                setPlayerState?.Invoke(client, playerStateDead, "runtime_connect_transport_reset");
+        }
+
         if (connectInfo.Present)
-            netClientUpdated?.Invoke(client);
-        else if (!runtimeJoin)
-            demoteReadyClientsToWaiting?.Invoke(1, client);
+        {
+            var runtimeSuffix = runtimeJoin ? " (runtime join)" : "";
+            netLog?.Invoke(
+                $"Client {client} connected to server with HCDE service connect v{connectInfo.Version} flags=0x{connectInfo.Flags:X2}{runtimeSuffix} dest={peerAddress}:{peerPort}");
+        }
+        else
+        {
+            admissionPolicyBugLog?.Invoke(
+                $"Client {client} admitted without HCDE service info (admission policy bug){(runtimeJoin ? " (runtime join)" : "")}");
+        }
+
+        netClientUpdated?.Invoke(client);
+
+        if (!runtimeJoin)
+        {
+            for (var i = 1; i < maxClients; i++)
+            {
+                if (getClientStatus?.Invoke(i) != cstatReady)
+                    continue;
+                setClientStatus?.Invoke(i, cstatWaiting);
+                netClientUpdated?.Invoke(i);
+            }
+        }
     }
 }
 
@@ -112,7 +186,9 @@ public readonly struct VerificationErrorPayload(
     byte netMajor,
     byte netMinor,
     byte netRevision,
-    IReadOnlyList<string>? fileList)
+    IReadOnlyList<string>? unknownFiles,
+    IReadOnlyList<string>? expectedOrder,
+    IReadOnlyList<string>? missingFiles)
 {
     public byte ErrorCode { get; } = errorCode;
     public byte Major { get; } = major;
@@ -121,5 +197,20 @@ public readonly struct VerificationErrorPayload(
     public byte NetMajor { get; } = netMajor;
     public byte NetMinor { get; } = netMinor;
     public byte NetRevision { get; } = netRevision;
-    public IReadOnlyList<string>? FileList { get; } = fileList;
+    public IReadOnlyList<string>? UnknownFiles { get; } = unknownFiles;
+    public IReadOnlyList<string>? ExpectedOrder { get; } = expectedOrder;
+    public IReadOnlyList<string>? MissingFiles { get; } = missingFiles;
+
+    public VerificationErrorPayload(
+        byte errorCode,
+        byte major,
+        byte minor,
+        byte revision,
+        byte netMajor,
+        byte netMinor,
+        byte netRevision,
+        IReadOnlyList<string>? fileList)
+        : this(errorCode, major, minor, revision, netMajor, netMinor, netRevision, fileList, fileList, fileList)
+    {
+    }
 }
