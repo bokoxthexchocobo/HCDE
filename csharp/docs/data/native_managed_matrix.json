@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 216684
+    "managedCSharpLoc": 216794
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 68541,
+    "convertedThisRunManaged": 68651,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 78212,
+    "convertedBehaviorManaged": 78322,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -18145,7 +18145,7 @@
         "note": "Guest HCDE services through `JoinGame` (`i_net.cpp` 3951\u20134260)",
         "auditSeams": "Reliable services, `Net_Read*` helpers, and `I_NetLoop` are injected. `JoinGameContext` is uncredited in `VmINetQueryModels.cs`.",
         "auditRationale": "`Guest_ContactHost` service switch tail and whole `JoinGame`.",
-        "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GuestContactHostServicesNative` | `HPS_GAME_INFO` body, roster, bootstrap, start 3951\u20134087 |\n| `GuestContactHostServicesNative` | setup watchdog, flush, outbound setup packets 4090\u20134177 |\n| `JoinGameNative` | `JoinGame` 4182\u20134260 |\n\n### Out-of-body uncredit (634)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **304** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **304** |\n",
+        "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `HandleGameInfoService` / `GameInfoPayloadSizes` / `ClampGameInfoTicDup` | `HPS_GAME_INFO` 3951\u20133968 |\n| `TryHandleRosterService` / `RosterPacketLooksValid` / `ValidateRosterClientId` / `ReadBigEndianUInt16` | roster 3970\u20134047 |\n| `TryHandleBootstrapBeginService` | bootstrap 4049\u20134067 |\n| `TryHandleStartGameService` | start 4068\u20134081 |\n| `RunGuestSetupWatchdog` / `SendGuestOutboundSetup` | setup watchdog + outbound 4090\u20134177 |\n| `JoinArgMissing` / `PromoteConnectedClientsToReady` / `JoinGameNative` | `JoinGame` 4182\u20134260 |\n\n### Out-of-body uncredit (634)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **304** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **304** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Net.Core/VmINetGuestContactHost.cs",
           "csharp/src/HCDE.Net.Core/VmINetJoinGame.cs"
@@ -18183,8 +18183,8 @@
           }
         ],
         "nativeLoc": 304,
-        "managedLoc": 193,
-        "conversionManagedCommit": "31e25e7f65548ca3ad27c1f66917fdceb1ef5694"
+        "managedLoc": 303,
+        "conversionManagedCommit": "ba66ecd5c1888f9b80922bf8505a22c78b7fde49"
       },
       {
         "name": "i-net-init-network-chunk635",

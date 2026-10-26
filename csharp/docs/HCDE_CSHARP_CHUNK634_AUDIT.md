@@ -15,16 +15,19 @@ Guest HCDE services through `JoinGame` (`i_net.cpp` 3951–4260)
 ## Managed
 
 `VmINetGuestContactHost.cs`, `VmINetJoinGame.cs`
-Managed LOC (tally): 193.
-Conversion commit: `31e25e7f65548ca3ad27c1f66917fdceb1ef5694`.
+Managed LOC (tally): 303.
+Conversion commit: `ba66ecd5c1888f9b80922bf8505a22c78b7fde49`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`i_net.cpp`) |
 |---------|-------------------|
-| `GuestContactHostServicesNative` | `HPS_GAME_INFO` body, roster, bootstrap, start 3951–4087 |
-| `GuestContactHostServicesNative` | setup watchdog, flush, outbound setup packets 4090–4177 |
-| `JoinGameNative` | `JoinGame` 4182–4260 |
+| `HandleGameInfoService` / `GameInfoPayloadSizes` / `ClampGameInfoTicDup` | `HPS_GAME_INFO` 3951–3968 |
+| `TryHandleRosterService` / `RosterPacketLooksValid` / `ValidateRosterClientId` / `ReadBigEndianUInt16` | roster 3970–4047 |
+| `TryHandleBootstrapBeginService` | bootstrap 4049–4067 |
+| `TryHandleStartGameService` | start 4068–4081 |
+| `RunGuestSetupWatchdog` / `SendGuestOutboundSetup` | setup watchdog + outbound 4090–4177 |
+| `JoinArgMissing` / `PromoteConnectedClientsToReady` / `JoinGameNative` | `JoinGame` 4182–4260 |
 
 ### Out-of-body uncredit (634)
 
@@ -35,7 +38,7 @@ Conversion commit: `31e25e7f65548ca3ad27c1f66917fdceb1ef5694`.
 | **Honest** | **304** |
 
 
-**Post-review ratio:** 193/304 managed/native ≈ 63% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 303/304 managed/native ≈ 100% (src file LOC at HEAD; see tally).
 
 ## Tests
 
