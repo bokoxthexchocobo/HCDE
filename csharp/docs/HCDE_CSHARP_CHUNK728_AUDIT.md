@@ -14,7 +14,7 @@ Whole `AActor::Tick` (`p_mobj.cpp` 4523–5075).
 
 `VmPMobjActorTick.cs`
 Managed LOC (tally): 614.
-Conversion commit: `3cfb58993ddf81aa690f5d953133b36e01659141`.
+Conversion commit: `ddd18e8a07c4028dfd8bbc31ccd7b503b7955575`.
 
 ## Padding review (2026-10-21)
 
@@ -57,7 +57,7 @@ Conversion commit: `3cfb58993ddf81aa690f5d953133b36e01659141`.
 
 ## Seams
 
-`TickBehaviors`, inventory `DoEffect`, scroll carry, `P_XYMovement`, `P_CheckOnmobj`, `P_ZMovement`, `P_BounceActor`, `P_ExplodeMissile`, and sector actions are injected.
+Live playsim: `ActorPmobjTickBridge` → `VmPMobjActorTick.Tick` for non-projectile actors; sector carry post-thinker via `ActorPhysics.ApplySectorScroll`. Inventory `DoEffect`, `P_BounceActor`, `P_ExplodeMissile`, and sector actions remain injected.
 
 ## Credit rationale
 
