@@ -33,8 +33,8 @@ FraggleScript `/`/`%`, bitwise, `++`/`--`, `<=`/`>=`, and `.` dispatch from `t_o
 ## Managed
 
 `VmFScriptParserOper863.cs`
-Managed LOC (tally): 162.
-Conversion commit: `d170ec51db0e09227113fb349f0a5e8df36b91bc`.
+Managed LOC (tally): 224.
+Conversion commit: `262bfe65acb3477cd30e1d0c85e872c7fb095dc1`.
 
 ## Padding review (2026-10-21)
 
@@ -72,7 +72,7 @@ Conversion commit: `d170ec51db0e09227113fb349f0a5e8df36b91bc`.
 | **Honest** | **210** |
 
 
-**Post-review ratio:** 162/210 managed/native ≈ 77% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 224/210 managed/native ≈ 107% (src file LOC at HEAD; see tally).
 
 ## Tests
 
