@@ -1,26 +1,35 @@
-# Chunk 212 — R_InitSpriteDefs texture hash and voxel name spin parse.
+# Chunk 212 — R_InitSpriteDefs texture hash chain only (trimmed re-audit) Retired (2026-10-23): out-of-body credit removed; honest **14** < **150**.
 
 ## Scope
 
-R_InitSpriteDefs texture hash and voxel name spin parse.
+R_InitSpriteDefs texture hash chain only (trimmed re-audit) Retired (2026-10-23): out-of-body credit removed; honest **14** < **150**.
 
 ## Native ranges
 
-- `src/r_data/sprites.cpp` **R_InitSpriteDefs hash** 328–341 (14 lines)
-- `src/r_data/sprites.cpp` **voxel name parse** 347–395 (49 lines)
 
-**Credited native LOC:** 63 (tally `nativeLoc` 63).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmSpriteTextureHasher.cs`, `VmSpriteTextureHasherTests.cs`
-Managed LOC (tally): 55.
-Conversion commit: `1509d90300cfd1ec535a43fd9dff5a3febd3bb9c`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `073ebcc45d88795befd134b17051f24beadba13c`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (212)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **14** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **14** |
+
 
 ## Tests
 
-- `VmSpriteTextureHasherTests.BuildSpriteTextureChains_LinksSamePrefix`
-- `VmVoxelSpinNameParserTests.TryParse_ReadsSpinSign`
 
 ## Verified
 
@@ -32,4 +41,4 @@ Native engine globals and VM dispatch are not re-hosted; only credited control f
 
 ## Credit rationale
 
-Only lines whose control flow and validation are exercised by the named `[Fact]` methods above are credited; scanner framing and VM hooks outside those paths are not counted.
+Credits `SpriteNameId` hash bucket linking in `R_InitSpriteDefs` — not the full voxel lump name scan loop.

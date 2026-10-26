@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 47226,
+    "convertedThisRunNative": 47212,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 67810,
+    "convertedThisRunManaged": 67784,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 441579,
+    "remainingNative": 441593,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 65753,
+    "convertedBehaviorNative": 65739,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 66507,
-    "convertedBehaviorManaged": 77481,
+    "combinedBehaviorNative": 66493,
+    "convertedBehaviorManaged": 77455,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8251,23 +8251,17 @@
       {
         "name": "sprite-init-hash-chunk212",
         "bucket": "conversion",
-        "managedLoc": 26,
-        "note": "R_InitSpriteDefs texture hash chain only (trimmed re-audit)",
-        "nativeRanges": [
-          {
-            "file": "src/r_data/sprites.cpp",
-            "symbol": "R_InitSpriteDefs hash",
-            "start": 328,
-            "end": 341,
-            "tests": [
-              "VmSpriteTextureHasherTests.BuildSpriteTextureChains_LinksSamePrefix"
-            ]
-          }
-        ],
-        "conversionManagedCommit": "6f09ab4a59fc473f8f83bddf253e4b42175b6ea1",
-        "nativeLoc": 14,
+        "managedLoc": 0,
+        "note": "R_InitSpriteDefs texture hash chain only (trimmed re-audit) Retired (2026-10-23): out-of-body credit removed; honest **14** < **150**.",
+        "nativeRanges": [],
+        "conversionManagedCommit": "073ebcc45d88795befd134b17051f24beadba13c",
+        "nativeLoc": 0,
         "auditRationale": "Credits `SpriteNameId` hash bucket linking in `R_InitSpriteDefs` \u2014 not the full voxel lump name scan loop.",
-        "auditSeams": ""
+        "auditSeams": "",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (212)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **14** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **14** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "doomedmap-resolve-chunk213",
