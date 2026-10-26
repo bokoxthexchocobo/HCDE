@@ -5,6 +5,7 @@ public static class VmPEnemyLookTargets
 {
     public const int MonsLookRange = 20 * 64;
     public const int MonsLookLimit = 64;
+    public const int PrLookForMonstersThreshold = 16;
     public const int Mf3Ismonster = 1;
     public const int MfShootable = 1;
     public const int Mf2Dormant = 1 << 1;
@@ -20,6 +21,7 @@ public static class VmPEnemyLookTargets
         public object? Target { get; set; }
         public object? Goal { get; set; }
         public object? LastLookActor { get; set; }
+        public int LastLookActorTid { get; set; }
         public object? LastEnemy { get; set; }
         public int LastEnemyHealth { get; set; }
         public bool LastEnemyIsFriend { get; set; }
@@ -32,10 +34,11 @@ public static class VmPEnemyLookTargets
         public Func<string, string, bool>? CheckSight { get; init; }
         public Func<int>? PrLookForMonsters { get; init; }
         public Func<int>? PrLook3 { get; init; }
-        public Func<object?, bool>? IsVisible { get; init; }
+        public Func<object, bool, bool>? IsVisible { get; init; }
         public Func<object, int, object?>? BlockmapSearch { get; init; }
         public Func<int, object?, IEnumerable<object?>>? ActorIterator { get; init; }
         public Func<object, object, bool>? ValidEnemyInBlock { get; init; }
+        public Func<object, bool>? IsFriend { get; init; }
     }
 
     public sealed class MonsterCandidate
@@ -61,18 +64,66 @@ public static class VmPEnemyLookTargets
         public int TargetTid { get; init; }
     }
 
+    static void ResetReactionIfLeavingGoal(LookActorState actor)
+    {
+        if (actor.Goal != null && ReferenceEquals(actor.Target, actor.Goal))
+            actor.ReactionTime = 0;
+    }
+
+    static bool TryAssignGoalOrLastEnemy(LookActorState actor, bool chasegoal)
+    {
+        if (actor.Goal != null && chasegoal)
+        {
+            actor.Target = actor.Goal;
+            return true;
+        }
+
+        if (actor.LastEnemy != null && actor.LastEnemyHealth > 0)
+        {
+            if (actor.IsFriend?.Invoke(actor.LastEnemy) == true || actor.LastEnemyIsFriend)
+            {
+                actor.LastEnemy = null;
+                return false;
+            }
+
+            actor.Target = actor.LastEnemy;
+            actor.LastEnemy = null;
+            return true;
+        }
+
+        actor.LastEnemy = null;
+        return false;
+    }
+
+    static void ClearLastLookActorIfTidMismatch(LookActorState actor)
+    {
+        if (actor.LastLookActor != null && actor.LastLookActorTid != actor.TidToHate)
+            actor.LastLookActor = null;
+    }
+
+    static bool IsShootableActive(BlockLink link, string selfId) =>
+        (link.Flags & MfShootable) != 0 && link.Id != selfId && link.Health > 0 && (link.Flags2 & Mf2Dormant) == 0;
+
     public static bool LookForMonsters(LookActorState actor)
     {
-        if (actor.PlayerCanSeeActor?.Invoke() != true) return false;
+        if (actor.PlayerCanSeeActor?.Invoke() != true)
+            return false;
+
         var count = 0;
         foreach (var mo in actor.EnumerateMonsters?.Invoke() ?? Array.Empty<MonsterCandidate>())
         {
-            if ((mo.Flags3 & Mf3Ismonster) == 0 || mo.Id == actor.ActorId || mo.Health <= 0) continue;
-            if (mo.Distance2d > MonsLookRange) continue;
-            if ((actor.PrLookForMonsters?.Invoke() ?? 255) < 16) continue;
-            if (++count >= MonsLookLimit) return false;
-            if (mo.Species == actor.Species) continue;
-            if (actor.CheckSight?.Invoke(actor.ActorId, mo.Id) != true) continue;
+            if ((mo.Flags3 & Mf3Ismonster) == 0 || mo.Id == actor.ActorId || mo.Health <= 0)
+                continue;
+            if (mo.Distance2d > MonsLookRange)
+                continue;
+            if ((actor.PrLookForMonsters?.Invoke() ?? 255) < PrLookForMonstersThreshold)
+                continue;
+            if (++count >= MonsLookLimit)
+                return false;
+            if (mo.Species == actor.Species)
+                continue;
+            if (actor.CheckSight?.Invoke(actor.ActorId, mo.Id) != true)
+                continue;
             actor.Target = mo.Id;
             return true;
         }
@@ -84,19 +135,23 @@ public static class VmPEnemyLookTargets
     {
         foreach (var link in links)
         {
-            if ((link.Flags & MfShootable) == 0 || link.Id == lookee.ActorId || link.Health <= 0) continue;
-            if ((link.Flags2 & Mf2Dormant) != 0) continue;
+            if (!IsShootableActive(link, lookee.ActorId))
+                continue;
+
             object? other;
-            if (link.Tid == lookee.TidToHate) other = link.Id;
+            if (link.Tid == lookee.TidToHate)
+                other = link.Id;
             else if (link.Target != null && link.TargetTid == lookee.TidToHate)
             {
                 other = link.Target;
                 if ((link.TargetFlags & MfShootable) == 0 || link.TargetHealth <= 0 || (link.TargetFlags2 & Mf2Dormant) != 0)
                     continue;
             }
-            else continue;
+            else
+                continue;
 
-            if ((lookee.Flags3 & Mf3Nosightcheck) == 0 && lookee.IsVisible?.Invoke(other) != true) continue;
+            if ((lookee.Flags3 & Mf3Nosightcheck) == 0 && lookee.IsVisible?.Invoke(other, true) != true)
+                continue;
             return other;
         }
 
@@ -109,57 +164,57 @@ public static class VmPEnemyLookTargets
         var other = actor.BlockmapSearch?.Invoke(actor, 0);
         if (other != null)
         {
-            if (actor.Goal != null && ReferenceEquals(actor.Target, actor.Goal)) actor.ReactionTime = 0;
+            ResetReactionIfLeavingGoal(actor);
             actor.Target = other;
             actor.LastLookActor = other;
             return true;
         }
 
+        ClearLastLookActorIfTidMismatch(actor);
+
         var c = ((actor.PrLook3?.Invoke() ?? 0) & 31) + 7;
         var reachedend = false;
+        object? loopOther = null;
         foreach (var candidate in actor.ActorIterator?.Invoke(actor.TidToHate, actor.LastLookActor) ?? Array.Empty<object?>())
         {
+            loopOther = candidate;
             if (candidate == null)
             {
-                if (reachedend) break;
+                if (reachedend)
+                    break;
                 reachedend = true;
                 continue;
             }
 
             if (candidate is BlockLink bl)
             {
-                if ((bl.Flags & MfShootable) == 0 || bl.Id == actor.ActorId || bl.Health <= 0) continue;
-                if ((bl.Flags2 & Mf2Dormant) != 0) continue;
-                if (--c == 0) break;
-                if ((actor.Flags3 & Mf3Nosightcheck) == 0 && actor.IsVisible?.Invoke(candidate) != true) continue;
-                if (actor.Goal != null && ReferenceEquals(actor.Target, actor.Goal)) actor.ReactionTime = 0;
+                if (!IsShootableActive(bl, actor.ActorId))
+                    continue;
+                if (--c == 0)
+                    break;
+                if ((actor.Flags3 & Mf3Nosightcheck) == 0 && actor.IsVisible?.Invoke(candidate, allaround) != true)
+                    continue;
+                ResetReactionIfLeavingGoal(actor);
                 actor.Target = candidate;
                 actor.LastLookActor = candidate;
                 return true;
             }
         }
 
+        actor.LastLookActor = loopOther;
         if (actor.Target == null)
-        {
-            if (actor.Goal != null && chasegoal) { actor.Target = actor.Goal; return true; }
-            if (actor.LastEnemy != null && actor.LastEnemyHealth > 0 && !actor.LastEnemyIsFriend)
-            {
-                actor.Target = actor.LastEnemy;
-                actor.LastEnemy = null;
-                return true;
-            }
-
-            actor.LastEnemy = null;
-        }
-
+            return TryAssignGoalOrLastEnemy(actor, chasegoal);
         return false;
     }
 
     public static object? LookForEnemiesInBlock(LookActorState lookee, IEnumerable<BlockLink> links)
     {
         foreach (var link in links)
+        {
             if (lookee.ValidEnemyInBlock?.Invoke(lookee, link) == true)
                 return link.Id;
+        }
+
         return null;
     }
 
@@ -168,24 +223,13 @@ public static class VmPEnemyLookTargets
         var other = actor.BlockmapSearch?.Invoke(actor, actor.FriendlySeeBlocks);
         if (other != null)
         {
-            if (actor.Goal != null && ReferenceEquals(actor.Target, actor.Goal)) actor.ReactionTime = 0;
+            ResetReactionIfLeavingGoal(actor);
             actor.Target = other;
             return true;
         }
 
         if (actor.Target == null)
-        {
-            if (actor.Goal != null) { actor.Target = actor.Goal; return true; }
-            if (actor.LastEnemy != null && actor.LastEnemyHealth > 0 && !actor.LastEnemyIsFriend)
-            {
-                actor.Target = actor.LastEnemy;
-                actor.LastEnemy = null;
-                return true;
-            }
-
-            actor.LastEnemy = null;
-        }
-
+            return TryAssignGoalOrLastEnemy(actor, chasegoal: true);
         return false;
     }
 }

@@ -60,7 +60,7 @@ public class VmPEnemyLookTargetsTests
         {
             ActorId = "self",
             TidToHate = 5,
-            IsVisible = _ => true,
+            IsVisible = (_, _) => true,
         };
         var hit = VmPEnemyLookTargets.LookForTidInBlock(lookee, new[]
         {
@@ -124,6 +124,41 @@ public class VmPEnemyLookTargetsTests
             new VmPEnemyLookTargets.BlockLink { Id = "enemy" },
         });
         Assert.Equal("enemy", hit);
+    }
+
+    [Fact]
+    public void LookTid_ClearsStaleLastLookActor()
+    {
+        var stale = new object();
+        var actor = new VmPEnemyLookTargets.LookActorState
+        {
+            ActorId = "self",
+            TidToHate = 9,
+            LastLookActor = stale,
+            LastLookActorTid = 1,
+            BlockmapSearch = (_, _) => null,
+            ActorIterator = (_, _) => Array.Empty<object?>(),
+        };
+        Assert.False(VmPEnemyLookTargets.LookForTid(actor, false));
+        Assert.Null(actor.LastLookActor);
+    }
+
+    [Fact]
+    public void LookTid_LastEnemySkipsFriend()
+    {
+        var last = new object();
+        var actor = new VmPEnemyLookTargets.LookActorState
+        {
+            ActorId = "self",
+            TidToHate = 1,
+            LastEnemy = last,
+            LastEnemyHealth = 10,
+            IsFriend = _ => true,
+            BlockmapSearch = (_, _) => null,
+            ActorIterator = (_, _) => Array.Empty<object?>(),
+        };
+        Assert.False(VmPEnemyLookTargets.LookForTid(actor, false));
+        Assert.Null(actor.LastEnemy);
     }
 
     [Fact]
