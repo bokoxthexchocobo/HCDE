@@ -232,10 +232,10 @@ public static class VmAcsDoSetActorProperty
 
     public readonly record struct AActorRef(int Health, bool PlayerDead, bool HasPlayer, bool CountsAsKill);
 
-    public readonly record struct SetActorPropertyPlan(bool Abort, PropertyDispatchDescriptor Dispatch);
+    public readonly record struct ActorPropertyDispatchOutcome(bool Abort, PropertyDispatchDescriptor Dispatch);
 
     /// <summary>Native entry guards: null actor, default switch arm, dead health skip.</summary>
-    public static SetActorPropertyPlan PlanSetActorProperty(AActorRef? actor, Aprop property)
+    public static ActorPropertyDispatchOutcome EvaluateActorPropertyDispatch(AActorRef? actor, Aprop property)
     {
         if (ActorIsNull(actor))
             return new(true, default);
