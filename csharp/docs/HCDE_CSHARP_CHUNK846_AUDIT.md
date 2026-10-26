@@ -10,8 +10,6 @@
 - `src/playsim/fragglescript/t_func.cpp` **FParser::SF_PlayDemo** 3250–3253 (4 lines)
 - `src/playsim/fragglescript/t_func.cpp` **FParser::SF_CheckCVar** 3255–3258 (4 lines)
 - `src/playsim/fragglescript/t_func.cpp` **FParser::SF_ObjType** 3317–3341 (25 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF stub separators** 3249–3249 (1 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF stub separators** 3254–3254 (1 lines)
 - `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Sin** 3349–3355 (7 lines)
 - `src/playsim/fragglescript/t_func.cpp` **FParser::SF_ASin** 3358–3364 (7 lines)
 - `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Cos** 3367–3373 (7 lines)
@@ -19,31 +17,21 @@
 - `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Tan** 3385–3391 (7 lines)
 - `src/playsim/fragglescript/t_func.cpp` **FParser::SF_ATan** 3394–3400 (7 lines)
 - `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Exp** 3403–3409 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Log** 3412–3418 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Sqrt** 3421–3427 (7 lines)
+- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Log** 3412–3417 (6 lines)
+- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Sqrt** 3421–3426 (6 lines)
 - `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Floor** 3429–3436 (8 lines)
 - `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Pow** 3439–3445 (7 lines)
 - `src/playsim/fragglescript/t_func.cpp` **FParser::SF_SetCorona** 3481–3533 (53 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF trig separators** 3343–3348 (6 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF trig separators** 3356–3357 (2 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF trig separators** 3365–3366 (2 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF trig separators** 3374–3375 (2 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF trig separators** 3383–3384 (2 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF trig separators** 3392–3393 (2 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF trig separators** 3401–3402 (2 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF trig separators** 3410–3411 (2 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF trig separators** 3419–3420 (2 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF trig separators** 3428–3428 (1 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF trig separators** 3446–3453 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF trig separators** 3473–3480 (8 lines)
+- `src/playsim/fragglescript/t_func.cpp` **FParser SF trig separators** 3411–3411 (1 lines)
+- `src/playsim/fragglescript/t_func.cpp` **FParser SF trig separators** 3420–3420 (1 lines)
 
-**Credited native LOC:** 209 (tally `nativeLoc` 209).
+**Credited native LOC:** 168 (tally `nativeLoc` 168).
 
 ## Managed
 
 `VmFScriptParserSfTrig.cs`
 Managed LOC (tally): 109.
-Conversion commit: `a6add2db203d0894d5cfba1ae37b4f88fbc66436`.
+Conversion commit: `a41d470fbcc20f4eeb5007bf630c056bc88c1f6f`.
 
 ## Padding review (2026-10-21)
 
@@ -88,7 +76,16 @@ Conversion commit: `a6add2db203d0894d5cfba1ae37b4f88fbc66436`.
 | `SfSetCorona` | **3481–3533** |
 | (separators / deferred) | **3249**, **3254**, **3342–3348**, **3356–3357**, **3365–3366**, **3374–3375**, **3383–3384**, **3392–3393**, **3401–3402**, **3410–3411**, **3419–3420**, **3428**, **3446–3453**, **3473–3480**; **3259–3316** combat; **3454–3472** HUD pics |
 
-**Post-review ratio:** 109/209 managed/native ≈ 52% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (846)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **209** |
+| **Out-of-body removed** | **41** |
+| **Honest** | **168** |
+
+
+**Post-review ratio:** 109/168 managed/native ≈ 65% (src file LOC at HEAD; see tally).
 
 ## Tests
 
