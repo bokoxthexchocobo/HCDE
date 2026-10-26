@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 47158,
+    "convertedThisRunNative": 47081,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 67736,
+    "convertedThisRunManaged": 67659,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 441647,
+    "remainingNative": 441724,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 65685,
+    "convertedBehaviorNative": 65608,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 66439,
-    "convertedBehaviorManaged": 77407,
+    "combinedBehaviorNative": 66362,
+    "convertedBehaviorManaged": 77330,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8279,30 +8279,15 @@
       {
         "name": "doomedmap-spawnmap-chunk214",
         "bucket": "conversion",
-        "managedLoc": 77,
-        "note": "ParseSpawnMap and InitClassMap.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/g_doomedmap.cpp",
-            "symbol": "ParseSpawnMap",
-            "start": 361,
-            "end": 405,
-            "tests": [
-              "VmDoomEdSpawnMapParserTests.TryParseSpawnMap_ReadsPairs"
-            ]
-          },
-          {
-            "file": "src/gamedata/g_doomedmap.cpp",
-            "symbol": "InitClassMap",
-            "start": 420,
-            "end": 451,
-            "tests": [
-              "VmDoomEdSpawnMapParserTests.TryParseSpawnMap_ReadsPairs"
-            ]
-          }
-        ],
-        "conversionManagedCommit": "769f4fb5c53a9b8838f40dce58efc7ff2bb528ec",
-        "nativeLoc": 77
+        "managedLoc": 0,
+        "note": "ParseSpawnMap and InitClassMap. Retired (2026-10-23): out-of-body credit removed; honest **76** < **150**.",
+        "nativeRanges": [],
+        "conversionManagedCommit": "a4754442058387b337d505f08d422457f2cc2419",
+        "nativeLoc": 0,
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (214)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **77** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **76** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "umapinfo-token-chunk215",
