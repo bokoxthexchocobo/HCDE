@@ -18,7 +18,7 @@ public class VmINetConnectRejectTests
     {
         var buf = new byte[16];
         var len = 0;
-        var err = new VerificationErrorPayload(0, 2, 3, 4, 5, 6, 7, null);
+        var err = new VerificationErrorPayload(0, 2, 3, 4, 5, 6, 7, null, null, null);
         VmINetConnectReject.SendVerificationErrorNative(0x80, 9, 0, err, buf, ref len, 512, () => { }, null, null);
         Assert.Equal(9, len);
         Assert.Equal(2, buf[3]);

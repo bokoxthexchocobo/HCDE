@@ -200,17 +200,4 @@ public readonly struct VerificationErrorPayload(
     public IReadOnlyList<string>? UnknownFiles { get; } = unknownFiles;
     public IReadOnlyList<string>? ExpectedOrder { get; } = expectedOrder;
     public IReadOnlyList<string>? MissingFiles { get; } = missingFiles;
-
-    public VerificationErrorPayload(
-        byte errorCode,
-        byte major,
-        byte minor,
-        byte revision,
-        byte netMajor,
-        byte netMinor,
-        byte netRevision,
-        IReadOnlyList<string>? fileList)
-        : this(errorCode, major, minor, revision, netMajor, netMinor, netRevision, fileList, fileList, fileList)
-    {
-    }
 }
