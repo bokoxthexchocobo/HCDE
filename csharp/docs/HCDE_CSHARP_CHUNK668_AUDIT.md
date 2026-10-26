@@ -13,8 +13,8 @@ Whole `FPathTraverse::AddThingIntercepts` (`p_maputl.cpp` 1194–1361).
 ## Managed
 
 `VmPMapUtlAddThingIntercepts.cs`
-Managed LOC (tally): 121.
-Conversion commit: `401ed9157dc0f8eb5c6367499b3ce83a337eea55`.
+Managed LOC (tally): 145.
+Conversion commit: `a9140a580ecc36950f3267ae845699680146959e`.
 
 ## Padding review (2026-10-21)
 
@@ -31,7 +31,7 @@ Conversion commit: `401ed9157dc0f8eb5c6367499b3ce83a337eea55`.
 | **Honest** | **168** |
 
 
-**Post-review ratio:** 121/168 managed/native ≈ 72% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 145/168 managed/native ≈ 86% (src file LOC at HEAD; see tally).
 
 ## Tests
 
