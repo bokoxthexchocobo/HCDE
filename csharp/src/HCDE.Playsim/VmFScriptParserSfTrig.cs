@@ -11,6 +11,8 @@ public static partial class VmFScriptParser
     public const int CoronaWhatDynamicColor = 5;
     public const int CoronaWhatDynamicRadius = 6;
 
+    const long FixedWholeMask = 0xffff0000L;
+
     static double FloatArg(ParserContext ctx, ScriptValue v) => ctx.FloatValue(v);
 
     static void ReturnInt(ParserContext ctx, int value)
@@ -35,14 +37,51 @@ public static partial class VmFScriptParser
         return true;
     }
 
+    static long TruncateFixedWhole(long fixedBits) => fixedBits & FixedWholeMask;
+
+    static int MatchActorTypeIndex(ParserContext ctx, object? mo)
+    {
+        if (mo == null)
+            return -1;
+        var cls = ctx.GetActorClass(mo);
+        for (var i = 0; i < ctx.ActorTypes.Length; i++)
+        {
+            if (ReferenceEquals(cls, ctx.ActorTypes[i]))
+                return i;
+        }
+
+        return -1;
+    }
+
+    static string CoronaColorFromArg(ParserContext ctx, ScriptValue rawVal, double val) =>
+        rawVal.Type == SvtString
+            ? ctx.StringValue(rawVal)
+            : val.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+    static void SetCoronaScalarField(int num, double val)
+    {
+        // Native `lspr[num].*` assignment disabled; mirrors type/offset/radius cases.
+        _ = num;
+        _ = val;
+    }
+
+    static void SetCoronaColorField(int num, string colorLiteral)
+    {
+        // Native String2Hex / memcpy path disabled.
+        _ = num;
+        _ = colorLiteral;
+    }
+
     public static void SfSkinColor(ParserContext ctx)
     {
         // Native: ignoring it for now (`SF_SkinColor` 3245–3248).
+        _ = ctx;
     }
 
     public static void SfPlayDemo(ParserContext ctx)
     {
         // Native: ignoring it for now (`SF_PlayDemo` 3250–3253).
+        _ = ctx;
     }
 
     public static void SfCheckCVar(ParserContext ctx)
@@ -53,21 +92,13 @@ public static partial class VmFScriptParser
 
     public static void SfObjType(ParserContext ctx)
     {
-        var mo = ActActor(ctx);
-        if (mo != null)
-        {
-            var cls = ctx.GetActorClass(mo);
-            for (var i = 0; i < ctx.ActorTypes.Length; i++)
-            {
-                if (ReferenceEquals(cls, ctx.ActorTypes[i]))
-                {
-                    ReturnInt(ctx, i);
-                    return;
-                }
-            }
-        }
+        object? raw;
+        if (ctx.TArgc > 0)
+            raw = ctx.ActorValue(ctx.TArgv[0]);
+        else
+            raw = ctx.Script?.Trigger;
 
-        ReturnInt(ctx, -1);
+        ReturnInt(ctx, MatchActorTypeIndex(ctx, AsActor(raw)));
     }
 
     public static void SfSin(ParserContext ctx) => RunUnaryDouble(ctx, Math.Sin);
@@ -94,33 +125,34 @@ public static partial class VmFScriptParser
             return;
         var fixedBits = (long)FsFixValue(ctx, ctx.TArgv[0]);
         ctx.TReturn.Type = SvtFixed;
-        ctx.TReturn.FixedValue = fixedBits & 0xffff0000L;
+        ctx.TReturn.FixedValue = TruncateFixedWhole(fixedBits);
     }
 
     public static void SfPow(ParserContext ctx) => RunBinaryDouble(ctx, Math.Pow);
 
     static void ApplySetCoronaField(ParserContext ctx, int num, int what, double val, ScriptValue rawVal)
     {
-        // Native `lspr` mutation is disabled; cases mirror `SF_SetCorona` switch (3493–3527).
         switch (what)
         {
             case CoronaWhatType:
+                SetCoronaScalarField(num, val);
+                break;
             case CoronaWhatLightXOffset:
             case CoronaWhatLightYOffset:
+                SetCoronaScalarField(num, val);
+                break;
             case CoronaWhatCoronaRadius:
             case CoronaWhatDynamicRadius:
+                SetCoronaScalarField(num, val);
                 break;
             case CoronaWhatCoronaColor:
             case CoronaWhatDynamicColor:
-                _ = rawVal.Type == SvtString ? ctx.StringValue(rawVal) : val.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                SetCoronaColorField(num, CoronaColorFromArg(ctx, rawVal, val));
                 break;
             default:
                 ctx.PrintHigh("Error in setcorona\n");
                 break;
         }
-
-        _ = num;
-        _ = val;
     }
 
     public static void SfSetCorona(ParserContext ctx)
