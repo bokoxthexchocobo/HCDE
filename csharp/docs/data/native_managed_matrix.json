@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 218338
+    "managedCSharpLoc": 218540
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 70195,
+    "convertedThisRunManaged": 70397,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 79866,
+    "convertedBehaviorManaged": 80068,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -14107,14 +14107,18 @@
             "end": 2016,
             "tests": [
               "ZccTypeCastResolveTests.PlanRawFunction_RejectsVirtual",
-              "ZccTypeCastResolveTests.CompatiblePointerTypes_RejectsConstStrip"
+              "ZccTypeCastResolveTests.CompatiblePointerTypes_RejectsConstStrip",
+              "ZccTypeCastResolveTests.RunTypeCastResolvePipeline_DelegatesFloatCast",
+              "ZccTypeCastResolveTests.RunTypeCastResolvePipeline_RawFunctionRejectVirtual",
+              "ZccTypeCastResolveTests.NativeStructReadonlyBlocksWritable_At412"
             ]
           }
         ],
         "nativeLoc": 240,
-        "managedLoc": 154,
-        "conversionManagedCommit": "b0926b7dd98b0d6b7a96558130e1423174aaa547",
-        "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `convertRawFunctionToFunctionPointer` **1775\u20131801** and `FxTypeCast::Resolve` early branches **1804\u20132016** (`codegen.cpp`).\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `PlanRawFunctionPointer` | `convertRawFunctionToFunctionPointer` **1775\u20131801** |\n| `InvalidCastTypes` | **1832\u20131844** |\n| `NullPtrToPointer` | **1851\u20131853** |\n| `NullPtrToIdTypes` / `VersionAtLeast` / `MakeVersion` | **1855\u20131859** |\n| `ClassDescendantAllowsCast` | **1957\u20131962** |\n| `NativeStructToWritablePointer` | **1965\u20131979** |\n| `CompatiblePointerTypes` | `AreCompatiblePointerTypes` **1982\u20131984** (helper at **267\u2013308**) |\n| `CompatibleVectors` | **1994\u20131999** |\n| `ClassifyResolveCast` | composite of **1831\u20132000** branches |\n\n### Out-of-body uncredit (527)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **240** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **240** |\n"
+        "managedLoc": 356,
+        "conversionManagedCommit": "00529874e2d32a0640055966955590cadd16055f",
+        "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `convertRawFunctionToFunctionPointer` **1775\u20131801** and `FxTypeCast::Resolve` early branches **1804\u20132016** (`codegen.cpp`).\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `PlanRawFunctionPointer` | `convertRawFunctionToFunctionPointer` **1775\u20131801** |\n| `InvalidCastTypes` | **1832\u20131844** |\n| `NullPtrToPointer` | **1851\u20131853** |\n| `NullPtrToIdTypes` / `VersionAtLeast` / `MakeVersion` | **1855\u20131859** |\n| `ClassDescendantAllowsCast` | **1957\u20131962** |\n| `NativeStructToWritablePointer` | **1965\u20131979** |\n| `CompatiblePointerTypes` | `AreCompatiblePointerTypes` **1982\u20131984** (helper at **267\u2013308**) |\n| `CompatibleVectors` | **1994\u20131999** |\n| `ClassifyResolveCast` | composite of **1831\u20132000** branches |\n| `RunTypeCastResolvePipeline` / `SelectSecondaryCastDelegate` / `ShouldConvertRawToFunctionPointer` / `ShouldConvertRawToVmFunction` / `NativeStructReadonlyBlocksWritable` / `DescribeObjectPointer` | `Resolve` dispatch **1815\u20132016** (raw fn **1815\u20131829**, secondary Fx* casts **1861\u20131993**, native struct **1965\u20131979**) |\n\n### Out-of-body uncredit (527)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **240** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **240** |\n",
+        "auditManagedLocJustification": "`RunTypeCastResolvePipeline` sequences `FxTypeCast::Resolve` branches without hosting `FxFloatCast`/`FxIntCast` nodes or `ScriptPosition.Message`."
       },
       {
         "name": "p-action-check-lof-chunk528",

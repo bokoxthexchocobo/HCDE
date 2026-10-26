@@ -14,8 +14,8 @@ FxTypeCast::Resolve
 ## Managed
 
 `ZccTypeCastResolve.cs`
-Managed LOC (tally): 154.
-Conversion commit: `b0926b7dd98b0d6b7a96558130e1423174aaa547`.
+Managed LOC (tally): 356.
+Conversion commit: `00529874e2d32a0640055966955590cadd16055f`.
 
 ## Padding review (2026-10-21)
 
@@ -32,6 +32,7 @@ Conversion commit: `b0926b7dd98b0d6b7a96558130e1423174aaa547`.
 | `CompatiblePointerTypes` | `AreCompatiblePointerTypes` **1982–1984** (helper at **267–308**) |
 | `CompatibleVectors` | **1994–1999** |
 | `ClassifyResolveCast` | composite of **1831–2000** branches |
+| `RunTypeCastResolvePipeline` / `SelectSecondaryCastDelegate` / `ShouldConvertRawToFunctionPointer` / `ShouldConvertRawToVmFunction` / `NativeStructReadonlyBlocksWritable` / `DescribeObjectPointer` | `Resolve` dispatch **1815–2016** (raw fn **1815–1829**, secondary Fx* casts **1861–1993**, native struct **1965–1979**) |
 
 ### Out-of-body uncredit (527)
 
@@ -42,12 +43,15 @@ Conversion commit: `b0926b7dd98b0d6b7a96558130e1423174aaa547`.
 | **Honest** | **240** |
 
 
-**Post-review ratio:** 154/240 managed/native ≈ 64% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 356/240 managed/native ≈ 148% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `ZccTypeCastResolveTests.PlanRawFunction_RejectsVirtual`
 - `ZccTypeCastResolveTests.CompatiblePointerTypes_RejectsConstStrip`
+- `ZccTypeCastResolveTests.RunTypeCastResolvePipeline_DelegatesFloatCast`
+- `ZccTypeCastResolveTests.RunTypeCastResolvePipeline_RawFunctionRejectVirtual`
+- `ZccTypeCastResolveTests.NativeStructReadonlyBlocksWritable_At412`
 
 ## Verified
 
