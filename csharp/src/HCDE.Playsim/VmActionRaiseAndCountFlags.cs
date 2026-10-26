@@ -72,17 +72,126 @@ public static class VmActionRaiseAndCountFlags
 
     public static bool RefireContinuesFiring(bool probFails, bool targetInvalid) => !probFails && !targetInvalid;
 
-    public static bool SetAngleOnRef(bool refNull) => !refNull;
-
-    public static bool SetPitchOnRef(bool refNull) => !refNull;
-
-    public static bool SetRollOnRef(bool refNull) => !refNull;
-
-    public static bool SetViewAngleOnRef(bool refNull) => !refNull;
-
-    public static bool SetViewPitchOnRef(bool refNull) => !refNull;
-
     public static bool CheckFlagResult(bool ownerNull, bool flagSet) => !ownerNull && flagSet;
+
+    public readonly record struct LevelCountTotals(int Monsters, int Items, int Secrets);
+
+    public static (LevelCountTotals Totals, AActorRaiseRef Actor) RunChangeCountFlags(
+        LevelCountTotals totals,
+        AActorRaiseRef actor,
+        int kill,
+        int item,
+        int secret)
+    {
+        var (monsters, items, secrets, flags, flags5) = PlanChangeCountFlags(
+            totals.Monsters,
+            totals.Items,
+            totals.Secrets,
+            actor.Flags,
+            actor.Flags5,
+            actor.CountsAsKill,
+            actor.Health > 0,
+            kill,
+            item,
+            secret);
+        actor = actor with { Flags = flags, Flags5 = flags5 };
+        return (new LevelCountTotals(monsters, items, secrets), actor);
+    }
+
+    public delegate bool RaiseActorDelegate(AActorRaiseRef victim, AActorRaiseRef raiser, int flags);
+
+    public static bool TryRaiseMaster(AActorRaiseRef self, AActorRaiseRef? master, int flags, RaiseActorDelegate raise) =>
+        master is not null && raise(master.Value, self, flags);
+
+    public static int RaiseChildrenOnLevel(
+        AActorRaiseRef parent,
+        ReadOnlySpan<AActorRaiseRef> levelActors,
+        int flags,
+        RaiseActorDelegate raise)
+    {
+        var raised = 0;
+        foreach (var mo in levelActors)
+        {
+            if (!ChildUsesMaster(mo, parent))
+                continue;
+            if (raise(mo, parent, flags))
+                raised++;
+        }
+
+        return raised;
+    }
+
+    public static int RaiseSiblingsOnLevel(
+        AActorRaiseRef self,
+        AActorRaiseRef? master,
+        ReadOnlySpan<AActorRaiseRef> levelActors,
+        int flags,
+        RaiseActorDelegate raise)
+    {
+        if (master is null)
+            return 0;
+        var raised = 0;
+        foreach (var mo in levelActors)
+        {
+            if (!SiblingSharesMaster(self, mo, master.Value))
+                continue;
+            if (raise(mo, self, flags))
+                raised++;
+        }
+
+        return raised;
+    }
+
+    public static bool RaiseSelf(AActorRaiseRef self, int flags, RaiseActorDelegate raise) =>
+        raise(self, self, flags);
+
+    public enum MonsterRefireOutcome
+    {
+        KeepFiring,
+        Jump,
+    }
+
+    public static MonsterRefireOutcome DecideMonsterRefire(
+        int roll,
+        int prob,
+        bool targetNull,
+        bool hitFriend,
+        int targetHealth,
+        bool sightOk)
+    {
+        if (RefireProbabilityFails(roll, prob))
+            return MonsterRefireOutcome.KeepFiring;
+        if (RefireTargetInvalid(targetNull, hitFriend, targetHealth, sightOk))
+            return MonsterRefireOutcome.Jump;
+        return MonsterRefireOutcome.KeepFiring;
+    }
+
+    public static bool TrySetAngle(AActorRaiseRef? refActor, double angleDegrees, int flags, Action<AActorRaiseRef, double, int>? setAngle) =>
+        TrySetOrientation(refActor, setAngle, angleDegrees, flags);
+
+    public static bool TrySetPitch(AActorRaiseRef? refActor, double pitchDegrees, int flags, Action<AActorRaiseRef, double, int>? setPitch) =>
+        TrySetOrientation(refActor, setPitch, pitchDegrees, flags);
+
+    public static bool TrySetRoll(AActorRaiseRef? refActor, double rollDegrees, int flags, Action<AActorRaiseRef, double, int>? setRoll) =>
+        TrySetOrientation(refActor, setRoll, rollDegrees, flags);
+
+    public static bool TrySetViewAngle(AActorRaiseRef? refActor, double angleDegrees, int flags, Action<AActorRaiseRef, double, int>? setViewAngle) =>
+        TrySetOrientation(refActor, setViewAngle, angleDegrees, flags);
+
+    public static bool TrySetViewPitch(AActorRaiseRef? refActor, double pitchDegrees, int flags, Action<AActorRaiseRef, double, int>? setViewPitch) =>
+        TrySetOrientation(refActor, setViewPitch, pitchDegrees, flags);
+
+    static bool TrySetOrientation<T>(
+        AActorRaiseRef? refActor,
+        Action<AActorRaiseRef, T, int>? setter,
+        T value,
+        int flags)
+    {
+        if (refActor is null || setter is null)
+            return false;
+        setter(refActor.Value, value, flags);
+        return true;
+    }
 
     public enum CountFlagsPlan
     {
