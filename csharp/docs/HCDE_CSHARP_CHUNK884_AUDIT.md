@@ -15,7 +15,7 @@
 
 `VmPSpecTestActivateLine.cs`, `VmPSpecPredictLine.cs`
 Managed LOC (tally): 252.
-Conversion commit: `3ca72aaa09cf557fd7c02f83d6ae50fe585487d1`.
+Conversion commit: `764878f4548aa1a5faf1ffda2ea75f0044f57bb5`.
 
 ## Padding review (2026-10-21)
 
@@ -52,6 +52,14 @@ Conversion commit: `3ca72aaa09cf557fd7c02f83d6ae50fe585487d1`.
 |--|------:|
 | Gross native (`nativeLoc`) | **157** |
 | Net behavior-ported | **157** |
+
+### Out-of-body uncredit (884)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **150** |
 
 
 **Post-review ratio:** 252/150 managed/native ≈ 168% (src file LOC at HEAD; see tally).
