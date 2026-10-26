@@ -82,6 +82,43 @@ public class VmAScrollTests
     }
 
     [Fact]
+    public void CarryAffectsActor_RespectsScrollMask()
+    {
+        Assert.True(VmAScroll.CarryAffectsActor(new VmAScroll.TouchingThing(true, false, false), VmAScroll.ScrollPlayers));
+        Assert.False(VmAScroll.CarryAffectsActor(new VmAScroll.TouchingThing(false, true, false), VmAScroll.ScrollPlayers));
+    }
+
+    [Fact]
+    public void RunScrollerTick_CarryCeilingSetsVelocity()
+    {
+        var vel = false;
+        VmAScroll.RunScrollerTick(
+            new VmAScroll.ScrollState { Type = VmAScroll.ScCarryCeiling, Dx = 2, Dy = 3 },
+            null,
+            _ => 0,
+            (_, dx, dy, _) => (dx, dy),
+            true,
+            0,
+            (_, _) => { },
+            (_, _) => { },
+            (_, _) => { },
+            (_, _) => { },
+            (_, _) => { },
+            (_, _) => { },
+            [new VmAScroll.TouchingThing(false, false, true)],
+            (_, _, _, _) => VmAScroll.CeilingCarryEligible(VmAScroll.MfSpawnceiling | VmAScroll.MfNogravity, 0, true),
+            (_, _, _) => vel = true,
+            null);
+        Assert.True(vel);
+    }
+
+    [Fact]
+    public void ApplySerializeAffectDefault_FillsScrollAll()
+    {
+        Assert.Equal(VmAScroll.ScrollAll, VmAScroll.ApplySerializeAffectDefault(true, 0));
+    }
+
+    [Fact]
     public void SetWallScroller_ZeroRateDoesNotCreate()
     {
         var created = false;
