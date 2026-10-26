@@ -6,32 +6,26 @@ Cajun bot movement from `b_move.cpp` (1–374).
 
 ## Native ranges
 
-- `src/playsim/bots/b_move.cpp` **b_move headers** 1–48 (48 lines)
+- `src/playsim/bots/b_move.cpp` **b_move headers** 48–48 (1 lines)
 - `src/playsim/bots/b_move.cpp` **b_move separators** 49–49 (1 lines)
 - `src/playsim/bots/b_move.cpp` **DBot::Roam** 50–74 (25 lines)
-- `src/playsim/bots/b_move.cpp` **b_move separators** 75–75 (1 lines)
 - `src/playsim/bots/b_move.cpp` **DBot::Move** 76–134 (59 lines)
-- `src/playsim/bots/b_move.cpp` **b_move separators** 135–135 (1 lines)
 - `src/playsim/bots/b_move.cpp` **DBot::TryWalk** 136–143 (8 lines)
-- `src/playsim/bots/b_move.cpp` **b_move separators** 144–144 (1 lines)
 - `src/playsim/bots/b_move.cpp` **DBot::NewChaseDir** 145–268 (124 lines)
-- `src/playsim/bots/b_move.cpp` **b_move separators** 269–276 (8 lines)
+- `src/playsim/bots/b_move.cpp` **b_move separators** 271–276 (6 lines)
 - `src/playsim/bots/b_move.cpp` **FCajunMaster::CleanAhead** 277–320 (44 lines)
-- `src/playsim/bots/b_move.cpp` **b_move separators** 321–321 (1 lines)
-- `src/playsim/bots/b_move.cpp` **b_move defines** 322–325 (4 lines)
 - `src/playsim/bots/b_move.cpp` **DBot::TurnToAng** 326–358 (33 lines)
-- `src/playsim/bots/b_move.cpp` **b_move separators** 359–359 (1 lines)
 - `src/playsim/bots/b_move.cpp` **DBot::Pitch** 360–368 (9 lines)
-- `src/playsim/bots/b_move.cpp` **b_move separators** 369–370 (2 lines)
+- `src/playsim/bots/b_move.cpp` **b_move separators** 370–370 (1 lines)
 - `src/playsim/bots/b_move.cpp` **FCajunMaster::IsDangerous** 371–374 (4 lines)
 
-**Credited native LOC:** 374 (tally `nativeLoc` 374).
+**Credited native LOC:** 315 (tally `nativeLoc` 315).
 
 ## Managed
 
 `VmBBotMove.cs`
 Managed LOC (tally): 376.
-Conversion commit: `df2610badfd9f9d9f1d288b19a5be8c3dde7874a`.
+Conversion commit: `a0da488192010241c65853dd965dbd241290e3f3`.
 
 ## Padding review (2026-10-21)
 
@@ -68,7 +62,16 @@ Conversion commit: `df2610badfd9f9d9f1d288b19a5be8c3dde7874a`.
 |--|------:|
 | `nativeLoc` | **374** |
 
-**Post-review ratio:** 376/374 managed/native ≈ 101% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (875)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **374** |
+| **Out-of-body removed** | **59** |
+| **Honest** | **315** |
+
+
+**Post-review ratio:** 376/315 managed/native ≈ 119% (src file LOC at HEAD; see tally).
 
 ## Tests
 
