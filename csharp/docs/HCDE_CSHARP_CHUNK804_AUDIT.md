@@ -14,8 +14,8 @@ Whole `P_CheckSwitchRange` and `P_StartButton` (`p_switch.cpp` 71–88, 98–234
 ## Managed
 
 `VmPSwitchCheckRange.cs`
-Managed LOC (tally): 88.
-Conversion commit: `448c2d4511032bdf165b4819abde38caed3abc0e`.
+Managed LOC (tally): 135.
+Conversion commit: `bf6498e9c78eedb7da9d0a7227d65eecc677ba6b`.
 
 ## Padding review (2026-10-21)
 
@@ -23,6 +23,7 @@ Conversion commit: `448c2d4511032bdf165b4819abde38caed3abc0e`.
 |---------|----------------------|
 | `CheckSwitchRange` | `P_CheckSwitchRange` **98–234** |
 | `StartButton` | `P_StartButton` **71–88** |
+| `RunCheckSwitchRangePipeline` / `EffectiveSwitchFlags` / `FindActiveButton` | reachability phases **117–233**, button scan **77–84** |
 
 ### Out-of-body uncredit (804)
 
@@ -33,11 +34,13 @@ Conversion commit: `448c2d4511032bdf165b4819abde38caed3abc0e`.
 | **Honest** | **155** |
 
 
-**Post-review ratio:** 88/155 managed/native ≈ 57% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 135/155 managed/native ≈ 87% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmPSwitchCheckRangeTests.CheckSwitchRange_SkipsWhenNoFlags`
+- `VmPSwitchCheckRangeTests.EffectiveSwitchFlags_ClearsMidtexWhenNoTexture`
+- `VmPSwitchCheckRangeTests.RunCheckSwitchRangePipeline_UsesTopSwitchPath`
 - `SwitchCheckRangeTests.TopSwitchRequiresReachableHeight`
 - `VmPSwitchCheckRangeTests.StartButton_RepressSetsTimer`
 - `SwitchTextureTests.RePressingActiveButtonAdvancesTimer`
