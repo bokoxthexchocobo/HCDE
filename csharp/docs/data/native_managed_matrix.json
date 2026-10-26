@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 222236
+    "managedCSharpLoc": 222229
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 74129,
+    "convertedThisRunManaged": 74122,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 83800,
+    "convertedBehaviorManaged": 83793,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -14054,8 +14054,8 @@
           }
         ],
         "nativeLoc": 240,
-        "managedLoc": 258,
-        "conversionManagedCommit": "61901b9fdcf175b52873dd218d071d6765fe00b1",
+        "managedLoc": 251,
+        "conversionManagedCommit": "787fb231cf4c7abfd08ec65e0c387b86a375ff3d",
         "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `DLevelScript::DoSetActorProperty` switch planning **4166\u20134405** (`p_acs.cpp`). Excluded live `actor->Die`, `LookupString`, and field mutation.\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|---------------------|\n| `ActorIsNull` | **4168\u20134170** |\n| `ShouldSkipHealthOnDead` / `HealthShouldDie` | **4175\u20134188** |\n| `AcsToDouble` / `AcsToFloat` | `ACSToDouble` use **4193**, **4201**, etc. |\n| `TryMapLegacyRenderStyle` | **4204\u20134212** |\n| `ToggleFlag` / `FlagMaskForProperty` / `IsFlagProperty` | flag cases **4215\u20134252**, **4240\u20134251** |\n| `RequiresPlayerPawn` | **4235\u20134238**, **4268\u20134272**, **4353\u20134366**, **4389\u20134396** |\n| `RequiresPlayerWithSoundClass` | **4390\u20134395** |\n| `UsesBehaviorStringLookup` | **4279\u20134308**, **4385\u20134394** |\n| `UsesAcsDouble` | **4192\u20134201**, **4275\u20134378** |\n| `ApplyFriendlyFlag` / `MonsterTotalBeforeFriendlyToggle` / `MonsterTotalAfterFriendlyToggle` | **4254\u20134264** |\n| `DescribePropertyDispatchNative` | whole `switch` **4172\u20134404** |\n\n### Out-of-body uncredit (524)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **240** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **240** |\n"
       },
       {
