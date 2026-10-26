@@ -33,6 +33,99 @@ public static partial class VmFScriptParser
 
     public readonly record struct VarDeclHeader(int StartToken, int VarType, VmFScriptScript.FsScript TargetScript, bool IsScriptDecl);
 
+    public static bool ValidateFunctionCallSyntax(ExprFrame expr, int start, int stop, out string? error)
+    {
+        if (expr.TokenType[start] == TokenFunctionExpr
+            && expr.TokenType[stop] == TokenOperatorExpr
+            && expr.Tokens[stop] == ")")
+        {
+            error = null;
+            return true;
+        }
+
+        error = "misplaced closing paren\n";
+        return false;
+    }
+
+    public static bool ValidateVariableNameToken(ExprFrame expr, int tokenIndex, out string? error)
+    {
+        if (expr.TokenType[tokenIndex] == TokenNameExpr)
+        {
+            error = null;
+            return true;
+        }
+
+        error = $"invalid name for variable: '{expr.Tokens[tokenIndex]}'\n";
+        return false;
+    }
+
+    public static bool HubMobjCreationBlocked(SpecRestState st, VmFScriptScript.FsScript newVarScript, int newVarType) =>
+        newVarScript != st.Expr.Script && newVarType == VmFScriptVariable.SvtMobj;
+
+    public static bool TryResolveStructureCallable(
+        SpecRestState st,
+        int nameToken,
+        out VmFScriptScript.FsVariable? func,
+        out string? error)
+    {
+        error = null;
+        func = VmFScriptVariable.VariableForName(st.Expr.GlobalScript!, st.Expr.Tokens[nameToken]);
+        if (func == null)
+        {
+            error = $"no such function: '{st.Expr.Tokens[nameToken]}'\n";
+            return false;
+        }
+
+        if (func.Type != VmFScriptVariable.SvtFunction)
+        {
+            error = $"'{st.Expr.Tokens[nameToken]}' not a function\n";
+            return false;
+        }
+
+        return true;
+    }
+
+    public static void MaterializeOpStructureArguments(SpecRestState st, int start, int dotIndex, int stop, out int argc)
+    {
+        EvaluateExpression(st.Expr, st.TArgv[0], start, dotIndex - 1);
+        argc = 1;
+        if (stop != dotIndex + 1)
+            argc = CollectCommaSeparatedArguments(st, dotIndex + 3, stop, 1);
+    }
+
+    public static bool TryParseScriptNumber(SpecRestState st, out int scriptNum, out string? error)
+    {
+        error = null;
+        scriptNum = 0;
+        if (st.Expr.NumTokens < 2)
+        {
+            error = "need newscript number\n";
+            return false;
+        }
+
+        var result = new ScriptValue();
+        EvaluateExpression(st.Expr, result, 1, st.Expr.NumTokens - 1);
+        scriptNum = IntValue(result);
+        if (scriptNum < 0)
+        {
+            error = "invalid newscript number\n";
+            return false;
+        }
+
+        return true;
+    }
+
+    public static void AttachChildScriptFromSection(SpecRestState st, int scriptNum, VmFScriptScript.FsScript newScript)
+    {
+        st.StoreChildScript(st.Expr.Script!, scriptNum, newScript);
+        newScript.Data = CopyChildScriptSectionBody(st, st.Expr.Script!, st.Section!);
+        newScript.ScriptNum = scriptNum;
+        newScript.Parent = st.Expr.Script;
+        var host = new VmFScriptPrepro.PreprocessHost { Level = st.Level };
+        st.PreprocessScript(host, newScript);
+        st.Rover = st.SectionEnd(st.Section!) + 1;
+    }
+
     public static VarDeclHeader ParseVariableDeclarationHeader(SpecRestState st)
     {
         var start = 0;
@@ -131,21 +224,24 @@ public static partial class VmFScriptParser
 
     public static void CreateVariable(SpecRestState st, int newVarType, VmFScriptScript.FsScript newVarScript, int start, int stop)
     {
-        if (st.Expr.TokenType[start] != TokenNameExpr)
+        if (!ValidateVariableNameToken(st.Expr, start, out var nameError))
         {
-            st.Expr.ScriptError($"invalid name for variable: '{st.Expr.Tokens[start]}'\n");
+            st.Expr.ScriptError(nameError!);
             return;
         }
+
         if (VmFScriptVariable.VariableForName(newVarScript, st.Expr.Tokens[start]) != null)
         {
             st.Expr.Printf($"FS: redefined symbol: '{st.Expr.Tokens[start]}'\n");
             return;
         }
-        if (newVarScript != st.Expr.Script && newVarType == VmFScriptVariable.SvtMobj)
+
+        if (HubMobjCreationBlocked(st, newVarScript, newVarType))
         {
             st.Expr.ScriptError("cannot create mobj reference in hub script\n");
             return;
         }
+
         VmFScriptVariable.NewVariable(newVarScript, st.Expr.Tokens[start], newVarType);
         if (stop != start)
         {
@@ -193,34 +289,22 @@ public static partial class VmFScriptParser
             st.Expr.ScriptError("need seperators for newscript\n");
             return;
         }
-        if (st.Expr.NumTokens < 2)
+
+        if (!TryParseScriptNumber(st, out var scriptNum, out var parseError))
         {
-            st.Expr.ScriptError("need newscript number\n");
+            st.Expr.ScriptError(parseError!);
             return;
         }
-        var result = new ScriptValue();
-        EvaluateExpression(st.Expr, result, 1, st.Expr.NumTokens - 1);
-        var scriptNum = IntValue(result);
-        if (scriptNum < 0)
-        {
-            st.Expr.ScriptError("invalid newscript number\n");
-            return;
-        }
+
         var newScript = st.CreateChildScript();
-        st.StoreChildScript(st.Expr.Script!, scriptNum, newScript);
-        newScript.Data = CopyChildScriptSectionBody(st, st.Expr.Script!, st.Section);
-        newScript.ScriptNum = scriptNum;
-        newScript.Parent = st.Expr.Script;
-        var host = new VmFScriptPrepro.PreprocessHost { Level = st.Level };
-        st.PreprocessScript(host, newScript);
-        st.Rover = st.SectionEnd(st.Section) + 1;
+        AttachChildScriptFromSection(st, scriptNum, newScript);
     }
 
-    public static void EvaluateFunction(SpecRestState st, ScriptValue result, int start, int stop)
+    public static void RunEvaluateFunctionPipeline(SpecRestState st, ScriptValue result, int start, int stop)
     {
-        if (st.Expr.TokenType[start] != TokenFunctionExpr || st.Expr.TokenType[stop] != TokenOperatorExpr || st.Expr.Tokens[stop] != ")")
+        if (!ValidateFunctionCallSyntax(st.Expr, start, stop, out var syntaxError))
         {
-            st.Expr.ScriptError("misplaced closing paren\n");
+            st.Expr.ScriptError(syntaxError!);
             return;
         }
 
@@ -237,26 +321,20 @@ public static partial class VmFScriptParser
         CopyReturn(st.TReturn, result);
     }
 
-    public static void OpStructure(SpecRestState st, ScriptValue result, int start, int n, int stop)
+    public static void EvaluateFunction(SpecRestState st, ScriptValue result, int start, int stop) =>
+        RunEvaluateFunctionPipeline(st, result, start, stop);
+
+    public static void RunOpStructurePipeline(SpecRestState st, ScriptValue result, int start, int n, int stop)
     {
-        var func = VmFScriptVariable.VariableForName(st.Expr.GlobalScript!, st.Expr.Tokens[n + 1]);
-        if (func == null)
+        if (!TryResolveStructureCallable(st, n + 1, out var func, out var resolveError))
         {
-            st.Expr.ScriptError($"no such function: '{st.Expr.Tokens[n + 1]}'\n");
+            st.Expr.ScriptError(resolveError!);
             return;
         }
 
-        if (func.Type != VmFScriptVariable.SvtFunction)
-        {
-            st.Expr.ScriptError($"'{st.Expr.Tokens[n + 1]}' not a function\n");
-            return;
-        }
-
-        EvaluateExpression(st.Expr, st.TArgv[0], start, n - 1);
-        st.TArgc = stop == n + 1
-            ? 1
-            : CollectCommaSeparatedArguments(st, n + 3, stop, 1);
-        st.TFunc = func.Name;
+        MaterializeOpStructureArguments(st, start, n, stop, out var argc);
+        st.TArgc = argc;
+        st.TFunc = func!.Name;
         ResetFunctionReturnValue(st);
         if (func.FunctionHandler == null)
             st.Expr.ScriptError($"'{st.Expr.Tokens[n + 1]}' not a function\n");
@@ -264,6 +342,9 @@ public static partial class VmFScriptParser
             st.InvokeSfHandler(func.FunctionHandler);
         CopyReturn(st.TReturn, result);
     }
+
+    public static void OpStructure(SpecRestState st, ScriptValue result, int start, int n, int stop) =>
+        RunOpStructurePipeline(st, result, start, n, stop);
 
     private static void CopyReturn(ScriptValue src, ScriptValue dst)
     {

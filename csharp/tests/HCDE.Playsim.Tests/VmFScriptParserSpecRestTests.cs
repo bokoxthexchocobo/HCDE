@@ -232,4 +232,31 @@ public class VmFScriptParserSpecRestTests
         Assert.Equal(1, seen);
         Assert.Equal(2, st.TArgc);
     }
+
+    [Fact]
+    public void ValidateFunctionCallSyntax_RejectsMissingParen()
+    {
+        var expr = new VmFScriptParser.ExprFrame();
+        expr.Tokens[0] = "fn";
+        expr.Tokens[1] = "(";
+        expr.TokenType[0] = VmFScriptParser.TokenFunctionExpr;
+        expr.TokenType[1] = VmFScriptParser.TokenOperatorExpr;
+        Assert.False(VmFScriptParser.ValidateFunctionCallSyntax(expr, 0, 1, out _));
+    }
+
+    [Fact]
+    public void CreateVariable_BlocksMobjInChildScript()
+    {
+        var parent = new VmFScriptScript.FsScript();
+        var child = new VmFScriptScript.FsScript();
+        var st = new VmFScriptParser.SpecRestState();
+        st.Expr.Script = parent;
+        st.Expr.GlobalScript = parent;
+        st.Expr.Tokens[0] = "thing";
+        st.Expr.TokenType[0] = VmFScriptParser.TokenNameExpr;
+        var err = "";
+        st.Expr.ScriptError = s => err = s;
+        VmFScriptParser.CreateVariable(st, VmFScriptVariable.SvtMobj, child, 0, 0);
+        Assert.Contains("hub script", err);
+    }
 }
