@@ -28,8 +28,6 @@ public static class VmDNetInvasionSnapshotApply
     public static bool MagicMatches(ReadOnlySpan<byte> body, int offset, byte[] magic) =>
         MagicMatches(body, offset, magic.AsSpan());
 
-    public static bool InvasionModeDisabledLocally(bool enabled) => !enabled;
-
     public static bool AcceptSnapshotWhenGametypeZero(byte stateRaw) =>
         stateRaw != InvsDisabled && stateRaw <= InvsFailure;
 
