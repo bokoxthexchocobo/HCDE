@@ -3,36 +3,12 @@
     "name": "voxeldef-chunk209",
     "bucket": "conversion",
     "managedLoc": 145,
-    "note": "VOXELDEF sprite name list, option block, ApplyVoxelToSprites.",
-    "nativeRanges": [
-      {
-        "file": "src/r_data/voxeldef.cpp",
-        "symbol": "VOX_ReadSpriteNames",
-        "start": 68,
-        "end": 105,
-        "tests": [
-          "VmVoxelDefParserTests.TryReadSpriteNames_StopsAtEquals"
-        ]
-      },
-      {
-        "file": "src/r_data/voxeldef.cpp",
-        "symbol": "VOX_ReadOptions",
-        "start": 116,
-        "end": 245,
-        "tests": [
-          "VmVoxelDefParserTests.TryReadOptions_ReadsScaleSpinAndOffsets"
-        ]
-      },
-      {
-        "file": "src/r_data/voxeldef.cpp",
-        "symbol": "R_InitVoxels apply bindings",
-        "start": 312,
-        "end": 327,
-        "tests": [
-          "VmVoxelDefParserTests.ApplyVoxelToSprites_ExpandsAllFrames"
-        ]
-      }
-    ],
-    "conversionManagedCommit": "357640266f9410382209afa1db4ece460dd6cf6a"
+    "note": "VOXELDEF sprite name list, option block, ApplyVoxelToSprites. Retired (2026-10-23): out-of-body credit removed; honest **54** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (209)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **184** |\n| **Out-of-body removed** | **130** |\n| **Honest** | **54** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 209 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
