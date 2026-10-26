@@ -14,13 +14,19 @@ public static class VmPMobjHitWater
     public const int ThwSmall = 1;
     public const int ThwNovel = 1 << 1;
 
+    public static int ResolveThingFloorType(int floorTerrain, Func<int> sectorFloorTerrain) =>
+        UseActorFloorTerrain(floorTerrain) ? floorTerrain : sectorFloorTerrain();
+
     public static bool UseActorFloorTerrain(int floorTerrain) => floorTerrain >= 0;
 
     public static bool SkipWhenPredicting(bool hasPlayer, int cheats) =>
         hasPlayer && (cheats & CfPredicting) != 0;
 
-    public static bool CheckAboveCenter(bool checkAbove, double posZ, double centerZ, double velZ, bool isMissile) =>
-        checkAbove && (!isMissile || true) && posZ > centerZ - (isMissile ? velZ : 0);
+    public static double CompareZForCheckAbove(double centerZ, double velZ, bool isMissile) =>
+        isMissile ? centerZ - velZ : centerZ;
+
+    public static bool CheckAboveCenter(bool checkAbove, double posZ, double compareZ) =>
+        checkAbove && posZ > compareZ;
 
     public static bool Valid3dFloor(int flags) => (flags & FfExists) != 0;
 
@@ -30,11 +36,14 @@ public static class VmPMobjHitWater
     public static bool ZNearPlane(double posZ, double planeZ) =>
         posZ > planeZ - 0.5 && posZ < planeZ + 0.5;
 
-    public static bool BlockBelowBottomPlane(double planez, double posZ, double floorZ) =>
-        planez < posZ && planez >= floorZ;
+    public static bool BlockBelowBottomPlane(double bottomPlaneZ, double posZ, double actorFloorZ) =>
+        bottomPlaneZ < posZ && bottomPlaneZ >= actorFloorZ;
 
     public static bool UseHeightSecTerrain(bool force, bool hasHeightSec, int moreFlags) =>
         !force && hasHeightSec && (moreFlags & SecmfClipfakeplanes) == 0;
+
+    public static int SelectFloorTerrain(bool force, bool hasHeightSec, int moreFlags, Func<int> sectorFloor, Func<int> heightSecFloor) =>
+        UseHeightSecTerrain(force, hasHeightSec, moreFlags) ? heightSecFloor() : sectorFloor();
 
     public static bool NoSplashDefinition(int splashNum) => splashNum == -1;
 
@@ -68,14 +77,10 @@ public static class VmPMobjHitWater
         bool BlocksMovement);
 
     public static bool WalkDownThroughFloorPortal(PortalFloorWalkContext ctx) =>
-        ctx.DirZ < 0
-        && !ctx.BlocksMovement
-        && ctx.PosZ < ctx.PortalPlaneZ;
+        ctx.DirZ < 0 && !ctx.BlocksMovement && ctx.PosZ < ctx.PortalPlaneZ;
 
     public static bool WalkUpThroughCeilingPortal(PortalFloorWalkContext ctx) =>
-        ctx.DirZ > 0
-        && !ctx.BlocksMovement
-        && ctx.PosZ > ctx.PortalPlaneZ;
+        ctx.DirZ > 0 && !ctx.BlocksMovement && ctx.PosZ > ctx.PortalPlaneZ;
 
     public readonly record struct HitWater3dProbeContext(
         int Flags,
@@ -109,4 +114,7 @@ public static class VmPMobjHitWater
 
     public static bool ReturnLiquidOnly(int splashNum, bool isLiquid) =>
         LiquidWithoutSplash(splashNum, isLiquid);
+
+    public static bool ReturnLiquidOnHeightSecPlane(bool onSectorFloorPlane, bool isLiquid) =>
+        !onSectorFloorPlane && isLiquid;
 }

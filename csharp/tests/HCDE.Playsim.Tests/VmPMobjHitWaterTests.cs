@@ -42,4 +42,23 @@ public class VmPMobjHitWaterTests
     public void HitWater_SpawnSmallSplashPath() =>
         Assert.True(VmPMobjHitWater.SpawnSmallSplash(
             new VmPMobjHitWater.SplashSpawnContext(true, true, true, false, true)));
+
+    [Fact]
+    public void FloorType_FallsBackToSector() =>
+        Assert.Equal(7, VmPMobjHitWater.ResolveThingFloorType(-1, () => 7));
+
+    [Fact]
+    public void HitWater_CheckAboveMissileCompareZ() =>
+        Assert.True(VmPMobjHitWater.CheckAboveCenter(
+            true, 10, VmPMobjHitWater.CompareZForCheckAbove(12, 5, isMissile: true)));
+
+    [Fact]
+    public void HitWater_SelectHeightSecTerrain() =>
+        Assert.Equal(3, VmPMobjHitWater.SelectFloorTerrain(
+            force: false, hasHeightSec: true, moreFlags: 0, () => 1, () => 3));
+
+    [Fact]
+    public void HitWater_RejectBelowBottomBlocks() =>
+        Assert.True(VmPMobjHitWater.RejectBelowBottom(
+            new VmPMobjHitWater.HitWater3dProbeContext(0, 0, 5, 0, 2, 0)));
 }
