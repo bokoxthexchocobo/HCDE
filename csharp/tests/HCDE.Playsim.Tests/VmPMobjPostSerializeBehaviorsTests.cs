@@ -33,4 +33,38 @@ public class VmPMobjPostSerializeBehaviorsTests
         Assert.True(VmPMobjPostSerializeBehaviors.TickBehaviorsQueuesNull(null, list, "x"));
         Assert.Contains("x", list);
     }
+
+    [Fact]
+    public void RunPostSerialize_RestoresSkinAndSpeed()
+    {
+        var skin = false;
+        var speed = false;
+        VmPMobjPostSerializeBehaviors.RunPostSerialize(new VmPMobjPostSerializeBehaviors.PostSerializeContext
+        {
+            HasPlayer = true,
+            PlayerInGame = true,
+            ClsValid = true,
+            SpawnSpriteMatch = true,
+            RestoreSkin = () => skin = true,
+            RestoreDefaultSpeed = () => speed = true,
+        });
+        Assert.True(skin);
+        Assert.True(speed);
+    }
+
+    [Fact]
+    public void RunAddBehavior_CreatesAndInitializes()
+    {
+        var created = new object();
+        var result = VmPMobjPostSerializeBehaviors.RunAddBehavior(new VmPMobjPostSerializeBehaviors.AddBehaviorContext
+        {
+            DescendantOfBehavior = true,
+            CreateBehavior = () => created,
+            RegisterBehavior = _ => { },
+            AddToLevel = _ => { },
+            IsValidAfterInitialize = _ => true,
+            TypeName = "Test",
+        });
+        Assert.Same(created, result);
+    }
 }

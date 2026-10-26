@@ -41,4 +41,19 @@ public class VmPMobjBehaviorTransferTests
         Assert.True(VmPMobjBehaviorTransfer.UnlinkBehaviorNull(null, list, "b", null));
         Assert.Contains("b", list);
     }
+
+    [Fact]
+    public void RunMoveBehaviors_TransfersOwner()
+    {
+        object? owner = null;
+        var behavior = new object();
+        Assert.True(VmPMobjBehaviorTransfer.RunMoveBehaviors(new VmPMobjBehaviorTransfer.MoveBehaviorsContext
+        {
+            Entries = [new VmPMobjPostSerializeBehaviors.BehaviorMapEntry("k", behavior)],
+            FromActor = new object(),
+            SetOwner = (b, o) => owner = o,
+            IsValid = _ => true,
+        }));
+        Assert.NotNull(owner);
+    }
 }
