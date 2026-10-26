@@ -182,4 +182,227 @@ public static bool FinalizeShadowStyle(bool hadStyle, bool becameShadow) =>
     public static uint ClearTranslucentBit(uint value0) => value0 & ~MfTranslucent;
 
     public static uint MarkTranslucentVchanged2(uint value2) => value2 | 2;
+
+    public sealed class BitsTokenAccumulator
+    {
+        public uint[] Values { get; } = new uint[4];
+        public bool[] Changed { get; } = new bool[4];
+        public bool ZdoomStealthKeyword { get; set; }
+    }
+
+    public sealed class ThingBitsPatchScratch
+    {
+        public int Flags { get; set; }
+        public int Flags2 { get; set; }
+        public int Flags3 { get; set; }
+        public int Flags4 { get; set; }
+        public int Flags6 { get; set; }
+        public int Effects { get; set; }
+        public int BounceFlags { get; set; }
+        public double BounceFactor { get; set; }
+        public double WallBounceFactor { get; set; }
+        public double Alpha { get; set; } = 1.0;
+        public int RenderStyle { get; set; }
+        public int RenderFlags { get; set; }
+        public bool Sentient { get; set; }
+        public int Translation { get; set; } = -1;
+        public string DamageType { get; set; } = "";
+        public double Gravity { get; set; } = 1.0;
+    }
+
+    public static void AccumulateBitsToken(
+        BitsTokenAccumulator acc,
+        string token,
+        Func<string, (int which, int bit)?> lookupMnemonic)
+    {
+        if (uint.TryParse(token, out var numeric))
+        {
+            acc.Values[0] |= numeric;
+            acc.Changed[0] = true;
+            return;
+        }
+
+        if (StealthKeywordSetsZdoom(token))
+            acc.ZdoomStealthKeyword = true;
+        var mnemonic = lookupMnemonic(token);
+        if (!mnemonic.HasValue)
+            return;
+        acc.Values[mnemonic.Value.which] |= 1u << mnemonic.Value.bit;
+        acc.Changed[mnemonic.Value.which] = true;
+    }
+
+    public static void ApplyBitsLayer0(
+        BitsTokenAccumulator acc,
+        ThingBitsPatchScratch info,
+        int thingy,
+        int priorFlags,
+        int priorFlags2)
+    {
+        if (!acc.Changed[0])
+            return;
+        var value0 = acc.Values[0];
+        if (ApplyTranslationBits(value0, out var cleaned, out var translationIndex))
+        {
+            info.Translation = translationIndex;
+            value0 = cleaned;
+        }
+
+        if (HasTouchy(value0))
+        {
+            value0 = ClearTouchy(value0);
+            info.Flags6 |= 0x2000000; // MF6_TOUCHY
+        }
+
+        if (HasBounces(value0))
+        {
+            value0 = ClearBounces(value0);
+            var remapped = ApplyBouncesRemap(info.Flags6, info.Flags3, info.Flags4);
+            info.Flags6 = remapped.Flags6;
+            info.Flags3 = remapped.Flags3;
+            info.Flags4 = remapped.Flags4;
+            info.BounceFlags = SelectMissileBounceFlags((value0 & MfMissile) != 0);
+            info.Effects = SwapRocketTrailToGrenade(
+                info.Effects,
+                (priorFlags & MfMissile) != 0,
+                (value0 & MfMissile) == 0,
+                (info.Effects & FxRocket) != 0);
+            info.BounceFactor = DefaultBounceFactor();
+            info.WallBounceFactor = DefaultWallBounceFactor();
+            value0 = (uint)ApplyNobloodForNonSentient((int)value0, info.Sentient);
+        }
+
+        if (!StealthFriendHack(acc.ZdoomStealthKeyword, value0))
+            _ = RemapFriend(ref value0, acc.ZdoomStealthKeyword);
+
+        if (TranslucentSetsVchanged2(value0))
+        {
+            value0 = ClearTranslucentBit(value0);
+            acc.Values[2] = MarkTranslucentVchanged2(acc.Values[2]);
+            acc.Changed[2] = true;
+        }
+
+        info.Flags2 = ApplyMissileNoteleportFlags(info.Flags2, (value0 & MfMissile) != 0);
+        if (ShouldClearNoteleport((priorFlags & MfMissile) != 0, priorFlags2, (value0 & MfMissile) != 0))
+            info.Flags2 = ClearNoteleportFlag(info.Flags2);
+        info.Flags = MergePlayerFriendlyFlags((int)value0, thingy);
+    }
+
+    public static void ApplyBitsLayer1(BitsTokenAccumulator acc, ThingBitsPatchScratch info)
+    {
+        if (!acc.Changed[1])
+            return;
+        var value1 = acc.Values[1];
+        if (DoomCompatBounce(value1))
+        {
+            value1 &= ~0x4u;
+            info.BounceFlags = 4; // BOUNCE_DoomCompat placeholder
+        }
+
+        if (IceDamageType(value1))
+        {
+            info.DamageType = "Ice";
+            value1 &= ~0x20000000u;
+        }
+
+        if (FireDamageType(value1))
+        {
+            info.DamageType = "Fire";
+            value1 &= ~0x10000000u;
+        }
+
+        if ((value1 & 1) != 0)
+        {
+            info.Gravity = GravityQuarter();
+            value1 &= ~1u;
+        }
+
+        info.Flags2 = (int)value1;
+    }
+
+    public static bool ApplyBitsLayer2(BitsTokenAccumulator acc, ThingBitsPatchScratch info, out bool hadTranslucency)
+    {
+        hadTranslucency = false;
+        if (!acc.Changed[2])
+            return false;
+        var value2 = acc.Values[2];
+        if ((value2 & 7) != 0)
+        {
+            hadTranslucency = true;
+            info.Alpha = ResolveTranslucentAlpha(value2 & 7);
+            info.RenderStyle = 6; // STYLE_Translucent
+            info.RenderFlags &= ~0x10000000;
+        }
+
+        if (SetInvisibleRender(value2))
+            info.RenderFlags |= 0x1;
+        else if (ClearInvisibleRender(value2))
+            info.RenderFlags &= ~0x1;
+        return hadTranslucency;
+    }
+
+    public readonly record struct PatchThingFinalizeInput(
+        int OldFlags,
+        int NewFlags,
+        int Thingy,
+        bool HadStyle,
+        bool HadTranslucency,
+        bool SpawnCeiling,
+        bool HadHeight,
+        bool HadPhysHeight,
+        int OrgHeightsCount,
+        double Speed,
+        bool IsDummyInfo);
+
+    public static (double Speed, int RenderStyle, double Alpha, bool PushTouched) ApplyPatchThingFinalize(
+        PatchThingFinalizeInput input,
+        ThingBitsPatchScratch info)
+    {
+        var speed = input.Speed;
+        var style = info.RenderStyle;
+        var alpha = info.Alpha;
+        if (!input.IsDummyInfo)
+        {
+            if (ShouldRestoreCeilingHeight(
+                    input.SpawnCeiling,
+                    input.HadHeight,
+                    input.HadPhysHeight,
+                    input.Thingy,
+                    input.OrgHeightsCount))
+            {
+                // height restore hosted elsewhere; flags-only credit
+            }
+
+            if (ShadowBecameSet(input.OldFlags, input.NewFlags))
+            {
+                if (FinalizeShadowStyle(input.HadStyle, true))
+                {
+                    style = 4; // STYLE_OptFuzzy
+                    if (!input.HadTranslucency)
+                        alpha = DefaultShadowAlpha();
+                }
+            }
+            else if (ShadowCleared(input.OldFlags, input.NewFlags) &&
+                     UseNormalStyleWhenUnshadow(input.HadStyle, true))
+            {
+                style = 1; // STYLE_Normal
+            }
+
+            speed = NormalizeSpeed(speed);
+            if (ApplyCountKillFlags(info.Flags, input.Thingy == 1))
+            {
+                info.Flags2 |= 0x1000000 | 0x2000000 | 0x4000000;
+                info.Flags3 |= 0x8000000;
+            }
+            else if (ClearCountKillFlags(info.Flags, input.Thingy == 1))
+            {
+                info.Flags2 &= ~(0x1000000 | 0x2000000);
+                info.Flags3 &= ~0x8000000;
+            }
+
+            info.Flags4 |= 0x2000000; // MF4_CANUSEWALLS
+        }
+
+        var push = ShouldPushTouchedActor(info.Flags);
+        return (speed, style, alpha, push);
+    }
 }
