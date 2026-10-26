@@ -22,8 +22,8 @@
 ## Managed
 
 `VmPPSpriteOverlay.cs`
-Managed LOC (tally): 164.
-Conversion commit: `9fb8c16d3900f2eb75a54c0a7ca21b1cec4e419a`.
+Managed LOC (tally): 209.
+Conversion commit: `22a8b4fec0c47f2db2da3c14ed49be42a516c787`.
 
 ## Padding review (2026-10-21)
 
@@ -47,7 +47,7 @@ Conversion commit: `9fb8c16d3900f2eb75a54c0a7ca21b1cec4e419a`.
 | **Honest** | **205** |
 
 
-**Post-review ratio:** 164/205 managed/native ≈ 80% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 209/205 managed/native ≈ 102% (src file LOC at HEAD; see tally).
 
 ## Tests
 
