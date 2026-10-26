@@ -17,8 +17,8 @@ Whole look cluster (`p_enemy.cpp` 1489–1777). Supersedes chunk503.
 ## Managed
 
 `VmPEnemyLookTargets.cs`
-Managed LOC (tally): 191.
-Conversion commit: `168342f9d382c39dbfb4e24ee60f3fa634fd2c89`.
+Managed LOC (tally): 235.
+Conversion commit: `3ab6f49a93a01e786961e3e328782b26acb962c2`.
 
 ## Padding review (2026-10-21)
 
@@ -41,7 +41,7 @@ Conversion commit: `168342f9d382c39dbfb4e24ee60f3fa634fd2c89`.
 | **Honest** | **250** |
 
 
-**Post-review ratio:** 191/250 managed/native ≈ 76% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 235/250 managed/native ≈ 94% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -50,6 +50,8 @@ Conversion commit: `168342f9d382c39dbfb4e24ee60f3fa634fd2c89`.
 - `VmPEnemyLookTargetsTests.TidBlock_MatchesDirectTid`
 - `VmPEnemyLookTargetsTests.LookTid_FallbackGoal`
 - `VmPEnemyLookTargetsTests.LookTid_BudgetExhausted`
+- `VmPEnemyLookTargetsTests.LookTid_ClearsStaleLastLookActor`
+- `VmPEnemyLookTargetsTests.LookTid_LastEnemySkipsFriend`
 - `VmPEnemyLookTargetsTests.LookForEnemiesInBlock_FindsValidLink`
 - `VmPEnemyLookTargetsTests.LookForEnemies_UsesBlockSearchHit`
 

@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 220963
+    "managedCSharpLoc": 221007
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 72856,
+    "convertedThisRunManaged": 72900,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 82527,
+    "convertedBehaviorManaged": 82571,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -21586,7 +21586,9 @@
             "end": 1703,
             "tests": [
               "VmPEnemyLookTargetsTests.LookTid_FallbackGoal",
-              "VmPEnemyLookTargetsTests.LookTid_BudgetExhausted"
+              "VmPEnemyLookTargetsTests.LookTid_BudgetExhausted",
+              "VmPEnemyLookTargetsTests.LookTid_ClearsStaleLastLookActor",
+              "VmPEnemyLookTargetsTests.LookTid_LastEnemySkipsFriend"
             ]
           },
           {
@@ -21609,9 +21611,9 @@
           }
         ],
         "nativeLoc": 250,
-        "managedLoc": 191,
-        "conversionManagedCommit": "168342f9d382c39dbfb4e24ee60f3fa634fd2c89",
-        "auditManagedLocJustification": "156% ratio (389 managed / 250 native): C# `LookActorState` carries injectable delegates for `P_CheckSight`, blockmap search, visibility, and actor iteration that native keeps as implicit `AActor`/`FBlockmapSearch` context; five whole-function bodies map 1:1 to native control flow without credited symbols outside 1489\u20131777."
+        "managedLoc": 235,
+        "conversionManagedCommit": "3ab6f49a93a01e786961e3e328782b26acb962c2",
+        "auditManagedLocJustification": "Phased goal/last-enemy helpers, TID iterator tail, and `LastLookActor` TID invalidation mirror `p_enemy.cpp` 1489\u20131777 with injected sight/blockmap seams."
       },
       {
         "name": "p-effect-particle-run-chunk708",
