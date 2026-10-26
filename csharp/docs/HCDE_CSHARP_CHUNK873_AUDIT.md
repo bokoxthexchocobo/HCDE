@@ -1,45 +1,19 @@
-# Chunk 873 — `FParser::SF_Goto` … `SF_PlayerInGame` plus `SF_ExitLevel` / tip natives from `fragglescript/t_func.cpp` (502–721).
+# Chunk 873 — `FParser::SF_Goto` … `SF_PlayerInGame` plus `SF_ExitLevel` / tip natives from `fragglescript/t_func.cpp` (502–721). Retired (2026-10-23): out-of-body credit removed; honest **98** < **150**.
 
 ## Scope
 
-`FParser::SF_Goto` … `SF_PlayerInGame` plus `SF_ExitLevel` / tip natives from `fragglescript/t_func.cpp` (502–721).
+`FParser::SF_Goto` … `SF_PlayerInGame` plus `SF_ExitLevel` / tip natives from `fragglescript/t_func.cpp` (502–721). Retired (2026-10-23): out-of-body credit removed; honest **98** < **150**.
 
 ## Native ranges
 
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Goto** 509–524 (16 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Return** 532–535 (4 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Input** 567–570 (4 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Beep** 578–581 (4 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Clock** 589–593 (5 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_ExitLevel** 603–606 (4 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Tip** 614–621 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_TimedTip** 633–642 (10 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_PlayerTip** 651–661 (11 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Message** 669–676 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_PlayerMsg** 684–694 (11 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_PlayerInGame** 702–714 (13 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF ctrl separators** 502–508 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF ctrl separators** 525–531 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF ctrl separators** 536–542 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF ctrl separators** 560–566 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF ctrl separators** 571–577 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF ctrl separators** 582–588 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF ctrl separators** 594–602 (9 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF ctrl separators** 607–613 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF ctrl separators** 622–632 (11 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF ctrl separators** 643–650 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF ctrl separators** 662–668 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF ctrl separators** 677–683 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF ctrl separators** 695–701 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF ctrl separators** 715–721 (7 lines)
 
-**Credited native LOC:** 203 (tally `nativeLoc` 203).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmFScriptParserSfCtrl.cs`, `VmFScriptInitFunctionsReg873.cs`
-Managed LOC (tally): 128.
-Conversion commit: `a660e8b1fdc7c81c7f12342530171b6a53998621`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `f3f9bbade90f381835a16b1ba3f445792297c249`.
 
 ## Padding review (2026-10-21)
 
@@ -90,19 +64,17 @@ Conversion commit: `a660e8b1fdc7c81c7f12342530171b6a53998621`.
 |--|------:|
 | `nativeLoc` | **158** |
 
-**Post-review ratio:** 128/203 managed/native ≈ 63% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (873)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **203** |
+| **Out-of-body removed** | **105** |
+| **Honest** | **98** |
+
 
 ## Tests
 
-- `VmFScriptParserSfCtrlTests.SfGoto_JumpsToLabel`
-- `VmFScriptParserSfCtrlTests.SfReturn_ThrowsTerminator`
-- `VmFScriptParserSfCtrlTests.SfExitLevel_MarksExited`
-- `VmFScriptParserSfCtrlTests.SfBeep_StartsChatSound`
-- `VmFScriptParserSfCtrlTests.SfClock_ReturnsCentiseconds`
-- `VmFScriptParserSfCtrlTests.SfTip_PrintsForLocalView`
-- `VmFScriptParserSfCtrlTests.SfMessage_PrintsHigh`
-- `VmFScriptParserSfCtrlTests.SfPlayerMsg_PrintsHighForPlayer`
-- `VmFScriptParserSfCtrlTests.SfPlayerInGame_ReturnsSlotState`
 
 ## Verified
 

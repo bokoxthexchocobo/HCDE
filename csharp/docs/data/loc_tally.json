@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 48159,
+  "convertedThisRunNative": 47956,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 68342,
+  "convertedThisRunManaged": 68214,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 440467,
+  "remainingNative": 440670,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 66686,
+  "convertedBehaviorNative": 66483,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 67619,
-  "convertedBehaviorManaged": 78013,
+  "combinedBehaviorNative": 67416,
+  "convertedBehaviorManaged": 77885,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -30351,255 +30351,18 @@
     {
       "name": "fscript-parser-sf-ctrl-chunk873",
       "bucket": "conversion",
-      "note": "`FParser::SF_Goto` \u2026 `SF_PlayerInGame` plus `SF_ExitLevel` / tip natives from `fragglescript/t_func.cpp` (502\u2013721).",
+      "note": "`FParser::SF_Goto` \u2026 `SF_PlayerInGame` plus `SF_ExitLevel` / tip natives from `fragglescript/t_func.cpp` (502\u2013721). Retired (2026-10-23): out-of-body credit removed; honest **98** < **150**.",
       "auditSeams": "Uses **837** `PrintHigh` / `GameTic`, **742** local view, and `VmSoundEngineStartSound` for credited paths. `SF_Include` / `SF_ExitLevel` console hosts deferred; `exitlevel` maps to `MarkExited`.",
       "auditRationale": "Honest re-credit of retired **852** footprint plus additional ported `SF_*` in the same uncredited **502\u2013721** island to meet the **150** native floor without padding helpers.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 873 --band \u2192 UNCredited, exit 0.",
-      "auditManagedLocJustification": "`VmFScriptParserSfCtrl.cs` + `VmFScriptInitFunctionsReg873.cs`.",
-      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported | Registered |\n|---------------|-----------------|------------|\n| `SF_Goto` | yes | `goto` (BuildTable) |\n| `SF_Return` | yes | `return` |\n| `SF_Input` | yes | `input` |\n| `SF_Beep` | yes | `beep` |\n| `SF_Clock` | yes | `clock` |\n| `SF_ExitLevel` | yes | `exitlevel` |\n| `SF_Tip` | yes | `tip` |\n| `SF_TimedTip` | partial (`PrintHigh`, no `con_midtime`) | `timedtip` |\n| `SF_PlayerTip` | yes | `playertip` |\n| `SF_Message` | yes | `message` |\n| `SF_PlayerMsg` | yes | `playermsg` |\n| `SF_PlayerInGame` | yes | `playeringame` |\n\n**Not in this chunk (zero credit, not registered)**\n\n| Native | Policy |\n|--------|--------|\n| `SF_Include` (**543\u2013559**) | Unregistered |\n\n| Managed | Native |\n|---------|--------|\n| `SfGoto` | **509\u2013524** |\n| `SfReturn` | **532\u2013535** |\n| `SfInput` | **567\u2013570** |\n| `SfBeep` | **578\u2013581** |\n| `SfClock` | **589\u2013593** |\n| `SfExitLevel` | **603\u2013606** |\n| `SfTip` | **614\u2013621** |\n| `SfTimedTip` | **633\u2013642** |\n| `SfPlayerTip` | **651\u2013661** |\n| `SfMessage` | **669\u2013676** |\n| `SfPlayerMsg` | **684\u2013694** |\n| `SfPlayerInGame` | **702\u2013714** |\n| `VmFScriptInitFunctionsReg873.Register` | `NewFunction` rows |\n| (separators) | **502\u2013508**, **525\u2013531**, **536\u2013542**, **560\u2013566**, **571\u2013577**, **582\u2013588**, **594\u2013602**, **607\u2013613**, **622\u2013632**, **643\u2013650**, **662\u2013668**, **677\u2013683**, **695\u2013701**, **715\u2013721** |\n| (unregistered band) | **543\u2013559** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| `nativeLoc` | **158** |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmFScriptParserSfCtrl.cs",
-        "csharp/src/HCDE.Playsim/VmFScriptInitFunctionsReg873.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_Goto",
-          "start": 509,
-          "end": 524,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfGoto_JumpsToLabel"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_Return",
-          "start": 532,
-          "end": 535,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfReturn_ThrowsTerminator"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_Input",
-          "start": 567,
-          "end": 570,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfExitLevel_MarksExited"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_Beep",
-          "start": 578,
-          "end": 581,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfBeep_StartsChatSound"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_Clock",
-          "start": 589,
-          "end": 593,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfClock_ReturnsCentiseconds"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_ExitLevel",
-          "start": 603,
-          "end": 606,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfExitLevel_MarksExited"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_Tip",
-          "start": 614,
-          "end": 621,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfTip_PrintsForLocalView"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_TimedTip",
-          "start": 633,
-          "end": 642,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfTip_PrintsForLocalView"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_PlayerTip",
-          "start": 651,
-          "end": 661,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfTip_PrintsForLocalView"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_Message",
-          "start": 669,
-          "end": 676,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfMessage_PrintsHigh"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_PlayerMsg",
-          "start": 684,
-          "end": 694,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfPlayerMsg_PrintsHighForPlayer"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_PlayerInGame",
-          "start": 702,
-          "end": 714,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfPlayerInGame_ReturnsSlotState"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF ctrl separators",
-          "start": 502,
-          "end": 508,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfGoto_JumpsToLabel"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF ctrl separators",
-          "start": 525,
-          "end": 531,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfReturn_ThrowsTerminator"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF ctrl separators",
-          "start": 536,
-          "end": 542,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfGoto_JumpsToLabel"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF ctrl separators",
-          "start": 560,
-          "end": 566,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfBeep_StartsChatSound"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF ctrl separators",
-          "start": 571,
-          "end": 577,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfBeep_StartsChatSound"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF ctrl separators",
-          "start": 582,
-          "end": 588,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfClock_ReturnsCentiseconds"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF ctrl separators",
-          "start": 594,
-          "end": 602,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfExitLevel_MarksExited"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF ctrl separators",
-          "start": 607,
-          "end": 613,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfTip_PrintsForLocalView"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF ctrl separators",
-          "start": 622,
-          "end": 632,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfTip_PrintsForLocalView"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF ctrl separators",
-          "start": 643,
-          "end": 650,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfTip_PrintsForLocalView"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF ctrl separators",
-          "start": 662,
-          "end": 668,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfMessage_PrintsHigh"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF ctrl separators",
-          "start": 677,
-          "end": 683,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfPlayerMsg_PrintsHighForPlayer"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF ctrl separators",
-          "start": 695,
-          "end": 701,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfPlayerInGame_ReturnsSlotState"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF ctrl separators",
-          "start": 715,
-          "end": 721,
-          "tests": [
-            "VmFScriptParserSfCtrlTests.SfPlayerInGame_ReturnsSlotState"
-          ]
-        }
-      ],
-      "nativeLoc": 203,
-      "managedLoc": 128,
-      "conversionManagedCommit": "a660e8b1fdc7c81c7f12342530171b6a53998621"
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported | Registered |\n|---------------|-----------------|------------|\n| `SF_Goto` | yes | `goto` (BuildTable) |\n| `SF_Return` | yes | `return` |\n| `SF_Input` | yes | `input` |\n| `SF_Beep` | yes | `beep` |\n| `SF_Clock` | yes | `clock` |\n| `SF_ExitLevel` | yes | `exitlevel` |\n| `SF_Tip` | yes | `tip` |\n| `SF_TimedTip` | partial (`PrintHigh`, no `con_midtime`) | `timedtip` |\n| `SF_PlayerTip` | yes | `playertip` |\n| `SF_Message` | yes | `message` |\n| `SF_PlayerMsg` | yes | `playermsg` |\n| `SF_PlayerInGame` | yes | `playeringame` |\n\n**Not in this chunk (zero credit, not registered)**\n\n| Native | Policy |\n|--------|--------|\n| `SF_Include` (**543\u2013559**) | Unregistered |\n\n| Managed | Native |\n|---------|--------|\n| `SfGoto` | **509\u2013524** |\n| `SfReturn` | **532\u2013535** |\n| `SfInput` | **567\u2013570** |\n| `SfBeep` | **578\u2013581** |\n| `SfClock` | **589\u2013593** |\n| `SfExitLevel` | **603\u2013606** |\n| `SfTip` | **614\u2013621** |\n| `SfTimedTip` | **633\u2013642** |\n| `SfPlayerTip` | **651\u2013661** |\n| `SfMessage` | **669\u2013676** |\n| `SfPlayerMsg` | **684\u2013694** |\n| `SfPlayerInGame` | **702\u2013714** |\n| `VmFScriptInitFunctionsReg873.Register` | `NewFunction` rows |\n| (separators) | **502\u2013508**, **525\u2013531**, **536\u2013542**, **560\u2013566**, **571\u2013577**, **582\u2013588**, **594\u2013602**, **607\u2013613**, **622\u2013632**, **643\u2013650**, **662\u2013668**, **677\u2013683**, **695\u2013701**, **715\u2013721** |\n| (unregistered band) | **543\u2013559** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| `nativeLoc` | **158** |\n\n### Out-of-body uncredit (873)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **203** |\n| **Out-of-body removed** | **105** |\n| **Honest** | **98** |\n",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "f3f9bbade90f381835a16b1ba3f445792297c249",
+      "retired": true
     },
     {
       "name": "special-spot-state-chunk874",
