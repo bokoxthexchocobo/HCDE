@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 46436,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 72332,
+  "convertedThisRunManaged": 72577,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 64963,
   "recognitionBehaviorNative": 754,
   "combinedBehaviorNative": 65717,
-  "convertedBehaviorManaged": 82003,
+  "convertedBehaviorManaged": 82248,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27700,7 +27700,7 @@
       "auditRationale": "First tally credit for base decal placement on walls and relative Z reconstruction.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 822 \u2192 UNCredited, exit 0.",
       "auditManagedLocJustification": "Construct/remove/stick/getRealZ paths mirror native branches without hosting decal linked lists.",
-      "auditPaddingReview": "| Managed | Native (`a_decals.cpp`) |\n|---------|------------------------|\n| `Construct*` / `RemoveFromWall` | **79\u2013156** |\n| `GetXY` / `SetShade*` | **189\u2013233** |\n| `StickToWall` | **241\u2013330** |\n| `GetRealZ` / `CalcFracPos` | **338\u2013429** |\n\n### Out-of-body uncredit (822)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **274** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **274** |\n",
+      "auditPaddingReview": "| Managed | Native (`a_decals.cpp`) |\n|---------|------------------------|\n| `Construct*` / `RunOnDestroyPipeline` / `RemoveFromWall` | **79\u2013156** |\n| `RunSerializeFieldsPipeline` | `Serialize` **164\u2013181** |\n| `ResolveWallVertices` / `GetXY` / `SetShade*` | **189\u2013233** |\n| `RunLinkDecalToWall` / `RunStickPlacementPipeline` / branch helpers | `StickToWall` **241\u2013330** |\n| `ResolveFfTexture` / `ClassifyStickPlacement` | 3D-floor texture **297\u2013317** |\n| `RunGetRealZPipeline` / `GetRealZ` | **338\u2013390** |\n| `CalcFracPos` | **398\u2013429** |\n\n### Out-of-body uncredit (822)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **274** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **274** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmADecalBase.cs"
       ],
@@ -27812,13 +27812,17 @@
           "start": 398,
           "end": 429,
           "tests": [
-            "VmADecalBaseTests.CalcFracPos_UsesDominantAxis"
+            "VmADecalBaseTests.CalcFracPos_UsesDominantAxis",
+            "VmADecalBaseTests.ClassifyStickPlacement_LowerWhenAboveFloor",
+            "VmADecalBaseTests.ResolveFfTexture_PrefersUpperFlag",
+            "VmADecalBaseTests.RunSerializeFieldsPipeline_CopiesState",
+            "VmADecalBaseTests.RunOnDestroyPipeline_InvokesRemove"
           ]
         }
       ],
       "nativeLoc": 274,
-      "managedLoc": 213,
-      "conversionManagedCommit": "ce384c5c62a018282e4887112b6a2c7577227a17"
+      "managedLoc": 458,
+      "conversionManagedCommit": "8fa027a20bee6311442563060f1b3f69743607ab"
     },
     {
       "name": "dynlight-tick-chunk823",

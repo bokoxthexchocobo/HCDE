@@ -24,17 +24,20 @@
 ## Managed
 
 `VmADecalBase.cs`
-Managed LOC (tally): 213.
-Conversion commit: `ce384c5c62a018282e4887112b6a2c7577227a17`.
+Managed LOC (tally): 458.
+Conversion commit: `8fa027a20bee6311442563060f1b3f69743607ab`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`a_decals.cpp`) |
 |---------|------------------------|
-| `Construct*` / `RemoveFromWall` | **79–156** |
-| `GetXY` / `SetShade*` | **189–233** |
-| `StickToWall` | **241–330** |
-| `GetRealZ` / `CalcFracPos` | **338–429** |
+| `Construct*` / `RunOnDestroyPipeline` / `RemoveFromWall` | **79–156** |
+| `RunSerializeFieldsPipeline` | `Serialize` **164–181** |
+| `ResolveWallVertices` / `GetXY` / `SetShade*` | **189–233** |
+| `RunLinkDecalToWall` / `RunStickPlacementPipeline` / branch helpers | `StickToWall` **241–330** |
+| `ResolveFfTexture` / `ClassifyStickPlacement` | 3D-floor texture **297–317** |
+| `RunGetRealZPipeline` / `GetRealZ` | **338–390** |
+| `CalcFracPos` | **398–429** |
 
 ### Out-of-body uncredit (822)
 
@@ -45,7 +48,7 @@ Conversion commit: `ce384c5c62a018282e4887112b6a2c7577227a17`.
 | **Honest** | **274** |
 
 
-**Post-review ratio:** 213/274 managed/native ≈ 78% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 458/274 managed/native ≈ 167% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -55,6 +58,10 @@ Conversion commit: `ce384c5c62a018282e4887112b6a2c7577227a17`.
 - `VmADecalBaseTests.GetRealZ_RelUpperAddsCeilingPlane`
 - `VmADecalBaseTests.GetRealZ_AbsoluteWhenNoRelFlags`
 - `VmADecalBaseTests.CalcFracPos_UsesDominantAxis`
+- `VmADecalBaseTests.ClassifyStickPlacement_LowerWhenAboveFloor`
+- `VmADecalBaseTests.ResolveFfTexture_PrefersUpperFlag`
+- `VmADecalBaseTests.RunSerializeFieldsPipeline_CopiesState`
+- `VmADecalBaseTests.RunOnDestroyPipeline_InvokesRemove`
 
 ## Verified
 
