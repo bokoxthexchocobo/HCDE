@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 222156
+    "managedCSharpLoc": 222188
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 74049,
+    "convertedThisRunManaged": 74081,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 83720,
+    "convertedBehaviorManaged": 83752,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -29241,8 +29241,8 @@
           }
         ],
         "nativeLoc": 168,
-        "managedLoc": 140,
-        "conversionManagedCommit": "a49522f2e5044d36863c3a0cb54643cc1feda84d"
+        "managedLoc": 172,
+        "conversionManagedCommit": "578ec55b62db6328806a5d8bd4e870db9812fb07"
       },
       {
         "name": "fscript-parser-sf-level-chunk847",

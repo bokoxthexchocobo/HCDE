@@ -30,8 +30,8 @@
 ## Managed
 
 `VmFScriptParserSfTrig.cs`
-Managed LOC (tally): 140.
-Conversion commit: `6d6353a8e1bc5cfd4a3febd0aa9f81da1895d770`.
+Managed LOC (tally): 172.
+Conversion commit: `578ec55b62db6328806a5d8bd4e870db9812fb07`.
 
 ## Padding review (2026-10-21)
 
@@ -85,7 +85,7 @@ Conversion commit: `6d6353a8e1bc5cfd4a3febd0aa9f81da1895d770`.
 | **Honest** | **168** |
 
 
-**Post-review ratio:** 140/168 managed/native ≈ 83% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 172/168 managed/native ≈ 102% (src file LOC at HEAD; see tally).
 
 ## Tests
 
