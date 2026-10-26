@@ -74,6 +74,41 @@ public class VmFScriptParserSfTrigTests
     }
 
     [Fact]
+    public void SfCos_ReturnsOneAtZero()
+    {
+        var ctx = Ctx(1, argv =>
+        {
+            argv[0].Type = VmFScriptParser.SvtInt;
+            argv[0].IntValue = 0;
+        });
+        VmFScriptParser.SfCos(ctx);
+        Assert.Equal(1, ctx.TReturn.FixedValue, 3);
+    }
+
+    [Fact]
+    public void SfCheckCVar_ReturnsZero()
+    {
+        var ctx = Ctx(0, _ => { });
+        VmFScriptParser.SfCheckCVar(ctx);
+        Assert.Equal(0, ctx.TReturn.IntValue);
+    }
+
+    [Fact]
+    public void SfSetCorona_InvalidWhatPrintsError()
+    {
+        var printed = "";
+        var ctx = Ctx(3, argv =>
+        {
+            for (var i = 0; i < 3; i++)
+                argv[i].Type = VmFScriptParser.SvtInt;
+            argv[1].IntValue = 99;
+        });
+        ctx.PrintHigh = s => printed = s;
+        VmFScriptParser.SfSetCorona(ctx);
+        Assert.Contains("setcorona", printed);
+    }
+
+    [Fact]
     public void SfSetCorona_ThreeArgsReturnsZero()
     {
         var ctx = Ctx(3, argv =>

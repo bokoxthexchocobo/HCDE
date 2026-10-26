@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary>Legacy act/query <c>FParser::SF_*</c> from <c>fragglescript/t_func.cpp</c> (2778–3047, 3245–3341).</summary>
+/// <summary>Legacy act/query <c>FParser::SF_*</c> from <c>fragglescript/t_func.cpp</c> (2778–3047).</summary>
 public static partial class VmFScriptParser
 {
     static Actor? ActActor(ParserContext ctx) => AsActor(OptionalActor(ctx));
@@ -81,40 +81,4 @@ public static partial class VmFScriptParser
         ctx.TReturn.IntValue = mo != null && (mo.Health <= 0 || mo.Corpse) ? 1 : 0;
     }
 
-    public static void SfSkinColor(ParserContext ctx)
-    {
-        // Native stub: ignoring it for now.
-    }
-
-    public static void SfPlayDemo(ParserContext ctx)
-    {
-        // Native stub: ignoring it for now.
-    }
-
-    public static void SfCheckCVar(ParserContext ctx)
-    {
-        ctx.TReturn.Type = SvtInt;
-        ctx.TReturn.IntValue = 0;
-    }
-
-    public static void SfObjType(ParserContext ctx)
-    {
-        var mo = ActActor(ctx);
-        if (mo != null)
-        {
-            var cls = ctx.GetActorClass(mo);
-            for (var i = 0; i < ctx.ActorTypes.Length; i++)
-            {
-                if (ReferenceEquals(cls, ctx.ActorTypes[i]))
-                {
-                    ctx.TReturn.Type = SvtInt;
-                    ctx.TReturn.IntValue = i;
-                    return;
-                }
-            }
-        }
-
-        ctx.TReturn.Type = SvtInt;
-        ctx.TReturn.IntValue = -1;
-    }
 }
