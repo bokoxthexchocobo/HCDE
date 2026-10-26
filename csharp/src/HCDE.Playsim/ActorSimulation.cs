@@ -85,6 +85,17 @@ public class Actor : Thinker
     public bool PuffGetsOwner { get; set; }
     public bool IsPuff { get; internal set; }
     internal bool PendingSpawnDeath { get; set; }
+
+    internal void AdvancePendingSpawnDeathTick()
+    {
+        if (!PendingSpawnDeath || States.RemainingTics == -1)
+            return;
+        States.ForceRemainingTics(unchecked(States.RemainingTics - 1));
+        if (States.RemainingTics > 0)
+            return;
+        PendingSpawnDeath = false;
+        SetHealth(0, null, executeDeathSpecial: true, forceDeath: true);
+    }
     internal bool DefaultIsPuff { get; set; }
     internal bool DefaultNoBlood { get; set; }
     public bool SpawnSoundSource { get; set; }
@@ -1766,23 +1777,40 @@ public class Actor : Thinker
     {
         AbsorbCount = 0;
         RememberPosition();
+        if (Simulation is AuthoritySimulation managedSim && ActorPmobjTickBridge.UsesManagedTick(this))
+        {
+            if (!CheckNoDelay()) return;
+            ActorPmobjTickBridge.Execute(managedSim, this);
+            if (Destroyed) return;
+            if (PickupDelay > 0 && --PickupDelay == 0)
+            {
+                SpecialPickup = PickupCatalog.IsPickup(DoomEdNum, Simulation?.RavenHealthPickups ?? false);
+                Solid = false;
+            }
+            ActorPoisonReceived.Tick(managedSim, this);
+            if (Destroyed) return;
+            ActorSectorKillMonsters.Tick(managedSim, this);
+            if (Destroyed) return;
+            SectorDamage.Tick(managedSim, this);
+            TerrainDamage.Tick(managedSim, this);
+            if (!Destroyed && Stealth)
+                RenderStyle = RenderStyle with { Flags = (byte)(RenderStyle.Flags & ~2) };
+            base.Tick();
+            return;
+        }
+
+        TickLegacyPhysicsAndStates();
+    }
+
+    void TickLegacyPhysicsAndStates()
+    {
         if (ActorFreezeTickGate.TryConsumeFreezeTick(this))
             return;
         if (Simulation is not null && ActorNoInteractionTick.TryTickMinimalPhysics(Simulation, this))
             return;
         if (!CheckNoDelay()) return;
         if (PendingSpawnDeath)
-        {
-            if (States.RemainingTics != -1)
-            {
-                States.ForceRemainingTics(unchecked(States.RemainingTics - 1));
-                if (States.RemainingTics <= 0)
-                {
-                    PendingSpawnDeath = false;
-                    SetHealth(0, null, executeDeathSpecial: true, forceDeath: true);
-                }
-            }
-        }
+            AdvancePendingSpawnDeathTick();
         else States.Tick(this);
         if (!Destroyed && PickupDelay > 0 && --PickupDelay == 0)
         {
