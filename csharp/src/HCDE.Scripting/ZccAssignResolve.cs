@@ -103,4 +103,107 @@ public static class ZccAssignResolve
         bool nativeStructPointerPath,
         bool numericPromotionPath) =>
         !sameTypePathMatched && !nativeStructPointerPath && !numericPromotionPath;
+
+    public readonly record struct AssignResolveInput(
+        bool IsModifyAssign,
+        bool BaseIsBool,
+        bool RightIsBool,
+        bool BaseNumeric,
+        bool RightNumeric,
+        bool SameValueType,
+        bool ValueTypeIsBool,
+        bool RightIsNativeStruct,
+        bool BaseRealPointer,
+        bool SamePointedType,
+        bool SameType,
+        bool BaseRealPointerToRight,
+        bool RightRealPointerToBase,
+        bool BaseIsArray,
+        bool BaseIsVector,
+        bool BaseIsQuaternion,
+        bool IsDynArray,
+        bool IsMap,
+        bool IsMapIterator,
+        bool IsNonNativeStruct,
+        int Version,
+        bool BothRealPointers,
+        bool RequestAddressOk,
+        bool Writable,
+        int RawBitWrite);
+
+    public readonly record struct AssignResolveResult(
+        AssignOutcome Outcome,
+        bool UseNumericPromotion,
+        bool PromoteToBoolCast,
+        bool PromoteToIntCast,
+        bool PromoteToFloatCast,
+        bool NativeStructPointerPath,
+        bool SameTypePath,
+        bool UseTypeCastFallback,
+        bool ArrayAssignBlocked,
+        int NormalizedBitWrite);
+
+    public static AssignOutcome ArrayAssignPolicy(bool baseIsArray) =>
+        baseIsArray ? AssignOutcome.Fail : AssignOutcome.Continue;
+
+    public static AssignOutcome ResolvePointedContainerAssign(AssignResolveInput input)
+    {
+        if (SkipVectorQuaternionPath(input.BaseIsVector, input.BaseIsQuaternion))
+            return AssignOutcome.Continue;
+        return ClassifyContainerAssign(
+            input.IsDynArray,
+            input.IsMap,
+            input.IsMapIterator,
+            input.IsNonNativeStruct,
+            input.Version,
+            input.BothRealPointers);
+    }
+
+    public static AssignResolveResult RunAssignResolvePipeline(AssignResolveInput input)
+    {
+        if (BoolModifyAssignInvalid(input.IsModifyAssign, input.BaseIsBool, input.RightIsBool))
+            return new AssignResolveResult(AssignOutcome.Fail, false, false, false, false, false, false, false, false, input.RawBitWrite);
+
+        var numericPromotion = NeedsNumericPromotion(input.BaseNumeric, input.RightNumeric, input.SameValueType);
+        var promoteBool = numericPromotion && input.ValueTypeIsBool;
+        var promoteInt = numericPromotion && !input.ValueTypeIsBool;
+        var promoteFloat = false;
+
+        var nativeStructPath = NativeStructToMatchingPointer(
+            input.RightIsNativeStruct,
+            input.BaseRealPointer,
+            input.SamePointedType);
+
+        var sameTypePath = SameTypeOrRealPointerAlias(
+            input.SameType,
+            input.BaseRealPointerToRight,
+            input.RightRealPointerToBase);
+
+        if (sameTypePath)
+        {
+            var array = ArrayAssignPolicy(input.BaseIsArray);
+            if (array != AssignOutcome.Continue)
+                return new AssignResolveResult(array, numericPromotion, promoteBool, promoteInt, promoteFloat, nativeStructPath, true, false, true, input.RawBitWrite);
+
+            var container = ResolvePointedContainerAssign(input);
+            if (container != AssignOutcome.Continue)
+                return new AssignResolveResult(container, numericPromotion, promoteBool, promoteInt, promoteFloat, nativeStructPath, true, false, false, input.RawBitWrite);
+        }
+
+        var useTypeCast = FallsThroughToTypeCast(sameTypePath, nativeStructPath, numericPromotion);
+        if (ModifiableValueFails(input.RequestAddressOk, input.Writable))
+            return new AssignResolveResult(AssignOutcome.Fail, numericPromotion, promoteBool, promoteInt, promoteFloat, nativeStructPath, sameTypePath, useTypeCast, false, input.RawBitWrite);
+
+        return new AssignResolveResult(
+            AssignOutcome.Continue,
+            numericPromotion,
+            promoteBool,
+            promoteInt,
+            promoteFloat,
+            nativeStructPath,
+            sameTypePath,
+            useTypeCast,
+            false,
+            NormalizeBitWriteIndex(input.RawBitWrite));
+    }
 }

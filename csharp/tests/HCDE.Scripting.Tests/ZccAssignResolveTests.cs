@@ -38,4 +38,27 @@ public class ZccAssignResolveTests
     {
         Assert.Equal(3, ZccAssignResolve.NormalizeBitWriteIndex(0x10003));
     }
+
+    [Fact]
+    public void RunAssignResolvePipeline_BlocksArrayAssign()
+    {
+        var input = new ZccAssignResolve.AssignResolveInput(
+            false, false, false, false, false, true, false,
+            false, false, false, true, false, false, true, false, false,
+            false, false, false, false, 50000, false, true, true, -1);
+        var result = ZccAssignResolve.RunAssignResolvePipeline(input);
+        Assert.Equal(ZccAssignResolve.AssignOutcome.Fail, result.Outcome);
+        Assert.True(result.ArrayAssignBlocked);
+    }
+
+    [Fact]
+    public void RunAssignResolvePipeline_NormalizesBitWrite()
+    {
+        var input = new ZccAssignResolve.AssignResolveInput(
+            false, false, false, false, false, true, false,
+            false, false, false, true, false, false, false, false, false,
+            false, false, false, false, 50000, false, true, true, 0x10005);
+        var result = ZccAssignResolve.RunAssignResolvePipeline(input);
+        Assert.Equal(5, result.NormalizedBitWrite);
+    }
 }
