@@ -46,8 +46,8 @@ Whole `i_protocol.cpp` stream I/O (`i_protocol.cpp` 32–389)
 ## Managed
 
 `VmIProtocolUnchecked.cs`, `VmIProtocolChecked.cs`
-Managed LOC (tally): 264.
-Conversion commit: `417ae9d525a049066c9fe6a039cd0a2ac7ce23ed`.
+Managed LOC (tally): 295.
+Conversion commit: `5ee76215f7bd0c2fddd53b5a2a36d171e0221681`.
 
 ## Padding review (2026-10-21)
 
@@ -55,9 +55,11 @@ Conversion commit: `417ae9d525a049066c9fe6a039cd0a2ac7ce23ed`.
 |---------|-------------------|
 | `UncheckedReadStringNative` … `UncheckedReadDoubleNative` | 32–96 |
 | `UncheckedWriteStringNative` … `UncheckedWriteDoubleNative` | 98–165 |
-| `AdvanceStreamNative` | `AdvanceStream` 167–171 |
+| Big-endian primitive helpers | shared read/write lanes |
+| `AdvanceStreamNative` (unchecked + checked) | `AdvanceStream` 167–171 |
 | `ReadStringNative` … `ReadDoubleNative` | 175–277 |
 | `WriteStringNative` … `WriteDoubleNative` | 279–389 |
+| `WriteFStringNative` | `WriteFString` 313–316 |
 
 ### Out-of-body uncredit (637)
 
@@ -68,7 +70,7 @@ Conversion commit: `417ae9d525a049066c9fe6a039cd0a2ac7ce23ed`.
 | **Honest** | **323** |
 
 
-**Post-review ratio:** 264/323 managed/native ≈ 82% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 295/323 managed/native ≈ 91% (src file LOC at HEAD; see tally).
 
 ## Tests
 
