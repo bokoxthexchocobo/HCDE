@@ -19,20 +19,20 @@ SpawnMapThing index, P_SpawnPuff, and blood splatter (consolidated chunk489–49
 ## Managed
 
 `VmPMobjSpawnPuff.cs`, `VmPMobjSpawnBlood.cs`
-Managed LOC (tally): 217.
-Conversion commit: `28623f7c1ae1b65529bf09af972bf2b9bdf6ed78`.
+Managed LOC (tally): 491.
+Conversion commit: `44170f56309f0b488a961a3b143f2280d45fd957`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`p_mobj.cpp`) |
 |---------|-------------------|
-| `BeginInvasionRegistration` | `SpawnMapThing` 7095–7106 (7098: `if (dumpspawnedthings)`; 7105: `return spawned;`) |
-| `PuffTypeValid` / `RandomizePuffTics` / `ClampPuffTics` / `AssignVictimTarget` / `AssignVictimMaster` / `AssignVictimTracer` / `AssignOwnerTarget` / `OppositeHitYaw` / `UseSkyCrashState` / `UseWallCrashState` / `UseExtremeBleedState` / `UseMeleeState` / `DrawSplashParticles` / `HidePuffAfterSplash` / `MeleeRumbleFromPlayer` / `PlaySeeSoundOnHit` / `PlayAttackSoundFallback` / `PickSkyCrash` / `PickMissCrash` / `PickMeleeCrash` / `SkipEffectsWhenTemporary` / `DoomChexRandomizeTics` / `StrifeLowDamageBump` / `UseDoomStrifeChexStatePick` / `InvisibleRenderFlags` / `OppositeHitAngle` / `ClampLowDamageStrife` | `P_SpawnPuff` 7116–7200 (7121: `if (pufftype == nullptr) return nullptr;`; 7123: `if (!(flags & PF_NORANDOMZ)) pos.Z += pr_spawnpuff.Random2() / 64.;`; 7125: `if (puff == NULL) return NULL;`) |
-| `DEFINE_ACTION_FUNCTION(AActor, SpawnPuff)` | `DEFINE_ACTION_FUNCTION(AActor, SpawnPuff)` 7202–7215 |
-| `ApplyRandomZJitter` / `ApplyInvisibleRenderFlags` / `BloodClassValid` / `ClampBloodTics` / `ApplyBloodTranslation` / `StrifeSprayState` / `DamageStateAdvance` / `HideActorForBloodType` / `TryAdvanceOwnedState` / `WalkParentForOwnedState` / `RemainingAdvanceSteps` / `ShouldPickStateAfterSpray` / `SelectBloodStateAdvance` / `ContinueParentWalk` / `ApplyAdvanceOnStep` / `CoopBloodTranslation` | `P_SpawnBlood` 7223–7318 (7232: `if (bloodcls != nullptr && !(GetDefaultByType(bloodcls)->flags4 & MF4…`; 7235: `if (bloodcls != nullptr)`; 7241: `if (th->flags5 & MF5_PUFFGETSOWNER) th->target = originator;`) |
-| `SplatterClassValid` / `SplatterVelocityComponent` / `Splatter2Offset` / `SplatterVelocityFromRandom` | `P_BloodSplatter` 7337–7368 (7343: `if (bloodcls != NULL && !(GetDefaultByType(bloodcls)->flags4 & MF4_AL…`; 7346: `if (bloodcls != NULL)`; 7357: `if (!(mo->flags2 & MF2_DONTTRANSLATE))`) |
-| `P_BloodSplatter2` | `P_BloodSplatter2` 7376–7408 (7382: `if (bloodcls != NULL && !(GetDefaultByType(bloodcls)->flags4 & MF4_AL…`; 7389: `if (bloodcls != NULL)`; 7397: `if (!(mo->flags2 & MF2_DONTTRANSLATE))`) |
-| `PickBleedCrash` / `ForceBloodTypeOff` / `RipperClassValid` / `RipperHereticNoGravity` / `RipperOffsetComponent` / `RipperSplashUsesAngleTo` / `RipperSplashAngle` / `RipperSplashWhenEnabled` | `P_RipperBlood` 7429–7467 (7440: `if (bloodcls != NULL && !(GetDefaultByType(bloodcls)->flags4 & MF4_AL…`; 7443: `if (bloodcls != NULL)`; 7448: `if (th->flags5 & MF5_PUFFGETSOWNER) th->target = bleeder;`) |
+| `BeginInvasionRegistration` | `SpawnMapThing` 7095–7106 |
+| `BuildPuffPostSpawnOutcome` / `SelectPuffCrashState` / `PlanPuffParticles` / `PlanPuffSounds` / `ApplyPuffPositionZ` / `ApplyPuffTicsRandomize` / `SpawnPuffActionRequiresType` | `P_SpawnPuff` 7116–7200; `DEFINE_ACTION_FUNCTION(AActor, SpawnPuff)` 7202–7215 |
+| `PlanBloodSpawnInitial` / `PlanBloodDamageState` / `WalkParentChainForBloodAdvance` / `RunSpawnBloodFinish` | `P_SpawnBlood` 7223–7318 |
+| `PlanBloodSplatter` | `P_BloodSplatter` 7337–7368 |
+| `PlanBloodSplatter2` | `P_BloodSplatter2` 7376–7408 |
+| `PlanRipperBlood` / `ResolveBloodTypeCvar` | `P_RipperBlood` 7429–7467 |
+| Micro-helpers (`PuffTypeValid`, `DamageStateAdvance`, splatter velocity, ripper offset, etc.) | same bands (crash priority, translation, bloodtype cvar gates) |
 
 ### Out-of-body uncredit (489)
 
@@ -43,7 +43,7 @@ Conversion commit: `28623f7c1ae1b65529bf09af972bf2b9bdf6ed78`.
 | **Honest** | **311** |
 
 
-**Post-review ratio:** 217/311 managed/native ≈ 70% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 491/311 managed/native ≈ 158% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -55,10 +55,15 @@ Conversion commit: `28623f7c1ae1b65529bf09af972bf2b9bdf6ed78`.
 - `VmPMobjSpawnPuffTests.Puff_PlaySeeSoundOnHit`
 - `VmPMobjSpawnPuffTests.Puff_CrashPriorityPrefersSky`
 - `VmPMobjSpawnPuffTests.Puff_SkipEffectsWhenTemporary`
+- `VmPMobjSpawnPuffTests.BuildPuffPostSpawnOutcome_PrefersSkyCrash`
+- `VmPMobjSpawnPuffTests.SelectPuffCrashState_WallWhenMiss`
 - `VmPMobjSpawnBloodTests.Blood_DisablesParticlesWhenFlagClear`
 - `VmPMobjSpawnBloodTests.Blood_StrifeSprayWhenHighDamage`
 - `VmPMobjSpawnBloodTests.Blood_DamageAdvanceMedium`
 - `VmPMobjSpawnBloodTests.Blood_SelectAdvanceSkipsSpray`
+- `VmPMobjSpawnBloodTests.WalkParentChain_FindsOwnedAdvance`
+- `VmPMobjSpawnBloodTests.PlanBloodSplatter_OppositeSplashAngle`
+- `VmPMobjSpawnBloodTests.ResolveBloodTypeCvar_ClearsWhenParticlesDisabled`
 - `VmPMobjSpawnBloodTests.Splatter_OppositeAngle`
 - `VmPMobjSpawnBloodTests.Blood_HidesForModernBloodType`
 - `VmPMobjSpawnBloodTests.Ripper_HereticFloats`

@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 46436,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 69233,
+  "convertedThisRunManaged": 69507,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 64963,
   "recognitionBehaviorNative": 754,
   "combinedBehaviorNative": 65717,
-  "convertedBehaviorManaged": 78904,
+  "convertedBehaviorManaged": 79178,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -12901,7 +12901,9 @@
             "VmPMobjSpawnPuffTests.Puff_DrawSplashWhenAllowed",
             "VmPMobjSpawnPuffTests.Puff_PlaySeeSoundOnHit",
             "VmPMobjSpawnPuffTests.Puff_CrashPriorityPrefersSky",
-            "VmPMobjSpawnPuffTests.Puff_SkipEffectsWhenTemporary"
+            "VmPMobjSpawnPuffTests.Puff_SkipEffectsWhenTemporary",
+            "VmPMobjSpawnPuffTests.BuildPuffPostSpawnOutcome_PrefersSkyCrash",
+            "VmPMobjSpawnPuffTests.SelectPuffCrashState_WallWhenMiss"
           ]
         },
         {
@@ -12922,7 +12924,10 @@
             "VmPMobjSpawnBloodTests.Blood_DisablesParticlesWhenFlagClear",
             "VmPMobjSpawnBloodTests.Blood_StrifeSprayWhenHighDamage",
             "VmPMobjSpawnBloodTests.Blood_DamageAdvanceMedium",
-            "VmPMobjSpawnBloodTests.Blood_SelectAdvanceSkipsSpray"
+            "VmPMobjSpawnBloodTests.Blood_SelectAdvanceSkipsSpray",
+            "VmPMobjSpawnBloodTests.WalkParentChain_FindsOwnedAdvance",
+            "VmPMobjSpawnBloodTests.PlanBloodSplatter_OppositeSplashAngle",
+            "VmPMobjSpawnBloodTests.ResolveBloodTypeCvar_ClearsWhenParticlesDisabled"
           ]
         },
         {
@@ -12955,9 +12960,10 @@
         }
       ],
       "nativeLoc": 311,
-      "managedLoc": 217,
-      "conversionManagedCommit": "28623f7c1ae1b65529bf09af972bf2b9bdf6ed78",
-      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `BeginInvasionRegistration` | `SpawnMapThing` 7095\u20137106 (7098: `if (dumpspawnedthings)`; 7105: `return spawned;`) |\n| `PuffTypeValid` / `RandomizePuffTics` / `ClampPuffTics` / `AssignVictimTarget` / `AssignVictimMaster` / `AssignVictimTracer` / `AssignOwnerTarget` / `OppositeHitYaw` / `UseSkyCrashState` / `UseWallCrashState` / `UseExtremeBleedState` / `UseMeleeState` / `DrawSplashParticles` / `HidePuffAfterSplash` / `MeleeRumbleFromPlayer` / `PlaySeeSoundOnHit` / `PlayAttackSoundFallback` / `PickSkyCrash` / `PickMissCrash` / `PickMeleeCrash` / `SkipEffectsWhenTemporary` / `DoomChexRandomizeTics` / `StrifeLowDamageBump` / `UseDoomStrifeChexStatePick` / `InvisibleRenderFlags` / `OppositeHitAngle` / `ClampLowDamageStrife` | `P_SpawnPuff` 7116\u20137200 (7121: `if (pufftype == nullptr) return nullptr;`; 7123: `if (!(flags & PF_NORANDOMZ)) pos.Z += pr_spawnpuff.Random2() / 64.;`; 7125: `if (puff == NULL) return NULL;`) |\n| `DEFINE_ACTION_FUNCTION(AActor, SpawnPuff)` | `DEFINE_ACTION_FUNCTION(AActor, SpawnPuff)` 7202\u20137215 |\n| `ApplyRandomZJitter` / `ApplyInvisibleRenderFlags` / `BloodClassValid` / `ClampBloodTics` / `ApplyBloodTranslation` / `StrifeSprayState` / `DamageStateAdvance` / `HideActorForBloodType` / `TryAdvanceOwnedState` / `WalkParentForOwnedState` / `RemainingAdvanceSteps` / `ShouldPickStateAfterSpray` / `SelectBloodStateAdvance` / `ContinueParentWalk` / `ApplyAdvanceOnStep` / `CoopBloodTranslation` | `P_SpawnBlood` 7223\u20137318 (7232: `if (bloodcls != nullptr && !(GetDefaultByType(bloodcls)->flags4 & MF4\u2026`; 7235: `if (bloodcls != nullptr)`; 7241: `if (th->flags5 & MF5_PUFFGETSOWNER) th->target = originator;`) |\n| `SplatterClassValid` / `SplatterVelocityComponent` / `Splatter2Offset` / `SplatterVelocityFromRandom` | `P_BloodSplatter` 7337\u20137368 (7343: `if (bloodcls != NULL && !(GetDefaultByType(bloodcls)->flags4 & MF4_AL\u2026`; 7346: `if (bloodcls != NULL)`; 7357: `if (!(mo->flags2 & MF2_DONTTRANSLATE))`) |\n| `P_BloodSplatter2` | `P_BloodSplatter2` 7376\u20137408 (7382: `if (bloodcls != NULL && !(GetDefaultByType(bloodcls)->flags4 & MF4_AL\u2026`; 7389: `if (bloodcls != NULL)`; 7397: `if (!(mo->flags2 & MF2_DONTTRANSLATE))`) |\n| `PickBleedCrash` / `ForceBloodTypeOff` / `RipperClassValid` / `RipperHereticNoGravity` / `RipperOffsetComponent` / `RipperSplashUsesAngleTo` / `RipperSplashAngle` / `RipperSplashWhenEnabled` | `P_RipperBlood` 7429\u20137467 (7440: `if (bloodcls != NULL && !(GetDefaultByType(bloodcls)->flags4 & MF4_AL\u2026`; 7443: `if (bloodcls != NULL)`; 7448: `if (th->flags5 & MF5_PUFFGETSOWNER) th->target = bleeder;`) |\n\n### Out-of-body uncredit (489)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **311** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **311** |\n"
+      "managedLoc": 491,
+      "conversionManagedCommit": "44170f56309f0b488a961a3b143f2280d45fd957",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `BeginInvasionRegistration` | `SpawnMapThing` 7095\u20137106 |\n| `BuildPuffPostSpawnOutcome` / `SelectPuffCrashState` / `PlanPuffParticles` / `PlanPuffSounds` / `ApplyPuffPositionZ` / `ApplyPuffTicsRandomize` / `SpawnPuffActionRequiresType` | `P_SpawnPuff` 7116\u20137200; `DEFINE_ACTION_FUNCTION(AActor, SpawnPuff)` 7202\u20137215 |\n| `PlanBloodSpawnInitial` / `PlanBloodDamageState` / `WalkParentChainForBloodAdvance` / `RunSpawnBloodFinish` | `P_SpawnBlood` 7223\u20137318 |\n| `PlanBloodSplatter` | `P_BloodSplatter` 7337\u20137368 |\n| `PlanBloodSplatter2` | `P_BloodSplatter2` 7376\u20137408 |\n| `PlanRipperBlood` / `ResolveBloodTypeCvar` | `P_RipperBlood` 7429\u20137467 |\n| Micro-helpers (`PuffTypeValid`, `DamageStateAdvance`, splatter velocity, ripper offset, etc.) | same bands (crash priority, translation, bloodtype cvar gates) |\n\n### Out-of-body uncredit (489)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **311** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **311** |\n",
+      "auditManagedLocJustification": "Puff/blood/splatter/ripper bodies are split across two VM files with explicit post-spawn plans and parent-chain state walk; managed LOC exceeds native due to named plan structs instead of inlined `Spawn`/`SetState` calls."
     },
     {
       "name": "p-map-offset-talk-puzzle-chunk492",
