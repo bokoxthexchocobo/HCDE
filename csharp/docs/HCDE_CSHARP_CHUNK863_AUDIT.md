@@ -15,34 +15,26 @@ FraggleScript `/`/`%`, bitwise, `++`/`--`, `<=`/`>=`, and `.` dispatch from `t_o
 - `src/playsim/fragglescript/t_oper.cpp` **FParser::OPdecrement** 530–586 (57 lines)
 - `src/playsim/fragglescript/t_oper.cpp` **FParser::OPlessthanorequal** 594–606 (13 lines)
 - `src/playsim/fragglescript/t_oper.cpp` **FParser::OPgreaterthanorequal** 614–626 (13 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **oper separators** 350–356 (7 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **oper separators** 388–394 (7 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **oper separators** 410–418 (9 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **oper separators** 428–435 (8 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **oper separators** 445–451 (7 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **oper separators** 459–466 (8 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **oper separators** 523–529 (7 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **oper separators** 587–593 (7 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **oper separators** 607–613 (7 lines)
 
-**Credited native LOC:** 277 (tally `nativeLoc` 277).
+**Credited native LOC:** 210 (tally `nativeLoc` 210).
 
 ## Portfolio delta
 
-**Gross CLI band:** **277** lines in the UNCredited-range probe; tally credits **277** whole-function native LOC only.
+**Gross CLI band:** **277** lines in the UNCredited-range probe; tally credits **210** whole-function native LOC only.
+**67** uncovered lines in that band are inter-function gaps, comments, or non-function lines (not credited).
 
 | | Native LOC |
 |---|---:|
 | **Gross** (CLI UNCredited band) | **277** |
-| **Credited** (whole functions, this row) | **277** |
+| **Credited** (whole functions, this row) | **210** |
 | **Overlap trim** | **0** |
-| **Net headline Δ** | **+277** (see `convertedBehaviorNative` in tally at land commit) |
+| **Net headline Δ** | **+210** (see `convertedBehaviorNative` in tally at land commit) |
 
 ## Managed
 
 `VmFScriptParserOper863.cs`
 Managed LOC (tally): 162.
-Conversion commit: `68051a085d4aa8ffd88b20d98539839dde8f2891`.
+Conversion commit: `d170ec51db0e09227113fb349f0a5e8df36b91bc`.
 
 ## Padding review (2026-10-21)
 
@@ -71,7 +63,16 @@ Conversion commit: `68051a085d4aa8ffd88b20d98539839dde8f2891`.
 | Row `nativeLoc` | **277** |
 | Net | **+277** vs post-**862** |
 
-**Post-review ratio:** 162/277 managed/native ≈ 58% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (863)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **277** |
+| **Out-of-body removed** | **67** |
+| **Honest** | **210** |
+
+
+**Post-review ratio:** 162/210 managed/native ≈ 77% (src file LOC at HEAD; see tally).
 
 ## Tests
 
