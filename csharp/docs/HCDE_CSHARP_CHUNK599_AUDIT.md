@@ -22,8 +22,8 @@ FxVMFunctionCall::Resolve guards + Emit/CheckEmitCast helpers (9814–10326)
 ## Managed
 
 `ZccVmFunctionCallResolve.cs`, `ZccVmFunctionCallEmit.cs`
-Managed LOC (tally): 95.
-Conversion commit: `f6967d6b7b738da076945866a620269a83c4d28c`.
+Managed LOC (tally): 177.
+Conversion commit: `81499489de6ab4197882117ba7d2cbcad1e7cab4`.
 
 ## Padding review (2026-10-21)
 
@@ -43,6 +43,7 @@ Former chunk 600 merged here (retired). Whole-function ports only; no LOC paddin
 | `NapConstantNative` | `static_assert(NAP == 3)` at 10217 (compile-time constant) |
 | `ShouldNullCheckFnPtrSelfNative` | `FnPtrCall` self branch issues `OP_NULLCHECK` 10231–10236 |
 | `ShouldEmitOpRetNative` | `CheckEmitCast` `returnit` fast-path 10302–10314 |
+| `RunResolveGuardPipeline` / `RunEmitProloguePipeline` | resolve + emit orchestration **9837–10325** |
 
 ### Out-of-body uncredit (599)
 
@@ -53,11 +54,13 @@ Former chunk 600 merged here (retired). Whole-function ports only; no LOC paddin
 | **Honest** | **162** |
 
 
-**Post-review ratio:** 95/162 managed/native ≈ 59% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 177/162 managed/native ≈ 109% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `ZccVmFunctionCallResolveTests.RelaxedNamedArgsNative_At413`
+- `ZccVmFunctionCallResolveTests.RunResolveGuardPipeline_FlagsMissingSelf`
+- `ZccVmFunctionCallEmitPipelineTests.RunEmitProloguePipeline_AllowsScopeBarrier`
 
 ## Verified
 
