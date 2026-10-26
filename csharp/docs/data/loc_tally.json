@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 47325,
+  "convertedThisRunNative": 47226,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 67905,
+  "convertedThisRunManaged": 67810,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 441480,
+  "remainingNative": 441579,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 65852,
+  "convertedBehaviorNative": 65753,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 66606,
-  "convertedBehaviorManaged": 77576,
+  "combinedBehaviorNative": 66507,
+  "convertedBehaviorManaged": 77481,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8222,39 +8222,15 @@
     {
       "name": "dsda-options-parse-chunk211",
       "bucket": "conversion",
-      "managedLoc": 95,
-      "note": "DSDA OPTIONS defaults, option_list keys, parseOptions apply.",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/options.cpp",
-          "symbol": "dsda_options",
-          "start": 23,
-          "end": 46,
-          "tests": [
-            "VmDsdaOptionsApplierTests.ApplyToLevel_SetsNoInfightingFlag"
-          ]
-        },
-        {
-          "file": "src/gamedata/options.cpp",
-          "symbol": "option_list",
-          "start": 56,
-          "end": 78,
-          "tests": [
-            "VmDsdaOptionsParserTests.Parse_ClampedKeyValuePairs"
-          ]
-        },
-        {
-          "file": "src/gamedata/options.cpp",
-          "symbol": "parseOptions",
-          "start": 149,
-          "end": 200,
-          "tests": [
-            "VmDsdaOptionsApplierTests.ApplyToLevel_SetsCompatMask"
-          ]
-        }
-      ],
-      "conversionManagedCommit": "bba9c7500564303331b84ee34f5daf85c999904a",
-      "nativeLoc": 99
+      "managedLoc": 0,
+      "note": "DSDA OPTIONS defaults, option_list keys, parseOptions apply. Retired (2026-10-23): out-of-body credit removed; honest **52** < **150**.",
+      "nativeRanges": [],
+      "conversionManagedCommit": "9a8178dcf7c77873ff891c75ea36e5366d03133d",
+      "nativeLoc": 0,
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (211)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **99** |\n| **Out-of-body removed** | **47** |\n| **Honest** | **52** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "sprite-init-hash-chunk212",

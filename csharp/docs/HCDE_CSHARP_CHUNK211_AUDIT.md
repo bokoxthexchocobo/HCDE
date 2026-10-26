@@ -1,28 +1,35 @@
-# Chunk 211 — DSDA OPTIONS defaults, option_list keys, parseOptions apply.
+# Chunk 211 — DSDA OPTIONS defaults, option_list keys, parseOptions apply. Retired (2026-10-23): out-of-body credit removed; honest **52** < **150**.
 
 ## Scope
 
-DSDA OPTIONS defaults, option_list keys, parseOptions apply.
+DSDA OPTIONS defaults, option_list keys, parseOptions apply. Retired (2026-10-23): out-of-body credit removed; honest **52** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/options.cpp` **dsda_options** 23–46 (24 lines)
-- `src/gamedata/options.cpp` **option_list** 56–78 (23 lines)
-- `src/gamedata/options.cpp` **parseOptions** 149–200 (52 lines)
 
-**Credited native LOC:** 99 (tally `nativeLoc` 99).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDoomFontPlannerTests.cs`, `VmDsdaOptionsApplier.cs`, `VmDsdaOptionsApplierTests.cs`, `VmDsdaOptionsParser.cs`, `VmUMapInfoTokenParserTests.cs`, `VmVoxelSpinNameParser.cs`, `VmVoxelSpinNameParserTests.cs`, `VmXlatSimpleLineTranslate.cs`
-Managed LOC (tally): 95.
-Conversion commit: `bba9c7500564303331b84ee34f5daf85c999904a`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `9a8178dcf7c77873ff891c75ea36e5366d03133d`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (211)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **99** |
+| **Out-of-body removed** | **47** |
+| **Honest** | **52** |
+
 
 ## Tests
 
-- `VmDsdaOptionsApplierTests.ApplyToLevel_SetsNoInfightingFlag`
-- `VmDsdaOptionsParserTests.Parse_ClampedKeyValuePairs`
-- `VmDsdaOptionsApplierTests.ApplyToLevel_SetsCompatMask`
 
 ## Verified
 
