@@ -13,14 +13,20 @@ Whole `P_GeometryRadiusAttack` (`p_destructible.cpp` 442–688).
 ## Managed
 
 `VmPDestructibleGeometryRadiusAttack.cs`
-Managed LOC (tally): 186.
-Conversion commit: `4fdffe0c4d68cab662ff73bff8fb2ff70531ea06`.
+Managed LOC (tally): 268.
+Conversion commit: `f1ed46fe7070b35aa08c40497d6f75c56daaa665`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`p_destructible.cpp`) |
 |---------|-------------------------------|
-| `GeometryRadiusAttack` / `GeometryRadiusAttackContext` | `P_GeometryRadiusAttack` 442–688 |
+| `RunGeometryRadiusAttackPipeline` / `GeometryRadiusAttack` | `P_GeometryRadiusAttack` **442–688** |
+| `RunSourceSectorCeilingInsert` / `RunSourceSectorFloorInsert` / `ProjectToPlane` | source sector **458–476** |
+| `RunSourceFfloorsPipeline` / `ComputeFfSpot` / `FfloorEligible` | source ffloors **478–512** |
+| `RunNearbyLinesPipeline` / `LineHasInteractiveGeometry` / `ComputeScaledLineDamage` | line scan **522–590** (simplified) |
+| `RunDamageGroupsApplyPipeline` / `ComputeGroupFalloffDamage` | group apply **646–687** (hooked) |
+| `ResolveCeilingGroupId` / `ResolveFloorGroupId` / `ResolveFfGroupId` | group id masks **463–492** |
+| `ClosestPointOnLine` | `PGRA_ClosestPointOnLine2D` |
 
 ### Out-of-body uncredit (661)
 
@@ -31,12 +37,15 @@ Conversion commit: `4fdffe0c4d68cab662ff73bff8fb2ff70531ea06`.
 | **Honest** | **247** |
 
 
-**Post-review ratio:** 186/247 managed/native ≈ 75% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 268/247 managed/native ≈ 109% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmPDestructibleGeometryRadiusAttackTests.GeometryRadiusAttack_InsertsCeilingGroup`
 - `VmPDestructibleGeometryRadiusAttackTests.GeometryRadiusAttack_SkipsNullSpot`
+- `VmPDestructibleGeometryRadiusAttackTests.GeometryRadiusAttack_InsertsFloorGroup`
+- `VmPDestructibleGeometryRadiusAttackTests.ComputeGroupFalloffDamage_ZeroBeyondRadius`
+- `VmPDestructibleGeometryRadiusAttackTests.FfloorEligible_RejectsInvertedGeometry`
 
 ## Verified
 
