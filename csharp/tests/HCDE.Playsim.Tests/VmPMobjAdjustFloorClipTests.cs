@@ -88,7 +88,7 @@ public class VmPMobjAdjustFloorClipTests
     public void EvaluateMorph_AllowsValidMorph()
     {
         var ctx = new VmPMobjAdjustFloorClip.MorphSubContext(
-            false, false, false, false, 0, true, false, false, false, false, false);
+            false, false, false, false, 0, true, true, false, false, false, false);
         Assert.True(VmPMobjAdjustFloorClip.EvaluateMorphSubstitution(ctx, false, false, out var preMorph));
         Assert.True(preMorph);
     }
