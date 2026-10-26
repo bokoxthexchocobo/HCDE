@@ -8,6 +8,8 @@ public static class VmPMapUtlAddThingIntercepts
     public sealed class ThingIntercept
     {
         public double Frac { get; set; }
+        public bool IsALine { get; set; }
+        public bool Done { get; set; }
         public object? Thing { get; set; }
     }
 
@@ -30,30 +32,66 @@ public static class VmPMapUtlAddThingIntercepts
         {
             if (!compatible)
             {
+                // [RH] bounding-box edges instead of corner-to-corner when not compatibility mode.
                 var numfronts = 0;
                 for (var i = 0; i < 4; i++)
                 {
-                    var line = EdgeDivline(thing, i, ctx.Trace);
-                    if (line is null) continue;
-                    numfronts++;
-                    var sideA = ctx.PointOnDivlineSide?.Invoke(line.Value.X, line.Value.Y, ctx.Trace) ?? 0;
-                    var sideB = ctx.PointOnDivlineSide?.Invoke(line.Value.X + line.Value.Dx, line.Value.Y + line.Value.Dy, ctx.Trace) ?? 0;
-                    if (sideA == sideB) continue;
+                    Divline line;
+                    switch (i)
+                    {
+                        case 0:
+                            var topY = thing.Y + thing.Radius;
+                            if (ctx.Trace.Y < topY)
+                                continue;
+                            line = new Divline(thing.X + thing.Radius, topY, -thing.Radius * 2, 0);
+                            break;
+                        case 1:
+                            var rightX = thing.X + thing.Radius;
+                            if (ctx.Trace.X < rightX)
+                                continue;
+                            line = new Divline(rightX, thing.Y - thing.Radius, 0, thing.Radius * 2);
+                            break;
+                        case 2:
+                            var bottomY = thing.Y - thing.Radius;
+                            if (ctx.Trace.Y > bottomY)
+                                continue;
+                            line = new Divline(thing.X - thing.Radius, bottomY, thing.Radius * 2, 0);
+                            break;
+                        default:
+                            var leftX = thing.X - thing.Radius;
+                            if (ctx.Trace.X > leftX)
+                                continue;
+                            line = new Divline(leftX, thing.Y + thing.Radius, 0, -thing.Radius * 2);
+                            break;
+                    }
 
-                    var frac = ctx.InterceptVector?.Invoke(ctx.Trace, line.Value) ?? 0;
+                    numfronts++;
+                    var sideA = ctx.PointOnDivlineSide?.Invoke(line.X, line.Y, ctx.Trace) ?? 0;
+                    var sideB = ctx.PointOnDivlineSide?.Invoke(line.X + line.Dx, line.Y + line.Dy, ctx.Trace) ?? 0;
+                    if (sideA == sideB)
+                        continue;
+
+                    var frac = ctx.InterceptVector?.Invoke(ctx.Trace, line) ?? 0;
                     if (frac < ctx.StartFrac)
                     {
-                        if (ctx.StartFrac > 0 && TryInsideActorStart(ctx, thing, i, line.Value))
-                            PushIntercept(ctx, 0, thing);
+                        if (ctx.StartFrac > 0)
+                        {
+                            line = ShiftEdgeForInsideStart(line, thing, i);
+                            var frac2 = ctx.InterceptVector?.Invoke(ctx.Trace, line) ?? 0;
+                            if (frac2 >= ctx.StartFrac)
+                                goto addIntercept;
+                        }
+
                         continue;
                     }
 
-                    PushIntercept(ctx, frac, thing);
+                addIntercept:
+                    PushThingIntercept(ctx, frac, thing);
                     break;
                 }
 
                 if (numfronts == 0)
-                    PushIntercept(ctx, 0, thing);
+                    PushThingIntercept(ctx, 0, thing);
             }
             else
             {
@@ -76,46 +114,32 @@ public static class VmPMapUtlAddThingIntercepts
 
                 var s1 = ctx.PointOnDivlineSide?.Invoke(x1, y1, ctx.Trace) ?? 0;
                 var s2 = ctx.PointOnDivlineSide?.Invoke(x2, y2, ctx.Trace) ?? 0;
-                if (s1 == s2) continue;
+                if (s1 == s2)
+                    continue;
 
                 var dl = new Divline(x1, y1, x2 - x1, y2 - y1);
                 var frac = ctx.InterceptVector?.Invoke(ctx.Trace, dl) ?? 0;
                 if (frac >= ctx.StartFrac)
-                    PushIntercept(ctx, frac, thing);
+                    PushThingIntercept(ctx, frac, thing);
             }
         }
     }
 
-    static void PushIntercept(AddThingInterceptsContext ctx, double frac, ThingBox thing) =>
-        ctx.Intercepts.Add(new ThingIntercept { Frac = frac, Thing = thing });
+    static void PushThingIntercept(AddThingInterceptsContext ctx, double frac, ThingBox thing) =>
+        ctx.Intercepts.Add(new ThingIntercept
+        {
+            Frac = frac,
+            IsALine = false,
+            Done = false,
+            Thing = thing,
+        });
 
-    static bool TryInsideActorStart(AddThingInterceptsContext ctx, ThingBox thing, int edge, Divline line)
-    {
-        var shifted = ShiftEdge(line, thing, edge);
-        var frac2 = ctx.InterceptVector?.Invoke(ctx.Trace, shifted) ?? 0;
-        return frac2 >= ctx.StartFrac;
-    }
-
-    static Divline ShiftEdge(Divline line, ThingBox thing, int edge)
-    {
-        return edge switch
+    static Divline ShiftEdgeForInsideStart(Divline line, ThingBox thing, int edge) =>
+        edge switch
         {
             0 => line with { Y = line.Y - 2 * thing.Radius },
             1 => line with { X = line.X - 2 * thing.Radius },
             2 => line with { Y = line.Y + 2 * thing.Radius },
             _ => line with { X = line.X + 2 * thing.Radius },
         };
-    }
-
-    static Divline? EdgeDivline(ThingBox thing, int i, Divline trace)
-    {
-        return i switch
-        {
-            0 when trace.Y >= thing.Y + thing.Radius => new Divline(thing.X + thing.Radius, thing.Y + thing.Radius, -thing.Radius * 2, 0),
-            1 when trace.X >= thing.X + thing.Radius => new Divline(thing.X + thing.Radius, thing.Y - thing.Radius, 0, thing.Radius * 2),
-            2 when trace.Y <= thing.Y - thing.Radius => new Divline(thing.X - thing.Radius, thing.Y - thing.Radius, thing.Radius * 2, 0),
-            3 when trace.X <= thing.X - thing.Radius => new Divline(thing.X - thing.Radius, thing.Y + thing.Radius, 0, -thing.Radius * 2),
-            _ => null,
-        };
-    }
 }
