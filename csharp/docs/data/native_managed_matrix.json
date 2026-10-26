@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 220206
+    "managedCSharpLoc": 220475
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 72063,
+    "convertedThisRunManaged": 72332,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 81734,
+    "convertedBehaviorManaged": 82003,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -12231,7 +12231,8 @@
             "end": 3564,
             "tests": [
               "VmPMapBounceTraverseTests.BlockEverything_Stops",
-              "VmPMapBounceTraverseTests.OpeningTooLow_Blocks"
+              "VmPMapBounceTraverseTests.OpeningTooLow_Blocks",
+              "VmPMapBounceTraverseTests.RunBounceTraverseLoop_UpdatesBestSlideOnBlock"
             ]
           },
           {
@@ -12241,17 +12242,20 @@
             "end": 3707,
             "tests": [
               "VmPMapBounceTraverseTests.HorizonDestroys",
-              "VmPMapBounceTraverseTests.BounceWallsRequired"
+              "VmPMapBounceTraverseTests.BounceWallsRequired",
+              "VmPMapBounceTraverseTests.RunBounceWallPipeline_DestroyOnHorizon",
+              "VmPMapBounceTraverseTests.ComputeLeadingCorner_FollowsVelocitySign"
             ]
           }
         ],
         "nativeLoc": 190,
-        "managedLoc": 127,
-        "conversionManagedCommit": "97cdcfae6f3ca80f1e42a5ed90160689b023a919",
+        "managedLoc": 396,
+        "conversionManagedCommit": "b3bd1d6e9a1e71ed2045198a1ca1c9b6d2b3f5cc",
         "portCommits": [
           "4d6fead63aeae227fdcfd7c8e0f87d411e66042a"
         ],
-        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `BlockEverythingLine` / `BounceCountDepleted` / `BounceWallsEnabled` | `FSlide::BounceTraverse` 3511\u20133564 |\n| `BoxOnWrongSide` | `FSlide::BounceWall` 3607\u20133691 |\n| `CloserSlideFrac` / `EvaluateBounceWallComplete` / `EvaluateBounceWallDestroy` / `EvaluateBounceWallReflect` / `EvaluateTraverseContinue` | `FSlide::BounceTraverse` 3511\u20133564 |\n| `ExplodeMissileOnHit` | `FSlide::BounceWall` 3674 |\n| `HorizonDestroys` | `FSlide::BounceWall` 3572\u20133707 |\n| `KeepAngle` | `FSlide::BounceWall` 3678 |\n| `MinMoveLen` / `MissileSpecialHitBlock` / `MissileSpecialHitStop` / `OneSidedBlocks` / `OpeningTooLow` | `FSlide::BounceTraverse` 3511\u20133564 |\n| `ProjectileHitLinedef` | `FSlide::BounceWall` 3649 |\n| `ReflectAngle` | `FSlide::BounceWall` 3674 |\n| `TooHigh` / `TooLow` | `FSlide::BounceTraverse` 3511\u20133564 |\n| `UseBounceState` | `FSlide::BounceWall` 3698 |\n\n### Out-of-body uncredit (470)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **190** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **190** |\n"
+        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|----------------------|\n| `RunBounceTraverseLoop` / `RunBounceTraverseInterceptStep` / `TryUpdateBlockingSlide` | `BounceTraverse` **3511\u20133564** |\n| `EvaluateTraverseContinue` / `LineBlocksMovement` | opening + height checks **3533\u20133550** |\n| `RunBounceWallPipeline` / `BounceWall` | `BounceWall` **3572\u20133707** |\n| `ComputeLeadingCorner` | leading corner **3591\u20133606** |\n| `RunFloorCeilingBounceFallback` / `PreferFloorBounce` | no-wall floor/ceiling **3609\u20133623** |\n| `RunMissileSpecialBounceGate` | missile `SpecialBounceHit` **3631\u20133638** |\n| `RunBounceWallReflectPipeline` / `ReflectAngle` / `MinMoveLen` | reflect velocity **3670\u20133697** |\n| `EvaluateBounceWallDestroy` / `HorizonDestroys` / `ProjectileHitLinedef` | destroy paths **3641\u20133667** |\n| prior helpers (`BlockEverythingLine`, `OpeningTooLow`, \u2026) | shared predicates **3529\u20133605** |\n\n### Out-of-body uncredit (470)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **190** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **190** |\n",
+        "auditManagedLocJustification": "Traverse intercept loop, leading-corner setup, floor/ceiling fallback hook, and bounce-wall destroy/reflect pipelines mirror `BounceTraverse` / `BounceWall` without hosting path traverse or actor mutation."
       },
       {
         "name": "p-enemy-resurrect-chunk471",

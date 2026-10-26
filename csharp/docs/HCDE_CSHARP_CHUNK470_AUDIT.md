@@ -14,24 +14,22 @@ FSlide::BounceTraverse and FSlide::BounceWall
 ## Managed
 
 `VmPMapBounceTraverse.cs`
-Managed LOC (tally): 127.
-Conversion commit: `97cdcfae6f3ca80f1e42a5ed90160689b023a919`.
+Managed LOC (tally): 396.
+Conversion commit: `b3bd1d6e9a1e71ed2045198a1ca1c9b6d2b3f5cc`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`p_map.cpp`) |
-|---------|-------------------|
-| `BlockEverythingLine` / `BounceCountDepleted` / `BounceWallsEnabled` | `FSlide::BounceTraverse` 3511–3564 |
-| `BoxOnWrongSide` | `FSlide::BounceWall` 3607–3691 |
-| `CloserSlideFrac` / `EvaluateBounceWallComplete` / `EvaluateBounceWallDestroy` / `EvaluateBounceWallReflect` / `EvaluateTraverseContinue` | `FSlide::BounceTraverse` 3511–3564 |
-| `ExplodeMissileOnHit` | `FSlide::BounceWall` 3674 |
-| `HorizonDestroys` | `FSlide::BounceWall` 3572–3707 |
-| `KeepAngle` | `FSlide::BounceWall` 3678 |
-| `MinMoveLen` / `MissileSpecialHitBlock` / `MissileSpecialHitStop` / `OneSidedBlocks` / `OpeningTooLow` | `FSlide::BounceTraverse` 3511–3564 |
-| `ProjectileHitLinedef` | `FSlide::BounceWall` 3649 |
-| `ReflectAngle` | `FSlide::BounceWall` 3674 |
-| `TooHigh` / `TooLow` | `FSlide::BounceTraverse` 3511–3564 |
-| `UseBounceState` | `FSlide::BounceWall` 3698 |
+|---------|----------------------|
+| `RunBounceTraverseLoop` / `RunBounceTraverseInterceptStep` / `TryUpdateBlockingSlide` | `BounceTraverse` **3511–3564** |
+| `EvaluateTraverseContinue` / `LineBlocksMovement` | opening + height checks **3533–3550** |
+| `RunBounceWallPipeline` / `BounceWall` | `BounceWall` **3572–3707** |
+| `ComputeLeadingCorner` | leading corner **3591–3606** |
+| `RunFloorCeilingBounceFallback` / `PreferFloorBounce` | no-wall floor/ceiling **3609–3623** |
+| `RunMissileSpecialBounceGate` | missile `SpecialBounceHit` **3631–3638** |
+| `RunBounceWallReflectPipeline` / `ReflectAngle` / `MinMoveLen` | reflect velocity **3670–3697** |
+| `EvaluateBounceWallDestroy` / `HorizonDestroys` / `ProjectileHitLinedef` | destroy paths **3641–3667** |
+| prior helpers (`BlockEverythingLine`, `OpeningTooLow`, …) | shared predicates **3529–3605** |
 
 ### Out-of-body uncredit (470)
 
@@ -42,14 +40,17 @@ Conversion commit: `97cdcfae6f3ca80f1e42a5ed90160689b023a919`.
 | **Honest** | **190** |
 
 
-**Post-review ratio:** 127/190 managed/native ≈ 67% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 396/190 managed/native ≈ 208% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmPMapBounceTraverseTests.BlockEverything_Stops`
 - `VmPMapBounceTraverseTests.OpeningTooLow_Blocks`
+- `VmPMapBounceTraverseTests.RunBounceTraverseLoop_UpdatesBestSlideOnBlock`
 - `VmPMapBounceTraverseTests.HorizonDestroys`
 - `VmPMapBounceTraverseTests.BounceWallsRequired`
+- `VmPMapBounceTraverseTests.RunBounceWallPipeline_DestroyOnHorizon`
+- `VmPMapBounceTraverseTests.ComputeLeadingCorner_FollowsVelocitySign`
 
 ## Verified
 
