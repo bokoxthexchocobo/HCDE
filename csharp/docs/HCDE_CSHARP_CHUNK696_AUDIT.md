@@ -13,8 +13,8 @@ Whole `FLevelLocals::EV_SilentLineTeleport` (`p_teleport.cpp` 471–643).
 ## Managed
 
 `VmPTeleportSilentLine.cs`
-Managed LOC (tally): 137.
-Conversion commit: `4767729343d32c17ae0a2324c8d5571c56cc82c2`.
+Managed LOC (tally): 231.
+Conversion commit: `7aa8ddb8deab9b263e61ed83047611f1ea474573`.
 
 ## Padding review (2026-10-21)
 
@@ -31,7 +31,7 @@ Conversion commit: `4767729343d32c17ae0a2324c8d5571c56cc82c2`.
 | **Honest** | **173** |
 
 
-**Post-review ratio:** 137/173 managed/native ≈ 79% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 231/173 managed/native ≈ 134% (src file LOC at HEAD; see tally).
 
 ## Tests
 
