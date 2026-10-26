@@ -57,16 +57,10 @@ public static class VmPPSpriteOverlay
         var wy = y;
         var c = psp.RotationCos;
         var s = psp.RotationSin;
-        x = wx * c + wy * s;
-        y = wx * s - wy * c;
-    }
-
-    static double ApplyAxis(double current, double incoming, int flags, bool axisX)
-    {
-        var keep = axisX ? (flags & WofKeepx) != 0 : (flags & WofKeepy) != 0;
-        if (keep)
-            return current;
-        return (flags & WofAdd) != 0 ? current + incoming : incoming;
+        var nx = wx * c + wy * s;
+        var ny = wx * s - wy * c;
+        x = nx;
+        y = ny;
     }
 
     static void MarkInterpolationIfNeeded(OverlayPsprite pspr, int flags)
@@ -75,12 +69,46 @@ public static class VmPPSpriteOverlay
             pspr.InterpolateTic = true;
     }
 
+    public static double NormalizeScaleWy(double wx, double wy, int flags)
+    {
+        if ((flags & WofZeroy) == 0 && wy == 0)
+            return wx;
+        return wy;
+    }
+
+    public static int ResolvePspriteLayer(int layer, int statePspIndex) =>
+        layer != 0 ? layer : statePspIndex;
+
+    /// <summary><c>A_OverlayOffset</c> body after player/psprite lookup (978–1005).</summary>
+    public static void ApplyOverlayOffsetBody(OverlayPsprite psp, ref double wx, ref double wy, int flags)
+    {
+        if (BothAxesKept(flags))
+            return;
+
+        if ((flags & WofRelative) != 0)
+            HandleOverlayRelative(psp, ref wx, ref wy);
+
+        if ((flags & WofKeepx) == 0)
+            psp.X = (flags & WofAdd) != 0 ? psp.X + wx : wx;
+        if ((flags & WofKeepy) == 0)
+            psp.Y = (flags & WofAdd) != 0 ? psp.Y + wy : wy;
+
+        if ((flags & (WofAdd | WofInterpolate)) == 0)
+            psp.ResetInterpolation();
+        else
+            MarkInterpolationIfNeeded(psp, flags);
+    }
+
     public static bool OverlayVertexOffset(OverlayPsprite? pspr, int index, double x, double y, int flags)
     {
         if (pspr == null || index < 0 || index > 3 || BothAxesKept(flags))
             return false;
-        pspr.Coord[index].X = ApplyAxis(pspr.Coord[index].X, x, flags, axisX: true);
-        pspr.Coord[index].Y = ApplyAxis(pspr.Coord[index].Y, y, flags, axisX: false);
+
+        if ((flags & WofKeepx) == 0)
+            pspr.Coord[index].X = (flags & WofAdd) != 0 ? pspr.Coord[index].X + x : x;
+        if ((flags & WofKeepy) == 0)
+            pspr.Coord[index].Y = (flags & WofAdd) != 0 ? pspr.Coord[index].Y + y : y;
+
         MarkInterpolationIfNeeded(pspr, flags);
         return true;
     }
@@ -89,10 +117,14 @@ public static class VmPPSpriteOverlay
     {
         if (pspr == null || BothAxesKept(flags))
             return false;
-        if ((flags & WofZeroy) == 0 && wy == 0)
-            wy = wx;
-        pspr.ScaleX = ApplyAxis(pspr.ScaleX, wx, flags, axisX: true);
-        pspr.ScaleY = ApplyAxis(pspr.ScaleY, wy, flags, axisX: false);
+
+        wy = NormalizeScaleWy(wx, wy, flags);
+
+        if ((flags & WofKeepx) == 0)
+            pspr.ScaleX = (flags & WofAdd) != 0 ? pspr.ScaleX + wx : wx;
+        if ((flags & WofKeepy) == 0)
+            pspr.ScaleY = (flags & WofAdd) != 0 ? pspr.ScaleY + wy : wy;
+
         MarkInterpolationIfNeeded(pspr, flags);
         return true;
     }
@@ -101,6 +133,7 @@ public static class VmPPSpriteOverlay
     {
         if (pspr == null)
             return false;
+
         pspr.RotationDegrees = (flags & WofAdd) != 0 ? pspr.RotationDegrees + degrees : degrees;
         SyncRotationTrig(pspr);
         MarkInterpolationIfNeeded(pspr, flags);
@@ -111,29 +144,40 @@ public static class VmPPSpriteOverlay
     {
         if (pspr == null || BothAxesKept(flags))
             return false;
+
         if ((flags & WofRelative) != 0)
             HandleOverlayRelative(pspr, ref wx, ref wy);
-        pspr.PivotX = ApplyAxis(pspr.PivotX, wx, flags, axisX: true);
-        pspr.PivotY = ApplyAxis(pspr.PivotY, wy, flags, axisX: false);
+
+        if ((flags & WofKeepx) == 0)
+            pspr.PivotX = (flags & WofAdd) != 0 ? pspr.PivotX + wx : wx;
+        if ((flags & WofKeepy) == 0)
+            pspr.PivotY = (flags & WofAdd) != 0 ? pspr.PivotY + wy : wy;
+
         MarkInterpolationIfNeeded(pspr, flags);
         return true;
     }
 
-    public static void WeaponOffsetAction(OverlayPsprite? psp, double wx, double wy, int flags) =>
+    public static void WeaponOffsetAction(OverlayPsprite? psp, double wx, double wy, int flags)
+    {
         OverlayOffset(psp, wx, wy, flags);
+    }
 
     public static bool OverlayFlags(OverlayPsprite? pspr, int flags, bool set)
     {
         if (pspr == null)
             return false;
+
         if (set)
+        {
             pspr.Flags |= flags;
+        }
         else
         {
             pspr.Flags &= ~flags;
             if ((flags & PspfInterpolate) != 0)
                 pspr.ResetInterpolation();
         }
+
         return true;
     }
 
@@ -141,6 +185,7 @@ public static class VmPPSpriteOverlay
     {
         if (pspr == null)
             return false;
+
         if (halign >= PspaLeft && halign <= PspaRight)
             pspr.HAlign = halign;
         if (valign >= PspaTop && valign <= PspaBottom)
@@ -150,15 +195,15 @@ public static class VmPPSpriteOverlay
 
     public static void OverlayOffset(OverlayPsprite? psp, double wx, double wy, int flags)
     {
-        if (psp == null || BothAxesKept(flags))
+        if (psp == null)
             return;
-        if ((flags & WofRelative) != 0)
-            HandleOverlayRelative(psp, ref wx, ref wy);
-        psp.X = ApplyAxis(psp.X, wx, flags, axisX: true);
-        psp.Y = ApplyAxis(psp.Y, wy, flags, axisX: false);
-        if ((flags & (WofAdd | WofInterpolate)) == 0)
-            psp.ResetInterpolation();
-        else
-            MarkInterpolationIfNeeded(psp, flags);
+        ApplyOverlayOffsetBody(psp, ref wx, ref wy, flags);
+    }
+
+    public static void ApplyOverlayOffsetForPlayer(bool hasPlayer, OverlayPsprite? psp, double wx, double wy, int flags)
+    {
+        if (!hasPlayer || psp == null)
+            return;
+        ApplyOverlayOffsetBody(psp, ref wx, ref wy, flags);
     }
 }
