@@ -1,31 +1,19 @@
-# Chunk 859 — FraggleScript control-flow specials from `fragglescript/t_spec.cpp` (31–221).
+# Chunk 859 — FraggleScript control-flow specials from `fragglescript/t_spec.cpp` (31–221). Retired (2026-10-23): out-of-body credit removed; honest **149** < **150**.
 
 ## Scope
 
-FraggleScript control-flow specials from `fragglescript/t_spec.cpp` (31–221).
+FraggleScript control-flow specials from `fragglescript/t_spec.cpp` (31–221). Retired (2026-10-23): out-of-body credit removed; honest **149** < **150**.
 
 ## Native ranges
 
-- `src/playsim/fragglescript/t_spec.cpp` **FParser::spec_brace** 31–46 (16 lines)
-- `src/playsim/fragglescript/t_spec.cpp` **FParser::spec_if** 54–84 (31 lines)
-- `src/playsim/fragglescript/t_spec.cpp` **FParser::spec_elseif** 92–127 (36 lines)
-- `src/playsim/fragglescript/t_spec.cpp` **FParser::spec_else** 135–139 (5 lines)
-- `src/playsim/fragglescript/t_spec.cpp` **FParser::spec_while** 147–168 (22 lines)
-- `src/playsim/fragglescript/t_spec.cpp` **FParser::spec_for** 176–221 (46 lines)
-- `src/playsim/fragglescript/t_spec.cpp` **spec separators** 1–30 (30 lines)
-- `src/playsim/fragglescript/t_spec.cpp` **spec separators** 47–53 (7 lines)
-- `src/playsim/fragglescript/t_spec.cpp` **spec separators** 85–91 (7 lines)
-- `src/playsim/fragglescript/t_spec.cpp` **spec separators** 128–134 (7 lines)
-- `src/playsim/fragglescript/t_spec.cpp` **spec separators** 140–146 (7 lines)
-- `src/playsim/fragglescript/t_spec.cpp` **spec separators** 169–175 (7 lines)
 
-**Credited native LOC:** 221 (tally `nativeLoc` 221).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmFScriptParserSpecControl.cs`
-Managed LOC (tally): 130.
-Conversion commit: `09488ae2a984f257ec7974e54072ddf163ff2c41`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `340c010dd15b74ec742705409608c9afa3a49bed`.
 
 ## Padding review (2026-10-21)
 
@@ -54,15 +42,17 @@ Conversion commit: `09488ae2a984f257ec7974e54072ddf163ff2c41`.
 | Row `nativeLoc` | **221** |
 | Net | **+221** vs post-**858** |
 
-**Post-review ratio:** 130/221 managed/native ≈ 59% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (859)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **221** |
+| **Out-of-body removed** | **72** |
+| **Honest** | **149** |
+
 
 ## Tests
 
-- `VmFScriptParserSpecControlTests.SpecIf_FalseWithBraces_SkipsToSectionEnd`
-- `VmFScriptParserExprTests.OpPlus_Integers`
-- `VmFScriptParserExprTests.OpCmp_Equality`
-- `VmFScriptParserExprTests.OpOr_ShortCircuitsSecondOperand`
-- `VmFScriptParserExprTests.OpEquals_AssignsVariable`
 
 ## Verified
 
