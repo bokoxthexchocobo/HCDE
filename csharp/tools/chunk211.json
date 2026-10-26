@@ -3,36 +3,12 @@
     "name": "dsda-options-parse-chunk211",
     "bucket": "conversion",
     "managedLoc": 95,
-    "note": "DSDA OPTIONS defaults, option_list keys, parseOptions apply.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/options.cpp",
-        "symbol": "dsda_options",
-        "start": 23,
-        "end": 46,
-        "tests": [
-          "VmDsdaOptionsApplierTests.ApplyToLevel_SetsNoInfightingFlag"
-        ]
-      },
-      {
-        "file": "src/gamedata/options.cpp",
-        "symbol": "option_list",
-        "start": 56,
-        "end": 78,
-        "tests": [
-          "VmDsdaOptionsParserTests.Parse_ClampedKeyValuePairs"
-        ]
-      },
-      {
-        "file": "src/gamedata/options.cpp",
-        "symbol": "parseOptions",
-        "start": 149,
-        "end": 200,
-        "tests": [
-          "VmDsdaOptionsApplierTests.ApplyToLevel_SetsCompatMask"
-        ]
-      }
-    ],
-    "conversionManagedCommit": "bba9c7500564303331b84ee34f5daf85c999904a"
+    "note": "DSDA OPTIONS defaults, option_list keys, parseOptions apply. Retired (2026-10-23): out-of-body credit removed; honest **52** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (211)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **99** |\n| **Out-of-body removed** | **47** |\n| **Honest** | **52** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 211 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
