@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 219386
+    "managedCSharpLoc": 219489
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 71243,
+    "convertedThisRunManaged": 71346,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 80914,
+    "convertedBehaviorManaged": 81017,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -14395,14 +14395,17 @@
               "ZccAssignResolveTests.DynArrayAssignPolicy_RewritesAt4111",
               "ZccAssignResolveTests.MapAssignPolicy_WarnsOnPointerSwapBelow4111",
               "ZccAssignResolveTests.ClassifyContainerAssign_MapIteratorFails",
-              "ZccAssignResolveTests.NormalizeBitWriteIndex_StripsInternalFlag"
+              "ZccAssignResolveTests.NormalizeBitWriteIndex_StripsInternalFlag",
+              "ZccAssignResolveTests.RunAssignResolvePipeline_BlocksArrayAssign",
+              "ZccAssignResolveTests.RunAssignResolvePipeline_NormalizesBitWrite"
             ]
           }
         ],
         "nativeLoc": 176,
-        "managedLoc": 106,
-        "conversionManagedCommit": "9ed1e3ca3dde6004c78dd57d9b4fad95b6648674",
-        "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `FxAssign::Resolve` **2685\u20132860** (`codegen.cpp`).\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `BoolModifyAssignInvalid` | **2694\u20132700** |\n| `NeedsNumericPromotion` | **2705\u20132722** |\n| `NativeStructToMatchingPointer` | **2724\u20132729** |\n| `SameTypeOrRealPointerAlias` / `SkipVectorQuaternionPath` | **2731\u20132742** |\n| `DynArrayAssignPolicy` | **2757\u20132783** |\n| `MapAssignPolicy` | **2785\u20132811** |\n| `MapIteratorAssignPolicy` | **2813\u20132817** |\n| `StructAssignPolicy` | **2819\u20132833** |\n| `FallsThroughToTypeCast` | **2839\u20132843** |\n| `RequiresWritableAddress` / `ModifiableValueFails` | **2846\u20132850** |\n| `NormalizeBitWriteIndex` / `UsesDeprecatedFlagHandler` | **2854\u20132858** |\n| `ClassifyContainerAssign` | composite **2736\u20132834** |\n\n### Out-of-body uncredit (532)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **176** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **176** |\n"
+        "managedLoc": 209,
+        "conversionManagedCommit": "d664ca16de77308ce03ff9c58b21efc9280c9896",
+        "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `FxAssign::Resolve` **2685\u20132860** (`codegen.cpp`).\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `BoolModifyAssignInvalid` | **2694\u20132700** |\n| `NeedsNumericPromotion` | **2705\u20132722** |\n| `NativeStructToMatchingPointer` | **2724\u20132729** |\n| `SameTypeOrRealPointerAlias` / `SkipVectorQuaternionPath` | **2731\u20132742** |\n| `DynArrayAssignPolicy` | **2757\u20132783** |\n| `MapAssignPolicy` | **2785\u20132811** |\n| `MapIteratorAssignPolicy` | **2813\u20132817** |\n| `StructAssignPolicy` | **2819\u20132833** |\n| `FallsThroughToTypeCast` | **2839\u20132843** |\n| `RequiresWritableAddress` / `ModifiableValueFails` | **2846\u20132850** |\n| `NormalizeBitWriteIndex` / `UsesDeprecatedFlagHandler` | **2854\u20132858** |\n| `ClassifyContainerAssign` | composite **2736\u20132834** |\n| `RunAssignResolvePipeline` / `AssignResolveInput` | full resolve orchestration **2685\u20132860** |\n\n### Out-of-body uncredit (532)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **176** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **176** |\n",
+        "auditManagedLocJustification": "`RunAssignResolvePipeline` sequences `FxAssign::Resolve` decision bands without hosting `FxTypeCast` or `Emit`."
       },
       {
         "name": "codegen-addsub-muldiv-resolve-chunk533",

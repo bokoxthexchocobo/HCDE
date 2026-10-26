@@ -13,8 +13,8 @@ FxAssign::Resolve
 ## Managed
 
 `ZccAssignResolve.cs`
-Managed LOC (tally): 106.
-Conversion commit: `9ed1e3ca3dde6004c78dd57d9b4fad95b6648674`.
+Managed LOC (tally): 209.
+Conversion commit: `d664ca16de77308ce03ff9c58b21efc9280c9896`.
 
 ## Padding review (2026-10-21)
 
@@ -34,6 +34,7 @@ Conversion commit: `9ed1e3ca3dde6004c78dd57d9b4fad95b6648674`.
 | `RequiresWritableAddress` / `ModifiableValueFails` | **2846–2850** |
 | `NormalizeBitWriteIndex` / `UsesDeprecatedFlagHandler` | **2854–2858** |
 | `ClassifyContainerAssign` | composite **2736–2834** |
+| `RunAssignResolvePipeline` / `AssignResolveInput` | full resolve orchestration **2685–2860** |
 
 ### Out-of-body uncredit (532)
 
@@ -44,7 +45,7 @@ Conversion commit: `9ed1e3ca3dde6004c78dd57d9b4fad95b6648674`.
 | **Honest** | **176** |
 
 
-**Post-review ratio:** 106/176 managed/native ≈ 60% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 209/176 managed/native ≈ 119% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -53,6 +54,8 @@ Conversion commit: `9ed1e3ca3dde6004c78dd57d9b4fad95b6648674`.
 - `ZccAssignResolveTests.MapAssignPolicy_WarnsOnPointerSwapBelow4111`
 - `ZccAssignResolveTests.ClassifyContainerAssign_MapIteratorFails`
 - `ZccAssignResolveTests.NormalizeBitWriteIndex_StripsInternalFlag`
+- `ZccAssignResolveTests.RunAssignResolvePipeline_BlocksArrayAssign`
+- `ZccAssignResolveTests.RunAssignResolvePipeline_NormalizesBitWrite`
 
 ## Verified
 
