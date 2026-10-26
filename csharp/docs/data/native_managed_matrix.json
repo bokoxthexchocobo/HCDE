@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 221917
+    "managedCSharpLoc": 221962
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 73810,
+    "convertedThisRunManaged": 73855,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 83481,
+    "convertedBehaviorManaged": 83526,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13532,8 +13532,8 @@
           }
         ],
         "nativeLoc": 199,
-        "managedLoc": 160,
-        "conversionManagedCommit": "4463e2e07ef52fb206b842c31ff455815129e3ce",
+        "managedLoc": 205,
+        "conversionManagedCommit": "40fdcc6952b72c586eafa4d456ce320540b1c58e",
         "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|-------------------|\n| `P_AutoUseHealth` | `P_AutoUseHealth` 826\u2013833 |\n| `P_AutoUseStrifeHealth` | `P_AutoUseStrifeHealth` 842\u2013849 |\n| `DeadOrNoDamage` / `GodmodeBlocksReact` / `WoundStateTriggers` / `ShouldWakeUp` / `SetJustHit` / `TryReactToDamage` | `ReactToDamage` 870\u2013960 (882: `if (target == nullptr || target->health < 1 || damage < 0)`; 883: `return false;`; 886: `if (player && player->mo)`) |\n| `CallReactToDamage` | `CallReactToDamage` 962\u2013975 (974: `return res;`) |\n| `AActor::ReactToDamage` | `ReactToDamage` 977\u2013988 |\n| `MustForcePain` / `IsFakePain` / `NoPainFlag` / `PainRollEligible` / `TriggerPainBlocked` / `PainRollSucceeded` / `ElectricFlinchRoll` / `ElectricHowlRoll` / `PoisonCloudHowlRoll` / `EvaluateTriggerPain` | `TriggerPainChance` 990\u20131048 (992: `if (target == nullptr || target->flags5 & MF5_NOPAIN || target->healt\u2026`; 993: `return false;`; 999: `if (pc.first == mod)`) |\n| `AActor::TriggerPainChance` | `TriggerPainChance` 1053\u20131059 |\n\n### Out-of-body uncredit (504)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **199** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **199** |\n"
       },
       {

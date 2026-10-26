@@ -19,8 +19,8 @@ P_AutoUseHealth, P_AutoUseStrifeHealth, ReactToDamage, CallReactToDamage, Trigge
 ## Managed
 
 `VmPInteractionReactPain.cs`
-Managed LOC (tally): 160.
-Conversion commit: `4463e2e07ef52fb206b842c31ff455815129e3ce`.
+Managed LOC (tally): 205.
+Conversion commit: `40fdcc6952b72c586eafa4d456ce320540b1c58e`.
 
 ## Padding review (2026-10-21)
 
@@ -43,7 +43,7 @@ Conversion commit: `4463e2e07ef52fb206b842c31ff455815129e3ce`.
 | **Honest** | **199** |
 
 
-**Post-review ratio:** 160/199 managed/native ≈ 80% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 205/199 managed/native ≈ 103% (src file LOC at HEAD; see tally).
 
 ## Tests
 
