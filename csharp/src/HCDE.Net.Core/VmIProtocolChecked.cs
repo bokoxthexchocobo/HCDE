@@ -16,7 +16,11 @@ public static class VmIProtocolChecked
 
     public static string ReadStringNative(ref ProtocolStream stream, Action<string>? fatal = null)
     {
-        var len = MeasureNullTerminatedLength(stream, fatal);
+        var len = 0;
+        while (len < stream.Length && stream.Buffer[stream.Offset + len] != 0)
+            len++;
+        if (len == stream.Length)
+            fatal?.Invoke(ReadPastEndMessage);
         var s = System.Text.Encoding.UTF8.GetString(stream.Buffer, stream.Offset, len);
         AdvanceStreamNative(ref stream, len + 1, fatal);
         return s;
@@ -46,43 +50,61 @@ public static class VmIProtocolChecked
 
     public static short ReadInt16Native(ref ProtocolStream stream, Action<string>? fatal = null)
     {
-        EnsureCanRead(ref stream, 2, fatal);
-        var v = VmIProtocolUnchecked.ReadInt16BigEndian(stream.Buffer, stream.Offset);
+        if (stream.Length < 2)
+            fatal?.Invoke(ReadPastEndMessage);
+        var off = stream.Offset;
+        short v = (short)((stream.Buffer[off] << 8) | stream.Buffer[off + 1]);
         AdvanceStreamNative(ref stream, 2, fatal);
         return v;
     }
 
     public static int ReadInt32Native(ref ProtocolStream stream, Action<string>? fatal = null)
     {
-        EnsureCanRead(ref stream, 4, fatal);
-        var v = VmIProtocolUnchecked.ReadInt32BigEndian(stream.Buffer, stream.Offset);
+        if (stream.Length < 4)
+            fatal?.Invoke(ReadPastEndMessage);
+        var off = stream.Offset;
+        var v = (stream.Buffer[off] << 24) | (stream.Buffer[off + 1] << 16) | (stream.Buffer[off + 2] << 8)
+            | stream.Buffer[off + 3];
         AdvanceStreamNative(ref stream, 4, fatal);
         return v;
     }
 
     public static long ReadInt64Native(ref ProtocolStream stream, Action<string>? fatal = null)
     {
-        EnsureCanRead(ref stream, 8, fatal);
-        var v = VmIProtocolUnchecked.ReadInt64BigEndian(stream.Buffer, stream.Offset);
+        if (stream.Length < 8)
+            fatal?.Invoke(ReadPastEndMessage);
+        var off = stream.Offset;
+        long v = ((long)stream.Buffer[off] << 56) | ((long)stream.Buffer[off + 1] << 48)
+            | ((long)stream.Buffer[off + 2] << 40) | ((long)stream.Buffer[off + 3] << 32)
+            | ((long)stream.Buffer[off + 4] << 24) | ((long)stream.Buffer[off + 5] << 16)
+            | ((long)stream.Buffer[off + 6] << 8) | stream.Buffer[off + 7];
         AdvanceStreamNative(ref stream, 8, fatal);
         return v;
     }
 
-    public static float ReadFloatNative(ref ProtocolStream stream, Action<string>? fatal = null) =>
-        BitConverter.Int32BitsToSingle(ReadInt32Native(ref stream, fatal));
+    public static float ReadFloatNative(ref ProtocolStream stream, Action<string>? fatal = null)
+    {
+        var bits = ReadInt32Native(ref stream, fatal);
+        return BitConverter.Int32BitsToSingle(bits);
+    }
 
-    public static double ReadDoubleNative(ref ProtocolStream stream, Action<string>? fatal = null) =>
-        BitConverter.Int64BitsToDouble(ReadInt64Native(ref stream, fatal));
+    public static double ReadDoubleNative(ref ProtocolStream stream, Action<string>? fatal = null)
+    {
+        var bits = ReadInt64Native(ref stream, fatal);
+        return BitConverter.Int64BitsToDouble(bits);
+    }
 
     public static void WriteStringNative(string value, ref ProtocolStream stream, Action<string>? fatal = null)
     {
         var start = stream.Offset;
         var remaining = stream.Length;
-        foreach (var ch in value)
+        var i = 0;
+        while (i < value.Length)
         {
             if (remaining-- == 0)
                 fatal?.Invoke(WritePastEndMessage);
-            stream.Buffer[stream.Offset++] = (byte)ch;
+            stream.Buffer[stream.Offset++] = (byte)value[i];
+            i++;
         }
 
         if (remaining == 0)
@@ -114,39 +136,52 @@ public static class VmIProtocolChecked
 
     public static void WriteInt16Native(short v, ref ProtocolStream stream, Action<string>? fatal = null)
     {
-        EnsureCanWrite(ref stream, 2, fatal);
-        VmIProtocolUnchecked.WriteInt16BigEndian(stream.Buffer, stream.Offset, v);
+        if (stream.Length < 2)
+            fatal?.Invoke(WritePastEndMessage);
+        var off = stream.Offset;
+        stream.Buffer[off] = (byte)(v >> 8);
+        stream.Buffer[off + 1] = (byte)(v & 255);
         AdvanceStreamNative(ref stream, 2, fatal);
     }
 
     public static void WriteInt32Native(int v, ref ProtocolStream stream, Action<string>? fatal = null)
     {
-        EnsureCanWrite(ref stream, 4, fatal);
-        VmIProtocolUnchecked.WriteInt32BigEndian(stream.Buffer, stream.Offset, v);
+        if (stream.Length < 4)
+            fatal?.Invoke(WritePastEndMessage);
+        var off = stream.Offset;
+        stream.Buffer[off] = (byte)(v >> 24);
+        stream.Buffer[off + 1] = (byte)((v >> 16) & 255);
+        stream.Buffer[off + 2] = (byte)((v >> 8) & 255);
+        stream.Buffer[off + 3] = (byte)(v & 255);
         AdvanceStreamNative(ref stream, 4, fatal);
     }
 
     public static void WriteInt64Native(long v, ref ProtocolStream stream, Action<string>? fatal = null)
     {
-        EnsureCanWrite(ref stream, 8, fatal);
-        VmIProtocolUnchecked.WriteInt64BigEndian(stream.Buffer, stream.Offset, v);
+        if (stream.Length < 8)
+            fatal?.Invoke(WritePastEndMessage);
+        var off = stream.Offset;
+        stream.Buffer[off] = (byte)(v >> 56);
+        stream.Buffer[off + 1] = (byte)((v >> 48) & 255);
+        stream.Buffer[off + 2] = (byte)((v >> 40) & 255);
+        stream.Buffer[off + 3] = (byte)((v >> 32) & 255);
+        stream.Buffer[off + 4] = (byte)((v >> 24) & 255);
+        stream.Buffer[off + 5] = (byte)((v >> 16) & 255);
+        stream.Buffer[off + 6] = (byte)((v >> 8) & 255);
+        stream.Buffer[off + 7] = (byte)(v & 255);
         AdvanceStreamNative(ref stream, 8, fatal);
     }
 
-    public static void WriteFloatNative(float v, ref ProtocolStream stream, Action<string>? fatal = null) =>
-        WriteInt32Native(BitConverter.SingleToInt32Bits(v), ref stream, fatal);
-
-    public static void WriteDoubleNative(double v, ref ProtocolStream stream, Action<string>? fatal = null) =>
-        WriteInt64Native(BitConverter.DoubleToInt64Bits(v), ref stream, fatal);
-
-    static int MeasureNullTerminatedLength(ProtocolStream stream, Action<string>? fatal)
+    public static void WriteFloatNative(float v, ref ProtocolStream stream, Action<string>? fatal = null)
     {
-        var len = 0;
-        while (len < stream.Length && stream.Buffer[stream.Offset + len] != 0)
-            len++;
-        if (len == stream.Length)
-            fatal?.Invoke(ReadPastEndMessage);
-        return len;
+        var bits = BitConverter.SingleToInt32Bits(v);
+        WriteInt32Native(bits, ref stream, fatal);
+    }
+
+    public static void WriteDoubleNative(double v, ref ProtocolStream stream, Action<string>? fatal = null)
+    {
+        var bits = BitConverter.DoubleToInt64Bits(v);
+        WriteInt64Native(bits, ref stream, fatal);
     }
 
     static void EnsureCanRead(ref ProtocolStream stream, int bytes, Action<string>? fatal)

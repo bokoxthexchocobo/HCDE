@@ -20,35 +20,48 @@ public static class VmIProtocolUnchecked
 
     public static short UncheckedReadInt16Native(ref int offset, byte[] buffer)
     {
-        var v = ReadInt16BigEndian(buffer, offset);
+        short v = (short)((buffer[offset] << 8) | buffer[offset + 1]);
         offset += 2;
         return v;
     }
 
     public static int UncheckedReadInt32Native(ref int offset, byte[] buffer)
     {
-        var v = ReadInt32BigEndian(buffer, offset);
+        var v = (buffer[offset] << 24) | (buffer[offset + 1] << 16) | (buffer[offset + 2] << 8) | buffer[offset + 3];
         offset += 4;
         return v;
     }
 
     public static long UncheckedReadInt64Native(ref int offset, byte[] buffer)
     {
-        var v = ReadInt64BigEndian(buffer, offset);
+        long v = ((long)buffer[offset] << 56) | ((long)buffer[offset + 1] << 48) | ((long)buffer[offset + 2] << 40)
+            | ((long)buffer[offset + 3] << 32) | ((long)buffer[offset + 4] << 24) | ((long)buffer[offset + 5] << 16)
+            | ((long)buffer[offset + 6] << 8) | buffer[offset + 7];
         offset += 8;
         return v;
     }
 
-    public static float UncheckedReadFloatNative(ref int offset, byte[] buffer) =>
-        BitConverter.Int32BitsToSingle(UncheckedReadInt32Native(ref offset, buffer));
+    public static float UncheckedReadFloatNative(ref int offset, byte[] buffer)
+    {
+        var bits = UncheckedReadInt32Native(ref offset, buffer);
+        return BitConverter.Int32BitsToSingle(bits);
+    }
 
-    public static double UncheckedReadDoubleNative(ref int offset, byte[] buffer) =>
-        BitConverter.Int64BitsToDouble(UncheckedReadInt64Native(ref offset, buffer));
+    public static double UncheckedReadDoubleNative(ref int offset, byte[] buffer)
+    {
+        var bits = UncheckedReadInt64Native(ref offset, buffer);
+        return BitConverter.Int64BitsToDouble(bits);
+    }
 
     public static void UncheckedWriteStringNative(string value, ref int offset, byte[] buffer)
     {
-        foreach (var ch in value)
-            buffer[offset++] = (byte)ch;
+        var i = 0;
+        while (i < value.Length)
+        {
+            buffer[offset++] = (byte)value[i];
+            i++;
+        }
+
         buffer[offset++] = 0;
     }
 
