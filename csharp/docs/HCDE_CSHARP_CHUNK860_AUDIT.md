@@ -12,20 +12,16 @@ FraggleScript variable/script specials from `fragglescript/t_spec.cpp` (231–60
 - `src/playsim/fragglescript/t_spec.cpp` **FParser::spec_script** 367–429 (63 lines)
 - `src/playsim/fragglescript/t_spec.cpp` **FParser::EvaluateFunction** 443–519 (77 lines)
 - `src/playsim/fragglescript/t_spec.cpp` **FParser::OPstructure** 534–605 (72 lines)
-- `src/playsim/fragglescript/t_spec.cpp` **spec separators** 222–230 (9 lines)
-- `src/playsim/fragglescript/t_spec.cpp` **spec separators** 266–273 (8 lines)
-- `src/playsim/fragglescript/t_spec.cpp` **spec separators** 288–294 (7 lines)
-- `src/playsim/fragglescript/t_spec.cpp` **spec separators** 351–366 (16 lines)
 - `src/playsim/fragglescript/t_spec.cpp` **spec separators** 430–442 (13 lines)
 - `src/playsim/fragglescript/t_spec.cpp` **spec separators** 520–533 (14 lines)
 
-**Credited native LOC:** 384 (tally `nativeLoc` 384).
+**Credited native LOC:** 344 (tally `nativeLoc` 344).
 
 ## Managed
 
 `VmFScriptParserSpecRest.cs`
 Managed LOC (tally): 251.
-Conversion commit: `74501b490cc1fcfd0a5fa731e39e759bc40a6623`.
+Conversion commit: `d8a5f449288238242957000ca0d87334b7d383d5`.
 
 ## Padding review (2026-10-21)
 
@@ -55,7 +51,16 @@ Conversion commit: `74501b490cc1fcfd0a5fa731e39e759bc40a6623`.
 | Row `nativeLoc` | **384** |
 | Net | **+384** vs post-**859** |
 
-**Post-review ratio:** 251/384 managed/native ≈ 65% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (860)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **384** |
+| **Out-of-body removed** | **40** |
+| **Honest** | **344** |
+
+
+**Post-review ratio:** 251/344 managed/native ≈ 73% (src file LOC at HEAD; see tally).
 
 ## Tests
 
