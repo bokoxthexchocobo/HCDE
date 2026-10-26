@@ -15,18 +15,17 @@ Whole `CallStateChain` and `AActor::GetZAt` (`p_actionfunctions.cpp` 87–229, 2
 ## Managed
 
 `VmPActionCallStateChain.cs`
-Managed LOC (tally): 170.
-Conversion commit: `d8cf788da0fc25072772d02914c08d2814cb61f0`.
+Managed LOC (tally): 258.
+Conversion commit: `a68da6e55ef4eab8e918c825160dce167f48eb24`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`p_actionfunctions.cpp`) |
 |---------|----------------------------------|
-| `CallStateChain` | `CallStateChain` 87–221; `DEFINE_ACTION_FUNCTION_NATIVE` 223–229 |
-| `BuildReturnPlan` | return-type dispatch 135–153 |
-| `GetZAt` | `DEFINE_ACTION_FUNCTION(AActor, GetZAt)` 248–326 |
-| `GetZAtAbsolutePos` | relative position 275–280 |
-| `SelectFloorZ` / `SelectCeilingZ` | floor/ceiling branches 305–319 |
+| `CallStateChain` / `BuildReturnPlan` / `DefaultActionRetval` | **87–221** |
+| `CallStateChain` native export | **223–229** |
+| `GetZAt` / `PrepareGetZAtPosition` / `BuildFloorClipFlags` / `ResolveFloorZAt` / `ResolveCeilingZAt` | **248–326** |
+| `GetZAtAbsolutePos` / `SelectFloorZ` / `SelectCeilingZ` | **275–280**, **290–319** |
 
 ### Out-of-body uncredit (731)
 
@@ -37,7 +36,7 @@ Conversion commit: `d8cf788da0fc25072772d02914c08d2814cb61f0`.
 | **Honest** | **221** |
 
 
-**Post-review ratio:** 170/221 managed/native ≈ 77% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 258/221 managed/native ≈ 117% (src file LOC at HEAD; see tally).
 
 ## Tests
 
