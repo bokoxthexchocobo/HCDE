@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 47509,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 68046,
+    "convertedThisRunManaged": 68050,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 66036,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 66790,
-    "convertedBehaviorManaged": 77717,
+    "convertedBehaviorManaged": 77721,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8138,7 +8138,7 @@
       {
         "name": "sprite-frame-install-chunk208",
         "bucket": "conversion",
-        "managedLoc": 108,
+        "managedLoc": 112,
         "note": "Sprite frame rotation resolve, R_InstallSpriteLump, R_InstallSprite finalize.",
         "nativeRanges": [
           {
@@ -8170,8 +8170,9 @@
             ]
           }
         ],
-        "conversionManagedCommit": "3d6420bfddee21fec233f8daada070db07036996",
-        "nativeLoc": 196
+        "conversionManagedCommit": "650909e972162e2068ac042dd11922bafe9baf29",
+        "nativeLoc": 196,
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (208)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **196** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **196** |\n"
       },
       {
         "name": "voxeldef-chunk209",

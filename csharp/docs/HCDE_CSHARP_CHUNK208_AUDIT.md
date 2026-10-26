@@ -14,9 +14,24 @@ Sprite frame rotation resolve, R_InstallSpriteLump, R_InstallSprite finalize.
 
 ## Managed
 
-`VmSpriteFrameInstall.cs`, `VmSpriteFrameInstallTests.cs`
-Managed LOC (tally): 108.
-Conversion commit: `3d6420bfddee21fec233f8daada070db07036996`.
+`VmDehackedDehSuppLumpGate.cs`
+Managed LOC (tally): 112.
+Conversion commit: `650909e972162e2068ac042dd11922bafe9baf29`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (208)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **196** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **196** |
+
+
+**Post-review ratio:** 112/196 managed/native ≈ 57% (src file LOC at HEAD; see tally).
 
 ## Tests
 
