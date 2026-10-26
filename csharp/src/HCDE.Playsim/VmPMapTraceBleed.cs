@@ -174,4 +174,193 @@ public static int RailTraceFlags(bool notrigger) =>
     public static bool RailStopAtOne(int flags) => (flags & RafNopierce) != 0;
 
 public static bool RailBleedAllowed(int puffFlags3) => (puffFlags3 & Mf3Bloodlessimpact) == 0;
+
+    public readonly record struct BleedActorGate(
+        int Flags,
+        int Flags5,
+        int Flags2,
+        bool PlayerGodmode,
+        bool BloodSplatsEnabled);
+
+    public static bool ShouldRunTraceBleed(BleedActorGate gate) =>
+        gate.BloodSplatsEnabled && !SkipBleedActor(gate.Flags, gate.Flags5, gate.Flags2, gate.PlayerGodmode);
+
+    public readonly record struct BleedSprayOutcome(int RemainingCount, double Noise, string BloodType, bool Abort);
+
+    public static BleedSprayOutcome PlanBleedSprayPass(int damage, int rngByte)
+    {
+        var spray = SelectBleedSprayNative(damage, rngByte);
+        if (spray.Count == 0)
+            return new BleedSprayOutcome(0, 0, spray.BloodType, true);
+        return new BleedSprayOutcome(spray.Count, spray.Noise, spray.BloodType, false);
+    }
+
+    public readonly record struct BleedTraceIteration(
+        double JitterAngleRad,
+        double JitterPitchRad,
+        double Distance,
+        double DirX,
+        double DirY,
+        double DirZ);
+
+    public static BleedTraceIteration BuildBleedTraceIteration(
+        double angleCos,
+        double angleSin,
+        double pitchCos,
+        double pitchSin,
+        int rngAngleByte,
+        int rngPitchByte,
+        double noise,
+        double configuredDistance)
+    {
+        var jitterA = JitterAngle(rngAngleByte, noise);
+        var jitterP = JitterAngle(rngPitchByte, noise);
+        var dist = DefaultBleedDistance(configuredDistance);
+        var (dx, dy, dz) = BleedDirection(pitchCos, angleCos, angleSin, pitchSin, jitterA, jitterP);
+        return new BleedTraceIteration(jitterA, jitterP, dist, dx, dy, dz);
+    }
+
+    public readonly record struct WallDecalBleedInput(int HitType, int BloodR, int BloodG, int BloodB, bool HasBloodColor);
+
+    public static bool TryPrepareWallDecal(WallDecalBleedInput input, out (int R, int G, int B, int A) color)
+    {
+        color = default;
+        if (!WallHitCreatesDecal(input.HitType))
+            return false;
+        if (!input.HasBloodColor)
+            return true;
+        color = DimBloodColor(input.BloodR, input.BloodG, input.BloodB);
+        return true;
+    }
+
+    public static bool RunMissileTargetBleed(
+        bool targetNull,
+        int missileFlags3,
+        double missileVelZ,
+        double distance2d,
+        out double pitchRadians)
+    {
+        pitchRadians = 0;
+        if (MissileBleedSkip(targetNull, missileFlags3))
+            return false;
+        pitchRadians = PitchFromMissileVel(missileVelZ, distance2d);
+        return true;
+    }
+
+    public static bool RunLineTargetBleed(bool lineTargetNull, int puffFlags3, out double pitchDegrees)
+    {
+        pitchDegrees = 0;
+        if (LineTargetBleedSkip(lineTargetNull, puffFlags3))
+            return false;
+        pitchDegrees = RandomBleedPitch(128);
+        return true;
+    }
+
+    public static bool RunActorOnlyBleed(bool targetNull, out double angleDegrees, out double pitchDegrees)
+    {
+        angleDegrees = pitchDegrees = 0;
+        if (targetNull)
+            return false;
+        angleDegrees = RandomBleedAngle(128);
+        pitchDegrees = RandomBleedPitch(128);
+        return true;
+    }
+
+    public static RailTraceStatus ProcessRailHitPolicy(int hitType, RailHitContext ctx)
+    {
+        if (hitType == TraceCrossingPortal)
+            return PortalCrossing(hitType);
+        if (NonActorHitStops(hitType))
+            return RailTraceStatus.Stop;
+        return EvaluateRailActorHit(ctx);
+    }
+
+    public static (RailTraceStatus Status, int NewCount) AfterRailActorRecorded(
+        RailHitContext ctx,
+        bool hitscanCompat)
+    {
+        var status = EvaluateRailActorHit(ctx);
+        if (status != RailTraceStatus.Continue)
+            return (status, ctx.Count);
+        var count = ctx.Count;
+        if (ctx.HasLimit)
+            count++;
+        if (ctx.StopAtOne || (ctx.HasLimit && count >= ctx.Limit) || (ctx.ActorFlags8 & Mf8Stoprails) != 0)
+            return (RailTraceStatus.Stop, count);
+        return (RailTraceStatus.Continue, count);
+    }
+
+    public readonly record struct RailAttackSetupInput(
+        double Center,
+        double FloatSpeed,
+        double OffsetZ,
+        double Floorclip,
+        int RailFlags,
+        double AttackOffset,
+        double OffsetXy,
+        double AngleOffsetDeg,
+        RailDataInitContext Puff);
+
+    public readonly record struct RailAttackSetupResult(
+        double ShootZ,
+        int TraceFlags,
+        int PuffFlags,
+        bool StopAtOne,
+        (bool StopAtInvul, bool MThruSpecies, bool ThruGhosts, bool ThruSpecies, bool ThruActors, bool UseThruBits, uint ThruBits) RailData);
+
+    public static RailAttackSetupResult BuildRailAttackSetup(RailAttackSetupInput input)
+    {
+        var shootZ = RailShootZ(
+            input.Center,
+            input.FloatSpeed,
+            input.OffsetZ,
+            input.Floorclip,
+            input.RailFlags,
+            input.AttackOffset);
+        var traceFlags = RailTraceFlags(false);
+        var puffFlags = RailPuffFlags(input.RailFlags);
+        var railData = BuildRailDataFlags(input.Puff);
+        return new RailAttackSetupResult(shootZ, traceFlags, puffFlags, RailStopAtOne(input.RailFlags), railData);
+    }
+
+    public static int RunTraceBleedSprayLoop(
+        BleedActorGate gate,
+        int damage,
+        IReadOnlyList<int> rngStream,
+        double configuredDistance,
+        double angleCos,
+        double angleSin,
+        double pitchCos,
+        double pitchSin,
+        Func<BleedTraceIteration, WallDecalBleedInput, bool> tryDecal)
+    {
+        if (!ShouldRunTraceBleed(gate))
+            return 0;
+        if (rngStream.Count < 2)
+            return 0;
+        var decals = 0;
+        var rngIndex = 0;
+        var pass = PlanBleedSprayPass(damage, rngStream[rngIndex++]);
+        if (pass.Abort)
+            return 0;
+        for (var remaining = pass.RemainingCount; remaining > 0; remaining--)
+        {
+            var angleByte = rngStream[rngIndex % rngStream.Count];
+            var pitchByte = rngStream[(rngIndex + 1) % rngStream.Count];
+            rngIndex += 2;
+            var iter = BuildBleedTraceIteration(
+                angleCos,
+                angleSin,
+                pitchCos,
+                pitchSin,
+                angleByte,
+                pitchByte,
+                pass.Noise,
+                configuredDistance);
+            var wallInput = new WallDecalBleedInput(3, 255, 0, 0, true);
+            if (tryDecal(iter, wallInput))
+                decals++;
+        }
+        return decals;
+    }
 }

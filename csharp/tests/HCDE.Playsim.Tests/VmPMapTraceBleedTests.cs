@@ -45,6 +45,21 @@ public class VmPMapTraceBleedTests
         Assert.False(VmPMapTraceBleed.BuildRailDataFlags(
             new VmPMapTraceBleed.RailDataInitContext(0, 0, 0, 0, 0, 0, 0, true)).ThruActors);
 
+    [Fact]
+    public void ProcessRailHitPolicy_StopsOnWall() =>
+        Assert.Equal(VmPMapTraceBleed.RailTraceStatus.Stop,
+            VmPMapTraceBleed.ProcessRailHitPolicy(0, SampleRail()));
+
+    [Fact]
+    public void TryPrepareWallDecal_DimsColor() =>
+        Assert.True(VmPMapTraceBleed.TryPrepareWallDecal(
+            new VmPMapTraceBleed.WallDecalBleedInput(3, 200, 100, 50, true),
+            out var color) && color.R == 100);
+
+    [Fact]
+    public void RunMissileTargetBleed_ComputesPitch() =>
+        Assert.True(VmPMapTraceBleed.RunMissileTargetBleed(false, 0, -10, 5, out var pitch) && pitch != 0);
+
     private static VmPMapTraceBleed.RailHitContext SampleRail(
         bool thruActors = false,
         bool stopAtInvul = false,
