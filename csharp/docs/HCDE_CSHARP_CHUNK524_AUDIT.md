@@ -13,7 +13,7 @@ DLevelScript::DoSetActorProperty
 ## Managed
 
 `VmAcsDoSetActorProperty.cs`
-Managed LOC (tally): 206.
+Managed LOC (tally): 258.
 Conversion commit: `61901b9fdcf175b52873dd218d071d6765fe00b1`.
 
 ## Padding review (2026-10-21)
@@ -43,7 +43,7 @@ Conversion commit: `61901b9fdcf175b52873dd218d071d6765fe00b1`.
 | **Honest** | **240** |
 
 
-**Post-review ratio:** 206/240 managed/native ≈ 86% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 258/240 managed/native ≈ 108% (src file LOC at HEAD; see tally).
 
 ## Tests
 
