@@ -10,26 +10,26 @@ FraggleScript script runner from `fragglescript/t_parse.cpp` (283–451).
 - `src/playsim/fragglescript/t_parse.cpp` **FParser::Run** 323–365 (43 lines)
 - `src/playsim/fragglescript/t_parse.cpp` **FParser::RunStatement** 380–451 (72 lines)
 - `src/playsim/fragglescript/t_parse.cpp` **parse separators** 315–322 (8 lines)
-- `src/playsim/fragglescript/t_parse.cpp` **parse separators** 366–379 (14 lines)
 
-**Credited native LOC:** 169 (tally `nativeLoc` 169).
+**Credited native LOC:** 155 (tally `nativeLoc` 155).
 
 ## Portfolio delta
 
-**Gross CLI band:** **169** lines in the UNCredited-range probe; tally credits **169** whole-function native LOC only.
+**Gross CLI band:** **169** lines in the UNCredited-range probe; tally credits **155** whole-function native LOC only.
+**14** uncovered lines in that band are inter-function gaps, comments, or non-function lines (not credited).
 
 | | Native LOC |
 |---|---:|
 | **Gross** (CLI UNCredited band) | **169** |
-| **Credited** (whole functions, this row) | **169** |
+| **Credited** (whole functions, this row) | **155** |
 | **Overlap trim** | **0** |
-| **Net headline Δ** | **+169** (see `convertedBehaviorNative` in tally at land commit) |
+| **Net headline Δ** | **+155** (see `convertedBehaviorNative` in tally at land commit) |
 
 ## Managed
 
 `VmFScriptParserParse865.cs`
 Managed LOC (tally): 198.
-Conversion commit: `aaba98033e210c6f87970c5bbf9b559b565ee10b`.
+Conversion commit: `62f44dcea0830782aa09982955f8e1a1f3b5c940`.
 
 ## Padding review (2026-10-21)
 
@@ -55,12 +55,21 @@ Conversion commit: `aaba98033e210c6f87970c5bbf9b559b565ee10b`.
 | Row `nativeLoc` | **169** |
 | Net | **+169** vs post-**864** |
 
-**Post-review ratio:** 198/169 managed/native ≈ 117% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (865)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **169** |
+| **Out-of-body removed** | **14** |
+| **Honest** | **155** |
+
+
+**Post-review ratio:** 198/155 managed/native ≈ 128% (src file LOC at HEAD; see tally).
 
 ## Tests
 
+- `VmFScriptParserParseTests.RunScript_TwoStatements_AdvancesPastBoth`
 - `VmFScriptParserParseTests.RunScript_EvaluatesExpression`
-- `VmFScriptParserSpecControlTests.SpecIf_FalseWithBraces_SkipsToSectionEnd`
 
 ## Verified
 
