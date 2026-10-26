@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 46436,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 73134,
+  "convertedThisRunManaged": 73239,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 64963,
   "recognitionBehaviorNative": 754,
   "combinedBehaviorNative": 65717,
-  "convertedBehaviorManaged": 82805,
+  "convertedBehaviorManaged": 82910,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -12782,9 +12782,9 @@
         }
       ],
       "nativeLoc": 154,
-      "managedLoc": 100,
-      "conversionManagedCommit": "dd34931aecc0488132dc77a78fc3aced1f4d15b1",
-      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SkipWhenSpecialFloorclip` / `TouchingFloorAtZ` / `Valid3dFloor` / `PickShallowestClip` / `ResolveFloorClip` / `AdjustViewHeight` / `TryTerrainClip` / `Try3dFloorClip` / `PlayerViewAdjust` | `AdjustFloorClip` 6006\u20136071 (6008: `if (flags3 & MF3_SPECIALFLOORCLIP)`; 6010: `return;`; 6024: `if (hsec == NULL)`) |\n| `PlayerSubValid` | `PlayerPointerSubstitution` 6093\u20136133 (6095: `if (oldPlayer == nullptr || newPlayer == nullptr || oldPlayer == newP\u2026`; 6098: `return;`; 6104: `if (!oldPlayer->Level->PlayerInGame(i))`) |\n| `MorphSubstitutionBlocked` / `PlayerMorphRequiresValidMo` / `MorphInventoryOwnedBlocked` / `MorphNonPlayerPathAllowed` / `ShouldRunPreMorph` | `MorphPointerSubstitution` 6143\u20136190 (6148: `if (from == nullptr || to == nullptr || from == to || to->player != n\u2026`; 6153: `return false;`; 6157: `if (from->IsKindOf(NAME_PlayerPawn))`) |\n\n### Out-of-body uncredit (485)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **155** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **154** |\n"
+      "managedLoc": 205,
+      "conversionManagedCommit": "d1332614e7325e15513c7fcf6097843bbcc3682d",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SkipWhenSpecialFloorclip` / `ComputeShallowestClip` / `RunAdjustFloorClip` / terrain+3D helpers | `AdjustFloorClip` 6006\u20136071 |\n| `PlayerSubValid` / `RunPlayerPointerSubstitution` / `SubstitutePlayerPointers` / `SubstituteSectorSoundTargets` | `PlayerPointerSubstitution` 6093\u20136133 |\n| `MorphSubstitutionBlocked` / `EvaluateMorphSubstitution` / `RunPreMorphHooks` / morph gates | `MorphPointerSubstitution` 6143\u20136190 |\n\n### Out-of-body uncredit (485)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **155** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **154** |\n"
     },
     {
       "name": "p-mobj-morph-spawn-chunk486",

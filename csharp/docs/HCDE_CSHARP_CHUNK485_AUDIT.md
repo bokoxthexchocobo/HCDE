@@ -16,16 +16,16 @@ AdjustFloorClip, PlayerPointerSubstitution, MorphPointerSubstitution gates
 ## Managed
 
 `VmPMobjAdjustFloorClip.cs`
-Managed LOC (tally): 100.
-Conversion commit: `dd34931aecc0488132dc77a78fc3aced1f4d15b1`.
+Managed LOC (tally): 205.
+Conversion commit: `d1332614e7325e15513c7fcf6097843bbcc3682d`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`p_mobj.cpp`) |
 |---------|-------------------|
-| `SkipWhenSpecialFloorclip` / `TouchingFloorAtZ` / `Valid3dFloor` / `PickShallowestClip` / `ResolveFloorClip` / `AdjustViewHeight` / `TryTerrainClip` / `Try3dFloorClip` / `PlayerViewAdjust` | `AdjustFloorClip` 6006–6071 (6008: `if (flags3 & MF3_SPECIALFLOORCLIP)`; 6010: `return;`; 6024: `if (hsec == NULL)`) |
-| `PlayerSubValid` | `PlayerPointerSubstitution` 6093–6133 (6095: `if (oldPlayer == nullptr || newPlayer == nullptr || oldPlayer == newP…`; 6098: `return;`; 6104: `if (!oldPlayer->Level->PlayerInGame(i))`) |
-| `MorphSubstitutionBlocked` / `PlayerMorphRequiresValidMo` / `MorphInventoryOwnedBlocked` / `MorphNonPlayerPathAllowed` / `ShouldRunPreMorph` | `MorphPointerSubstitution` 6143–6190 (6148: `if (from == nullptr || to == nullptr || from == to || to->player != n…`; 6153: `return false;`; 6157: `if (from->IsKindOf(NAME_PlayerPawn))`) |
+| `SkipWhenSpecialFloorclip` / `ComputeShallowestClip` / `RunAdjustFloorClip` / terrain+3D helpers | `AdjustFloorClip` 6006–6071 |
+| `PlayerSubValid` / `RunPlayerPointerSubstitution` / `SubstitutePlayerPointers` / `SubstituteSectorSoundTargets` | `PlayerPointerSubstitution` 6093–6133 |
+| `MorphSubstitutionBlocked` / `EvaluateMorphSubstitution` / `RunPreMorphHooks` / morph gates | `MorphPointerSubstitution` 6143–6190 |
 
 ### Out-of-body uncredit (485)
 
@@ -36,7 +36,7 @@ Conversion commit: `dd34931aecc0488132dc77a78fc3aced1f4d15b1`.
 | **Honest** | **154** |
 
 
-**Post-review ratio:** 100/154 managed/native ≈ 65% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 205/154 managed/native ≈ 133% (src file LOC at HEAD; see tally).
 
 ## Tests
 
