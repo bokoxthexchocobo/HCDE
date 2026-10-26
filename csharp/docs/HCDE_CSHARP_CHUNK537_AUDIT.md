@@ -17,8 +17,8 @@ FxAbs, FxATan2, FxATan2Vec, FxNew, FxMinMax::Resolve
 ## Managed
 
 `ZccBuiltinMathResolve.cs`
-Managed LOC (tally): 143.
-Conversion commit: `b6ae222e27a002b6996557084acf5fbfa7c53973`.
+Managed LOC (tally): 356.
+Conversion commit: `cba6d6e5e5b6276a89f7cee38580f2fd2f2812dc`.
 
 ## Padding review (2026-10-21)
 
@@ -26,11 +26,11 @@ Conversion commit: `b6ae222e27a002b6996557084acf5fbfa7c53973`.
 
 | Managed | Native (`codegen.cpp`) |
 |---------|------------------------|
-| `ClassifyAbs` / `FoldAbsInt` / `FoldAbsFloat` | **5576–5618** |
-| `Atan2RequiresNumeric` / `PlanAtan2FloatCasts` / `FoldAtan2Degrees` / `NeedsFloatCast` | **5683–5713** |
-| `Atan2Vec` policy (tests) | **5774–5787** |
-| `NewScopeMismatch` / `ResolveOuterSide` | **5833–5871** |
-| `ClassifyMinMaxOperands` / `MinMaxValueType` / `MinMaxNeedsIntToFloatCast` / `PickMinMaxFloat` / `PickMinMaxInt` / `AllChoicesFoldedToSingle` | **5962–6092** |
+| `RunAbsResolve` / `ClassifyAbs` / `FoldAbsInt` / `FoldAbsFloat` | **5576–5618** |
+| `RunAtan2Resolve` / `Atan2RequiresNumeric` / `PlanAtan2FloatCasts` / `FoldAtan2Degrees` / `NeedsFloatCast` | **5683–5713** |
+| `RunAtan2VecResolve` | **5774–5787** |
+| `RunNewResolve` / `NewScopeMismatch` / `ResolveOuterSide` | **5833–5871** |
+| `RunMinMaxResolve` / `ClassifyMinMaxOperand` / `MinMaxValueType` / `PlanMinMaxIntToFloatCastIndices` / `FoldMinMax*Constants` / `ShouldSwapConstantToSecond` | **5962–6092** |
 
 ### Out-of-body uncredit (537)
 
@@ -41,7 +41,7 @@ Conversion commit: `b6ae222e27a002b6996557084acf5fbfa7c53973`.
 | **Honest** | **258** |
 
 
-**Post-review ratio:** 143/258 managed/native ≈ 55% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 356/258 managed/native ≈ 138% (src file LOC at HEAD; see tally).
 
 ## Tests
 
