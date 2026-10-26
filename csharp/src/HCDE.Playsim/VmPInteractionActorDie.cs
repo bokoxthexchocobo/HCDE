@@ -3,10 +3,13 @@ namespace HCDE.Playsim;
 /// <summary>Whole <c>AActor::Die</c> from <c>p_interaction.cpp</c> (330–796).</summary>
 public static class VmPInteractionActorDie
 {
-    public const int MfUnmorphed = 1;
-    public const int MfMissile = 1 << 1;
-    public const int MfSpecial = 1 << 2;
-    public const int MfSolid = 1 << 3;
+    public const int MfSpecial = 1;
+    public const int MfSolid = 1 << 1;
+    public const int MfShootable = 1 << 2;
+    public const int MfFloat = 1 << 14;
+    public const int MfMissile = 1 << 16;
+    public const int MfSkullfly = 1 << 18;
+    public const int MfUnmorphed = 1 << 19;
     public const int Mf3Ismonster = 1 << 4;
     public const int Mf6Killed = 1 << 5;
     public const int Mf6Dontcorpse = 1 << 6;
@@ -45,6 +48,38 @@ public static class VmPInteractionActorDie
         public string? DieState { get; set; }
         public bool RaiseStateExists { get; set; }
         public bool IsPlayerPawn { get; set; }
+        public int PlayerCheats { get; set; }
+    }
+
+    public sealed class DieStateProbe
+    {
+        public bool TypedExtremeFound { get; init; }
+        public bool TypedNormalFound { get; init; }
+        public bool IceFreezeFound { get; init; }
+        public bool GenericExtremeFound { get; init; }
+        public bool GenericDeathFound { get; init; } = true;
+        public bool NoAutofreeze { get; init; }
+    }
+
+    public sealed class SourcePlayerCredit
+    {
+        public int Killcount { get; set; }
+        public int FragCount { get; set; }
+        public int SpreeCount { get; set; }
+        public int Multicount { get; set; }
+        public int LastKillTime { get; set; }
+        public bool HasAlternative { get; set; }
+        public bool SamePlayerAsVictim { get; set; }
+        public bool VictimIsTeammate { get; set; }
+    }
+
+    public sealed class VictimPlayerCredit
+    {
+        public int FragCount { get; set; }
+        public int SpreeCount { get; set; }
+        public int Multicount { get; set; }
+        public int VictimPlayerIndex { get; set; }
+        public int[] Frags { get; } = new int[8];
     }
 
     public sealed class DieContext
@@ -56,17 +91,38 @@ public static class VmPInteractionActorDie
         public bool NoDeathSpecial { get; init; }
         public int InflictorFlags4 { get; init; }
         public bool SourceNull { get; init; } = true;
+        public bool SourceIsPlayer { get; init; }
         public bool Deathmatch { get; init; }
         public int Maptime { get; init; }
         public bool Multiplayer { get; init; }
         public bool PrimaryLevel { get; init; } = true;
         public int RandomKillMobj { get; init; }
+        public int Dmflags2 { get; init; }
+        public int Fraglimit { get; init; }
+        public int DuelLimit { get; init; }
+        public int LevelTime { get; init; }
+        public int Ticrate { get; init; } = 35;
+        public int SourceFragTotal { get; set; }
+        public SourcePlayerCredit? SourcePlayer { get; init; }
+        public VictimPlayerCredit? VictimPlayer { get; init; }
+        public DieStateProbe? StateProbe { get; init; }
+        public MorphedDeathContext? Morph { get; init; }
         public Action? MorphedDeath { get; init; }
         public Action? WalkInventoryOwnerDied { get; init; }
         public Action? ExplodeMissile { get; init; }
         public Action? WorldThingDied { get; init; }
         public Action? StartKillScripts { get; init; }
         public Action? PlayerDeathBranch { get; init; }
+        public Action? GetDeathHeight { get; init; }
+        public Action? ActivateDeathSpecial { get; init; }
+        public Action? IncrementKilledMonsters { get; init; }
+        public Action? IncrementSinglePlayerKillcount { get; init; }
+        public Action? AssignTargetFromSource { get; init; }
+        public Action? ExitLevelFraglimit { get; init; }
+        public Action? AnnounceSpree { get; init; }
+        public Action? AnnounceSpreeLoss { get; init; }
+        public Action? AnnounceMultikill { get; init; }
+        public Action? GivePowerWeaponLevel2 { get; init; }
         public Func<string?>? ResolveDieState { get; init; }
         public Action<string?>? SetState { get; init; }
         public Action? Destroy { get; init; }
@@ -75,7 +131,9 @@ public static class VmPInteractionActorDie
     public static bool Die(DieContext ctx)
     {
         var a = ctx.Actor;
+        TryMorphedDeathHandoff(ctx);
         ctx.MorphedDeath?.Invoke();
+
         a.Effects &= ~1;
         ctx.WalkInventoryOwnerDied?.Invoke();
 
@@ -85,12 +143,15 @@ public static class VmPInteractionActorDie
             return true;
         }
 
+        if (SetTargetFromSource(ctx.SourceNull))
+            ctx.AssignTargetFromSource?.Invoke();
+
         ctx.WorldThingDied?.Invoke();
 
         if (RunKillScripts(a.HasPlayer, a.Flags7, ctx.ForceKillScripts))
             ctx.StartKillScripts?.Invoke();
 
-        a.Flags &= ~(1 | 2 | 4);
+        a.Flags = ClearShootableFloatSkullfly(a.Flags);
         if (DropGravityUnlessDontFall(a.Flags4))
             a.Flags &= ~MfNogravity;
         a.Flags |= MfDroppoff;
@@ -98,10 +159,43 @@ public static class VmPInteractionActorDie
         if (ApplyCorpseFlag((a.Flags3 & Mf3Ismonster) != 0, a.RaiseStateExists, a.IsPlayerPawn, (a.Flags6 & Mf6Dontcorpse) != 0))
             a.Flags |= MfCorpse;
 
-        if (a.HasPlayer)
-            ctx.PlayerDeathBranch?.Invoke();
+        a.Flags6 = MarkKilledFlags6(a.Flags6);
+        ctx.GetDeathHeight?.Invoke();
 
-        a.DieState = ctx.ResolveDieState?.Invoke();
+        var deathSpecial = new DeathSpecialContext(a.Special, (a.Flags & MfSpecial) != 0, (a.Flags3 & Mf3Ismonster) != 0, ctx.NoDeathSpecial, ctx.CountsAsKill);
+        if (ActivateDeathSpecial(deathSpecial))
+            ctx.ActivateDeathSpecial?.Invoke();
+        if (IncrementKilledMonsters(deathSpecial))
+            ctx.IncrementKilledMonsters?.Invoke();
+
+        ApplySourceKillCredit(ctx);
+
+        if (a.HasPlayer)
+        {
+            ctx.PlayerDeathBranch?.Invoke();
+            ApplyEnvironmentKillFrag(ctx);
+            ApplyPlayerDeathFlags(a);
+        }
+
+        if (UnmorphDestroyEarly(a.Flags))
+        {
+            ctx.Destroy?.Invoke();
+            a.Destroyed = true;
+            return true;
+        }
+
+        var extremely = ResolveExtremelyDead(a.Health, a.GibHealth, ctx.InflictorFlags4);
+        var damageType = a.DamageType;
+        if (DamageTypeIsExtreme(damageType))
+        {
+            extremely = true;
+            damageType = ClearExtremeDamageType(damageType);
+            a.DamageType = damageType;
+        }
+
+        a.DieState = ctx.ResolveDieState?.Invoke() ?? PickDieStateFromProbe(a, ctx, ref extremely, damageType);
+        ApplyExtremeDeathHealth(a, extremely);
+
         if (a.DieState != null)
         {
             ctx.SetState?.Invoke(a.DieState);
@@ -114,6 +208,148 @@ public static class VmPInteractionActorDie
         }
 
         return true;
+    }
+
+    public static void TryMorphedDeathHandoff(DieContext ctx)
+    {
+        if (ctx.Morph is not { } morph)
+            return;
+        if (!RunMorphedDeath(morph.HasAlternative, morph.Unmorphed))
+            return;
+        if (!ShouldCallRealDie(morph))
+            return;
+        if ((morph.RealFlags6 & Mf6Killed) != 0)
+            return;
+
+        var health = ClampRealMoHealthForGib(morph.WasGibbed, morph.RealHealth, morph.GibHealth);
+        if (!morph.WasGibbed && health > 0)
+            health = 0;
+        morph.OnRealMoPrepared?.Invoke(health);
+        morph.CallRealDie?.Invoke();
+    }
+
+    public static void ApplySourceKillCredit(DieContext ctx)
+    {
+        if (!ctx.SourceIsPlayer || ctx.SourcePlayer == null)
+        {
+            if (SinglePlayerKillCredit(ctx.Multiplayer, ctx.PrimaryLevel, ctx.CountsAsKill))
+                ctx.IncrementSinglePlayerKillcount?.Invoke();
+            return;
+        }
+
+        var source = ctx.SourcePlayer;
+        if (IncrementSourceKillcount(new KillCreditContext(true, ctx.CountsAsKill, ctx.Deathmatch, ctx.Maptime, ctx.Multiplayer, ctx.PrimaryLevel)))
+            source.Killcount++;
+
+        if (!ctx.Actor.HasPlayer || !AwardFrag(new KillCreditContext(true, ctx.CountsAsKill, ctx.Deathmatch, ctx.Maptime, ctx.Multiplayer, ctx.PrimaryLevel), true))
+            return;
+
+        var victim = ctx.VictimPlayer;
+        if (source.SamePlayerAsVictim)
+        {
+            source.FragCount = AdjustFragCount(
+                new FragSpreeContext(ctx.Deathmatch, true, false, source.SpreeCount, source.Multicount, source.LastKillTime, ctx.LevelTime, ctx.Ticrate),
+                source.FragCount);
+            return;
+        }
+
+        if (DfYesLoseFrag(ctx.Dmflags2, ctx.Deathmatch) && victim != null)
+            victim.FragCount--;
+
+        if (victim != null && source.VictimIsTeammate)
+            source.FragCount--;
+        else
+        {
+            source.FragCount++;
+            source.SpreeCount = AdjustSpreeCount(
+                new FragSpreeContext(ctx.Deathmatch, false, source.VictimIsTeammate, source.SpreeCount, source.Multicount, source.LastKillTime, ctx.LevelTime, ctx.Ticrate),
+                source.SpreeCount);
+        }
+
+        if (source.HasAlternative)
+            ctx.GivePowerWeaponLevel2?.Invoke();
+
+        if (ctx.Deathmatch)
+            MaybeAnnounceSpree(ctx, source, victim);
+
+        if (victim != null && !source.SamePlayerAsVictim)
+            ApplyMultikill(ctx, source, victim);
+
+        var activeLimit = PickActiveFragLimit(ctx.DuelLimit, ctx.Fraglimit, ctx.Deathmatch);
+        if (DuelFragLimitActive(ctx.Deathmatch, ctx.DuelLimit, ctx.Fraglimit)
+            && activeLimit > 0
+            && FraglimitReached(activeLimit, ctx.SourceFragTotal))
+            ctx.ExitLevelFraglimit?.Invoke();
+    }
+
+    public static void MaybeAnnounceSpree(DieContext ctx, SourcePlayerCredit source, VictimPlayerCredit? victim)
+    {
+        if (EmitSpreeBanner(source.SpreeCount, 5))
+            ctx.AnnounceSpree?.Invoke();
+        else if (victim != null && SpreeMessageAt(victim.SpreeCount, 5))
+            ctx.AnnounceSpreeLoss?.Invoke();
+    }
+
+    public static void ApplyMultikill(DieContext ctx, SourcePlayerCredit source, VictimPlayerCredit victim)
+    {
+        source.Multicount = BumpMultikill(
+            source.Multicount,
+            ResetMultikillOnGap(new FragSpreeContext(ctx.Deathmatch, false, false, source.SpreeCount, source.Multicount, source.LastKillTime, ctx.LevelTime, ctx.Ticrate)));
+        if (ctx.Deathmatch)
+            ctx.AnnounceMultikill?.Invoke();
+        source.LastKillTime = ctx.LevelTime;
+    }
+
+    public static void ApplyEnvironmentKillFrag(DieContext ctx)
+    {
+        if (!ctx.SourceNull || ctx.VictimPlayer == null)
+            return;
+        var vp = ctx.VictimPlayer;
+        vp.Frags[vp.VictimPlayerIndex]++;
+        vp.FragCount--;
+    }
+
+    public static string? PickDieStateFromProbe(DieActor a, DieContext ctx, ref bool extremely, int damageType)
+    {
+        var probe = ctx.StateProbe;
+        if (probe == null)
+            return null;
+
+        if (damageType != NameNone)
+        {
+            var pick = new DieStatePick(damageType, extremely, probe.TypedExtremeFound, probe.TypedNormalFound, probe.IceFreezeFound, probe.GenericDeathFound);
+            var typed = PickDieState(pick);
+            if (typed != null)
+                return typed;
+
+            if (PickIceFreeze(new DieStatePick(NameIce, false, false, false, probe.IceFreezeFound, false))
+                && IceGenericFreeze(probe.NoAutofreeze, a.Flags4, a.HasPlayer, (a.Flags3 & Mf3Ismonster) != 0))
+                return "Death.Ice";
+        }
+
+        if (!PreserveMassacreType(damageType))
+            damageType = NormalizeDamageTypeForBarrel(damageType);
+        a.DamageType = damageType;
+
+        if (extremely && probe.GenericExtremeFound)
+            return "Death.Extreme";
+        if (probe.GenericDeathFound)
+        {
+            extremely = false;
+            return "Death";
+        }
+
+        return null;
+    }
+
+    public static void ApplyExtremeDeathHealth(DieActor a, bool extremely)
+    {
+        if (!extremely)
+            return;
+        if (ApplyCfExtremelyDead(a.HasPlayer, extremely))
+            a.PlayerCheats |= CfExtremelydead;
+        else if (NonPlayerExtremeHealthClamp(a.HasPlayer, a.Health, a.GibHealth))
+            a.Health = ClampHealthForExtreme(a.HasPlayer, a.Health, a.GibHealth, extremely);
     }
 
     public static bool RunMorphedDeath(bool hasAlt, bool unmorphedFlag) => hasAlt && !unmorphedFlag;
@@ -169,7 +405,9 @@ public static class VmPInteractionActorDie
     public static int ClampRealMoHealthForGib(bool wasGibbed, int health, int gibHealth) =>
         wasGibbed && health >= gibHealth ? gibHealth - 1 : health;
 
-    public static bool ClearShootableFloatSkullfly(int flags) => (flags & MfMissile) == 0;
+    public static int ClearShootableFloatSkullfly(int flags) => flags & ~(MfShootable | MfFloat | MfSkullfly);
+
+    public static bool SetTargetFromSource(bool sourceNull) => !sourceNull;
 
     public static bool RunDeathSpecial(int special, bool specialFlag, bool monster, bool noDeathSpecial) =>
         special != 0 && (!specialFlag || monster) && !noDeathSpecial;
@@ -192,7 +430,10 @@ public static class VmPInteractionActorDie
         bool RealMoKilled,
         bool StillAlternative,
         bool PlayerNull,
-        int MorphStyle);
+        int MorphStyle,
+        int RealFlags6,
+        Action<int>? OnRealMoPrepared,
+        Action? CallRealDie);
 
     public static bool ShouldCallRealDie(MorphedDeathContext ctx) =>
         RunMorphedDeath(ctx.HasAlternative, ctx.Unmorphed) &&
@@ -250,6 +491,11 @@ public static class VmPInteractionActorDie
 
     public static bool DamageTypeIsExtreme(int damageType) => damageType == NameExtreme;
 
+    public static int ClearExtremeDamageType(int damageType) => damageType == NameExtreme ? NameNone : damageType;
+
+    public static int NormalizeDamageTypeForBarrel(int damageType) =>
+        SkipDamageTypePassThrough(damageType) ? damageType : NameNone;
+
     public static bool PreserveMassacreType(int damageType) => damageType == NameMassacre;
 
     public static bool NonPlayerExtremeHealthClamp(bool player, int health, int gibHealth) =>
@@ -305,7 +551,5 @@ public static class VmPInteractionActorDie
     {
         if (ClearSolidOnPlayerDeath(a.Flags))
             a.Flags &= ~MfSolid;
-        if (UnmorphDestroyEarly(a.Flags))
-            a.Destroyed = true;
     }
 }

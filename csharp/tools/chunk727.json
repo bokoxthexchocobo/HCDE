@@ -6,7 +6,7 @@
     "auditSingleFunctionOversizeException": true,
     "auditSeams": "`VMCall`, `P_ExplodeMissile`, inventory `OwnerDied`, `WorldThingDied`, kill scripts, player death UI, `SetState`, and `Destroy` are injected.",
     "auditRationale": "Consolidates prior split Die helpers into one faithful Die entry (chunk505 retired).",
-    "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `Die` | `AActor::Die` 330\u2013796 |\n| `RunMorphedDeath` / `KillDummyMorph` | morph block 336\u2013382 |\n| `MissileExplodesOnDeath` | 401\u2013404 |\n| `RunKillScripts` / corpse / player branch | 416\u2013620, 622\u2013720 |\n| `RandomizeDeathTics` / `ResolveExtremelyDead` | 783\u2013787; extreme pick 648\u2013720 |\n| `AdjustFragCount` / `FraglimitReached` | frag/spree 520\u2013600 |\n| `PickDieState` / `ApplyPlayerDeathFlags` | death state 648\u2013720; player flags 622\u2013637 |\n\n### Out-of-body uncredit (727)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **467** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **467** |\n",
+    "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `Die` / `TryMorphedDeathHandoff` | `AActor::Die` 330\u2013796; morph 336\u2013382 |\n| `MissileExplodesOnDeath` / `SetTargetFromSource` | 401\u2013410 |\n| `RunKillScripts` / `ClearShootableFloatSkullfly` / `DropGravityUnlessDontFall` / `ApplyCorpseFlag` / `MarkKilledFlags6` | 416\u2013431 |\n| `ActivateDeathSpecial` / `IncrementKilledMonsters` | 446\u2013453 |\n| `ApplySourceKillCredit` / `AdjustFragCount` / `ApplyMultikill` / `FraglimitReached` / `MaybeAnnounceSpree` | 455\u2013614 |\n| `ApplyEnvironmentKillFrag` / `ApplyPlayerDeathFlags` / `UnmorphDestroyEarly` | 622\u2013690 |\n| `DamageTypeIsExtreme` / `PickDieStateFromProbe` / `ApplyExtremeDeathHealth` / `RandomizeDeathTics` | 695\u2013788 |\n| `RunMorphedDeath` / `KillDummyMorph` / `ShouldCallRealDie` / `ClampRealMoHealthForGib` | morph gates 336\u2013381 |\n| `ResolveExtremelyDead` / `PickDieState` / `IceGenericFreeze` / `NormalizeDamageTypeForBarrel` | typed/generic death 716\u2013760 |\n\n### Out-of-body uncredit (727)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **467** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **467** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPInteractionActorDie.cs"
     ],
@@ -19,8 +19,12 @@
         "tests": [
           "VmPInteractionActorDieTests.Die_Missile_ExplodesEarly",
           "VmPInteractionActorDieTests.Die_NoDieState_NonPlayer_Destroyed",
+          "VmPInteractionActorDieTests.Die_ClearsShootableFloatSkullfly_AndMarksKilled",
+          "VmPInteractionActorDieTests.Die_Unmorphed_DestroysBeforeDieState",
+          "VmPInteractionActorDieTests.Die_Fraglimit_ExitCallback",
           "VmPInteractionActorDieTests.KillDummyMorph_MatchesNativeGate",
-          "VmPInteractionActorDieTests.RandomizeDeathTics_ClampsToOne"
+          "VmPInteractionActorDieTests.RandomizeDeathTics_ClampsToOne",
+          "VmPInteractionActorDieTests.ClearShootableFloatSkullfly_PreservesOtherBits"
         ]
       }
     ],
