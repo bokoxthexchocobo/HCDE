@@ -23,24 +23,19 @@ Fake-floor triggers, player land hooks, CallFallAndSink, TID hash (`p_mobj.cpp`)
 ## Managed
 
 `VmPMobjFakeFloorLand.cs`
-Managed LOC (tally): 130.
-Conversion commit: `f47aacf5ab7745f02ca088313401b880aab6fe39`.
+Managed LOC (tally): 197.
+Conversion commit: `35c2b4c43dd208e7fb9f630b94b7861dd4e45164`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`p_mobj.cpp`) |
 |---------|-------------------|
-| `CheckFakeFloorTriggers` | `P_CheckFakeFloorTriggers` 3214–3275 |
-| `CheckFakeFloorTriggers` | `DEFINE_ACTION_FUNCTION(AActor, CheckFakeFloorTriggers)` 3277–3284 |
-| `PlayerLandedOnThing` | `PlayerLandedMakeRumble` 3292–3299 |
-| `PlayerLandedOnThing` | `PlayerDiedMakeRumble` 3301–3308 |
-| `PlayerLandedOnThing` | `PlayerLandedMakeGruntSound` 3316–3323 |
-| `PlayerLandedOnThing` | `PlayerSquatView` 3325–3332 |
-| `PlayerLandedOnThing` | `PlayerLandedOnThing` 3334–3347 |
-| `CallFallAndSink` | `AActor::CallFallAndSink` 3443–3454 |
-| `AddToHash` | `AActor::AddToHash` 3559–3582 |
-| `RemoveFromHash` | `AActor::RemoveFromHash` 3589–3602 |
-| `SetTid` | `AActor::SetTID` 3604–3618 |
+| `CheckFakeFloorTriggers` / trigger helpers | `P_CheckFakeFloorTriggers` **3214–3275** |
+| `CheckFakeFloorTriggers` export | **3277–3284** |
+| `PlayerSquatView` / `PlayerLandedMakeRumble` / `PlayerDiedMakeRumble` / `PlayerLandedMakeGruntSound` | **3292–3332** |
+| `PlayerLandedOnThing` | **3334–3347** |
+| `CallFallAndSink` | **3443–3454** |
+| `AddToHash` / `RemoveFromHash` / `SetTid` / `ShouldSkipTidAssign` | **3559–3618** |
 
 ### Out-of-body uncredit (747)
 
@@ -51,7 +46,7 @@ Conversion commit: `f47aacf5ab7745f02ca088313401b880aab6fe39`.
 | **Honest** | **181** |
 
 
-**Post-review ratio:** 130/181 managed/native ≈ 72% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 197/181 managed/native ≈ 109% (src file LOC at HEAD; see tally).
 
 ## Tests
 
