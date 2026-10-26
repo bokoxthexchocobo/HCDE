@@ -6,25 +6,23 @@ Cajun `Check_LOS`, `IsLeader`, `Choose_Mate`, and `Find_enemy` from `b_func.cpp`
 
 ## Native ranges
 
-- `src/playsim/bots/b_func.cpp` **b_func headers** 1–44 (44 lines)
-- `src/playsim/bots/b_func.cpp` **b_func separators** 125–133 (9 lines)
+- `src/playsim/bots/b_func.cpp` **b_func headers** 44–44 (1 lines)
+- `src/playsim/bots/b_func.cpp` **b_func separators** 126–133 (8 lines)
 - `src/playsim/bots/b_func.cpp` **DBot::Check_LOS** 134–144 (11 lines)
-- `src/playsim/bots/b_func.cpp` **b_func separators** 145–150 (6 lines)
-- `src/playsim/bots/b_func.cpp` **b_func separators** 267–267 (1 lines)
+- `src/playsim/bots/b_func.cpp` **b_func separators** 146–150 (5 lines)
 - `src/playsim/bots/b_func.cpp` **FCajunMaster::IsLeader** 268–280 (13 lines)
-- `src/playsim/bots/b_func.cpp` **b_func separators** 281–283 (3 lines)
 - `src/playsim/bots/b_func.cpp` **b_func separators** 324–326 (3 lines)
 - `src/playsim/bots/b_func.cpp` **DBot::Choose_Mate** 327–395 (69 lines)
-- `src/playsim/bots/b_func.cpp` **b_func separators** 396–397 (2 lines)
+- `src/playsim/bots/b_func.cpp` **b_func separators** 397–397 (1 lines)
 - `src/playsim/bots/b_func.cpp` **DBot::Find_enemy** 398–449 (52 lines)
 
-**Credited native LOC:** 213 (tally `nativeLoc` 213).
+**Credited native LOC:** 163 (tally `nativeLoc` 163).
 
 ## Managed
 
 `VmBBotFunc.cs`
 Managed LOC (tally): 164.
-Conversion commit: `054b3d1d2fe386d8574208986ef64f566f661af3`.
+Conversion commit: `d5fa317a364d718918fafc8bf1d3515b055fb6eb`.
 
 ## Padding review (2026-10-21)
 
@@ -64,7 +62,16 @@ Conversion commit: `054b3d1d2fe386d8574208986ef64f566f661af3`.
 | Gross `nativeLoc` | **213** |
 | Net behavior-ported | **213** |
 
-**Post-review ratio:** 164/213 managed/native ≈ 77% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (879)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **213** |
+| **Out-of-body removed** | **50** |
+| **Honest** | **163** |
+
+
+**Post-review ratio:** 164/163 managed/native ≈ 101% (src file LOC at HEAD; see tally).
 
 ## Tests
 
