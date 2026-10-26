@@ -13,14 +13,15 @@ Whole `FLevelLocals::CreateLinkedPortals` (`portal.cpp` 851–1039).
 ## Managed
 
 `VmPortalCreateLinkedPortals.cs`
-Managed LOC (tally): 115.
-Conversion commit: `3bb2704eba57cd767aec19235c119422ee4b5fd1`.
+Managed LOC (tally): 242.
+Conversion commit: `b590f071da08915e8b5dd8760c0b9d6943fc81a3`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`portal.cpp`) |
 |---------|---------------------|
 | `CreateLinkedPortals` / `CreateLinkedPortalsContext` | `CreateLinkedPortals` 851–1039 |
+| `CollectFromLinkedOrgs` / `ProcessLineLinkedPortals` / `RunDisplacementConsistencyPass` / `FinalizeLinkedSectorPlanes` | org collect **884–907**, displacements **909–932**, mismatch **934–971**, plane finalize **983–1018** |
 
 ### Out-of-body uncredit (662)
 
@@ -31,12 +32,14 @@ Conversion commit: `3bb2704eba57cd767aec19235c119422ee4b5fd1`.
 | **Honest** | **189** |
 
 
-**Post-review ratio:** 115/189 managed/native ≈ 61% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 242/189 managed/native ≈ 128% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmPortalCreateLinkedPortalsTests.CreateLinkedPortals_CollectsWithLinkedIds`
 - `VmPortalCreateLinkedPortalsTests.CreateLinkedPortals_FlagsDisplacementMismatch`
+- `VmPortalCreateLinkedPortalsTests.ProcessLineLinkedPortals_DisablesUnconnected`
+- `VmPortalCreateLinkedPortalsTests.ResolveCeilingBelowFloorClearPlane_PicksCeilingWhenPlaneDLower`
 
 ## Verified
 

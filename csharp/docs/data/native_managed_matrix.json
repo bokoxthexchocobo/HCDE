@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 219180
+    "managedCSharpLoc": 219307
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 71037,
+    "convertedThisRunManaged": 71164,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 80708,
+    "convertedBehaviorManaged": 80835,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -19950,7 +19950,7 @@
         "note": "Whole `FLevelLocals::CreateLinkedPortals` (`portal.cpp` 851\u20131039).",
         "auditSeams": "`CollectSectors`, `AddDisplacementForPortal`, and map mutation stay native.",
         "auditRationale": "Fresh portal TU; linked portal grouping hosted.",
-        "auditPaddingReview": "| Managed | Native (`portal.cpp`) |\n|---------|---------------------|\n| `CreateLinkedPortals` / `CreateLinkedPortalsContext` | `CreateLinkedPortals` 851\u20131039 |\n\n### Out-of-body uncredit (662)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **189** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **189** |\n",
+        "auditPaddingReview": "| Managed | Native (`portal.cpp`) |\n|---------|---------------------|\n| `CreateLinkedPortals` / `CreateLinkedPortalsContext` | `CreateLinkedPortals` 851\u20131039 |\n| `CollectFromLinkedOrgs` / `ProcessLineLinkedPortals` / `RunDisplacementConsistencyPass` / `FinalizeLinkedSectorPlanes` | org collect **884\u2013907**, displacements **909\u2013932**, mismatch **934\u2013971**, plane finalize **983\u20131018** |\n\n### Out-of-body uncredit (662)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **189** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **189** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPortalCreateLinkedPortals.cs"
         ],
@@ -19962,13 +19962,16 @@
             "end": 1039,
             "tests": [
               "VmPortalCreateLinkedPortalsTests.CreateLinkedPortals_CollectsWithLinkedIds",
-              "VmPortalCreateLinkedPortalsTests.CreateLinkedPortals_FlagsDisplacementMismatch"
+              "VmPortalCreateLinkedPortalsTests.CreateLinkedPortals_FlagsDisplacementMismatch",
+              "VmPortalCreateLinkedPortalsTests.ProcessLineLinkedPortals_DisablesUnconnected",
+              "VmPortalCreateLinkedPortalsTests.ResolveCeilingBelowFloorClearPlane_PicksCeilingWhenPlaneDLower"
             ]
           }
         ],
         "nativeLoc": 189,
-        "managedLoc": 115,
-        "conversionManagedCommit": "3bb2704eba57cd767aec19235c119422ee4b5fd1"
+        "managedLoc": 242,
+        "conversionManagedCommit": "b590f071da08915e8b5dd8760c0b9d6943fc81a3",
+        "auditManagedLocJustification": "Phased `CreateLinkedPortals` pipeline mirrors grouping/displacement/finalize bands without hosting `CollectSectors` map mutation or actor relink."
       },
       {
         "name": "p-sight-ptr-traverse-chunk663",
