@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 48312,
+  "convertedThisRunNative": 48159,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 68419,
+  "convertedThisRunManaged": 68342,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 440314,
+  "remainingNative": 440467,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 66839,
+  "convertedBehaviorNative": 66686,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 67772,
-  "convertedBehaviorManaged": 78090,
+  "combinedBehaviorNative": 67619,
+  "convertedBehaviorManaged": 78013,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -30335,102 +30335,18 @@
     {
       "name": "fscript-parser-sf-tex-door-chunk872",
       "bucket": "conversion",
-      "note": "`FParser::SF_SectorColormap` \u2026 `SF_CloseDoor` from `fragglescript/t_func.cpp` (1876\u20132038); hub/skill natives unregistered.",
+      "note": "`FParser::SF_SectorColormap` \u2026 `SF_CloseDoor` from `fragglescript/t_func.cpp` (1876\u20132038); hub/skill natives unregistered. Retired (2026-10-23): out-of-body credit removed; honest **115** < **150**.",
       "auditSeams": "Colormap native no-op; ceiling/doors use sector tag iteration and `LineSpecials.ExecuteDoorSpecial`. `SF_ChangeHubLevel` / `SF_StartSkill` stay off `Reg872`.",
       "auditRationale": "Re-land of retired **870** band on the only contiguous \u2265150-line uncredited island after **871**; no door-speed helper extractions.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 872 --band \u2192 UNCredited, exit 0.",
-      "auditManagedLocJustification": "`VmFScriptParserSfTexDoor.cs` + `VmFScriptInitFunctionsReg872.cs`.",
-      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported | Registered |\n|---------------|-----------------|------------|\n| `SF_SectorColormap` | yes (native no-op) | `sectorcolormap` |\n| `SF_CeilingTexture` | yes | `ceilingtexture` |\n| `SF_OpenDoor` | yes | `opendoor` |\n| `SF_CloseDoor` | yes | `closedoor` |\n\n**Not in this chunk (zero credit, not registered)**\n\n| Native | Policy |\n|--------|--------|\n| `SF_ChangeHubLevel` (**1973\u20131976**) | Unregistered (`script_error`) |\n| `SF_StartSkill` (**1979\u20131982**) | Unregistered (`script_error`) |\n\n| Managed | Native |\n|---------|--------|\n| `SfSectorColormap` | **1883\u20131922** |\n| `SfCeilingTexture` | **1931\u20131965** |\n| `SfOpenDoor` | **1992\u20132013** |\n| `SfCloseDoor` | **2021\u20132038** |\n| `VmFScriptInitFunctionsReg872.Register` | `NewFunction` rows |\n| (separators) | **1876\u20131882**, **1923\u20131930**, **1966\u20131972**, **1983\u20131991**, **2014\u20132020** |\n| (unregistered band) | **1973\u20131982** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| `nativeLoc` | **163** |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmFScriptParserSfTexDoor.cs",
-        "csharp/src/HCDE.Playsim/VmFScriptInitFunctionsReg872.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_SectorColormap",
-          "start": 1883,
-          "end": 1922,
-          "tests": [
-            "VmFScriptParserSfTexDoorTests.SfCeilingTexture_SetsAndReturnsName"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_CeilingTexture",
-          "start": 1931,
-          "end": 1965,
-          "tests": [
-            "VmFScriptParserSfTexDoorTests.SfCeilingTexture_SetsAndReturnsName"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_OpenDoor",
-          "start": 1992,
-          "end": 2013,
-          "tests": [
-            "VmFScriptParserSfTexDoorTests.SfOpenDoor_StartsDoorMotion"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_CloseDoor",
-          "start": 2021,
-          "end": 2038,
-          "tests": [
-            "VmFScriptParserSfTexDoorTests.SfCloseDoor_StartsClosingMotion"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF tex/door separators",
-          "start": 1876,
-          "end": 1882,
-          "tests": [
-            "VmFScriptParserSfTexDoorTests.SfCeilingTexture_SetsAndReturnsName"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF tex/door separators",
-          "start": 1923,
-          "end": 1930,
-          "tests": [
-            "VmFScriptParserSfTexDoorTests.SfCeilingTexture_SetsAndReturnsName"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF tex/door separators",
-          "start": 1966,
-          "end": 1972,
-          "tests": [
-            "VmFScriptParserSfTexDoorTests.SfOpenDoor_StartsDoorMotion"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF tex/door separators",
-          "start": 1983,
-          "end": 1991,
-          "tests": [
-            "VmFScriptParserSfTexDoorTests.SfOpenDoor_StartsDoorMotion"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF tex/door separators",
-          "start": 2014,
-          "end": 2020,
-          "tests": [
-            "VmFScriptParserSfTexDoorTests.SfOpenDoor_StartsDoorMotion"
-          ]
-        }
-      ],
-      "nativeLoc": 153,
-      "managedLoc": 77,
-      "conversionManagedCommit": "fd4d384bac2048876c222286823ce37ed83fab25"
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported | Registered |\n|---------------|-----------------|------------|\n| `SF_SectorColormap` | yes (native no-op) | `sectorcolormap` |\n| `SF_CeilingTexture` | yes | `ceilingtexture` |\n| `SF_OpenDoor` | yes | `opendoor` |\n| `SF_CloseDoor` | yes | `closedoor` |\n\n**Not in this chunk (zero credit, not registered)**\n\n| Native | Policy |\n|--------|--------|\n| `SF_ChangeHubLevel` (**1973\u20131976**) | Unregistered (`script_error`) |\n| `SF_StartSkill` (**1979\u20131982**) | Unregistered (`script_error`) |\n\n| Managed | Native |\n|---------|--------|\n| `SfSectorColormap` | **1883\u20131922** |\n| `SfCeilingTexture` | **1931\u20131965** |\n| `SfOpenDoor` | **1992\u20132013** |\n| `SfCloseDoor` | **2021\u20132038** |\n| `VmFScriptInitFunctionsReg872.Register` | `NewFunction` rows |\n| (separators) | **1876\u20131882**, **1923\u20131930**, **1966\u20131972**, **1983\u20131991**, **2014\u20132020** |\n| (unregistered band) | **1973\u20131982** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| `nativeLoc` | **163** |\n\n### Out-of-body uncredit (872)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **153** |\n| **Out-of-body removed** | **38** |\n| **Honest** | **115** |\n",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "c05e36985143988febe415ea3d6a8ba479262acd",
+      "retired": true
     },
     {
       "name": "fscript-parser-sf-ctrl-chunk873",

@@ -1,28 +1,19 @@
-# Chunk 872 — `FParser::SF_SectorColormap` … `SF_CloseDoor` from `fragglescript/t_func.cpp` (1876–2038); hub/skill natives unregistered.
+# Chunk 872 — `FParser::SF_SectorColormap` … `SF_CloseDoor` from `fragglescript/t_func.cpp` (1876–2038); hub/skill natives unregistered. Retired (2026-10-23): out-of-body credit removed; honest **115** < **150**.
 
 ## Scope
 
-`FParser::SF_SectorColormap` … `SF_CloseDoor` from `fragglescript/t_func.cpp` (1876–2038); hub/skill natives unregistered.
+`FParser::SF_SectorColormap` … `SF_CloseDoor` from `fragglescript/t_func.cpp` (1876–2038); hub/skill natives unregistered. Retired (2026-10-23): out-of-body credit removed; honest **115** < **150**.
 
 ## Native ranges
 
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_SectorColormap** 1883–1922 (40 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_CeilingTexture** 1931–1965 (35 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_OpenDoor** 1992–2013 (22 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_CloseDoor** 2021–2038 (18 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF tex/door separators** 1876–1882 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF tex/door separators** 1923–1930 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF tex/door separators** 1966–1972 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF tex/door separators** 1983–1991 (9 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF tex/door separators** 2014–2020 (7 lines)
 
-**Credited native LOC:** 153 (tally `nativeLoc` 153).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmFScriptParserSfTexDoor.cs`, `VmFScriptInitFunctionsReg872.cs`
-Managed LOC (tally): 77.
-Conversion commit: `fd4d384bac2048876c222286823ce37ed83fab25`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `c05e36985143988febe415ea3d6a8ba479262acd`.
 
 ## Padding review (2026-10-21)
 
@@ -58,13 +49,17 @@ Conversion commit: `fd4d384bac2048876c222286823ce37ed83fab25`.
 |--|------:|
 | `nativeLoc` | **163** |
 
-**Post-review ratio:** 77/153 managed/native ≈ 50% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (872)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **153** |
+| **Out-of-body removed** | **38** |
+| **Honest** | **115** |
+
 
 ## Tests
 
-- `VmFScriptParserSfTexDoorTests.SfCeilingTexture_SetsAndReturnsName`
-- `VmFScriptParserSfTexDoorTests.SfOpenDoor_StartsDoorMotion`
-- `VmFScriptParserSfTexDoorTests.SfCloseDoor_StartsClosingMotion`
 
 ## Verified
 
