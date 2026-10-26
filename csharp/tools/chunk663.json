@@ -5,7 +5,7 @@
     "note": "Whole `SightCheck::PTR_SightTraverse` (`p_sight.cpp` 210\u2013384).",
     "auditSeams": "`P_SightOpening`, 3D-floor evaluation, and intercept lists stay native.",
     "auditRationale": "Fresh sight TU; traverse slope/portal logic hosted.",
-    "auditPaddingReview": "| Managed | Native (`p_sight.cpp`) |\n|---------|----------------------|\n| `PtrSightTraverse` / `SightTraverseContext` | `PTR_SightTraverse` 210\u2013384 |\n\n### Out-of-body uncredit (663)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **175** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **175** |\n",
+    "auditPaddingReview": "| Managed | Native (`p_sight.cpp`) |\n|---------|----------------------|\n| `PtrSightTraverse` + opening/portal/3D-floor phases | `PTR_SightTraverse` 210\u2013384 |\n| `EvaluateSight3dFloors` / `SightFFloorAtHit` | 3D-floor loop 297\u2013377 |\n| `SwapPortalFlagsSides` | `SightOpening::SwapSides` 73\u201376 |\n\n### Out-of-body uncredit (663)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **175** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **175** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPSightPtrSightTraverse.cs"
     ],
@@ -17,7 +17,14 @@
         "end": 384,
         "tests": [
           "VmPSightPtrSightTraverseTests.PtrSightTraverse_ClosedDoorStops",
-          "VmPSightPtrSightTraverseTests.PtrSightTraverse_UpdatesSlopes"
+          "VmPSightPtrSightTraverseTests.PtrSightTraverse_UpdatesSlopes",
+          "VmPSightPtrSightTraverseTests.PtrSightTraverse_CompatSameSectorSkips",
+          "VmPSightPtrSightTraverseTests.PtrSightTraverse_FracZeroContinues",
+          "VmPSightPtrSightTraverseTests.PtrSightTraverse_LinkedPortalQueuesAndStops",
+          "VmPSightPtrSightTraverseTests.PtrSightTraverse_LineBlocksSightCollapsesOpening",
+          "VmPSightPtrSightTraverseTests.PtrSightTraverse_3dFloorBlocksViewCone",
+          "VmPSightPtrSightTraverseTests.PtrSightTraverse_SwapPortalFlagsSides",
+          "VmPSightPtrSightTraverseTests.PtrSightTraverse_FinalizesLastZ"
         ]
       }
     ],
