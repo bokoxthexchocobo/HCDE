@@ -13,8 +13,8 @@ Whole `AActor::Tick` (`p_mobj.cpp` 4523–5075).
 ## Managed
 
 `VmPMobjActorTick.cs`
-Managed LOC (tally): 343.
-Conversion commit: `86f8ce3a9aa4eae3299f549536de0d8c47780daf`.
+Managed LOC (tally): 614.
+Conversion commit: `3cfb58993ddf81aa690f5d953133b36e01659141`.
 
 ## Padding review (2026-10-21)
 
@@ -22,6 +22,8 @@ Conversion commit: `86f8ce3a9aa4eae3299f549536de0d8c47780daf`.
 |---------|-------------------|
 | `Tick` | `AActor::Tick` 4523–5075 |
 | `TickNoInteraction` | MF5_NOINTERACTION 4587–4637 |
+| `AccumulateSectorCarry` / `AddPlayerScrollSpecial` | scroll carry 4787–4924 |
+| `ApplySteepSlopePush` | steep floor push 4926–4963 |
 | `HandleRocketGrenadeTrail` | smoke trails 4680–4711 |
 | `ApplyVerticalFriction` / `PulseVisibility` | 4719–4778 |
 | `AverageSectorScroll` | scroll average 4913–4922 |
@@ -37,7 +39,7 @@ Conversion commit: `86f8ce3a9aa4eae3299f549536de0d8c47780daf`.
 | **Honest** | **553** |
 
 
-**Post-review ratio:** 343/553 managed/native ≈ 62% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 614/553 managed/native ≈ 111% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -45,6 +47,9 @@ Conversion commit: `86f8ce3a9aa4eae3299f549536de0d8c47780daf`.
 - `VmPMobjActorTickTests.Tick_Freezetics_DecrementsAndReturns`
 - `VmPMobjActorTickTests.Tick_NoInteraction_ClearsScrollFlag`
 - `VmPMobjActorTickTests.AverageSectorScroll_DividesWhenMultipleSectors`
+- `VmPMobjActorTickTests.AccumulateSectorCarry_AveragesTwoScrollContributions`
+- `VmPMobjActorTickTests.SteepSlopePush_AddsPlaneNormalToVelocity`
+- `VmPMobjActorTickTests.OnMobj_StepUp_SetsActorZToBlockerTop`
 
 ## Verified
 
