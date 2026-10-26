@@ -1,43 +1,19 @@
-# Chunk 862 — FraggleScript compare, unary `!`, `+`/`-`/`*` from `t_oper.cpp` (190–349).
+# Chunk 862 — FraggleScript compare, unary `!`, `+`/`-`/`*` from `t_oper.cpp` (190–349). Retired (2026-10-23): out-of-body credit removed; honest **118** < **150**.
 
 ## Scope
 
-FraggleScript compare, unary `!`, `+`/`-`/`*` from `t_oper.cpp` (190–349).
+FraggleScript compare, unary `!`, `+`/`-`/`*` from `t_oper.cpp` (190–349). Retired (2026-10-23): out-of-body credit removed; honest **118** < **150**.
 
 ## Native ranges
 
-- `src/playsim/fragglescript/t_oper.cpp` **FParser::OPnotcmp** 190–195 (6 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **FParser::OPlessthan** 203–215 (13 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **FParser::OPgreaterthan** 224–236 (13 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **FParser::OPnot** 244–252 (9 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **FParser::OPplus** 258–291 (34 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **FParser::OPminus** 299–325 (27 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **FParser::OPmultiply** 333–349 (17 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **oper separators** 196–202 (7 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **oper separators** 216–223 (8 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **oper separators** 237–243 (7 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **oper separators** 253–257 (5 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **oper separators** 292–298 (7 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **oper separators** 326–332 (7 lines)
 
-**Credited native LOC:** 160 (tally `nativeLoc` 160).
-
-## Portfolio delta
-
-**Gross CLI band:** **160** lines in the UNCredited-range probe; tally credits **160** whole-function native LOC only.
-
-| | Native LOC |
-|---|---:|
-| **Gross** (CLI UNCredited band) | **160** |
-| **Credited** (whole functions, this row) | **160** |
-| **Overlap trim** | **0** |
-| **Net headline Δ** | **+160** (see `convertedBehaviorNative` in tally at land commit) |
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmFScriptParserOper862.cs`
-Managed LOC (tally): 99.
-Conversion commit: `68051a085d4aa8ffd88b20d98539839dde8f2891`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `b290a11407e174c22e762cd3167397a04092eae5`.
 
 ## Padding review (2026-10-21)
 
@@ -63,12 +39,17 @@ Conversion commit: `68051a085d4aa8ffd88b20d98539839dde8f2891`.
 | Row `nativeLoc` | **160** |
 | Net | **+160** vs post-**861** |
 
-**Post-review ratio:** 99/160 managed/native ≈ 62% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (862)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **160** |
+| **Out-of-body removed** | **42** |
+| **Honest** | **118** |
+
 
 ## Tests
 
-- `VmFScriptParserExprTests.OpCmp_Equality`
-- `VmFScriptParserExprTests.OpPlus_Integers`
 
 ## Verified
 

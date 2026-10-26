@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 49006,
+  "convertedThisRunNative": 48846,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 68808,
+  "convertedThisRunManaged": 68709,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 439620,
+  "remainingNative": 439780,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 67533,
+  "convertedBehaviorNative": 67373,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 68466,
-  "convertedBehaviorManaged": 78479,
+  "combinedBehaviorNative": 68306,
+  "convertedBehaviorManaged": 78380,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -29852,138 +29852,18 @@
     {
       "name": "fscript-oper-compare-arith-chunk862",
       "bucket": "conversion",
-      "note": "FraggleScript compare, unary `!`, `+`/`-`/`*` from `t_oper.cpp` (190\u2013349).",
+      "note": "FraggleScript compare, unary `!`, `+`/`-`/`*` from `t_oper.cpp` (190\u2013349). Retired (2026-10-23): out-of-body credit removed; honest **118** < **150**.",
       "auditSeams": "`VmFScriptParserOper862.cs`; eval helpers on **859** `VmFScriptParserExprEval.cs`.",
       "auditRationale": "Credits `OPnotcmp` through `OPmultiply` inclusive; band ends at **349** (end of `OPmultiply`).",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_oper.cpp --start 191 --end 340 \u2192 UNCredited (150 lines), exit 0.",
-      "auditManagedLocJustification": "Exclusive `VmFScriptParserOper862.cs`.",
-      "auditPaddingReview": "**Band seam **349|350****: after `OPmultiply` (**333\u2013349**); **`OPdivide` begins at 357** (separator **350\u2013355**). Rejects prior **340|341** floor slice that bisected `OPmultiply`.\n\n**Native \u2192 managed (`VmFScriptParserOper862.cs`)**\n\n| Native | Managed |\n|--------|---------|\n| `OPnotcmp` **190\u2013195** | `OpNotCmp` |\n| `OPlessthan` **203\u2013215** | `OpLessThan` |\n| `OPgreaterthan` **224\u2013236** | `OpGreaterThan` |\n| `OPnot` **244\u2013252** | `OpNot` |\n| `OPplus` **258\u2013291** | `OpPlus` |\n| `OPminus` **299\u2013325** | `OpMinus` |\n| `OPmultiply` **333\u2013349** | `OpMultiply` |\n| (separators) **196\u2013202**, **216\u2013223**, **237\u2013243**, **253\u2013257**, **292\u2013298**, **326\u2013332** | layout |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **160** |\n| Net | **+160** vs post-**861** |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmFScriptParserOper862.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/fragglescript/t_oper.cpp",
-          "symbol": "FParser::OPnotcmp",
-          "start": 190,
-          "end": 195,
-          "tests": [
-            "VmFScriptParserExprTests.OpCmp_Equality"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_oper.cpp",
-          "symbol": "FParser::OPlessthan",
-          "start": 203,
-          "end": 215,
-          "tests": [
-            "VmFScriptParserExprTests.OpCmp_Equality",
-            "VmFScriptParserExprTests.OpPlus_Integers"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_oper.cpp",
-          "symbol": "FParser::OPgreaterthan",
-          "start": 224,
-          "end": 236,
-          "tests": [
-            "VmFScriptParserExprTests.OpCmp_Equality"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_oper.cpp",
-          "symbol": "FParser::OPnot",
-          "start": 244,
-          "end": 252,
-          "tests": [
-            "VmFScriptParserExprTests.OpCmp_Equality"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_oper.cpp",
-          "symbol": "FParser::OPplus",
-          "start": 258,
-          "end": 291,
-          "tests": [
-            "VmFScriptParserExprTests.OpPlus_Integers"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_oper.cpp",
-          "symbol": "FParser::OPminus",
-          "start": 299,
-          "end": 325,
-          "tests": [
-            "VmFScriptParserExprTests.OpPlus_Integers"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_oper.cpp",
-          "symbol": "FParser::OPmultiply",
-          "start": 333,
-          "end": 349,
-          "tests": [
-            "VmFScriptParserExprTests.OpPlus_Integers"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_oper.cpp",
-          "symbol": "oper separators",
-          "start": 196,
-          "end": 202,
-          "tests": [
-            "VmFScriptParserExprTests.OpPlus_Integers"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_oper.cpp",
-          "symbol": "oper separators",
-          "start": 216,
-          "end": 223,
-          "tests": [
-            "VmFScriptParserExprTests.OpPlus_Integers"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_oper.cpp",
-          "symbol": "oper separators",
-          "start": 237,
-          "end": 243,
-          "tests": [
-            "VmFScriptParserExprTests.OpPlus_Integers"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_oper.cpp",
-          "symbol": "oper separators",
-          "start": 253,
-          "end": 257,
-          "tests": [
-            "VmFScriptParserExprTests.OpPlus_Integers"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_oper.cpp",
-          "symbol": "oper separators",
-          "start": 292,
-          "end": 298,
-          "tests": [
-            "VmFScriptParserExprTests.OpPlus_Integers"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_oper.cpp",
-          "symbol": "oper separators",
-          "start": 326,
-          "end": 332,
-          "tests": [
-            "VmFScriptParserExprTests.OpPlus_Integers"
-          ]
-        }
-      ],
-      "nativeLoc": 160,
-      "managedLoc": 99,
-      "conversionManagedCommit": "68051a085d4aa8ffd88b20d98539839dde8f2891"
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "auditPaddingReview": "**Band seam **349|350****: after `OPmultiply` (**333\u2013349**); **`OPdivide` begins at 357** (separator **350\u2013355**). Rejects prior **340|341** floor slice that bisected `OPmultiply`.\n\n**Native \u2192 managed (`VmFScriptParserOper862.cs`)**\n\n| Native | Managed |\n|--------|---------|\n| `OPnotcmp` **190\u2013195** | `OpNotCmp` |\n| `OPlessthan` **203\u2013215** | `OpLessThan` |\n| `OPgreaterthan` **224\u2013236** | `OpGreaterThan` |\n| `OPnot` **244\u2013252** | `OpNot` |\n| `OPplus` **258\u2013291** | `OpPlus` |\n| `OPminus` **299\u2013325** | `OpMinus` |\n| `OPmultiply` **333\u2013349** | `OpMultiply` |\n| (separators) **196\u2013202**, **216\u2013223**, **237\u2013243**, **253\u2013257**, **292\u2013298**, **326\u2013332** | layout |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **160** |\n| Net | **+160** vs post-**861** |\n\n### Out-of-body uncredit (862)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **160** |\n| **Out-of-body removed** | **42** |\n| **Honest** | **118** |\n",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "b290a11407e174c22e762cd3167397a04092eae5",
+      "retired": true
     },
     {
       "name": "fscript-oper-mul-bit-chunk863",
