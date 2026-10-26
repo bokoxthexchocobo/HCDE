@@ -19,8 +19,8 @@ Whole `P_CheckMusicChange`, `P_CheckEnvironment`, `P_CheckUse`, `FSafePosition::
 ## Managed
 
 `VmPUserPlayerThink.cs`
-Managed LOC (tally): 130.
-Conversion commit: `2bd8f448e69ae0d495900e4a718310ba06b08646`.
+Managed LOC (tally): 165.
+Conversion commit: `d2c71e58dc4a67700a983295cac914fa9c1bba39`.
 
 ## Padding review (2026-10-21)
 
@@ -30,7 +30,9 @@ Conversion commit: `2bd8f448e69ae0d495900e4a718310ba06b08646`.
 | `EnvironmentFallingScream` / `EnvironmentTriggersFx` | `P_CheckEnvironment` 1723–1735 |
 | `CheckUseSkipsWhenPredicting` / `CheckUseEdge` / `CheckUseRelease` / `UseHoldButton` | `P_CheckUse` 1750–1776 |
 | `SafePosLiveUpdate` / `SafePosValidOnFloor` / `SafePosForceCopy` / `SafePosHeightClear` / `SafePosTracksLive` | `FSafePosition::Update` 1785–1797; `IsSafe` 1799–1806 |
-| `ApplyAngleOffset` / `ProcessAngleSlot` / `SubtitleTick` / `DecrementSubtitle` / `UpdateSafePosWhenLive` / `SkipBobTimerWhenPredicting` / `BotFrozenSkip` / `DebugLogTick` / `StripPresentationCheats` / `BobWeapon2D` / `BobWeapon3D` / `PlayerThinkVelocitySlot` / `WeaponBobBranch` / `LevelVelocitySlotValid` | `P_PlayerThink` 1830–1912 |
+| `ApplyAngleOffset` / `ProcessAngleSlot` / `SubtitleTick` / `DecrementSubtitle` / `UpdateSafePosWhenLive` / `SkipBobTimerWhenPredicting` / `BotFrozenSkip` / `DebugLogTick` / `StripPresentationCheats` / `BobWeapon2D` / `BobWeapon3D` / `SelectVelocitySpeed` / `PlayerThinkVelocitySlot` / `WeaponBobBranch` / `LevelVelocitySlotValid` | `P_PlayerThink` 1830–1912 |
+| `SafePosIsSafe` / expanded `SafePosSample` | `FSafePosition::IsSafe` 1799–1806 |
+| `MusicInfoFiredAfterDecrement` / `MusicInfoUsesWildcard` | `P_CheckMusicChange` 1687–1703 |
 
 ### Out-of-body uncredit (717)
 
@@ -41,7 +43,7 @@ Conversion commit: `2bd8f448e69ae0d495900e4a718310ba06b08646`.
 | **Honest** | **186** |
 
 
-**Post-review ratio:** 130/186 managed/native ≈ 70% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 165/186 managed/native ≈ 89% (src file LOC at HEAD; see tally).
 
 ## Tests
 

@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 221053
+    "managedCSharpLoc": 221088
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 72946,
+    "convertedThisRunManaged": 72981,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 82617,
+    "convertedBehaviorManaged": 82652,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -21892,7 +21892,7 @@
         "note": "Whole `P_CheckMusicChange`, `P_CheckEnvironment`, `P_CheckUse`, `FSafePosition::{Update,IsSafe,Serialize}`, and `P_PlayerThink` (`p_user.cpp` 1682\u20131912). No native overlap with chunk509 (`P_PredictClient` 2021\u20132394) or chunk512 (`P_FallingDamage`/`Serialize`/`P_IsPlayerTotallyFrozen` only); chunk510/511 retired.",
         "auditSeams": "`S_ChangeMusic`, `P_UseLines`, `P_TalkFacing`, VM `PlayerThink`, weapon bob natives, and serializer I/O remain native.",
         "auditRationale": "Player think band credited as conversion (was recognition-only padding in chunk512 audit).",
-        "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|-------------------|\n| `MusicInfoTickActive` / `MusicInfoUsesLookup` / `MusicCdTrackChange` / `ShouldSwapMusic` | `P_CheckMusicChange` 1682\u20131708 |\n| `EnvironmentFallingScream` / `EnvironmentTriggersFx` | `P_CheckEnvironment` 1723\u20131735 |\n| `CheckUseSkipsWhenPredicting` / `CheckUseEdge` / `CheckUseRelease` / `UseHoldButton` | `P_CheckUse` 1750\u20131776 |\n| `SafePosLiveUpdate` / `SafePosValidOnFloor` / `SafePosForceCopy` / `SafePosHeightClear` / `SafePosTracksLive` | `FSafePosition::Update` 1785\u20131797; `IsSafe` 1799\u20131806 |\n| `ApplyAngleOffset` / `ProcessAngleSlot` / `SubtitleTick` / `DecrementSubtitle` / `UpdateSafePosWhenLive` / `SkipBobTimerWhenPredicting` / `BotFrozenSkip` / `DebugLogTick` / `StripPresentationCheats` / `BobWeapon2D` / `BobWeapon3D` / `PlayerThinkVelocitySlot` / `WeaponBobBranch` / `LevelVelocitySlotValid` | `P_PlayerThink` 1830\u20131912 |\n\n### Out-of-body uncredit (717)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **186** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **186** |\n",
+        "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|-------------------|\n| `MusicInfoTickActive` / `MusicInfoUsesLookup` / `MusicCdTrackChange` / `ShouldSwapMusic` | `P_CheckMusicChange` 1682\u20131708 |\n| `EnvironmentFallingScream` / `EnvironmentTriggersFx` | `P_CheckEnvironment` 1723\u20131735 |\n| `CheckUseSkipsWhenPredicting` / `CheckUseEdge` / `CheckUseRelease` / `UseHoldButton` | `P_CheckUse` 1750\u20131776 |\n| `SafePosLiveUpdate` / `SafePosValidOnFloor` / `SafePosForceCopy` / `SafePosHeightClear` / `SafePosTracksLive` | `FSafePosition::Update` 1785\u20131797; `IsSafe` 1799\u20131806 |\n| `ApplyAngleOffset` / `ProcessAngleSlot` / `SubtitleTick` / `DecrementSubtitle` / `UpdateSafePosWhenLive` / `SkipBobTimerWhenPredicting` / `BotFrozenSkip` / `DebugLogTick` / `StripPresentationCheats` / `BobWeapon2D` / `BobWeapon3D` / `SelectVelocitySpeed` / `PlayerThinkVelocitySlot` / `WeaponBobBranch` / `LevelVelocitySlotValid` | `P_PlayerThink` 1830\u20131912 |\n| `SafePosIsSafe` / expanded `SafePosSample` | `FSafePosition::IsSafe` 1799\u20131806 |\n| `MusicInfoFiredAfterDecrement` / `MusicInfoUsesWildcard` | `P_CheckMusicChange` 1687\u20131703 |\n\n### Out-of-body uncredit (717)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **186** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **186** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPUserPlayerThink.cs"
         ],
@@ -21963,8 +21963,8 @@
           }
         ],
         "nativeLoc": 186,
-        "managedLoc": 130,
-        "conversionManagedCommit": "2bd8f448e69ae0d495900e4a718310ba06b08646"
+        "managedLoc": 165,
+        "conversionManagedCommit": "d2c71e58dc4a67700a983295cac914fa9c1bba39"
       },
       {
         "name": "portal-collect-use-lines-chunk718",
