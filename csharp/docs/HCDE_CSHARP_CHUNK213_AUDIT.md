@@ -1,25 +1,35 @@
-# Chunk 213 — InitActorNumsFromMapinfo resolve and P_GetSpawnableType.
+# Chunk 213 — InitActorNumsFromMapinfo resolve and P_GetSpawnableType. Retired (2026-10-23): out-of-body credit removed; honest **54** < **150**.
 
 ## Scope
 
-InitActorNumsFromMapinfo resolve and P_GetSpawnableType.
+InitActorNumsFromMapinfo resolve and P_GetSpawnableType. Retired (2026-10-23): out-of-body credit removed; honest **54** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_doomedmap.cpp` **InitActorNumsFromMapinfo** 251–284 (34 lines)
-- `src/gamedata/g_doomedmap.cpp` **P_GetSpawnableType** 286–305 (20 lines)
 
-**Credited native LOC:** 54 (tally `nativeLoc` 54).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDoomEdMapinfoResolver.cs`, `VmDoomEdMapinfoResolverTests.cs`
-Managed LOC (tally): 48.
-Conversion commit: `4d88af30fe50d6fece1418301b8eea64ab86b229`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `31cfab951902c55c824b92303a469b0032b36c7b`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (213)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **54** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **54** |
+
 
 ## Tests
 
-- `VmDoomEdMapinfoResolverTests.TryGetSpawnableClassName_UsesNumberedTable`
 
 ## Verified
 

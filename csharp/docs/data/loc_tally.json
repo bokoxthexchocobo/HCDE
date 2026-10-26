@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 47212,
+  "convertedThisRunNative": 47158,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 67784,
+  "convertedThisRunManaged": 67736,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 441593,
+  "remainingNative": 441647,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 65739,
+  "convertedBehaviorNative": 65685,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 66493,
-  "convertedBehaviorManaged": 77455,
+  "combinedBehaviorNative": 66439,
+  "convertedBehaviorManaged": 77407,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8250,30 +8250,15 @@
     {
       "name": "doomedmap-resolve-chunk213",
       "bucket": "conversion",
-      "managedLoc": 48,
-      "note": "InitActorNumsFromMapinfo resolve and P_GetSpawnableType.",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/g_doomedmap.cpp",
-          "symbol": "InitActorNumsFromMapinfo",
-          "start": 251,
-          "end": 284,
-          "tests": [
-            "VmDoomEdMapinfoResolverTests.TryGetSpawnableClassName_UsesNumberedTable"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_doomedmap.cpp",
-          "symbol": "P_GetSpawnableType",
-          "start": 286,
-          "end": 305,
-          "tests": [
-            "VmDoomEdMapinfoResolverTests.TryGetSpawnableClassName_UsesNumberedTable"
-          ]
-        }
-      ],
-      "conversionManagedCommit": "4d88af30fe50d6fece1418301b8eea64ab86b229",
-      "nativeLoc": 54
+      "managedLoc": 0,
+      "note": "InitActorNumsFromMapinfo resolve and P_GetSpawnableType. Retired (2026-10-23): out-of-body credit removed; honest **54** < **150**.",
+      "nativeRanges": [],
+      "conversionManagedCommit": "31cfab951902c55c824b92303a469b0032b36c7b",
+      "nativeLoc": 0,
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (213)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **54** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **54** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "doomedmap-spawnmap-chunk214",
