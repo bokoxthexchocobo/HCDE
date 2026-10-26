@@ -1,28 +1,19 @@
-# Chunk 847 — `FParser::SF_LevelNum` … `SF_SetColor` from `fragglescript/t_func.cpp` (3541–3698).
+# Chunk 847 — `FParser::SF_LevelNum` … `SF_SetColor` from `fragglescript/t_func.cpp` (3541–3698). Retired (2026-10-23): out-of-body credit removed; honest **127** < **150**.
 
 ## Scope
 
-`FParser::SF_LevelNum` … `SF_SetColor` from `fragglescript/t_func.cpp` (3541–3698).
+`FParser::SF_LevelNum` … `SF_SetColor` from `fragglescript/t_func.cpp` (3541–3698). Retired (2026-10-23): out-of-body credit removed; honest **127** < **150**.
 
 ## Native ranges
 
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_LevelNum** 3541–3545 (5 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_MobjRadius** 3554–3568 (15 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_MobjHeight** 3577–3591 (15 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_ThingCount** 3600–3652 (53 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_SetColor** 3660–3698 (39 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF level separators** 3546–3553 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF level separators** 3569–3576 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF level separators** 3592–3599 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF level separators** 3653–3659 (7 lines)
 
-**Credited native LOC:** 158 (tally `nativeLoc` 158).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmFScriptParserSfLevel.cs`
-Managed LOC (tally): 155.
-Conversion commit: `482bd6d030a9809548794af51815910cc105e8ec`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `86570d8157f3749683cd1fb7cb8f160505ee1f64`.
 
 ## Padding review (2026-10-21)
 
@@ -45,14 +36,17 @@ Conversion commit: `482bd6d030a9809548794af51815910cc105e8ec`.
 | `SfSetColor` | **3660–3698** |
 | (separators) | **3546–3553**, **3569–3576**, **3592–3599**, **3653–3659** |
 
-**Post-review ratio:** 155/158 managed/native ≈ 98% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (847)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **158** |
+| **Out-of-body removed** | **31** |
+| **Honest** | **127** |
+
 
 ## Tests
 
-- `VmFScriptParserSfLevelTests.SfLevelNum_ReadsMapLevelNumber`
-- `VmFScriptParserSfLevelTests.SfMobjRadius_ReadWrite`
-- `VmFScriptParserSfLevelTests.SfThingCount_CountsZombiemen`
-- `VmFScriptParserSfLevelTests.SfSetColor_TaggedSector`
 
 ## Verified
 
