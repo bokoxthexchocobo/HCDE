@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 47897,
+  "convertedThisRunNative": 47825,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 68214,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 440729,
+  "remainingNative": 440801,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 66424,
+  "convertedBehaviorNative": 66352,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 67357,
+  "combinedBehaviorNative": 67285,
   "convertedBehaviorManaged": 77885,
   "baselineNative": 508086,
   "chunks": [
@@ -30535,7 +30535,7 @@
       "auditRationale": "Whole uncredited TU (304 native) adjacent to landed **875** `b_move.cpp`; dense bot setup without overlapping movement credit.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 877 --band \u2192 UNCredited, exit 0.",
       "auditManagedLocJustification": "`VmBBot.cs`, `VmBBotCcmd.cs` (`VmBBotCcmdRegister`).",
-      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `DBot::Construct` / `DBot::Clear` | yes |\n| `Serialize` (`botskill_t`, `DBot`) | yes (field snapshot API) |\n| `DBot::Tick` (**128\u2013142**) | **no** (`Think` deferred) |\n| `CCMD` `addbot` / `removebots` / `freeze` / `listbots` | yes (`VmBBotCcmdRegister` \u2192 `Run*Ccmd`) |\n| `FCajunMaster::ClearPlayer` | yes |\n| `InitBotStuff` | yes (BOTSUPP lines + warn-bot missile flags) |\n\n**Not ported / not registered**\n\n| Native | Policy |\n|--------|--------|\n| `CVAR bot_next_color` (**144**) | **no** (zero gross/net) |\n| `DBot::Construct` IMPLEMENT / pointer tables | Gross credit only |\n\n| Managed | Native (`b_bot.cpp`) |\n|---------|----------------------|\n| `Clear` | **63\u201386** |\n| `WriteSkillSnapshot` / `WriteBotSnapshot` | **88\u201399**, **101\u2013126** |\n| `Tick` | **128\u2013142** |\n| `VmBBotCcmd.RunAddBotCcmd` | **146\u2013170** |\n| `ClearPlayer` | **172\u2013196** |\n| `VmBBotCcmd.RunRemoveBotsCcmd` | **198\u2013207** |\n| `VmBBotCcmd.RunFreezeCcmd` | **209\u2013222** |\n| `VmBBotCcmd.RunListBotsCcmd` | **224\u2013236** |\n| `InitBotStuffFromLumps` | **243\u2013304** |\n| (headers / IMPLEMENT / CVAR / decl) | **1\u201344**, **45\u201356**, **58\u201361**, **144**, **238\u2013241**, separators |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **288** |\n| Net behavior-ported | **288** |",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `DBot::Construct` / `DBot::Clear` | yes |\n| `Serialize` (`botskill_t`, `DBot`) | yes (field snapshot API) |\n| `DBot::Tick` (**128\u2013142**) | **no** (`Think` deferred) |\n| `CCMD` `addbot` / `removebots` / `freeze` / `listbots` | yes (`VmBBotCcmdRegister` \u2192 `Run*Ccmd`) |\n| `FCajunMaster::ClearPlayer` | yes |\n| `InitBotStuff` | yes (BOTSUPP lines + warn-bot missile flags) |\n\n**Not ported / not registered**\n\n| Native | Policy |\n|--------|--------|\n| `CVAR bot_next_color` (**144**) | **no** (zero gross/net) |\n| `DBot::Construct` IMPLEMENT / pointer tables | Gross credit only |\n\n| Managed | Native (`b_bot.cpp`) |\n|---------|----------------------|\n| `Clear` | **63\u201386** |\n| `WriteSkillSnapshot` / `WriteBotSnapshot` | **88\u201399**, **101\u2013126** |\n| `Tick` | **128\u2013142** |\n| `VmBBotCcmd.RunAddBotCcmd` | **146\u2013170** |\n| `ClearPlayer` | **172\u2013196** |\n| `VmBBotCcmd.RunRemoveBotsCcmd` | **198\u2013207** |\n| `VmBBotCcmd.RunFreezeCcmd` | **209\u2013222** |\n| `VmBBotCcmd.RunListBotsCcmd` | **224\u2013236** |\n| `InitBotStuffFromLumps` | **243\u2013304** |\n| (headers / IMPLEMENT / CVAR / decl) | **1\u201344**, **45\u201356**, **58\u201361**, **144**, **238\u2013241**, separators |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **288** |\n| Net behavior-ported | **288** |\n\n### Out-of-body uncredit (877)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **287** |\n| **Out-of-body removed** | **72** |\n| **Honest** | **215** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmBBot.cs",
         "csharp/src/HCDE.Playsim/VmBBotCcmd.cs"
@@ -30543,45 +30543,9 @@
       "nativeRanges": [
         {
           "file": "src/playsim/bots/b_bot.cpp",
-          "symbol": "b_bot headers",
-          "start": 1,
-          "end": 44,
-          "tests": [
-            "VmBBotTests.Clear_ZeroesPointersAndTimers"
-          ]
-        },
-        {
-          "file": "src/playsim/bots/b_bot.cpp",
-          "symbol": "IMPLEMENT_CLASS DBot",
-          "start": 45,
-          "end": 56,
-          "tests": [
-            "VmBBotTests.Clear_ZeroesPointersAndTimers"
-          ]
-        },
-        {
-          "file": "src/playsim/bots/b_bot.cpp",
-          "symbol": "b_bot separators",
-          "start": 57,
-          "end": 57,
-          "tests": [
-            "VmBBotTests.Clear_ZeroesPointersAndTimers"
-          ]
-        },
-        {
-          "file": "src/playsim/bots/b_bot.cpp",
           "symbol": "DBot::Construct",
           "start": 58,
           "end": 61,
-          "tests": [
-            "VmBBotTests.Clear_ZeroesPointersAndTimers"
-          ]
-        },
-        {
-          "file": "src/playsim/bots/b_bot.cpp",
-          "symbol": "b_bot separators",
-          "start": 62,
-          "end": 62,
           "tests": [
             "VmBBotTests.Clear_ZeroesPointersAndTimers"
           ]
@@ -30597,29 +30561,11 @@
         },
         {
           "file": "src/playsim/bots/b_bot.cpp",
-          "symbol": "b_bot separators",
-          "start": 87,
-          "end": 87,
-          "tests": [
-            "VmBBotTests.Clear_ZeroesPointersAndTimers"
-          ]
-        },
-        {
-          "file": "src/playsim/bots/b_bot.cpp",
           "symbol": "Serialize botskill_t",
           "start": 88,
           "end": 99,
           "tests": [
             "VmBBotTests.WriteBotSnapshot_RecordsAngleAndSkill"
-          ]
-        },
-        {
-          "file": "src/playsim/bots/b_bot.cpp",
-          "symbol": "b_bot separators",
-          "start": 100,
-          "end": 100,
-          "tests": [
-            "VmBBotTests.Clear_ZeroesPointersAndTimers"
           ]
         },
         {
@@ -30633,38 +30579,11 @@
         },
         {
           "file": "src/playsim/bots/b_bot.cpp",
-          "symbol": "b_bot separators",
-          "start": 127,
-          "end": 127,
-          "tests": [
-            "VmBBotTests.Clear_ZeroesPointersAndTimers"
-          ]
-        },
-        {
-          "file": "src/playsim/bots/b_bot.cpp",
-          "symbol": "b_bot separators",
-          "start": 145,
-          "end": 145,
-          "tests": [
-            "VmBBotTests.Clear_ZeroesPointersAndTimers"
-          ]
-        },
-        {
-          "file": "src/playsim/bots/b_bot.cpp",
           "symbol": "CCMD addbot",
           "start": 146,
           "end": 170,
           "tests": [
             "VmBBotTests.AddBot_SpawnsWhenAllowed"
-          ]
-        },
-        {
-          "file": "src/playsim/bots/b_bot.cpp",
-          "symbol": "b_bot separators",
-          "start": 171,
-          "end": 171,
-          "tests": [
-            "VmBBotTests.Clear_ZeroesPointersAndTimers"
           ]
         },
         {
@@ -30678,29 +30597,11 @@
         },
         {
           "file": "src/playsim/bots/b_bot.cpp",
-          "symbol": "b_bot separators",
-          "start": 197,
-          "end": 197,
-          "tests": [
-            "VmBBotTests.Clear_ZeroesPointersAndTimers"
-          ]
-        },
-        {
-          "file": "src/playsim/bots/b_bot.cpp",
           "symbol": "CCMD removebots",
           "start": 198,
           "end": 207,
           "tests": [
             "VmBBotTests.RemoveBots_WritesKillWhenAllowed"
-          ]
-        },
-        {
-          "file": "src/playsim/bots/b_bot.cpp",
-          "symbol": "b_bot separators",
-          "start": 208,
-          "end": 208,
-          "tests": [
-            "VmBBotTests.Clear_ZeroesPointersAndTimers"
           ]
         },
         {
@@ -30714,47 +30615,11 @@
         },
         {
           "file": "src/playsim/bots/b_bot.cpp",
-          "symbol": "b_bot separators",
-          "start": 223,
-          "end": 223,
-          "tests": [
-            "VmBBotTests.Clear_ZeroesPointersAndTimers"
-          ]
-        },
-        {
-          "file": "src/playsim/bots/b_bot.cpp",
           "symbol": "CCMD listbots",
           "start": 224,
           "end": 236,
           "tests": [
             "VmBBotTests.ListBots_PrintsActiveSuffix"
-          ]
-        },
-        {
-          "file": "src/playsim/bots/b_bot.cpp",
-          "symbol": "b_bot separators",
-          "start": 237,
-          "end": 237,
-          "tests": [
-            "VmBBotTests.Clear_ZeroesPointersAndTimers"
-          ]
-        },
-        {
-          "file": "src/playsim/bots/b_bot.cpp",
-          "symbol": "BotInfoMap decl",
-          "start": 238,
-          "end": 241,
-          "tests": [
-            "VmBBotTests.InitBotStuff_ParsesWeaponAndFlags"
-          ]
-        },
-        {
-          "file": "src/playsim/bots/b_bot.cpp",
-          "symbol": "b_bot separators",
-          "start": 242,
-          "end": 242,
-          "tests": [
-            "VmBBotTests.Clear_ZeroesPointersAndTimers"
           ]
         },
         {
@@ -30769,9 +30634,9 @@
           ]
         }
       ],
-      "nativeLoc": 287,
+      "nativeLoc": 215,
       "managedLoc": 375,
-      "conversionManagedCommit": "b39ac64732430e28a22ecc22ce27e8d96225b471"
+      "conversionManagedCommit": "6922ffe5c182b5ed385b4ba54df1389d34c83cba"
     },
     {
       "name": "bot-think-move-chunk878",

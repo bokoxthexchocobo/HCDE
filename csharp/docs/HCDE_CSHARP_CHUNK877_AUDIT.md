@@ -6,39 +6,24 @@ Cajun bot lifecycle, CCMD bodies + registration, and BOTSUPP init from `b_bot.cp
 
 ## Native ranges
 
-- `src/playsim/bots/b_bot.cpp` **b_bot headers** 1–44 (44 lines)
-- `src/playsim/bots/b_bot.cpp` **IMPLEMENT_CLASS DBot** 45–56 (12 lines)
-- `src/playsim/bots/b_bot.cpp` **b_bot separators** 57–57 (1 lines)
 - `src/playsim/bots/b_bot.cpp` **DBot::Construct** 58–61 (4 lines)
-- `src/playsim/bots/b_bot.cpp` **b_bot separators** 62–62 (1 lines)
 - `src/playsim/bots/b_bot.cpp` **DBot::Clear** 63–86 (24 lines)
-- `src/playsim/bots/b_bot.cpp` **b_bot separators** 87–87 (1 lines)
 - `src/playsim/bots/b_bot.cpp` **Serialize botskill_t** 88–99 (12 lines)
-- `src/playsim/bots/b_bot.cpp` **b_bot separators** 100–100 (1 lines)
 - `src/playsim/bots/b_bot.cpp` **DBot::Serialize** 101–126 (26 lines)
-- `src/playsim/bots/b_bot.cpp` **b_bot separators** 127–127 (1 lines)
-- `src/playsim/bots/b_bot.cpp` **b_bot separators** 145–145 (1 lines)
 - `src/playsim/bots/b_bot.cpp` **CCMD addbot** 146–170 (25 lines)
-- `src/playsim/bots/b_bot.cpp` **b_bot separators** 171–171 (1 lines)
 - `src/playsim/bots/b_bot.cpp` **FCajunMaster::ClearPlayer** 172–196 (25 lines)
-- `src/playsim/bots/b_bot.cpp` **b_bot separators** 197–197 (1 lines)
 - `src/playsim/bots/b_bot.cpp` **CCMD removebots** 198–207 (10 lines)
-- `src/playsim/bots/b_bot.cpp` **b_bot separators** 208–208 (1 lines)
 - `src/playsim/bots/b_bot.cpp` **CCMD freeze** 209–222 (14 lines)
-- `src/playsim/bots/b_bot.cpp` **b_bot separators** 223–223 (1 lines)
 - `src/playsim/bots/b_bot.cpp` **CCMD listbots** 224–236 (13 lines)
-- `src/playsim/bots/b_bot.cpp` **b_bot separators** 237–237 (1 lines)
-- `src/playsim/bots/b_bot.cpp` **BotInfoMap decl** 238–241 (4 lines)
-- `src/playsim/bots/b_bot.cpp` **b_bot separators** 242–242 (1 lines)
 - `src/playsim/bots/b_bot.cpp` **InitBotStuff** 243–304 (62 lines)
 
-**Credited native LOC:** 287 (tally `nativeLoc` 287).
+**Credited native LOC:** 215 (tally `nativeLoc` 215).
 
 ## Managed
 
 `VmBBot.cs`, `VmBBotCcmd.cs`
-Managed LOC (tally): 368.
-Conversion commit: `bf756868fa846dfd822d34cacc622ddc087688d7`.
+Managed LOC (tally): 375.
+Conversion commit: `6922ffe5c182b5ed385b4ba54df1389d34c83cba`.
 
 ## Padding review (2026-10-21)
 
@@ -80,7 +65,16 @@ Conversion commit: `bf756868fa846dfd822d34cacc622ddc087688d7`.
 | Gross `nativeLoc` | **288** |
 | Net behavior-ported | **288** |
 
-**Post-review ratio:** 368/287 managed/native ≈ 128% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (877)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **287** |
+| **Out-of-body removed** | **72** |
+| **Honest** | **215** |
+
+
+**Post-review ratio:** 375/215 managed/native ≈ 174% (src file LOC at HEAD; see tally).
 
 ## Tests
 
