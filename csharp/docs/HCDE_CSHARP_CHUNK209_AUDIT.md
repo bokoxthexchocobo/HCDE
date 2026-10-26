@@ -1,28 +1,35 @@
-# Chunk 209 — VOXELDEF sprite name list, option block, ApplyVoxelToSprites.
+# Chunk 209 — VOXELDEF sprite name list, option block, ApplyVoxelToSprites. Retired (2026-10-23): out-of-body credit removed; honest **54** < **150**.
 
 ## Scope
 
-VOXELDEF sprite name list, option block, ApplyVoxelToSprites.
+VOXELDEF sprite name list, option block, ApplyVoxelToSprites. Retired (2026-10-23): out-of-body credit removed; honest **54** < **150**.
 
 ## Native ranges
 
-- `src/r_data/voxeldef.cpp` **VOX_ReadSpriteNames** 68–105 (38 lines)
-- `src/r_data/voxeldef.cpp` **VOX_ReadOptions** 116–245 (130 lines)
-- `src/r_data/voxeldef.cpp` **R_InitVoxels apply bindings** 312–327 (16 lines)
 
-**Credited native LOC:** 184 (tally `nativeLoc` 184).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmVoxelDefParser.cs`, `VmVoxelDefParserTests.cs`
-Managed LOC (tally): 145.
-Conversion commit: `357640266f9410382209afa1db4ece460dd6cf6a`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `9b46a68616ea5b467244e664b99d8710a4535434`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (209)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **184** |
+| **Out-of-body removed** | **130** |
+| **Honest** | **54** |
+
 
 ## Tests
 
-- `VmVoxelDefParserTests.TryReadSpriteNames_StopsAtEquals`
-- `VmVoxelDefParserTests.TryReadOptions_ReadsScaleSpinAndOffsets`
-- `VmVoxelDefParserTests.ApplyVoxelToSprites_ExpandsAllFrames`
 
 ## Verified
 

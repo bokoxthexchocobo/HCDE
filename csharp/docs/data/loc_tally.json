@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 47509,
+  "convertedThisRunNative": 47325,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 68050,
+  "convertedThisRunManaged": 67905,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 441296,
+  "remainingNative": 441480,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 66036,
+  "convertedBehaviorNative": 65852,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 66790,
-  "convertedBehaviorManaged": 77721,
+  "combinedBehaviorNative": 66606,
+  "convertedBehaviorManaged": 77576,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8161,39 +8161,15 @@
     {
       "name": "voxeldef-chunk209",
       "bucket": "conversion",
-      "managedLoc": 145,
-      "note": "VOXELDEF sprite name list, option block, ApplyVoxelToSprites.",
-      "nativeRanges": [
-        {
-          "file": "src/r_data/voxeldef.cpp",
-          "symbol": "VOX_ReadSpriteNames",
-          "start": 68,
-          "end": 105,
-          "tests": [
-            "VmVoxelDefParserTests.TryReadSpriteNames_StopsAtEquals"
-          ]
-        },
-        {
-          "file": "src/r_data/voxeldef.cpp",
-          "symbol": "VOX_ReadOptions",
-          "start": 116,
-          "end": 245,
-          "tests": [
-            "VmVoxelDefParserTests.TryReadOptions_ReadsScaleSpinAndOffsets"
-          ]
-        },
-        {
-          "file": "src/r_data/voxeldef.cpp",
-          "symbol": "R_InitVoxels apply bindings",
-          "start": 312,
-          "end": 327,
-          "tests": [
-            "VmVoxelDefParserTests.ApplyVoxelToSprites_ExpandsAllFrames"
-          ]
-        }
-      ],
-      "conversionManagedCommit": "357640266f9410382209afa1db4ece460dd6cf6a",
-      "nativeLoc": 184
+      "managedLoc": 0,
+      "note": "VOXELDEF sprite name list, option block, ApplyVoxelToSprites. Retired (2026-10-23): out-of-body credit removed; honest **54** < **150**.",
+      "nativeRanges": [],
+      "conversionManagedCommit": "9b46a68616ea5b467244e664b99d8710a4535434",
+      "nativeLoc": 0,
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (209)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **184** |\n| **Out-of-body removed** | **130** |\n| **Honest** | **54** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "doomedmap-mapinfo-chunk210",
