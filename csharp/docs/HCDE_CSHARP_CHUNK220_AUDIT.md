@@ -1,24 +1,35 @@
-# Chunk 220 — TranslateLineDef simple line translation branch.
+# Chunk 220 — TranslateLineDef simple line translation branch. Retired (2026-10-23): out-of-body credit removed; honest **60** < **150**.
 
 ## Scope
 
-TranslateLineDef simple line translation branch.
+TranslateLineDef simple line translation branch. Retired (2026-10-23): out-of-body credit removed; honest **60** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/p_xlat.cpp` **SimpleLineTranslations** 118–177 (60 lines)
 
-**Credited native LOC:** 60 (tally `nativeLoc` 60).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmXlatSimpleLineTranslateTests.cs`
-Managed LOC (tally): 60.
-Conversion commit: `3347e3a9e2e1bea4ffc9ef78f4b38d75846fdcf6`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `74542be0e0f5c6e61f9cb8cad474eb15eda6202a`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (220)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **60** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **60** |
+
 
 ## Tests
 
-- `VmXlatSimpleLineTranslateTests.TryApplySimpleTranslation_MapsSpecial`
 
 ## Verified
 

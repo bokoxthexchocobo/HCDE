@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 46835,
+    "convertedThisRunNative": 46775,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 67415,
+    "convertedThisRunManaged": 67355,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 441970,
+    "remainingNative": 442030,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 65362,
+    "convertedBehaviorNative": 65302,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 66116,
-    "convertedBehaviorManaged": 77086,
+    "combinedBehaviorNative": 66056,
+    "convertedBehaviorManaged": 77026,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8359,21 +8359,15 @@
       {
         "name": "p-xlat-simple-chunk220",
         "bucket": "conversion",
-        "managedLoc": 60,
-        "note": "TranslateLineDef simple line translation branch.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/p_xlat.cpp",
-            "symbol": "SimpleLineTranslations",
-            "start": 118,
-            "end": 177,
-            "tests": [
-              "VmXlatSimpleLineTranslateTests.TryApplySimpleTranslation_MapsSpecial"
-            ]
-          }
-        ],
-        "conversionManagedCommit": "3347e3a9e2e1bea4ffc9ef78f4b38d75846fdcf6",
-        "nativeLoc": 60
+        "managedLoc": 0,
+        "note": "TranslateLineDef simple line translation branch. Retired (2026-10-23): out-of-body credit removed; honest **60** < **150**.",
+        "nativeRanges": [],
+        "conversionManagedCommit": "74542be0e0f5c6e61f9cb8cad474eb15eda6202a",
+        "nativeLoc": 0,
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (220)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **60** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **60** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "umapinfo-parse-commit-chunk221",
