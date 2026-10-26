@@ -1,25 +1,35 @@
-# Chunk 219 — MAPINFO ParseSkill defaults and factor options.
+# Chunk 219 — MAPINFO ParseSkill defaults and factor options. Retired (2026-10-23): out-of-body credit removed; honest **68** < **150**.
 
 ## Scope
 
-MAPINFO ParseSkill defaults and factor options.
+MAPINFO ParseSkill defaults and factor options. Retired (2026-10-23): out-of-body credit removed; honest **68** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_skill.cpp` **FMapInfoParser::ParseSkill defaults** 46–82 (37 lines)
-- `src/gamedata/g_skill.cpp` **FMapInfoParser::ParseSkill options** 90–120 (31 lines)
 
-**Credited native LOC:** 68 (tally `nativeLoc` 68).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmSkillMapinfoParser.cs`, `VmSkillMapinfoParserTests.cs`
-Managed LOC (tally): 68.
-Conversion commit: `ad41dd855f4c00823f7aad7de6c5f8473aa8062a`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `45fedebf989a75218e94b574ab02776d22673a08`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (219)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **68** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **68** |
+
 
 ## Tests
 
-- `VmSkillMapinfoParserTests.TryApplyOption_SetsAmmoFactor`
 
 ## Verified
 

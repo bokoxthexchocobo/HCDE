@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 46903,
+  "convertedThisRunNative": 46835,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 67483,
+  "convertedThisRunManaged": 67415,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 441902,
+  "remainingNative": 441970,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 65430,
+  "convertedBehaviorNative": 65362,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 66184,
-  "convertedBehaviorManaged": 77154,
+  "combinedBehaviorNative": 66116,
+  "convertedBehaviorManaged": 77086,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8330,30 +8330,15 @@
     {
       "name": "g-skill-mapinfo-chunk219",
       "bucket": "conversion",
-      "managedLoc": 68,
-      "note": "MAPINFO ParseSkill defaults and factor options.",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/g_skill.cpp",
-          "symbol": "FMapInfoParser::ParseSkill defaults",
-          "start": 46,
-          "end": 82,
-          "tests": [
-            "VmSkillMapinfoParserTests.TryApplyOption_SetsAmmoFactor"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_skill.cpp",
-          "symbol": "FMapInfoParser::ParseSkill options",
-          "start": 90,
-          "end": 120,
-          "tests": [
-            "VmSkillMapinfoParserTests.TryApplyOption_SetsAmmoFactor"
-          ]
-        }
-      ],
-      "conversionManagedCommit": "ad41dd855f4c00823f7aad7de6c5f8473aa8062a",
-      "nativeLoc": 68
+      "managedLoc": 0,
+      "note": "MAPINFO ParseSkill defaults and factor options. Retired (2026-10-23): out-of-body credit removed; honest **68** < **150**.",
+      "nativeRanges": [],
+      "conversionManagedCommit": "45fedebf989a75218e94b574ab02776d22673a08",
+      "nativeLoc": 0,
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (219)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **68** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **68** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "p-xlat-simple-chunk220",
