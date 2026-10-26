@@ -2,12 +2,12 @@
   {
     "name": "fscript-parser-run-chunk865",
     "bucket": "conversion",
-    "note": "FraggleScript script runner from `fragglescript/t_parse.cpp` (283–451).",
+    "note": "FraggleScript script runner from `fragglescript/t_parse.cpp` (283\u2013451).",
     "auditSeams": "`RunStatement` dispatches **859** `spec_*` and **860** `spec_variable`; plain lines call **866** `EvaluateExpression`.",
     "auditRationale": "Main `Run` loop and statement router after **864** tokenization.",
-    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_parse.cpp --start 283 --end 451 → UNCredited (169 lines), exit 0.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_parse.cpp --start 283 --end 451 \u2192 UNCredited (169 lines), exit 0.",
     "auditManagedLocJustification": "Exclusive `VmFScriptParserParse865.cs` (`PrintTokens`, `RunScript`, `RunStatement`).",
-    "auditPaddingReview": "**Behavior ported**\n\n| Native | Ported |\n|--------|--------|\n| `PrintTokens` | yes |\n| `Run` | yes |\n| `RunStatement` | yes |\n\n| Managed (`VmFScriptParserParse865.cs`) | Native (`t_parse.cpp`) |\n|----------------------------------------|----------------------|\n| `PrintTokens` | **283–314** |\n| `RunScript` | **323–365** |\n| `RunStatement` | **380–451** |\n| (separators) | **315–322**, **366–379** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **169** |\n| Net | **+169** vs post-**864** |",
+    "auditPaddingReview": "**Behavior ported**\n\n| Native | Ported |\n|--------|--------|\n| `PrintTokens` | yes |\n| `Run` | yes |\n| `RunStatement` | yes |\n\n| Managed (`VmFScriptParserParse865.cs`) | Native (`t_parse.cpp`) |\n|----------------------------------------|----------------------|\n| `PrintTokens` | **283\u2013314** |\n| `RunScript` | **323\u2013365** |\n| `RunStatement` | **380\u2013451** |\n| (separators) | **315\u2013322**, **366\u2013379** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **169** |\n| Net | **+169** vs post-**864** |\n\n### Out-of-body uncredit (865)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **169** |\n| **Out-of-body removed** | **14** |\n| **Honest** | **155** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmFScriptParserParse865.cs"
     ],
@@ -45,15 +45,6 @@
         "symbol": "parse separators",
         "start": 315,
         "end": 322,
-        "tests": [
-          "VmFScriptParserParseTests.RunScript_EvaluatesExpression"
-        ]
-      },
-      {
-        "file": "src/playsim/fragglescript/t_parse.cpp",
-        "symbol": "parse separators",
-        "start": 366,
-        "end": 379,
         "tests": [
           "VmFScriptParserParseTests.RunScript_EvaluatesExpression"
         ]
