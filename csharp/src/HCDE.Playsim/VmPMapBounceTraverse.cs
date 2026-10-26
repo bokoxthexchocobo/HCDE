@@ -141,7 +141,7 @@ public static class VmPMapBounceTraverse
         TraverseInterceptStep step,
         ref bool stopLoop)
     {
-        if (ShouldSkipNonLineIntercept(step.IsLine))
+        if (!step.IsLine)
             return true;
         var ctx = new BounceTraverseContext(
             true,
