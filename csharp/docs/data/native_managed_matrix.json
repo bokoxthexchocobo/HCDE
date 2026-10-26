@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 216299
+    "managedCSharpLoc": 216471
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 68156,
+    "convertedThisRunManaged": 68328,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 77827,
+    "convertedBehaviorManaged": 77999,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -27410,7 +27410,7 @@
         "auditRationale": "First tally credit for texture scrollers and tagged wall/sector scroll setup.",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/mapthinkers/a_scroll.cpp --start 52 --end 493 \u2192 UNCredited (442 lines CLI), exit 0.",
         "auditManagedLocJustification": "Scroll tick, rotation compensation, and scroller setup helpers mirror native control flow.",
-        "auditPaddingReview": "| Managed | Native (`a_scroll.cpp`) |\n|---------|-------------------------|\n| `ScrollPosAnd` | `operator&` **52\u201355** |\n| `RotationComp` / `TickStep` | **63\u2013243** |\n| `InitSectorScroller` / `ClearInterpolations` | **265\u2013334** |\n| wall `Construct` | **347\u2013386** |\n| `SetWallScroller` / `SetScroller` | **394\u2013493** |\n\n### Out-of-body uncredit (820)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **361** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **361** |\n",
+        "auditPaddingReview": "| Managed | Native (`a_scroll.cpp`) |\n|---------|-------------------------|\n| `ScrollPosAnd` | `operator&` **52\u201355** |\n| `RunScrollerTick` / `CarryAffectsActor` / `CeilingCarryEligible` / `ApplyControllerDelta` / `ApplyAcceleration` / `RotationComp` / `TickStep` | **63\u2013243** |\n| `ConstructSectorScroller` / `ApplySerializeAffectDefault` / `OnDestroyScroller` / `NormalizeWallScrollWhere` / `InitSectorScroller` / `ClearInterpolations` | **265\u2013334** |\n| wall `Construct` | **347\u2013386** |\n| `SetWallScroller` / `SetScroller` | **394\u2013493** |\n\n### Out-of-body uncredit (820)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **361** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **361** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmAScroll.cs"
         ],
@@ -27500,8 +27500,8 @@
           }
         ],
         "nativeLoc": 361,
-        "managedLoc": 237,
-        "conversionManagedCommit": "9a22ddc1a9f6da296e164c815ab1abe5aca6a027"
+        "managedLoc": 409,
+        "conversionManagedCommit": "6f28e4cb87fd86e8647a6d3977f43455e813b476"
       },
       {
         "name": "sector-effect-move-chunk821",

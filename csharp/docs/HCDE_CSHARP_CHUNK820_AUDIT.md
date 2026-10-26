@@ -21,16 +21,16 @@
 ## Managed
 
 `VmAScroll.cs`
-Managed LOC (tally): 237.
-Conversion commit: `9a22ddc1a9f6da296e164c815ab1abe5aca6a027`.
+Managed LOC (tally): 409.
+Conversion commit: `6f28e4cb87fd86e8647a6d3977f43455e813b476`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`a_scroll.cpp`) |
 |---------|-------------------------|
 | `ScrollPosAnd` | `operator&` **52–55** |
-| `RotationComp` / `TickStep` | **63–243** |
-| `InitSectorScroller` / `ClearInterpolations` | **265–334** |
+| `RunScrollerTick` / `CarryAffectsActor` / `CeilingCarryEligible` / `ApplyControllerDelta` / `ApplyAcceleration` / `RotationComp` / `TickStep` | **63–243** |
+| `ConstructSectorScroller` / `ApplySerializeAffectDefault` / `OnDestroyScroller` / `NormalizeWallScrollWhere` / `InitSectorScroller` / `ClearInterpolations` | **265–334** |
 | wall `Construct` | **347–386** |
 | `SetWallScroller` / `SetScroller` | **394–493** |
 
@@ -43,7 +43,7 @@ Conversion commit: `9a22ddc1a9f6da296e164c815ab1abe5aca6a027`.
 | **Honest** | **361** |
 
 
-**Post-review ratio:** 237/361 managed/native ≈ 66% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 409/361 managed/native ≈ 113% (src file LOC at HEAD; see tally).
 
 ## Tests
 
