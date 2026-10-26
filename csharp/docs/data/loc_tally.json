@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 46436,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 72856,
+  "convertedThisRunManaged": 72825,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 64963,
   "recognitionBehaviorNative": 754,
   "combinedBehaviorNative": 65717,
-  "convertedBehaviorManaged": 82527,
+  "convertedBehaviorManaged": 82496,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -29046,7 +29046,7 @@
       "auditSeams": "Uses existing `FsFixValue`, `SetReturnDouble`, and `CheckArgs`. **3454\u20133480** HUD pic natives deferred until Fraggle HUD is hosted.",
       "auditRationale": "Portable trig band after **845**; **1381\u20132241** camera/sector and **3454\u20133480** HUD pic natives remain deferred.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 846 --band \u2192 UNCredited, exit 0.",
-      "auditManagedLocJustification": "Unary/binary math runners, tail stubs (`SfSkinColor`\u2013`SfObjType`), and phased `SfSetCorona` switch mirror `t_func.cpp` without hosting `lspr` or HUD pic natives.",
+      "auditManagedLocJustification": "Faithful ports in `VmFScriptParserSfTrig.cs` (stub tail on `VmFScriptParserSfAct.cs`).",
       "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_SkinColor` | yes (no-op) |\n| `SF_PlayDemo` | yes (no-op) |\n| `SF_CheckCVar` | yes (returns 0) |\n| `SF_ObjType` | yes |\n| `SF_Sin` | yes |\n| `SF_ASin` | yes |\n| `SF_Cos` | yes |\n| `SF_ACos` | yes |\n| `SF_Tan` | yes |\n| `SF_ATan` | yes |\n| `SF_Exp` | yes |\n| `SF_Log` | yes |\n| `SF_Sqrt` | yes |\n| `SF_Floor` | yes |\n| `SF_Pow` | yes |\n| `SF_SetCorona` | yes (returns 0) |\n\n| Managed | Native (`t_func.cpp`) |\n|---------|-------------------------|\n| `SfSkinColor` | **3245\u20133248** |\n| `SfPlayDemo` | **3250\u20133253** |\n| `SfCheckCVar` | **3255\u20133258** |\n| `SfObjType` | **3317\u20133341** |\n| `SfSin` | **3349\u20133355** |\n| `SfAsin` | **3358\u20133364** |\n| `SfCos` | **3367\u20133373** |\n| `SfAcos` | **3376\u20133382** |\n| `SfTan` | **3385\u20133391** |\n| `SfAtan` | **3394\u20133400** |\n| `SfExp` | **3403\u20133409** |\n| `SfLog` | **3412\u20133418** |\n| `SfSqrt` | **3421\u20133427** |\n| `SfFloor` | **3429\u20133436** |\n| `SfPow` | **3439\u20133445** |\n| `SfSetCorona` | **3481\u20133533** |\n| (separators / deferred) | **3249**, **3254**, **3342\u20133348**, **3356\u20133357**, **3365\u20133366**, **3374\u20133375**, **3383\u20133384**, **3392\u20133393**, **3401\u20133402**, **3410\u20133411**, **3419\u20133420**, **3428**, **3446\u20133453**, **3473\u20133480**; **3259\u20133316** combat; **3454\u20133472** HUD pics |\n\n### Out-of-body uncredit (846)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **209** |\n| **Out-of-body removed** | **41** |\n| **Honest** | **168** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmFScriptParserSfTrig.cs"
@@ -29194,10 +29194,7 @@
           "end": 3533,
           "tests": [
             "VmFScriptParserSfTrigTests.SfSetCorona_WrongArgCountErrors",
-            "VmFScriptParserSfTrigTests.SfSetCorona_ThreeArgsReturnsZero",
-            "VmFScriptParserSfTrigTests.SfCos_ReturnsOneAtZero",
-            "VmFScriptParserSfTrigTests.SfCheckCVar_ReturnsZero",
-            "VmFScriptParserSfTrigTests.SfSetCorona_InvalidWhatPrintsError"
+            "VmFScriptParserSfTrigTests.SfSetCorona_ThreeArgsReturnsZero"
           ]
         },
         {
@@ -29220,8 +29217,8 @@
         }
       ],
       "nativeLoc": 168,
-      "managedLoc": 140,
-      "conversionManagedCommit": "6d6353a8e1bc5cfd4a3febd0aa9f81da1895d770"
+      "managedLoc": 109,
+      "conversionManagedCommit": "a41d470fbcc20f4eeb5007bf630c056bc88c1f6f"
     },
     {
       "name": "fscript-parser-sf-level-chunk847",
