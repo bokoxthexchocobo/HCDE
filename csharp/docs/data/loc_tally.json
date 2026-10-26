@@ -31049,7 +31049,7 @@
       "auditRationale": "Faithful GL subsector lump loader (classic and `gNd3`) plus classic/`format5` node lump loader; reuses `VmMapLoaderClassicNodes::ResolveChild` for the same child validation as native.",
       "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 889 --band` \u2192 UNCredited, exit 0.",
       "auditManagedLocJustification": "`VmMapLoaderLoadGlSubsectorsAndNodes.cs` whole-function port for two native symbols; child resolution delegates to existing `VmMapLoaderClassicNodes` (not credited on this row).",
-      "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `MapLoader::LoadGLSubsectors` **424\u2013512** | **yes** |\n| `MapLoader::LoadNodes` **520\u2013643** | **yes** |\n\n| Managed | Native (`glnodes.cpp`) |\n|---------|----------------------|\n| `LoadGlSubsectors` | **424\u2013512** |\n| `LoadGlNodes` | **520\u2013643** |\n\n### Padding map (hull **424\u2013643**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **513\u2013519** | comment/separator gap between `LoadGLSubsectors` and `LoadNodes` (in hull, no extra symbols) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **213** |\n| Net behavior-ported | **213** |\n",
+      "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `MapLoader::LoadGLSubsectors` **424\u2013512** | **yes** |\n| `MapLoader::LoadNodes` **520\u2013643** | **yes** |\n\n| Managed | Native (`glnodes.cpp`) |\n|---------|----------------------|\n| `LoadGlSubsectors` | **424\u2013512** |\n| `LoadGlNodes` | **520\u2013643** |\n\n### Padding map (hull **424\u2013643**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **513\u2013519** | comment/separator gap between `LoadGLSubsectors` and `LoadNodes` (in hull, no extra symbols) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **213** |\n| Net behavior-ported | **213** |\n\n### Out-of-body uncredit (889)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **213** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **213** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.MapLoader/VmMapLoaderLoadGlSubsectorsAndNodes.cs"
       ],
@@ -31079,7 +31079,7 @@
       ],
       "nativeLoc": 213,
       "managedLoc": 302,
-      "conversionManagedCommit": "8b6e1196893413f3653e2c0c9840d6b7f0dec2b5"
+      "conversionManagedCommit": "d083b8263dc94a583fb0effa7811fce5d655c717"
     },
     {
       "name": "maploader-gl-render-sector-chunk890",
