@@ -286,25 +286,41 @@ public static class VmPInteractionDamageMobj
         return Math.Max(0, damage);
     }
 
-    public static bool Shootable(int flags, int flags6) =>
-        (flags & MfShootable) != 0 || (flags6 & Mf6Vulnerable) != 0;
+    public static bool Shootable(int flags, int flags6)
+    {
+        if ((flags & MfShootable) != 0)
+            return true;
+        return (flags6 & Mf6Vulnerable) != 0;
+    }
 
     public static int ScaleSkillDamage(bool player, bool friendly, int damage,
         double skill, double mobj, double friendlyFactor)
     {
-        if (damage <= 1) return damage;
-        if (player) return (int)(damage * skill);
-        if (friendly) return (int)(damage * friendlyFactor);
+        if (damage <= 1)
+            return damage;
+        if (player)
+            return (int)(damage * skill);
+        if (friendly)
+            return (int)(damage * friendlyFactor);
         return (int)(damage * mobj);
     }
 
-    public static bool KickbackEligible(DamageContext ctx, DamageActor target, int flags) =>
-        !ctx.InflictorNull && !ctx.SameTargetSource
-        && (target.Flags & MfNoclip) == 0
-        && (ctx.InflictorFlags2 & Mf2Nodmgthrust) == 0
-        && (flags & DmgThrustless) == 0
-        && (target.Flags7 & Mf7Dontthrust) == 0
-        && (ctx.SourceNull || !ctx.SourceHasPlayer || (ctx.SourceFlags2 & Mf2Nodmgthrust) == 0);
+    public static bool KickbackEligible(DamageContext ctx, DamageActor target, int flags)
+    {
+        if (ctx.InflictorNull || ctx.SameTargetSource)
+            return false;
+        if ((target.Flags & MfNoclip) != 0)
+            return false;
+        if ((ctx.InflictorFlags2 & Mf2Nodmgthrust) != 0)
+            return false;
+        if ((flags & DmgThrustless) != 0)
+            return false;
+        if ((target.Flags7 & Mf7Dontthrust) != 0)
+            return false;
+        if (!ctx.SourceNull && ctx.SourceHasPlayer && (ctx.SourceFlags2 & Mf2Nodmgthrust) != 0)
+            return false;
+        return true;
+    }
 
     public static int ApplyReflection(DamageContext ctx, DamageActor target, int damage, int mod)
     {
@@ -382,19 +398,35 @@ public static class VmPInteractionDamageMobj
 
     public static void ApplyDrain(DamageContext ctx, int damage)
     {
-        if (ctx.SourceSamePlayerVictim) return;
-        if (ctx.BestDrainStrength <= 0) return;
+        if (ctx.SourceSamePlayerVictim)
+            return;
+        if (ctx.BestDrainStrength <= 0)
+            return;
+
         var drain = (int)(ctx.BestDrainStrength * damage);
         if (ctx.OnDrainVirtual != null)
             drain = ctx.OnDrainVirtual(drain);
+        if (drain <= 0)
+            return;
+
         if (ctx.GiveBody?.Invoke(drain) == true)
             ctx.PlayDrainSound?.Invoke();
     }
 
-    public static bool TryMonsterBuddha(DamageContext ctx, int flags, bool telefrag) =>
-        (flags & DmgForced) == 0 && (ctx.Target.Flags7 & Mf7Buddha) != 0 && !telefrag
-        && (ctx.InflictorNull || (ctx.InflictorFlags7 & Mf7Foilbuddha) == 0)
-        && (flags & DmgFoilbuddha) == 0;
+    public static bool TryMonsterBuddha(DamageContext ctx, int flags, bool telefrag)
+    {
+        if ((flags & DmgForced) != 0)
+            return false;
+        if ((ctx.Target.Flags7 & Mf7Buddha) == 0)
+            return false;
+        if (telefrag)
+            return false;
+        if (!ctx.InflictorNull && (ctx.InflictorFlags7 & Mf7Foilbuddha) != 0)
+            return false;
+        if ((flags & DmgFoilbuddha) != 0)
+            return false;
+        return true;
+    }
 
     public static int FinishDeath(DamageContext ctx, DamageActor target, int damage, int mod, ref bool needEvent)
     {
@@ -420,13 +452,15 @@ public static class VmPInteractionDamageMobj
 
     public static int ResolveFireDeath(DamageContext ctx, DamageActor target, int damage)
     {
-        if (target.HasPlayer && target.AlternativeNull)
-        {
-            if (ctx.InflictorNull || (target.Health > -50 && damage > 25)
-                || (ctx.InflictorFlags5 & Mf5Specialfiredamage) == 0)
-                return ctx.ModFire;
-            return ctx.Mod;
-        }
-        return ctx.ModFire;
+        if (!target.HasPlayer || !target.AlternativeNull)
+            return ctx.ModFire;
+
+        if (ctx.InflictorNull)
+            return ctx.ModFire;
+        if (target.Health > -50 && damage > 25)
+            return ctx.ModFire;
+        if ((ctx.InflictorFlags5 & Mf5Specialfiredamage) == 0)
+            return ctx.ModFire;
+        return ctx.Mod;
     }
 }
