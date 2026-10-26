@@ -15,7 +15,7 @@ Reject, verification error, and add client (`i_net.cpp` 2525–2676)
 ## Managed
 
 `VmINetConnectReject.cs`
-Managed LOC (tally): 125.
+Managed LOC (tally): 203.
 Conversion commit: `8db816e6fc4b332f8a2bae670c800d788c5f676d`.
 
 ## Padding review (2026-10-21)
@@ -35,7 +35,7 @@ Conversion commit: `8db816e6fc4b332f8a2bae670c800d788c5f676d`.
 | **Honest** | **150** |
 
 
-**Post-review ratio:** 125/150 managed/native ≈ 83% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 203/150 managed/native ≈ 135% (src file LOC at HEAD; see tally).
 
 ## Tests
 
