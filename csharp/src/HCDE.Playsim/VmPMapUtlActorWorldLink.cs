@@ -140,6 +140,23 @@ public static class VmPMapUtlActorWorldLink
         public Action? ClearInterpolation { get; init; }
     }
 
+    public static bool LineBBoxMissesActor(FixMapthingPosContext ctx, MapLineDef ldef) =>
+        ctx.X + ctx.Radius <= ldef.BboxLeft
+        || ctx.X - ctx.Radius >= ldef.BboxRight
+        || ctx.Y + ctx.Radius <= ldef.BboxBottom
+        || ctx.Y - ctx.Radius >= ldef.BboxTop;
+
+    public static bool ShouldFixMapthingOnSpawn(ActorLinkState actor, LinkToWorldContext ctx) =>
+        ctx.SpawningMapthing && (actor.Flags4 & Mf4Fixmapthingpos) != 0 && ctx.SectorHint is null;
+
+    public static bool LinksSectorNodes(ActorLinkState actor) =>
+        (actor.Flags & MfNosector) == 0 && !actor.ClientSide;
+
+    public static bool LinksBlockmap(ActorLinkState actor) =>
+        (actor.Flags & MfNoblockmap) == 0 && !actor.ClientSide;
+
+    public static bool UsesRenderSectorNodes(ActorLinkState actor) => actor.RenderRadius >= 0;
+
     public static bool FixMapthingPos(FixMapthingPosContext ctx)
     {
         var success = false;
@@ -149,10 +166,7 @@ public static class VmPMapUtlActorWorldLink
                 continue;
             if (ldef.BackSector is not null && ldef.CoplanarFloorsCeilings)
                 continue;
-            if (ctx.X + ctx.Radius <= ldef.BboxLeft
-                || ctx.X - ctx.Radius >= ldef.BboxRight
-                || ctx.Y + ctx.Radius <= ldef.BboxBottom
-                || ctx.Y - ctx.Radius >= ldef.BboxTop)
+            if (LineBBoxMissesActor(ctx, ldef))
                 continue;
 
             var distance = ctx.InterceptDistanceToLine?.Invoke(ldef.Index, Math.Sqrt(ldef.DeltaX * ldef.DeltaX + ldef.DeltaY * ldef.DeltaY)) ?? double.MaxValue;
@@ -195,7 +209,7 @@ public static class VmPMapUtlActorWorldLink
     {
         var actor = ctx.Actor;
         var spawning = ctx.SpawningMapthing;
-        if (spawning && (actor.Flags4 & Mf4Fixmapthingpos) != 0 && ctx.SectorHint is null)
+        if (ShouldFixMapthingOnSpawn(actor, ctx))
         {
             var fix = new FixMapthingPosContext { X = actor.X, Y = actor.Y, Radius = actor.Radius, StartSector = null };
             if (ctx.FixMapthingPos?.Invoke(fix) == true)
@@ -214,11 +228,11 @@ public static class VmPMapUtlActorWorldLink
         actor.Subsector = ctx.PointInRenderSubsector?.Invoke((actor.X, actor.Y, actor.Z));
         actor.Section = actor.Subsector;
 
-        if ((actor.Flags & MfNosector) == 0 && !actor.ClientSide)
+        if (LinksSectorNodes(actor))
         {
             ctx.InsertSectorThingList?.Invoke(actor, sector);
             actor.TouchingSectorList = ctx.CreateSecNodeList?.Invoke(actor, ctx.RestoreCtx?.SectorList);
-            if (actor.RenderRadius >= 0)
+            if (UsesRenderSectorNodes(actor))
                 actor.TouchingRenderSectors = ctx.CreateSecNodeList?.Invoke(actor, ctx.RestoreCtx?.RenderList);
             else
             {
@@ -228,7 +242,7 @@ public static class VmPMapUtlActorWorldLink
             }
         }
 
-        if ((actor.Flags & MfNoblockmap) == 0 && !actor.ClientSide)
+        if (LinksBlockmap(actor))
         {
             actor.BlockNodeHead = null;
             var groups = ctx.CollectPortalGroups?.Invoke(actor) ?? Array.Empty<int>();
