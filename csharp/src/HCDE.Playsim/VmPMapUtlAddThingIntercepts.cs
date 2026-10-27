@@ -26,103 +26,137 @@ public static class VmPMapUtlAddThingIntercepts
 
     public readonly record struct ThingBox(double X, double Y, double Radius);
 
+    public static bool TraceHasPositiveSlope(Divline trace) => trace.Dx * trace.Dy > 0;
+
+    public static bool DivlineEndpointsOnSameTraceSide(AddThingInterceptsContext ctx, Divline line)
+    {
+        var sideA = ctx.PointOnDivlineSide?.Invoke(line.X, line.Y, ctx.Trace) ?? 0;
+        var sideB = ctx.PointOnDivlineSide?.Invoke(line.X + line.Dx, line.Y + line.Dy, ctx.Trace) ?? 0;
+        return sideA == sideB;
+    }
+
+    public static (double X1, double Y1, double X2, double Y2) CompatibleDiagonalCorners(ThingBox thing, bool tracePositive)
+    {
+        if (tracePositive)
+            return (thing.X - thing.Radius, thing.Y + thing.Radius, thing.X + thing.Radius, thing.Y - thing.Radius);
+        return (thing.X - thing.Radius, thing.Y - thing.Radius, thing.X + thing.Radius, thing.Y + thing.Radius);
+    }
+
+    public static bool TryBuildThingEdgeDivline(
+        int edgeIndex,
+        ThingBox thing,
+        Divline trace,
+        out Divline edge)
+    {
+        switch (edgeIndex)
+        {
+            case 0:
+                var topY = thing.Y + thing.Radius;
+                if (trace.Y < topY)
+                {
+                    edge = default;
+                    return false;
+                }
+
+                edge = new Divline(thing.X + thing.Radius, topY, -thing.Radius * 2, 0);
+                return true;
+            case 1:
+                var rightX = thing.X + thing.Radius;
+                if (trace.X < rightX)
+                {
+                    edge = default;
+                    return false;
+                }
+
+                edge = new Divline(rightX, thing.Y - thing.Radius, 0, thing.Radius * 2);
+                return true;
+            case 2:
+                var bottomY = thing.Y - thing.Radius;
+                if (trace.Y > bottomY)
+                {
+                    edge = default;
+                    return false;
+                }
+
+                edge = new Divline(thing.X - thing.Radius, bottomY, thing.Radius * 2, 0);
+                return true;
+            default:
+                var leftX = thing.X - thing.Radius;
+                if (trace.X > leftX)
+                {
+                    edge = default;
+                    return false;
+                }
+
+                edge = new Divline(leftX, thing.Y + thing.Radius, 0, -thing.Radius * 2);
+                return true;
+        }
+    }
+
+    public static bool TryAcceptBehindStartIntercept(
+        AddThingInterceptsContext ctx,
+        ref Divline line,
+        int edgeIndex,
+        ThingBox thing,
+        double frac)
+    {
+        if (frac >= ctx.StartFrac)
+            return true;
+        if (ctx.StartFrac <= 0)
+            return false;
+
+        line = ShiftEdgeForInsideStart(line, thing, edgeIndex);
+        var frac2 = ctx.InterceptVector?.Invoke(ctx.Trace, line) ?? 0;
+        return frac2 >= ctx.StartFrac;
+    }
+
     public static void AddThingIntercepts(AddThingInterceptsContext ctx, bool compatible)
     {
         foreach (var thing in ctx.Things)
         {
             if (!compatible)
-            {
-                // [RH] bounding-box edges instead of corner-to-corner when not compatibility mode.
-                var numfronts = 0;
-                for (var i = 0; i < 4; i++)
-                {
-                    Divline line;
-                    switch (i)
-                    {
-                        case 0:
-                            var topY = thing.Y + thing.Radius;
-                            if (ctx.Trace.Y < topY)
-                                continue;
-                            line = new Divline(thing.X + thing.Radius, topY, -thing.Radius * 2, 0);
-                            break;
-                        case 1:
-                            var rightX = thing.X + thing.Radius;
-                            if (ctx.Trace.X < rightX)
-                                continue;
-                            line = new Divline(rightX, thing.Y - thing.Radius, 0, thing.Radius * 2);
-                            break;
-                        case 2:
-                            var bottomY = thing.Y - thing.Radius;
-                            if (ctx.Trace.Y > bottomY)
-                                continue;
-                            line = new Divline(thing.X - thing.Radius, bottomY, thing.Radius * 2, 0);
-                            break;
-                        default:
-                            var leftX = thing.X - thing.Radius;
-                            if (ctx.Trace.X > leftX)
-                                continue;
-                            line = new Divline(leftX, thing.Y + thing.Radius, 0, -thing.Radius * 2);
-                            break;
-                    }
-
-                    numfronts++;
-                    var sideA = ctx.PointOnDivlineSide?.Invoke(line.X, line.Y, ctx.Trace) ?? 0;
-                    var sideB = ctx.PointOnDivlineSide?.Invoke(line.X + line.Dx, line.Y + line.Dy, ctx.Trace) ?? 0;
-                    if (sideA == sideB)
-                        continue;
-
-                    var frac = ctx.InterceptVector?.Invoke(ctx.Trace, line) ?? 0;
-                    if (frac < ctx.StartFrac)
-                    {
-                        if (ctx.StartFrac > 0)
-                        {
-                            line = ShiftEdgeForInsideStart(line, thing, i);
-                            var frac2 = ctx.InterceptVector?.Invoke(ctx.Trace, line) ?? 0;
-                            if (frac2 >= ctx.StartFrac)
-                                goto addIntercept;
-                        }
-
-                        continue;
-                    }
-
-                addIntercept:
-                    PushThingIntercept(ctx, frac, thing);
-                    break;
-                }
-
-                if (numfronts == 0)
-                    PushThingIntercept(ctx, 0, thing);
-            }
+                AddNonCompatibleThingIntercept(ctx, thing);
             else
-            {
-                var tracePositive = ctx.Trace.Dx * ctx.Trace.Dy > 0;
-                double x1, y1, x2, y2;
-                if (tracePositive)
-                {
-                    x1 = thing.X - thing.Radius;
-                    y1 = thing.Y + thing.Radius;
-                    x2 = thing.X + thing.Radius;
-                    y2 = thing.Y - thing.Radius;
-                }
-                else
-                {
-                    x1 = thing.X - thing.Radius;
-                    y1 = thing.Y - thing.Radius;
-                    x2 = thing.X + thing.Radius;
-                    y2 = thing.Y + thing.Radius;
-                }
-
-                var s1 = ctx.PointOnDivlineSide?.Invoke(x1, y1, ctx.Trace) ?? 0;
-                var s2 = ctx.PointOnDivlineSide?.Invoke(x2, y2, ctx.Trace) ?? 0;
-                if (s1 == s2)
-                    continue;
-
-                var dl = new Divline(x1, y1, x2 - x1, y2 - y1);
-                var frac = ctx.InterceptVector?.Invoke(ctx.Trace, dl) ?? 0;
-                if (frac >= ctx.StartFrac)
-                    PushThingIntercept(ctx, frac, thing);
-            }
+                AddCompatibleThingIntercept(ctx, thing);
         }
+    }
+
+    static void AddNonCompatibleThingIntercept(AddThingInterceptsContext ctx, ThingBox thing)
+    {
+        var numfronts = 0;
+        for (var i = 0; i < 4; i++)
+        {
+            if (!TryBuildThingEdgeDivline(i, thing, ctx.Trace, out var line))
+                continue;
+
+            numfronts++;
+            if (DivlineEndpointsOnSameTraceSide(ctx, line))
+                continue;
+
+            var frac = ctx.InterceptVector?.Invoke(ctx.Trace, line) ?? 0;
+            if (!TryAcceptBehindStartIntercept(ctx, ref line, i, thing, frac))
+                continue;
+
+            PushThingIntercept(ctx, frac, thing);
+            return;
+        }
+
+        if (numfronts == 0)
+            PushThingIntercept(ctx, 0, thing);
+    }
+
+    static void AddCompatibleThingIntercept(AddThingInterceptsContext ctx, ThingBox thing)
+    {
+        var (x1, y1, x2, y2) = CompatibleDiagonalCorners(thing, TraceHasPositiveSlope(ctx.Trace));
+        var s1 = ctx.PointOnDivlineSide?.Invoke(x1, y1, ctx.Trace) ?? 0;
+        var s2 = ctx.PointOnDivlineSide?.Invoke(x2, y2, ctx.Trace) ?? 0;
+        if (s1 == s2)
+            return;
+
+        var dl = new Divline(x1, y1, x2 - x1, y2 - y1);
+        var frac = ctx.InterceptVector?.Invoke(ctx.Trace, dl) ?? 0;
+        if (frac >= ctx.StartFrac)
+            PushThingIntercept(ctx, frac, thing);
     }
 
     static void PushThingIntercept(AddThingInterceptsContext ctx, double frac, ThingBox thing) =>
