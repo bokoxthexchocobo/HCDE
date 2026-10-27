@@ -58,17 +58,17 @@ internal static partial class AcsCallFunctions
             case Warp:
                 return TryWarp(sim, stack, scriptActivator, argCount, out result);
             case SetTranslation:
-                return TrySetTranslation(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
+                return VmPAcsCallfunc924Slice.TrySetTranslation(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case ScriptCall:
-                return TryScriptCall(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
+                return VmPAcsCallfunc924Slice.TryScriptCall(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case StartSlideshow:
-                return TryStartSlideshow(sim, stack, stringTable, globalStrings, argCount, out result);
+                return VmPAcsCallfunc924Slice.TryStartSlideshow(sim, stack, stringTable, globalStrings, argCount, out result);
             case SetSubtitleNumber:
                 return TrySetSubtitleNumber(sim, stack, argCount, out result);
             case SetSectorGlow:
-                return TrySetSectorGlow(sim, stack, argCount, out result);
+                return VmPAcsCallfunc924Slice.TrySetSectorGlow(sim, stack, argCount, out result);
             case SetFogDensity:
-                return TrySetFogDensity(sim, stack, argCount, out result);
+                return VmPAcsCallfunc924Slice.TrySetFogDensity(sim, stack, argCount, out result);
             default:
                 return false;
         }
@@ -193,62 +193,6 @@ internal static partial class AcsCallFunctions
         return true;
     }
 
-    private static bool TrySetTranslation(
-        AuthoritySimulation sim,
-        List<int> stack,
-        Actor? activator,
-        string[] stringTable,
-        AcsGlobalStrings globalStrings,
-        int argCount,
-        out int result)
-    {
-        result = 0;
-        if (argCount < 2 || stack.Count < argCount) return false;
-        var start = stack.Count - argCount;
-        var tid = stack[start];
-        var translation = AcsStringIds.Lookup(stack[start + 1], stringTable, globalStrings);
-        stack.RemoveRange(start, argCount);
-        var changed = false;
-        if (tid == 0)
-        {
-            if (activator is { Destroyed: false } self)
-                changed = self.ApplyTranslationName(translation);
-        }
-        else
-        {
-            foreach (var actor in AcsActorTid.AllFromTid(sim, tid))
-                changed |= actor.ApplyTranslationName(translation);
-        }
-        result = changed ? 1 : 0;
-        return true;
-    }
-
-    private static bool TryScriptCall(
-        AuthoritySimulation sim,
-        List<int> stack,
-        Actor? activator,
-        string[] stringTable,
-        AcsGlobalStrings globalStrings,
-        int argCount,
-        out int result) =>
-        AcsScriptCallService.TryInvoke(sim, stack, activator, stringTable, globalStrings, argCount, out result);
-
-    private static bool TryStartSlideshow(
-        AuthoritySimulation sim,
-        List<int> stack,
-        string[] stringTable,
-        AcsGlobalStrings globalStrings,
-        int argCount,
-        out int result)
-    {
-        result = 0;
-        if (argCount < 1 || stack.Count < argCount) return false;
-        var start = stack.Count - argCount;
-        sim.AcsSlideshowName = AcsStringIds.Lookup(stack[start], stringTable, globalStrings);
-        stack.RemoveRange(start, argCount);
-        return true;
-    }
-
     private static bool TrySetSubtitleNumber(AuthoritySimulation sim, List<int> stack, int argCount, out int result)
     {
         result = 0;
@@ -259,50 +203,6 @@ internal static partial class AcsCallFunctions
         return true;
     }
 
-    private static bool TrySetSectorGlow(AuthoritySimulation sim, List<int> stack, int argCount, out int result)
-    {
-        result = 0;
-        if (argCount < 6 || stack.Count < argCount) return false;
-        var start = stack.Count - argCount;
-        var tag = stack[start];
-        var ceiling = stack[start + 1] != 0;
-        var r = stack[start + 2];
-        var g = stack[start + 3];
-        var b = stack[start + 4];
-        var height = stack[start + 5];
-        stack.RemoveRange(start, argCount);
-        var color = r < 0 ? 0u : (uint)((r & 255) | ((g & 255) << 8) | ((b & 255) << 16));
-        var glowHeight = height / 65536f;
-        foreach (var sector in sim.Level.Sectors)
-        {
-            if (!sector.MatchesTag(tag)) continue;
-            if (ceiling)
-            {
-                sector.CeilingGlowColor = color;
-                sector.CeilingGlowHeight = glowHeight;
-            }
-            else
-            {
-                sector.FloorGlowColor = color;
-                sector.FloorGlowHeight = glowHeight;
-            }
-        }
-        return true;
-    }
-
-    private static bool TrySetFogDensity(AuthoritySimulation sim, List<int> stack, int argCount, out int result)
-    {
-        result = 0;
-        if (argCount < 2 || stack.Count < argCount) return false;
-        var start = stack.Count - argCount;
-        var tag = stack[start];
-        var density = Math.Clamp(stack[start + 1] / 2, 0, 255);
-        stack.RemoveRange(start, argCount);
-        foreach (var sector in sim.Level.Sectors)
-            if (sector.MatchesTag(tag))
-                sector.FogDensity = density;
-        return true;
-    }
 }
 
 internal static class AcsNamedScriptIndex

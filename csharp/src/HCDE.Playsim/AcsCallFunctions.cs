@@ -335,11 +335,11 @@ internal static partial class AcsCallFunctions
             case SetActorFlag:
                 return VmPAcsCallfunc923Slice.TrySetActorFlag(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case GetActorFloorTexture:
-                return TryGetActorFloorTexture(sim, stack, scriptActivator, globalStrings, argCount, out result);
+                return VmPAcsCallfunc924Slice.TryGetActorFloorTexture(sim, stack, scriptActivator, globalStrings, argCount, out result);
             case GetActorFloorTerrain:
-                return TryGetActorFloorTerrain(sim, stack, scriptActivator, globalStrings, argCount, out result);
+                return VmPAcsCallfunc924Slice.TryGetActorFloorTerrain(sim, stack, scriptActivator, globalStrings, argCount, out result);
             case StrArg:
-                return TryStrArg(sim, stack, globalStrings, argCount, out result);
+                return VmPAcsCallfunc924Slice.TryStrArg(sim, stack, globalStrings, argCount, out result);
             case ChangeActorAngle:
                 return TryChangeActorAngle(sim, stack, scriptActivator, argCount, out result);
             case ChangeActorPitch:
@@ -376,13 +376,13 @@ internal static partial class AcsCallFunctions
             case Floor:
             case Round:
             case Ceil:
-                return TryFixedQuantize(stack, function, argCount, out result);
+                return VmPAcsCallfunc924Slice.TryFixedQuantize(stack, function, argCount, out result);
             case GetLineX:
             case GetLineY:
                 return TryGetLineCoordinate(sim, stack, function == GetLineY, argCount, out result);
             case GetSectorHealth:
             case GetLineHealth:
-                return TryGetDestructibleHealth(sim, stack, function == GetLineHealth, argCount, out result);
+                return VmPAcsCallfunc924Slice.TryGetDestructibleHealth(sim, stack, function == GetLineHealth, argCount, out result);
             case GetNetId:
                 return TryGetNetId(sim, stack, scriptActivator, argCount, out result);
             default:
@@ -672,26 +672,6 @@ internal static partial class AcsCallFunctions
         return true;
     }
 
-    private static bool TryStrArg(
-        AuthoritySimulation sim,
-        List<int> stack,
-        AcsGlobalStrings globalStrings,
-        int argCount,
-        out int result)
-    {
-        result = 0;
-        if (argCount < 1 || stack.Count < argCount)
-            return false;
-
-        var start = stack.Count - argCount;
-        var index = stack[start];
-        stack.RemoveRange(start, argCount);
-
-        var text = index >= 0 && index < sim.StrArgs.Count ? sim.StrArgs[index] : string.Empty;
-        result = globalStrings.Add(text);
-        return true;
-    }
-
     internal static string ClassNameOf(Actor? actor)
     {
         if (actor is null || actor.Destroyed)
@@ -836,35 +816,6 @@ internal static partial class AcsCallFunctions
 
         var line = AcsLineActivation.FirstLineFromId(sim, lineId);
         result = line is null ? 0 : AcsLineActivation.Pack(line);
-        return true;
-    }
-
-    private static bool TryGetDestructibleHealth(
-        AuthoritySimulation sim,
-        List<int> stack,
-        bool lineHealth,
-        int argCount,
-        out int result)
-    {
-        result = 0;
-        if (argCount < 1 || stack.Count < argCount)
-            return false;
-
-        var start = stack.Count - argCount;
-        var id = stack[start];
-        if (lineHealth)
-        {
-            stack.RemoveRange(start, argCount);
-            result = AcsDestructibleHealth.GetLineHealth(sim, id);
-            return true;
-        }
-
-        if (argCount < 2)
-            return false;
-
-        var part = stack[start + 1];
-        stack.RemoveRange(start, argCount);
-        result = AcsDestructibleHealth.GetSectorHealth(sim, id, part);
         return true;
     }
 
@@ -1732,78 +1683,6 @@ internal static partial class AcsCallFunctions
             picked.ThingId = assignTid;
 
         result = (pickFlags & PickAfReturnTid) != 0 ? picked.ThingId : 1;
-        return true;
-    }
-
-    private static bool TryGetActorFloorTexture(
-        AuthoritySimulation sim,
-        List<int> stack,
-        Actor? activator,
-        AcsGlobalStrings globalStrings,
-        int argCount,
-        out int result)
-    {
-        result = globalStrings.Add(string.Empty);
-        if (argCount < 1 || stack.Count < argCount)
-            return false;
-
-        var start = stack.Count - argCount;
-        var tid = stack[start];
-        stack.RemoveRange(start, argCount);
-
-        var actor = ResolveActor(sim, tid, activator);
-        if (actor is null || actor.SectorIndex < 0 || actor.SectorIndex >= sim.Level.Sectors.Count)
-            return true;
-
-        result = globalStrings.Add(sim.Level.Sectors[actor.SectorIndex].FloorPic);
-        return true;
-    }
-
-    private static bool TryGetActorFloorTerrain(
-        AuthoritySimulation sim,
-        List<int> stack,
-        Actor? activator,
-        AcsGlobalStrings globalStrings,
-        int argCount,
-        out int result)
-    {
-        result = globalStrings.Add(string.Empty);
-        if (argCount < 1 || stack.Count < argCount)
-            return false;
-
-        var start = stack.Count - argCount;
-        var tid = stack[start];
-        stack.RemoveRange(start, argCount);
-
-        var actor = ResolveActor(sim, tid, activator);
-        if (actor is null || actor.SectorIndex < 0 || actor.SectorIndex >= sim.Level.Sectors.Count)
-            return true;
-
-        var terrain = actor.GetFloorTerrain();
-        result = globalStrings.Add(terrain?.Name ?? sim.Level.Sectors[actor.SectorIndex].FloorTerrain);
-        return true;
-    }
-
-    private static bool TryFixedQuantize(List<int> stack, int function, int argCount, out int result)
-    {
-        result = 0;
-        if (argCount < 1 || stack.Count < argCount)
-            return false;
-
-        var start = stack.Count - argCount;
-        var fixedValue = stack[start];
-        stack.RemoveRange(start, argCount);
-
-        const int fractionalMask = 0xFFFF;
-        const int fractionalRoundBias = 0x8000;
-        var integral = fixedValue & ~fractionalMask;
-        result = function switch
-        {
-            Floor => integral,
-            Round => (fixedValue + fractionalRoundBias) & ~fractionalMask,
-            Ceil => integral + 0x10000,
-            _ => 0,
-        };
         return true;
     }
 
