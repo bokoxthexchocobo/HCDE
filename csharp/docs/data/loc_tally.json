@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 57737,
+  "convertedThisRunNative": 57587,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 84930,
+  "convertedThisRunManaged": 84832,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 431068,
+  "remainingNative": 431218,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 76264,
+  "convertedBehaviorNative": 76114,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 77018,
-  "convertedBehaviorManaged": 94601,
+  "combinedBehaviorNative": 76868,
+  "convertedBehaviorManaged": 94503,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -34141,37 +34141,6 @@
       "nativeLoc": 150,
       "managedLoc": 114,
       "conversionManagedCommit": "f30eea47e13ed88e2acbbdd1710f967f75c23bf1"
-    },
-    {
-      "name": "p-lnspec-camera-setplayerproperty-chunk932",
-      "bucket": "conversion",
-      "note": "`ChangeCamera` activator tail, `PROP_*` enum, and `LS_SetPlayerProperty` power branch through all-player grant (`p_lnspec.cpp` **2869\u20133018**). Follows **931** (**\u22642868**); flag-property `switch` at **3027** deferred; **3019\u20133129** sub-150 tail deferred.",
-      "auditSeams": "`R_ClearPastViewer`, `GiveInventoryType`, `FindInventory`, `Destroy`, and player iteration remain host seams.",
-      "auditRationale": "Honest **150**-line slice in **2269\u20133129** corridor; exclusive `VmPLnspecCameraProperty932Slice.cs`.",
-      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 2869 --end 3018` and `--chunk 932 --band` \u2192 UNCredited, exit 0.",
-      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| `AssignActivatorCamera` | `ChangeCamera` activator branch **2869\u20132872** |\n| `ShouldClearViewer` | **2873\u20132876** |\n| `ChangeCamera` return | **2879\u20132880** |\n| `PROP_*` constants | enum **2882\u20132909** |\n| `ShouldRejectPropertyCall` | `LS_SetPlayerProperty` guard **2918\u20132919** |\n| `IsPowerProperty` / `PowerIndex` / `PowerNameAt` | power table **2922\u20132946** |\n| `PowerEntryValid` / `IsAllMapPower` | **2943\u20132946**, **2952\u20132963** |\n| `IsGivePower` / activator give-take | **2948\u20132979** |\n| `ApplyToAllPlayers` / `PlayerSlotActive` | all-player loop **2981\u20133018** |\n| `AllmapFlags2ForGrant` | console ALLMAP **2960\u20132963**, **3001\u20133004** |\n| `InvulnerabilityBlendApplies` | **2955\u20132958**, **2996\u20132999** |\n| `PowerGrantUsesInventory` / `PowerRevokeUsesDestroy` | inventory paths **2952\u20132973**, **2993\u20133014** |\n\n### Chunk **932** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**931** |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPLnspecCameraProperty932Slice.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_ChangeCamera",
-          "start": 2869,
-          "end": 3018,
-          "tests": [
-            "VmPLnspecCameraProperty932SliceTests.AssignActivatorCamera_ClearsRevertWhenNoCamera",
-            "VmPLnspecCameraProperty932SliceTests.ShouldRejectPropertyCall_WhenNoActivatorPlayer",
-            "VmPLnspecCameraProperty932SliceTests.PowerBranch_RejectsInvalidPowerSlot",
-            "VmPLnspecCameraProperty932SliceTests.AllmapGrant_UpdatesLevelFlags",
-            "VmPLnspecCameraProperty932SliceTests.InvulnerabilityBlend_AppliesOnGive",
-            "VmPLnspecCameraProperty932SliceTests.ShouldClearViewer_WhenReferenceChanges"
-          ]
-        }
-      ],
-      "nativeLoc": 150,
-      "managedLoc": 98,
-      "conversionManagedCommit": "62890983430a608cdf731fe74351baefcdd8eaaf"
     }
   ],
   "behaviorNativeChecksum": 508086,
