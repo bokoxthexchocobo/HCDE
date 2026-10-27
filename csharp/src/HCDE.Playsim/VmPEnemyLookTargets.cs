@@ -167,6 +167,8 @@ public static class VmPEnemyLookTargets
             else
                 continue;
 
+            if (other == null)
+                continue;
             if (RequiresVisibilityCheck(lookee) && lookee.IsVisible?.Invoke(other, true) != true)
                 continue;
             return other;
