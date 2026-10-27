@@ -48,6 +48,8 @@ for ch in tally["chunks"]:
         ):
             if k in chunk:
                 ch[k] = chunk[k]
+        if "retired" not in chunk:
+            ch.pop("retired", None)
         break
 else:
     chunk["nativeLoc"] = nl
