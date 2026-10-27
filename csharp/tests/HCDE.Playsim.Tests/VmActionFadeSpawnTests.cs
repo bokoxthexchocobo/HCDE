@@ -27,6 +27,10 @@ public class VmActionFadeSpawnTests
         Assert.Equal(0.0, VmActionFadeSpawn.DebrisOffsetFromPr(128).xo);
 
     [Fact]
+    public void DebrisZOffsetFromPr_MatchesNativeFormula() =>
+        Assert.Equal(64.0, VmActionFadeSpawn.DebrisZOffsetFromPr(128, 128, 0));
+
+    [Fact]
     public void ClampParticleStartAlpha_BoundsUnit() =>
         Assert.Equal(1.0, VmActionFadeSpawn.ClampParticleStartAlpha(2));
 
