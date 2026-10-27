@@ -13,6 +13,18 @@ public static class VmPEnemyResurrection
 
     public static bool SkipWhenNoMoveDir(int moveDir) => moveDir == DiNodir;
 
+    public static bool MoveDirAllowsResurrectionScan(int moveDir) => moveDir != DiNodir;
+
+    public static double CombinedTouchRadius(double corpseDefaultRadius, double raiserRadius) =>
+        corpseDefaultRadius + raiserRadius;
+
+    public static bool SamePortalGroup(int corpsePortal, int raiserPortal) => corpsePortal == raiserPortal;
+
+    public static bool TranslationIsBloodType(int translationType) => translationType == TranslationBlood;
+
+    public static CorpseDimensionResult StandardCorpseDimensions(CorpseDimensionContext ctx) =>
+        new(ctx.DefaultHeight, ctx.DefaultRadius, ctx.Alpha, ctx.RenderStyle, false);
+
     public static double ProbeOffset(double absSpeed, double axisSpeed) => absSpeed * axisSpeed;
 
     public static bool TouchDistanceBlocks(double corpseX, double corpseY, double probeX, double probeY, double maxDist) =>
@@ -41,6 +53,12 @@ public static class VmPEnemyResurrection
 
     public static bool PassiveSelfCheckSkipsSecond(object? raiser, object? corpse) =>
         corpse == null || ReferenceEquals(corpse, raiser);
+
+    public static bool RunCanResurrectGate(CanResurrectContext ctx)
+    {
+        if (!ctx.HasRaiser) return false;
+        return EvaluateCanResurrect(ctx);
+    }
 
     public static bool EvaluateCanResurrect(CanResurrectContext ctx)
     {
@@ -105,7 +123,7 @@ public static class VmPEnemyResurrection
     {
         if (SkipWhenNoMoveDir(ctx.MoveDir)) return false;
         if (!ctx.HasRaiseState) return false;
-        var maxDist = ctx.CorpseRadius + ctx.RaiserRadius;
+        var maxDist = CombinedTouchRadius(ctx.CorpseRadius, ctx.RaiserRadius);
         if (TouchDistanceBlocks(ctx.CorpseX, ctx.CorpseY, ctx.ProbeX, ctx.ProbeY, maxDist)) return false;
         if (DifferentPortalNeedsSight(ctx.CorpsePortal, ctx.RaiserPortal, ctx.SightOk)) return false;
         if (Pick3dFloorTestSector(ctx.VileSector3d, !ctx.SameSector, ctx.CorpseSector3d)
@@ -155,7 +173,7 @@ public static class VmPEnemyResurrection
     public static CorpseDimensionResult EvaluateCorpseDimensions(CorpseDimensionContext ctx)
     {
         if (!VileGhostsEnabled(ctx.CompatFlags))
-            return new CorpseDimensionResult(ctx.DefaultHeight, ctx.DefaultRadius, ctx.Alpha, ctx.RenderStyle, false);
+            return StandardCorpseDimensions(ctx);
         var height = GhostHeightScale(ctx.Height);
         if (!GhostStyleWhenZeroHeight(height))
             return new CorpseDimensionResult(height, ctx.DefaultRadius, ctx.Alpha, ctx.RenderStyle, true);
