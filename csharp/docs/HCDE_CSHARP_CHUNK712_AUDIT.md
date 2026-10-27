@@ -14,7 +14,7 @@ Whole `CheckBossDeath` and `A_BossDeath` (`p_enemy.cpp` 3271–3444). Trims `p-e
 ## Managed
 
 `VmPEnemyBossDeath.cs`
-Managed LOC (tally): 159.
+Managed LOC (tally): 169.
 Conversion commit: `457c27e492ec203fc29eab983aff2044e5bb7e85`.
 
 ## Padding review (2026-10-21)
@@ -34,7 +34,7 @@ Conversion commit: `457c27e492ec203fc29eab983aff2044e5bb7e85`.
 | **Honest** | **169** |
 
 
-**Post-review ratio:** 159/169 managed/native ≈ 94% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 169/169 managed/native ≈ 100% (src file LOC at HEAD; see tally).
 
 ## Tests
 
