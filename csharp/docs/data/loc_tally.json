@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 55269,
+  "convertedThisRunNative": 55530,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 82667,
+  "convertedThisRunManaged": 82989,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 433536,
+  "remainingNative": 433275,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 73796,
+  "convertedBehaviorNative": 74057,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 74550,
-  "convertedBehaviorManaged": 92338,
+  "combinedBehaviorNative": 74811,
+  "convertedBehaviorManaged": 92660,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -33594,6 +33594,65 @@
       "nativeLoc": 164,
       "managedLoc": 289,
       "conversionManagedCommit": "ca5c8af9e00bb6f03ae5326875a66a30bd90a983"
+    },
+    {
+      "name": "a-floor-create-floor-chunk918",
+      "bucket": "conversion",
+      "note": "`DFloor::SetFloorChangeType`, `DFloor::StartFloorSound` / `Construct`, and `FLevelLocals::CreateFloor` from `mapthinkers/a_floor.cpp` (**233\u2013514**). Stops before `DEFINE_ACTION_FUNCTION(CreateFloor)` **516+** and chunk **6** waggle **941+**.",
+      "auditSeams": "Height finders, model sectors, thinker spawn (`CreateThinker`), `Super::Construct`, static `StartFloorSound`, and `StopInterpolation` are injected.",
+      "auditRationale": "Honest UNCredited band after chunk **917** head; re-attributes existing `VmAFloorCreate.cs` (never tallied) plus exclusive `VmAFloorDfloorMethods918Slice.cs`. Retired **799** row stays **0** matrix credit.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/mapthinkers/a_floor.cpp --start 233 --end 514` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `DFloor::SetFloorChangeType` (**233\u2013251**) | yes |\n| `DFloor::StartFloorSound` (**259\u2013262**) | yes (forwards to static seam) |\n| `DFloor::Construct` (**270\u2013273**) | yes (`Super::Construct` seam) |\n| `FLevelLocals::CreateFloor` (**281\u2013514**) | yes (full `floortype` switch + instant/silent + change model) |\n\n| Managed | Native (`a_floor.cpp`) |\n|---------|----------------------|\n| `VmAFloorDfloorMethods918Slice.SetFloorChangeType` | **233\u2013251** |\n| `VmAFloorDfloorMethods918Slice.DfloorStartFloorSound` | **259\u2013262** |\n| `VmAFloorDfloorMethods918Slice.ConstructThinker` | **270\u2013273** |\n| `VmAFloorCreate.CreateFloor` | **281\u2013514** |\n\n### Chunk **918** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **261** |\n| **Net headline** | **+261** vs post-**917** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmAFloorDfloorMethods918Slice.cs",
+        "csharp/src/HCDE.Playsim/VmAFloorCreate.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "DFloor::SetFloorChangeType",
+          "start": 233,
+          "end": 251,
+          "tests": [
+            "VmAFloorDfloorMethods918SliceTests.SetFloorChangeType_Case3_CopiesSpecialAndType",
+            "VmAFloorCreateTests.CreateFloor_ModelChange_InvokesSetFloorChangeType"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "DFloor::StartFloorSound",
+          "start": 259,
+          "end": 262,
+          "tests": [
+            "VmAFloorDfloorMethods918SliceTests.DfloorStartFloorSound_ForwardsToStaticHelper"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "DFloor::Construct",
+          "start": 270,
+          "end": 273,
+          "tests": [
+            "VmAFloorDfloorMethods918SliceTests.ConstructThinker_InvokesSuperConstruct"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "FLevelLocals::CreateFloor",
+          "start": 281,
+          "end": 514,
+          "tests": [
+            "VmAFloorCreateTests.CreateFloor_RaiseByValue_SetsUpDirection",
+            "VmAFloorCreateTests.CreateFloor_LowerByValue_SetsDownDirection",
+            "VmAFloorCreateTests.CreateFloor_SkipsWhenPlaneMoving",
+            "VmAFloorCreateTests.CreateFloor_LowerAndChange_UsesModelSectorTexture",
+            "VmAFloorCreateTests.CreateFloor_InstantMove_SetsSilentWhenCompatAllows"
+          ]
+        }
+      ],
+      "nativeLoc": 261,
+      "managedLoc": 322,
+      "conversionManagedCommit": "a7b028bbe3467d21d56c1e2507a90159945d9e12"
     }
   ],
   "behaviorNativeChecksum": 508086,
