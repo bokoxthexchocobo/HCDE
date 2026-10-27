@@ -30,7 +30,7 @@ Freelist `P_GetSecnode` / `P_PutSecnode`, `P_AddSecnode`, `P_DelSecnode`, `P_Del
 ## Managed
 
 `VmPSecnodes.cs`
-Managed LOC (tally): 156.
+Managed LOC (tally): 180.
 Conversion commit: `fbf4f57220a8638ea29d97b6186d80703abad11a`.
 
 ## Padding review (2026-10-21)
@@ -52,7 +52,7 @@ Conversion commit: `fbf4f57220a8638ea29d97b6186d80703abad11a`.
 | **Honest** | **175** |
 
 
-**Post-review ratio:** 156/175 managed/native ≈ 89% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 180/175 managed/native ≈ 103% (src file LOC at HEAD; see tally).
 
 ## Tests
 
