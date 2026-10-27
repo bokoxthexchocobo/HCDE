@@ -12,6 +12,9 @@ public static class VmActionCheckLof
     public const int CloffMulWidth = 0x00100000;
     public const int CloffJumpOnMiss = 0x00200000;
     public const int CloffAimVertNooffset = 0x00400000;
+    public const int CloffSettarget = 0x00800000;
+    public const int CloffSetmaster = 0x01000000;
+    public const int CloffSettracer = 0x02000000;
 
     public const int TraceHitActor = 2;
     public const int TraceHitNone = 0;
@@ -28,11 +31,22 @@ public static class VmActionCheckLof
     public static double ScaleWidthOffset(bool mulWidth, double offset, double radius) =>
         mulWidth ? offset * radius : offset;
 
+    public static void ApplyMulWidthToOffsets(int flags, ref double offsetForward, ref double offsetWidth, double radius)
+    {
+        if ((flags & CloffMulWidth) == 0)
+            return;
+        offsetForward *= radius;
+        offsetWidth *= radius;
+    }
+
     public static double TraceOriginZ(double posZ, double offsetHeight, double floorclip, bool fromBase, double height, double attackOffset) =>
         posZ + offsetHeight - floorclip + (fromBase ? 0 : height * 0.5 + attackOffset);
 
     public static bool RangeExceeded(double distance, double range, bool checkPartial) =>
         range > 0 && !checkPartial && distance > range;
+
+    public static bool EarlyTargetRangeFail(int flags, bool hasTarget, double distance3D, double range) =>
+        hasTarget && RangeExceeded(distance3D, range, (flags & CloffCheckpartial) != 0);
 
     public static double ResolveRange(double range, bool hasPlayer) =>
         range == 0 ? (hasPlayer ? PlayerMissileRange : MissileRange) : range;
@@ -44,7 +58,7 @@ public static class VmActionCheckLof
         double radius) =>
         mulWidth ? (offsetForward * radius, offsetWidth * radius) : (offsetForward, offsetWidth);
 
-    public static (double X, double Y, double PitchRadians) AimFromTarget(
+    public static (double X, double Y, double AngleRadians, double PitchRadians) AimFromTarget(
         bool noAimHorz,
         bool noAimVert,
         bool aimVertNoOffset,
@@ -57,21 +71,21 @@ public static class VmActionCheckLof
         double offsetWidth,
         double radius,
         bool mulWidth,
-        double sinYaw,
-        double cosYaw,
         double xyDistToTarget,
         double targetCenterZ,
         double posZ,
         double offsetHeight)
     {
-        var ang = noAimHorz ? selfYawRadians : angleToTargetRadians;
-        var angle = paramAngleRadians + ang;
+        var aimRad = noAimHorz ? selfYawRadians : angleToTargetRadians;
+        var traceAngleRad = paramAngleRadians + aimRad;
+        var sinAim = Math.Sin(aimRad);
+        var cosAim = Math.Cos(aimRad);
         var (fwd, side) = ScaleOffsets(mulWidth, offsetForward, offsetWidth, radius);
-        var xy = Vec2Offset(fwd, side, sinYaw, cosYaw);
+        var xy = Vec2Offset(fwd, side, sinAim, cosAim);
         var pitch = AdjustPitchRadians(
             noAimVert, aimVertNoOffset, paramPitchRadians, selfPitchRadians,
             xyDistToTarget, targetCenterZ, posZ, offsetHeight);
-        return (xy.X, xy.Y, pitch);
+        return (xy.X, xy.Y, traceAngleRad, pitch);
     }
 
     public static (double X, double Y, double AngleRadians, double PitchRadians) AimAllowNullTarget(
@@ -82,15 +96,15 @@ public static class VmActionCheckLof
         double offsetForward,
         double offsetWidth,
         double radius,
-        bool mulWidth,
-        double sinAngle,
-        double cosAngle)
+        bool mulWidth)
     {
-        var angle = paramAngleRadians + selfYawRadians;
+        var traceAngleRad = paramAngleRadians + selfYawRadians;
         var pitch = paramPitchRadians + selfPitchRadians;
+        var sinAngle = Math.Sin(traceAngleRad);
+        var cosAngle = Math.Cos(traceAngleRad);
         var (fwd, side) = ScaleOffsets(mulWidth, offsetForward, offsetWidth, radius);
         var xy = Vec2Offset(fwd, side, sinAngle, cosAngle);
-        return (xy.X, xy.Y, angle, pitch);
+        return (xy.X, xy.Y, traceAngleRad, pitch);
     }
 
     public static (double X, double Y) Vec2Offset(double forward, double side, double sin, double cos) =>
@@ -117,6 +131,15 @@ public static class VmActionCheckLof
         return pitchRadians - VecToAngle(xyDist, dz);
     }
 
+    public static (double X, double Y, double Z) BuildTraceUnitVelocityNative(double pitchRadians, double angleRadians)
+    {
+        var cp = Math.Cos(pitchRadians);
+        var yawCos = Math.Cos(angleRadians);
+        var yawSin = Math.Sin(angleRadians);
+        var pitchSin = Math.Sin(pitchRadians);
+        return (cp * yawCos, cp * yawSin, -pitchSin);
+    }
+
     public static (double X, double Y, double Z) VelocityFromPitch(double pitchCos, double yawCos, double yawSin, double pitchSin) =>
         (pitchCos * yawCos, pitchCos * yawSin, -pitchSin);
 
@@ -131,4 +154,43 @@ public static class VmActionCheckLof
 
     public static bool ShouldLinkHitActor(int hitType, bool badActor) =>
         hitType == TraceHitActor && !badActor;
+
+    public static void ApplyLofHitActorLinksNative(
+        int flags,
+        int hitType,
+        bool badActor,
+        bool traceActorPresent,
+        Action? setTarget,
+        Action? setMaster,
+        Action? setTracer)
+    {
+        if (!ShouldLinkHitActor(hitType, badActor) || !traceActorPresent)
+            return;
+        if ((flags & CloffSettarget) != 0)
+            setTarget?.Invoke();
+        if ((flags & CloffSetmaster) != 0)
+            setMaster?.Invoke();
+        if ((flags & CloffSettracer) != 0)
+            setTracer?.Invoke();
+    }
+
+    public static bool EvaluateCheckLofAfterTraceNative(
+        int hitType,
+        int flags,
+        bool badActor,
+        double traceDistance,
+        double minRange,
+        bool traceActorPresent,
+        Action? setTarget,
+        Action? setMaster,
+        Action? setTracer)
+    {
+        var hitActor = hitType == TraceHitActor;
+        if (!TraceSuccess(hitActor, flags, badActor, hitType))
+            return false;
+        if (MinRangeFail(traceDistance, minRange))
+            return false;
+        ApplyLofHitActorLinksNative(flags, hitType, badActor, traceActorPresent, setTarget, setMaster, setTracer);
+        return true;
+    }
 }
