@@ -32,7 +32,17 @@ public static class VmActorDoKill
     public static bool PassesSpeciesGate(bool speciesPass, bool excludeSpecies) =>
         speciesPass;
 
-    public static int BaseKillDamageFlags => 8 | 4;
+    public const int DmgNoArmor = 8;
+    public const int DmgNoFactor = 4;
+    public const int DmgFoilInvul = 1;
+    public const int DmgFoilBuddha = 2;
+
+    public static int BaseKillDamageFlags => DmgNoArmor | DmgNoFactor;
+
+    public static int CombineKillBaseFlags(KilsFlags flags) => AddFoilFlags(BaseKillDamageFlags, flags);
+
+    public static bool ExplodePathApplies(bool isMissile, KilsFlags flags, bool missileAllowed) =>
+        ShouldExplodeMissile(isMissile, flags) && missileAllowed;
 
     public static int AddFoilFlags(int dmgFlags, KilsFlags flags)
     {
@@ -80,4 +90,10 @@ public static class VmActorDoKill
     public static bool KillSiblingsLoop(bool hasMaster, bool sameMaster, bool notSelf) =>
         hasMaster && sameMaster && notSelf;
 
+    public static bool ShouldKillWhenPresent(object? victim) => victim is not null;
+
+    public static bool ShouldKillMaster(object? master) => master is not null;
+
+    public static bool IsKillChildOfMaster(object? actorMaster, object self) =>
+        ReferenceEquals(actorMaster, self);
 }

@@ -19,12 +19,26 @@ public class VmActorDoKillTests
         Assert.False(VmActorDoKill.KillSiblingsLoop(false, true, true));
 
     [Fact]
-    public void KillTargetPresent_WhenSet() =>
-        Assert.True(true);
+    public void ShouldKillWhenPresent_Target() =>
+        Assert.True(VmActorDoKill.ShouldKillWhenPresent(new object()));
 
     [Fact]
-    public void KillChildrenMasterMatch_WhenChild() =>
-        Assert.True(true);
+    public void IsKillChildOfMaster_WhenMasterMatches() {
+        var self = new object();
+        Assert.True(VmActorDoKill.IsKillChildOfMaster(self, self));
+    }
+
+    [Fact]
+    public void ShouldKillMaster_WhenSet() =>
+        Assert.True(VmActorDoKill.ShouldKillMaster(new object()));
+
+    [Fact]
+    public void CombineKillBaseFlags_IncludesFoilInvul() =>
+        Assert.Equal(13, VmActorDoKill.CombineKillBaseFlags(VmActorDoKill.KilsFlags.FoilInvul));
+
+    [Fact]
+    public void ExplodePathApplies_WhenMissileAllowed() =>
+        Assert.True(VmActorDoKill.ExplodePathApplies(true, VmActorDoKill.KilsFlags.KillMissiles, true));
 
     [Fact]
     public void PlanDoKill_ExplodeAndDamage_WhenMissileAndMonstersAllowed()
