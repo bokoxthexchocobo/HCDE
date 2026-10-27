@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 52017,
+  "convertedThisRunNative": 52306,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 79674,
+  "convertedThisRunManaged": 79914,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 436788,
+  "remainingNative": 436499,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 70544,
+  "convertedBehaviorNative": 70833,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 71298,
-  "convertedBehaviorManaged": 89345,
+  "combinedBehaviorNative": 71587,
+  "convertedBehaviorManaged": 89585,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -33019,6 +33019,36 @@
       "nativeLoc": 213,
       "managedLoc": 229,
       "conversionManagedCommit": "cb171a266f7ae072d722bf19b51a0d5c00c70c95"
+    },
+    {
+      "name": "p-lnspec-crusher-plat-exit-tele-chunk902",
+      "bucket": "conversion",
+      "note": "Generic crushers through `LS_Teleport_Line` (`p_lnspec.cpp` **915\u20131203**). Follows **901** (**\u2264913**); stops before `LS_ThrustThing` (**1215+**). Wider than **914\u20131200** to finish teleport-line function.",
+      "auditSeams": "`EV_DoCeiling` (crushers), `EV_DoPlat`, `EV_StopPlat`, `CheckIfExitIsGood`, `ExitLevel`, `ChangeLevel`, and `EV_Teleport*` are not hosted.",
+      "auditRationale": "Crusher slowdown/hexen modes, plat stop gametype gate, Heretic raise-and-stay default, generic lift target switch, exit gating, teleport flag packing, and silent line teleport args via `VmPLnspecCrusherPlatExitTeleSlice`.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 915 --end 1203` and `--chunk 902 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| `GenericCrusher*` | **915\u2013935** |\n| `Plat_*` / `Generic_Lift` | **937\u20131065** |\n| `Exit_*` | **1067\u20131087** |\n| `Teleport_*` | **1089\u20131203** |\n\n### vs **901**\n\n| | Lines |\n|--|------:|\n| **901** | **701\u2013913** |\n| **902** (this row) | **915\u20131203** (**289**) |\n| `LS_ThrustThing` | **1215+** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **289** |\n| Net behavior-ported | **289** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPLnspecCrusherPlatExitTeleSlice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_Generic_Crusher",
+          "start": 915,
+          "end": 1203,
+          "tests": [
+            "VmPLnspecCrusherPlatExitTeleSliceTests.GenericCrusher_SlowSpeedUsesSlowdownMode",
+            "VmPLnspecCrusherPlatExitTeleSliceTests.PlatStop_HexenDefaultRemoves",
+            "VmPLnspecCrusherPlatExitTeleSliceTests.GenericLift_TargetTwoUsesDownToNearest",
+            "VmPLnspecCrusherPlatExitTeleSliceTests.TeleportNoFog_UseAngTwoAddsRotateBoom",
+            "VmPLnspecCrusherPlatExitTeleSliceTests.ExitNormal_RequiresGoodExit"
+          ]
+        }
+      ],
+      "nativeLoc": 289,
+      "managedLoc": 240,
+      "conversionManagedCommit": "6b784a85b34d689f6a2d5121c5e33770db97e58f"
     }
   ],
   "behaviorNativeChecksum": 508086,
