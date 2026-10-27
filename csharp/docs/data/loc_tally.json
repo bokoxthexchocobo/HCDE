@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 51345,
+  "convertedThisRunNative": 51575,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 78975,
+  "convertedThisRunManaged": 79227,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 437460,
+  "remainingNative": 437230,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 69872,
+  "convertedBehaviorNative": 70102,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 70626,
-  "convertedBehaviorManaged": 88646,
+  "combinedBehaviorNative": 70856,
+  "convertedBehaviorManaged": 88898,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -32929,6 +32929,36 @@
       "nativeLoc": 180,
       "managedLoc": 137,
       "conversionManagedCommit": "dd7b41a6fe86ae30eaa6a48a0d3addb42e4cc1c8"
+    },
+    {
+      "name": "p-lnspec-door-floor-chunk899",
+      "bucket": "conversion",
+      "note": "`LS_Door_*` through `LS_Floor_LowerToLowestCeiling` (`p_lnspec.cpp` **241\u2013470**). Follows **898** polyobj band (**\u2264239**); stops before `LS_Floor_RaiseByTexture` (**472+**). No `VmPLnspecDoorsPillars` (padding audit reject).",
+      "auditSeams": "`EV_DoDoor`, `EV_DoFloor`, `EV_SlidingDoor`, `P_CheckKeys`, and `EV_FloorCrushStop` are not hosted.",
+      "auditRationale": "Door speed/light packing, locked-raise delay branch, generic door BOOM bits, sliding-door key gate, and floor height/crush/change argument wiring via `VmPLnspecDoorFloorLineSpecials`.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 240 --end 470` and `--chunk 899 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| `DoorClose` \u2026 `GenericDoor` | `LS_Door_*` **241\u2013334** |\n| `FloorLowerByValue` \u2026 `FloorLowerToLowestCeiling` | `LS_Floor_*` **336\u2013470** |\n\n### vs **898**\n\n| | Lines |\n|--|------:|\n| **898** (polyobj / macros) | **60\u2013239** |\n| **899** (this row) | **241\u2013470** (**231**) |\n| `LS_Floor_RaiseByTexture` | **472+** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **231** |\n| Net behavior-ported | **231** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPLnspecDoorFloorLineSpecials.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_Door_Close",
+          "start": 241,
+          "end": 470,
+          "tests": [
+            "VmPLnspecDoorFloorLineSpecialsTests.DoorLockedRaise_OpensWhenDelayZero",
+            "VmPLnspecDoorFloorLineSpecialsTests.GenericDoor_InvalidKindReturnsFalse",
+            "VmPLnspecDoorFloorLineSpecialsTests.GenericDoor_LocalLightTagSwapsTag",
+            "VmPLnspecDoorFloorLineSpecialsTests.DoorAnimated_BlocksWithoutKeys",
+            "VmPLnspecDoorFloorLineSpecialsTests.FloorMoveToValue_NegativeHeight"
+          ]
+        }
+      ],
+      "nativeLoc": 230,
+      "managedLoc": 252,
+      "conversionManagedCommit": "c0803458234bd07c01e191c0903a107b128bc453"
     }
   ],
   "behaviorNativeChecksum": 508086,
