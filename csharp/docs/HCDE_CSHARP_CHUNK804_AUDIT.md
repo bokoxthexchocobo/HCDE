@@ -14,8 +14,8 @@ Whole `P_CheckSwitchRange` and `P_StartButton` (`p_switch.cpp` 71–88, 98–234
 ## Managed
 
 `VmPSwitchCheckRange.cs`
-Managed LOC (tally): 184.
-Conversion commit: `adb02c406c98556746f6a1a5e8248c25e59edb26`.
+Managed LOC (tally): 135.
+Conversion commit: `bf6498e9c78eedb7da9d0a7227d65eecc677ba6b`.
 
 ## Padding review (2026-10-21)
 
@@ -34,7 +34,7 @@ Conversion commit: `adb02c406c98556746f6a1a5e8248c25e59edb26`.
 | **Honest** | **155** |
 
 
-**Post-review ratio:** 184/155 managed/native ≈ 119% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 135/155 managed/native ≈ 87% (src file LOC at HEAD; see tally).
 
 ## Tests
 
