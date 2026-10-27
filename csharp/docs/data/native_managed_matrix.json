@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 224449
+    "managedCSharpLoc": 224667
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 51575,
+    "convertedThisRunNative": 51804,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 79227,
+    "convertedThisRunManaged": 79445,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 437230,
+    "remainingNative": 437001,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 70102,
+    "convertedBehaviorNative": 70331,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 70856,
-    "convertedBehaviorManaged": 88898,
+    "combinedBehaviorNative": 71085,
+    "convertedBehaviorManaged": 89116,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -32975,6 +32975,36 @@
         "nativeLoc": 230,
         "managedLoc": 252,
         "conversionManagedCommit": "c0803458234bd07c01e191c0903a107b128bc453"
+      },
+      {
+        "name": "p-lnspec-floor-stairs-ceiling-chunk900",
+        "bucket": "conversion",
+        "note": "Texture floors through `LS_Ceiling_CrushAndRaise` (`p_lnspec.cpp` **472\u2013700**). Follows **899** (**\u2264470**); stops before `LS_Ceiling_LowerAndCrush` (**700+**).",
+        "auditSeams": "`EV_DoFloor`, `EV_StartWaggle`, `EV_DoChange`, `EV_DoDonut`, `EV_StopFloor`, `EV_BuildStairs`, `EV_DoPillar`, and `EV_DoCeiling` are not hosted.",
+        "auditRationale": "Texture/ceiling floor targets, waggle/transfer/donut, generalized floor target switch, stair flag/delay packing, repeatable generic-stair direction toggle, pillar crush mode, and ceiling value/crush argument wiring via `VmPLnspecFloorStairsCeilingSlice`.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 472 --end 700` and `--chunk 900 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| Texture / TxTy / raise-to-ceiling floors | **472\u2013500** |\n| Waggle, transfer, donut, generic floor, floor stop | **502\u2013573** |\n| `Stairs*` / `GenericStairs` | **575\u2013650** |\n| `Pillar_*` | **652\u2013668** |\n| `Ceiling_*` (through crush-and-raise) | **670\u2013698** |\n\n### vs **899**\n\n| | Lines |\n|--|------:|\n| **899** | **241\u2013470** |\n| **900** (this row) | **472\u2013700** (**229**) |\n| `LS_Ceiling_LowerAndCrush` | **700+** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **229** |\n| Net behavior-ported | **229** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPLnspecFloorStairsCeilingSlice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Floor_RaiseByTexture",
+            "start": 472,
+            "end": 700,
+            "tests": [
+              "VmPLnspecFloorStairsCeilingSliceTests.GenericFloor_RaiseTargetSelectsHighest",
+              "VmPLnspecFloorStairsCeilingSliceTests.GenericStairs_TogglesOnRepeatableLine",
+              "VmPLnspecFloorStairsCeilingSliceTests.StairsBuildUp_UsesTicsDelay",
+              "VmPLnspecFloorStairsCeilingSliceTests.CeilingCrushAndRaise_HalvesUpSpeed",
+              "VmPLnspecFloorStairsCeilingSliceTests.FloorDonut_ScalesBothSpeeds"
+            ]
+          }
+        ],
+        "nativeLoc": 229,
+        "managedLoc": 218,
+        "conversionManagedCommit": "56dcf7a9df108f955316f6e21dbdd6c12e07adaa"
       }
     ],
     "behaviorNativeChecksum": 508086,
