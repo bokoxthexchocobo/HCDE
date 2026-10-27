@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 223041
+    "managedCSharpLoc": 223046
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 74934,
+    "convertedThisRunManaged": 74939,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 84605,
+    "convertedBehaviorManaged": 84610,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -17555,8 +17555,8 @@
           }
         ],
         "nativeLoc": 204,
-        "managedLoc": 199,
-        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
+        "managedLoc": 204,
+        "conversionManagedCommit": "b34696a9548d4da81d9ed0b83f5b5bc57f2498e0"
       },
       {
         "name": "i-net-query-client-lifecycle-chunk622",

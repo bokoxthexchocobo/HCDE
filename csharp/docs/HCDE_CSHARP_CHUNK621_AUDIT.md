@@ -13,8 +13,8 @@
 ## Managed
 
 `VmINetQueryDecode.cs`
-Managed LOC (tally): 199.
-Conversion commit: `253a1c20e7f7b5c1b1b02672d811fd5248badb66`.
+Managed LOC (tally): 204.
+Conversion commit: `b34696a9548d4da81d9ed0b83f5b5bc57f2498e0`.
 
 ## Padding review (2026-10-21)
 
@@ -31,7 +31,7 @@ Conversion commit: `253a1c20e7f7b5c1b1b02672d811fd5248badb66`.
 | **Honest** | **204** |
 
 
-**Post-review ratio:** 199/204 managed/native ≈ 98% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 204/204 managed/native ≈ 100% (src file LOC at HEAD; see tally).
 
 ## Tests
 
