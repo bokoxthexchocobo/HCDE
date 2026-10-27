@@ -27,7 +27,38 @@ public static class VmPSecnodes
 
     public static void PutSecnode(MsecNode node)
     {
+        node.Sector = null;
+        node.Thing = null;
+        node.ThingPrev = null;
+        node.ThingNext = null;
+        node.SectorPrev = null;
+        node.SectorNext = null;
+        node.Visited = 0;
         FreeList.Push(node);
+    }
+
+    public static void ClearThingMarks(MsecNode? sectorList)
+    {
+        for (var node = sectorList; node != null; node = node.ThingNext)
+            node.Thing = null;
+    }
+
+    public static MsecNode? PruneUnmarkedNodes(MsecNode? sectorList, SectorHeadMap heads)
+    {
+        var node = sectorList;
+        while (node != null)
+        {
+            if (node.Thing == null)
+            {
+                if (ReferenceEquals(node, sectorList))
+                    sectorList = node.ThingNext;
+                ref var head = ref heads.Head(node.Sector!);
+                node = DelSecnode(node, ref head);
+            }
+            else
+                node = node.ThingNext;
+        }
+        return sectorList;
     }
 
     public static MsecNode? AddSecnode(
@@ -110,47 +141,40 @@ public static class VmPSecnodes
         public object Thing { get; init; } = null!;
         public object HomeSector { get; init; } = null!;
         public IEnumerable<LineCrossing>? LineCrossings { get; init; }
+        public Func<LineCrossing, bool>? IncludeLineCrossing { get; init; }
         public required SectorHeadMap SectorHeads { get; init; }
     }
 
-    public readonly record struct LineCrossing(object FrontSector, object? BackSector);
+    public readonly record struct LineCrossing(object FrontSector, object? BackSector, object? Line = null);
+
+    public static void AppendLineCrossingSectors(
+        ref MsecNode? sectorList,
+        CreateListContext ctx,
+        LineCrossing cross)
+    {
+        ref var frontHead = ref ctx.SectorHeads.Head(cross.FrontSector);
+        sectorList = AddSecnode(cross.FrontSector, ctx.Thing, sectorList, ref frontHead);
+        if (cross.BackSector != null)
+        {
+            ref var backHead = ref ctx.SectorHeads.Head(cross.BackSector);
+            sectorList = AddSecnode(cross.BackSector, ctx.Thing, sectorList, ref backHead);
+        }
+    }
 
     public static MsecNode? CreateSecNodeList(MsecNode? sectorList, CreateListContext ctx)
     {
-        var node = sectorList;
-        while (node != null)
-        {
-            node.Thing = null;
-            node = node.ThingNext;
-        }
+        ClearThingMarks(sectorList);
         if (ctx.LineCrossings != null)
         {
             foreach (var cross in ctx.LineCrossings)
             {
-                ref var head = ref ctx.SectorHeads.Head(cross.FrontSector);
-                sectorList = AddSecnode(cross.FrontSector, ctx.Thing, sectorList, ref head);
-                if (cross.BackSector != null)
-                {
-                    ref var backHead = ref ctx.SectorHeads.Head(cross.BackSector);
-                    sectorList = AddSecnode(cross.BackSector, ctx.Thing, sectorList, ref backHead);
-                }
+                if (ctx.IncludeLineCrossing != null && !ctx.IncludeLineCrossing(cross))
+                    continue;
+                AppendLineCrossingSectors(ref sectorList, ctx, cross);
             }
         }
         ref var homeHead = ref ctx.SectorHeads.Head(ctx.HomeSector);
         sectorList = AddSecnode(ctx.HomeSector, ctx.Thing, sectorList, ref homeHead);
-        node = sectorList;
-        while (node != null)
-        {
-            if (node.Thing == null)
-            {
-                if (ReferenceEquals(node, sectorList))
-                    sectorList = node.ThingNext;
-                ref var head = ref ctx.SectorHeads.Head(node.Sector!);
-                node = DelSecnode(node, ref head);
-            }
-            else
-                node = node.ThingNext;
-        }
-        return sectorList;
+        return PruneUnmarkedNodes(sectorList, ctx.SectorHeads);
     }
 }

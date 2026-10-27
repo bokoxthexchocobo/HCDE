@@ -87,6 +87,25 @@ public class VmPSecnodesTests
     }
 
     [Fact]
+    public void CreateSecNodeList_SkipsFilteredLineCrossings()
+    {
+        var home = new object();
+        var front = new object();
+        var heads = new VmPSecnodes.SectorHeadMap();
+        var result = VmPSecnodes.CreateSecNodeList(null, new VmPSecnodes.CreateListContext
+        {
+            Thing = new object(),
+            HomeSector = home,
+            LineCrossings = new[] { new VmPSecnodes.LineCrossing(front, null) },
+            IncludeLineCrossing = _ => false,
+            SectorHeads = heads,
+        });
+        Assert.NotNull(result);
+        Assert.Null(heads.Head(front));
+        Assert.NotNull(heads.Head(home));
+    }
+
+    [Fact]
     public void CreateSecNodeList_PrunesUnusedNodes()
     {
         var s1 = new object();
