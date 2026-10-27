@@ -19,7 +19,7 @@ Whole `P_CheckMusicChange`, `P_CheckEnvironment`, `P_CheckUse`, `FSafePosition::
 ## Managed
 
 `VmPUserPlayerThink.cs`
-Managed LOC (tally): 165.
+Managed LOC (tally): 190.
 Conversion commit: `d2c71e58dc4a67700a983295cac914fa9c1bba39`.
 
 ## Padding review (2026-10-21)
@@ -43,7 +43,7 @@ Conversion commit: `d2c71e58dc4a67700a983295cac914fa9c1bba39`.
 | **Honest** | **186** |
 
 
-**Post-review ratio:** 165/186 managed/native ≈ 89% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 190/186 managed/native ≈ 102% (src file LOC at HEAD; see tally).
 
 ## Tests
 

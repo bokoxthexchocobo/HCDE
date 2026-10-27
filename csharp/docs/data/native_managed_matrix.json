@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 222601
+    "managedCSharpLoc": 222626
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 74494,
+    "convertedThisRunManaged": 74519,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 84165,
+    "convertedBehaviorManaged": 84190,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -12799,7 +12799,7 @@
         ],
         "nativeLoc": 154,
         "managedLoc": 205,
-        "conversionManagedCommit": "d96ee0dd4fbada702df656d960fc6ab77c85492f",
+        "conversionManagedCommit": "f55042c2d1ba227794238c4e0eb4daa6024ba42f",
         "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SkipWhenSpecialFloorclip` / `ComputeShallowestClip` / `RunAdjustFloorClip` / terrain+3D helpers | `AdjustFloorClip` 6006\u20136071 |\n| `PlayerSubValid` / `RunPlayerPointerSubstitution` / `SubstitutePlayerPointers` / `SubstituteSectorSoundTargets` | `PlayerPointerSubstitution` 6093\u20136133 |\n| `MorphSubstitutionBlocked` / `EvaluateMorphSubstitution` / `RunPreMorphHooks` / morph gates | `MorphPointerSubstitution` 6143\u20136190 |\n\n### Out-of-body uncredit (485)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **155** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **154** |\n"
       },
       {
@@ -12882,7 +12882,7 @@
         ],
         "nativeLoc": 168,
         "managedLoc": 241,
-        "conversionManagedCommit": "d96ee0dd4fbada702df656d960fc6ab77c85492f",
+        "conversionManagedCommit": "f55042c2d1ba227794238c4e0eb4daa6024ba42f",
         "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `ResolveThingFloorType` / `UseActorFloorTerrain` / `Valid3dFloor` / `SkipUnderwaterFloor` / `WalkDownThroughFloorPortal` | `P_GetThingFloorType` 7475\u20137485 (7477: `if (thing->floorterrain >= 0)`; 7479: `return thing->floorterrain;`; 7483: `return thing->Sector->GetTerrain(sector_t::floor);`) |\n| `HitWaterFlags` | `HitWaterFlags` 7494\u20137498 |\n| `CompareZForCheckAbove` / `SelectFloorTerrain` / `ReturnLiquidOnHeightSecPlane` / `SkipWhenPredicting` / `CheckAboveCenter` / `Splashable3dTop` / `ZNearPlane` / `BlockBelowBottomPlane` / `UseHeightSecTerrain` / `NoSplashDefinition` / `DealDamageOnLand` / `SkipNovelLowVelocity` / `SmallSplashMass` / `AllowSplash` / `UseSmallSplashDef` / `ClientSideSmallSplash` / `LiquidWithoutSplash` / `WalkUpThroughCeilingPortal` / `TrySplashAt3dTop` / `RejectBelowBottom` / `SpawnSmallSplash` / `SpawnRegularSplash` / `ReturnLiquidOnly` | `P_HitWater` 7500\u20137656 (7502: `if (thing->player && (thing->player->cheats & CF_PREDICTING))`; 7503: `return false;`; 7511: `if (checkabove)`) |\n\n### Out-of-body uncredit (491)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **173** |\n| **Out-of-body removed** | **5** |\n| **Honest** | **168** |\n"
       },
       {
@@ -21963,8 +21963,8 @@
           }
         ],
         "nativeLoc": 186,
-        "managedLoc": 165,
-        "conversionManagedCommit": "d96ee0dd4fbada702df656d960fc6ab77c85492f"
+        "managedLoc": 190,
+        "conversionManagedCommit": "d2c71e58dc4a67700a983295cac914fa9c1bba39"
       },
       {
         "name": "portal-collect-use-lines-chunk718",
@@ -22462,7 +22462,7 @@
         ],
         "nativeLoc": 221,
         "managedLoc": 258,
-        "conversionManagedCommit": "d96ee0dd4fbada702df656d960fc6ab77c85492f"
+        "conversionManagedCommit": "f55042c2d1ba227794238c4e0eb4daa6024ba42f"
       },
       {
         "name": "p-interaction-poison-damage-chunk732",
@@ -22932,7 +22932,7 @@
         ],
         "nativeLoc": 181,
         "managedLoc": 197,
-        "conversionManagedCommit": "d96ee0dd4fbada702df656d960fc6ab77c85492f"
+        "conversionManagedCommit": "f55042c2d1ba227794238c4e0eb4daa6024ba42f"
       },
       {
         "name": "p-mobj-tid-missile-slam-chunk748",
@@ -26868,7 +26868,7 @@
         ],
         "nativeLoc": 197,
         "managedLoc": 288,
-        "conversionManagedCommit": "d96ee0dd4fbada702df656d960fc6ab77c85492f"
+        "conversionManagedCommit": "f55042c2d1ba227794238c4e0eb4daa6024ba42f"
       },
       {
         "name": "r-interpolate-core-plane-chunk816",
