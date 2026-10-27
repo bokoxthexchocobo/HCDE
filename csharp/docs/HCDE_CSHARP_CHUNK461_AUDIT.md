@@ -15,7 +15,7 @@ P_BounceWall, P_BounceActor, P_ReflectOffActor
 ## Managed
 
 `VmPMapBounceReflect.cs`
-Managed LOC (tally): 156.
+Managed LOC (tally): 180.
 Conversion commit: `13c265a858a009503b629060c5506f80b56bd698`.
 
 ## Padding review (2026-10-21)
@@ -57,7 +57,7 @@ Conversion commit: `13c265a858a009503b629060c5506f80b56bd698`.
 | **Honest** | **170** |
 
 
-**Post-review ratio:** 156/170 managed/native ≈ 92% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 180/170 managed/native ≈ 106% (src file LOC at HEAD; see tally).
 
 ## Tests
 
