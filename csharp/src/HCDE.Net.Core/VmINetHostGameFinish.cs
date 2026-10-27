@@ -3,6 +3,21 @@ namespace HCDE.Net.Core;
 /// <summary>Host session completion and verification decode (<c>i_net.cpp</c> 3545–3717).</summary>
 public static class VmINetHostGameFinish
 {
+    public static bool ClientSlotConnected(byte status, byte cstatNone) => status != cstatNone;
+
+    public static bool SinglePlayerHostImmediateStart(int connectedPlayers) => connectedPlayers == 1;
+
+    public static bool VerificationStreamTooShort(int length, int minimum) => length < minimum;
+
+    public static int ReadVerificationPayloadSize(ReadOnlySpan<byte> stream) =>
+        (stream[1] << 24) | (stream[2] << 16) | (stream[3] << 8) | stream[4];
+
+    public static bool DisconnectPrePacketValid(int bufferLength, int minimum) => bufferLength >= minimum;
+
+    public static bool ClientSlotInRange(int slot, int maxClients) => slot >= 0 && slot < maxClients;
+
+    public static bool SkipNonHostRemoteClient(int remoteClient) => remoteClient != 0;
+
     public static bool HostGameFinishSessionNative(HostGameFinishContext ctx)
     {
         if (ctx.NetLoopWaitForConnections?.Invoke(ctx.ConnectedPlayers) != true)
@@ -16,7 +31,7 @@ public static class VmINetHostGameFinish
         ctx.SetConnectFlowSyncing?.Invoke();
         ctx.SetNetworkDetails?.Invoke(ctx.MaxClients, ctx.DedicatedServerMode ? "server-syncing" : "syncing");
         ctx.NetMessage?.Invoke(ctx.DedicatedServerMode ? "Starting dedicated game" : "Starting game");
-        if (ctx.ConnectedPlayers == 1)
+        if (SinglePlayerHostImmediateStart(ctx.ConnectedPlayers))
         {
             ctx.NetDone?.Invoke();
             ctx.CloseNetwork?.Invoke();
@@ -27,7 +42,7 @@ public static class VmINetHostGameFinish
         ctx.NetLog?.Invoke("Go");
         for (var client = 1; client < ctx.MaxClients; client++)
         {
-            if (ctx.GetStatus?.Invoke(client) == ctx.CstatNone)
+            if (!ClientSlotConnected(ctx.GetStatus?.Invoke(client) ?? ctx.CstatNone, ctx.CstatNone))
                 continue;
             ctx.QueueStartGameService?.Invoke(client);
         }
@@ -49,15 +64,15 @@ public static class VmINetHostGameFinish
     public static string ReadVerificationErrorNative(ReadVerificationErrorContext ctx)
     {
         var stream = ctx.Stream;
-        if (stream.Length < 5)
+        if (VerificationStreamTooShort(stream.Length, 5))
             return "Unknown error";
         if (stream[0] == ctx.VeEngine)
         {
-            if (stream.Length < 7)
+            if (VerificationStreamTooShort(stream.Length, 7))
                 return "Unknown error";
             return $"Engine mismatch: host expected {stream[1]}.{stream[2]}.{stream[3]}, got {stream[4]}.{stream[5]}.{stream[6]}";
         }
-        var size = (stream[1] << 24) | (stream[2] << 16) | (stream[3] << 8) | stream[4];
+        var size = ReadVerificationPayloadSize(stream);
         if (stream[0] == ctx.VeFileUnknown)
             return ctx.FormatUnknownFiles?.Invoke(size, stream) ?? "Unknown error";
         if (stream[0] == ctx.VeFileOrder)
@@ -71,7 +86,7 @@ public static class VmINetHostGameFinish
     {
         while (ctx.GetConnection?.Invoke() is { GotPacket: true } conn)
         {
-            if (ctx.RemoteClient != 0)
+            if (SkipNonHostRemoteClient(ctx.RemoteClient))
                 continue;
             if (ctx.NetBuffer[0] == ctx.NcmdExit)
             {
@@ -82,10 +97,11 @@ public static class VmINetHostGameFinish
                 continue;
             if (ctx.NetBuffer[1] == ctx.PreDisconnect)
             {
-                if (ctx.NetBufferLength < 7 || !ctx.CheckSessionToken?.Invoke(ctx.ReadSessionToken?.Invoke(3) ?? 0) == true)
+                if (!DisconnectPrePacketValid(ctx.NetBufferLength, 7)
+                    || ctx.CheckSessionToken?.Invoke(ctx.ReadSessionToken?.Invoke(3) ?? 0) != true)
                     continue;
                 var slot = ctx.NetBuffer[2];
-                if (slot < 0 || slot >= ctx.MaxClients)
+                if (!ClientSlotInRange(slot, ctx.MaxClients))
                     continue;
                 ctx.ClearClient?.Invoke(slot);
                 ctx.SubtractNetworkClient?.Invoke(slot);
