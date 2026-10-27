@@ -21,7 +21,7 @@ public static class VmPMapProjectileCombat
     {
         if (ShouldRecordSpechit(special))
             spechit.Add(new SpechitEntry { Line = line, Refpos = refpos, Oldrefpos = oldrefpos });
-        if (ShouldRecordPortalHit(isPortal))
+        if (isPortal)
             portalhit.Add(new SpechitEntry { Line = line, Refpos = refpos, Oldrefpos = oldrefpos });
     }
 
@@ -35,8 +35,6 @@ public static class VmPMapProjectileCombat
     }
 
     public static bool ShouldRecordSpechit(int special) => special != 0;
-
-    public static bool ShouldRecordPortalHit(bool isPortal) => isPortal;
 
     public static bool ShouldAdjustPortalCeiling(double openTop, double zofs, double ceilingz) =>
         openTop - zofs < ceilingz;
