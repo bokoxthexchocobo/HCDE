@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 224200
+    "managedCSharpLoc": 224197
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 51165,
+    "convertedThisRunNative": 51345,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 78838,
+    "convertedThisRunManaged": 78975,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 437640,
+    "remainingNative": 437460,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 69692,
+    "convertedBehaviorNative": 69872,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 70446,
-    "convertedBehaviorManaged": 88509,
+    "combinedBehaviorNative": 70626,
+    "convertedBehaviorManaged": 88646,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -32914,6 +32914,37 @@
         "nativeLoc": 164,
         "managedLoc": 166,
         "conversionManagedCommit": "40c40a1d56d57b2311f32e5b5ae891b8357a6124"
+      },
+      {
+        "name": "p-lnspec-polyobj-helpers-chunk898",
+        "bucket": "conversion",
+        "note": "`ChangeMap`/crush helpers, `MODtoDamageType`, `LS_NOP`, and polyobj movers (`p_lnspec.cpp` **60\u2013239**). Front slice of **1\u20131550** conversion gap; stops before `LS_Door_Close` (**241+**).",
+        "auditSeams": "`EV_RotatePoly`, `EV_MovePoly`, `EV_OpenPolyDoor`, `EV_StopPoly`, and `SN_StopSequence` are not hosted.",
+        "auditRationale": "Credits EE change remap, damage-type name mapping, ACS opcode table, and polyobj argument packing via `VmPLnspecArgMacros` + `VmPLnspecPolyobjLineSpecials`.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 60 --end 239` and `--chunk 898 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| `VmPLnspecArgMacros` | `ChangeMap` **60**, `CRUSHTYPE` **72\u201383**, macro helpers **65\u201370** |\n| `VmPLnspecPolyobjLineSpecials` | `NamedACSToNormalACS` **89\u201398**, `MODtoDamageType` **100\u2013122**, `LS_NOP` + polyobj **126\u2013239** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **180** |\n| Net behavior-ported | **180** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPLnspecArgMacros.cs",
+          "csharp/src/HCDE.Playsim/VmPLnspecPolyobjLineSpecials.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "ChangeMap",
+            "start": 60,
+            "end": 239,
+            "tests": [
+              "VmPLnspecPolyobjLineSpecialsTests.ModToDamageType_Telefrag",
+              "VmPLnspecPolyobjLineSpecialsTests.MoveTimes8_MultipliesDistance",
+              "VmPLnspecPolyobjLineSpecialsTests.DoorSlide_UsesSlideKind",
+              "VmPLnspecPolyobjLineSpecialsTests.MoveToSpot_FailsWithoutActor",
+              "VmPLnspecFloorCeilingTests.Speed_DividesByEight"
+            ]
+          }
+        ],
+        "nativeLoc": 180,
+        "managedLoc": 137,
+        "conversionManagedCommit": "dd7b41a6fe86ae30eaa6a48a0d3addb42e4cc1c8"
       }
     ],
     "behaviorNativeChecksum": 508086,
