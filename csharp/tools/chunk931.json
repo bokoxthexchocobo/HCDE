@@ -1,0 +1,31 @@
+[
+  {
+    "name": "p-lnspec-blocking-automap-camera-chunk931",
+    "bucket": "conversion",
+    "note": "`LS_Line_SetTextureScale` close through `LS_ChangeCamera` head (`p_lnspec.cpp` **2719–2868**). Follows **930** (**≤2718**); `ChangeCamera` tail and **2882+** deferred.",
+    "auditSeams": "Line iterators, `line_t` flag mutation, player iteration, `R_ClearPastViewer`, and `AMLS_COUNT` remain host seams.",
+    "auditRationale": "Honest **150**-line slice in **2269–3129** corridor; exclusive `VmPLnspecBlockingAutomapCamera931Slice.cs`.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 2719 --end 2868` and `--chunk 931 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| Texture scale close | **2715–2719** |\n| `BlockingRejectZeroId` / `DecodeBlockingArgs` / `ApplyBlocking` | `LS_Line_SetBlocking` **2721–2765** |\n| `AutomapFlagsRejectZeroId` / `DecodeAutomapFlags` / `ApplyAutomapFlags` | `LS_Line_SetAutomapFlags` **2767–2798** |\n| `AutomapStyleInRange` | `LS_Line_SetAutomapStyle` **2800–2815** |\n| `BeginChangeCamera` / `ShouldIterateAllPlayers` | `LS_ChangeCamera` **2817–2858** |\n| `SelectCameraForPlayer` / `UpdateCheatsForCamera` | **2842–2871** (through **2868** in band) |\n| `ShouldClearViewerOnCameraChange` | **2853–2856**, **2873–2876** (seam) |\n| `ResolveCameraFromTid` | **2821–2829** |\n\n### Chunk **931** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**930** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPLnspecBlockingAutomapCamera931Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Line_SetBlocking",
+        "start": 2719,
+        "end": 2868,
+        "tests": [
+          "VmPLnspecBlockingAutomapCamera931SliceTests.Blocking_RejectsZeroLineId",
+          "VmPLnspecBlockingAutomapCamera931SliceTests.Blocking_DecodesSetAndClearWords",
+          "VmPLnspecBlockingAutomapCamera931SliceTests.AutomapFlags_RejectsZeroId",
+          "VmPLnspecBlockingAutomapCamera931SliceTests.AutomapStyle_RejectsOutOfRange",
+          "VmPLnspecBlockingAutomapCamera931SliceTests.ChangeCamera_SetsRevertCheatWhenArg2",
+          "VmPLnspecBlockingAutomapCamera931SliceTests.ChangeCamera_IteratesAllPlayersWhenWhoSet",
+          "VmPLnspecBlockingAutomapCamera931SliceTests.ApplyBlocking_MergesFlags"
+        ]
+      }
+    ]
+  }
+]
