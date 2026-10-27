@@ -13,8 +13,8 @@ Whole `GetPacket` (`i_net.cpp` 2119–2335)
 ## Managed
 
 `VmINetGetPacket.cs`
-Managed LOC (tally): 207.
-Conversion commit: `13a3e76a1217c5e2008139e271a3456efd27a600`.
+Managed LOC (tally): 219.
+Conversion commit: `5cb16e161c3b2079c0b16db87d6ba41b364e0f96`.
 
 ## Padding review (2026-10-21)
 
@@ -31,7 +31,7 @@ Conversion commit: `13a3e76a1217c5e2008139e271a3456efd27a600`.
 | **Honest** | **217** |
 
 
-**Post-review ratio:** 207/217 managed/native ≈ 95% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 219/217 managed/native ≈ 101% (src file LOC at HEAD; see tally).
 
 ## Tests
 
