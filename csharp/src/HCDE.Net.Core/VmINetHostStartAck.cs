@@ -3,6 +3,29 @@ namespace HCDE.Net.Core;
 /// <summary>Start-game ack wait loop and abort send (<c>i_net.cpp</c> 3366–3460).</summary>
 public static class VmINetHostStartAck
 {
+    public const byte HpsStartGameAck = 11;
+    public const byte HpsHeartbeat = 1;
+
+    public static bool ClientSlotConnected(byte status, byte cstatNone) => status != cstatNone;
+
+    public static bool IsHcdePregameSetupPacket(byte[] buffer, byte ncmdSetup, byte preHcdeService) =>
+        buffer[0] == ncmdSetup && buffer[1] == preHcdeService;
+
+    public static bool StartAckFromNegotiatedClient(int remoteClient, bool hcdeConnect) =>
+        remoteClient > 0 && hcdeConnect;
+
+    public static bool AuthorityHostAbortPacket(int consolePlayer) => consolePlayer == 0;
+
+    public static bool SinglePlayerHostSession(int maxClients) => maxClients == 1;
+
+    public static int ClampDedicatedPlayableSlots(int requested, int svMaxPlayers)
+    {
+        var playable = requested > 0 ? requested : 0;
+        if (svMaxPlayers > 0)
+            playable = Math.Max(playable, svMaxPlayers);
+        return playable <= 0 ? 1 : playable;
+    }
+
     public static bool HostCheckStartGameAcksNative(HostCheckStartGameAcksContext ctx)
     {
         var connectedPlayers = ctx.ConnectedPlayers;
@@ -19,10 +42,10 @@ public static class VmINetHostStartAck
                 }
                 continue;
             }
-            if (ctx.NetBuffer[0] != ctx.NcmdSetup || ctx.NetBuffer[1] != ctx.PreHcdeService)
+            if (!IsHcdePregameSetupPacket(ctx.NetBuffer, ctx.NcmdSetup, ctx.PreHcdeService))
                 continue;
             var remote = ctx.RemoteClient;
-            if (remote <= 0 || ctx.IsHcdeConnect?.Invoke(remote) != true)
+            if (!StartAckFromNegotiatedClient(remote, ctx.IsHcdeConnect?.Invoke(remote) == true))
             {
                 ctx.DebugMark?.Invoke($"ignored HCDE start-ack packet from unnegotiated client {remote}");
                 continue;
@@ -30,7 +53,7 @@ public static class VmINetHostStartAck
             var service = ctx.NetBuffer[2];
             switch (service)
             {
-            case 11:
+            case HpsStartGameAck:
                 if (ctx.CheckHcdePregameService?.Invoke(remote, ctx.HcdeServiceHeaderSize, "host service start ack") == true)
                 {
                     if (ctx.HasStartGameAck?.Invoke(remote) != true)
@@ -38,7 +61,7 @@ public static class VmINetHostStartAck
                     ctx.SetHasStartGameAck?.Invoke(remote, true);
                 }
                 break;
-            case 1:
+            case HpsHeartbeat:
                 ctx.CheckHcdePregameService?.Invoke(remote, ctx.HcdeServiceHeaderSize, "host service start heartbeat");
                 break;
             default:
@@ -51,7 +74,7 @@ public static class VmINetHostStartAck
         var acknowledged = 1;
         for (var client = 1; client < ctx.MaxClients; client++)
         {
-            if (ctx.GetStatus?.Invoke(client) == ctx.CstatNone)
+            if (!ClientSlotConnected(ctx.GetStatus?.Invoke(client) ?? ctx.CstatNone, ctx.CstatNone))
                 continue;
             var drop = ctx.DropClientForHcdeTimeout?.Invoke(client, connectedPlayers, "start acknowledgement");
             if (drop is { Dropped: true } dropped)
@@ -75,13 +98,13 @@ public static class VmINetHostStartAck
     public static void SendAbortNative(SendAbortContext ctx)
     {
         ctx.NetBuffer[0] = ctx.NcmdExit;
-        if (ctx.ConsolePlayer == 0)
+        if (AuthorityHostAbortPacket(ctx.ConsolePlayer))
         {
             ctx.NetBuffer[1] = 0;
             ctx.NetBufferLength = 2;
             for (var client = 1; client < ctx.MaxClients; client++)
             {
-                if (ctx.GetStatus?.Invoke(client) != ctx.CstatNone)
+                if (ClientSlotConnected(ctx.GetStatus?.Invoke(client) ?? ctx.CstatNone, ctx.CstatNone))
                     ctx.SendPacket?.Invoke(client);
             }
         }
@@ -118,11 +141,7 @@ public static class VmINetHostStartAck
         var maxClients = ctx.MaxClients;
         if (ctx.DedicatedServerMode)
         {
-            var playableSlots = requestedClients > 0 ? requestedClients : 0;
-            if (ctx.SvMaxPlayers > 0)
-                playableSlots = Math.Max(playableSlots, ctx.SvMaxPlayers);
-            if (playableSlots <= 0)
-                playableSlots = 1;
+            var playableSlots = ClampDedicatedPlayableSlots(requestedClients, ctx.SvMaxPlayers);
             if (playableSlots >= ctx.MaxPlayers)
                 ctx.FatalError?.Invoke($"Cannot host a dedicated game with {playableSlots} client slots.");
             maxClients = playableSlots + 1;
@@ -142,7 +161,7 @@ public static class VmINetHostStartAck
         ctx.SetHostReady?.Invoke(ctx.ConsolePlayer);
         ctx.SetupUserInfo?.Invoke();
         ctx.DebugMark?.Invoke("host userinfo ready");
-        if (maxClients == 1)
+        if (SinglePlayerHostSession(maxClients))
         {
             ctx.SetTicDup?.Invoke(1);
             ctx.SetMultiplayer?.Invoke(true);
