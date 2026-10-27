@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 49342,
+  "convertedThisRunNative": 49511,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 77712,
+  "convertedThisRunManaged": 77802,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 439463,
+  "remainingNative": 439294,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 67869,
+  "convertedBehaviorNative": 68038,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 68623,
-  "convertedBehaviorManaged": 87383,
+  "combinedBehaviorNative": 68792,
+  "convertedBehaviorManaged": 87473,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -32646,6 +32646,50 @@
       "nativeLoc": 164,
       "managedLoc": 108,
       "conversionManagedCommit": "744f1ac47f969ad203da0b229ff7ebc95ab10a95"
+    },
+    {
+      "name": "action-remove-telefog-chunk583",
+      "bucket": "conversion",
+      "note": "`A_RemoveTarget` through `A_SwapTeleFog` (`p_actionfunctions.cpp` **4466\u20134635**). `DoRemove` body stays on **547** (**4441\u20134463**); stops before **547** `A_SetHealth` (**4652+**).",
+      "auditSeams": "`COPY_AAPTR`, `P_RemoveThing`, thinker iterators, and `PClassActor` filter resolution are not hosted.",
+      "auditRationale": "Remove-family dispatch guards and telefog assignment/swap mirrored by `VmActorRemoveActions` (parallel to **581** kill wrappers); **547** keeps exclusive `VmActorDoRemove.cs` for `DoRemove` filter policy only.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 583 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `ShouldRemoveWhenPresent` | `A_RemoveTarget` **4478\u20134480**, `A_RemoveTracer` **4497\u20134499**, `A_Remove` **4592\u20134594** |\n| `ShouldRemoveMaster` | `A_RemoveMaster` **4516\u20134518** |\n| `ShouldRemoveChildInIterator` / `IsRemoveChildOfMaster` | `A_RemoveChildren` **4541\u20134543** |\n| `ShouldRunRemoveSiblingsLoop` / `RemoveSiblingsLoop` | `A_RemoveSiblings` **4565\u20134571** |\n| `ShouldRemoveReference` | `A_Remove` **4591\u20134594** |\n| `AssignTeleFogTypes` | `A_SetTeleFog` **4613\u20134614** |\n| `ShouldSwapTeleFog` / `SwapTeleFogWhenDistinct` | `A_SwapTeleFog` **4628\u20134632** |\n\n### vs chunk **547** / **581**\n\n| | Lines |\n|--|------:|\n| **547** (`DoRemove`) | **4441\u20134463** |\n| **581** (kill family) | **4158\u20134422** |\n| **583** (this row) | **4466\u20134635** (**170** function-edge hull) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **170** |\n| Net behavior-ported | **170** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmActorRemoveActions.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_RemoveTarget",
+          "start": 4466,
+          "end": 4597,
+          "tests": [
+            "VmActorRemoveActionsTests.ShouldRemoveWhenPresent_Target",
+            "VmActorRemoveActionsTests.ShouldRemoveTarget_AndTracer_UsePresenceGate",
+            "VmActorRemoveActionsTests.ShouldRemoveMaster_WhenSet",
+            "VmActorRemoveActionsTests.ShouldRemoveChildInIterator_MatchesHealthGate",
+            "VmActorRemoveActionsTests.RemoveSiblingsLoop_RequiresDistinctActor",
+            "VmActorRemoveActionsTests.ShouldRemoveSiblingCandidate_MatchesNativeGuard",
+            "VmActorRemoveActionsTests.ShouldRemoveReference_WhenNonNull"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_SetTeleFog",
+          "start": 4599,
+          "end": 4635,
+          "tests": [
+            "VmActorRemoveActionsTests.AssignTeleFogTypes_MatchesNativeFields",
+            "VmActorRemoveActionsTests.SwapTeleFogWhenDistinct_SkipsWhenEqual",
+            "VmActorRemoveActionsTests.ShouldSwapTeleFog_WhenTypesDiffer",
+            "VmActorRemoveActionsTests.ApplySwappedTeleFogFields_RotatesDistinctTypes"
+          ]
+        }
+      ],
+      "nativeLoc": 169,
+      "managedLoc": 90,
+      "conversionManagedCommit": "92f4c99083b4dae93e8217790fd4c90925b31cf6"
     }
   ],
   "behaviorNativeChecksum": 508086,
