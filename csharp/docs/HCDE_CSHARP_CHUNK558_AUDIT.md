@@ -18,7 +18,7 @@ GetBoneEulerAngles, TransformByBone, GetBoneMatrixRaw (6152–6329)
 ## Managed
 
 `VmActorBoneEulerTransform.cs`
-Managed LOC (tally): 153.
+Managed LOC (tally): 164.
 Conversion commit: `218d0fa5dea38aee1a21669a8e2a641b56c76d55`.
 
 ## Padding review (2026-10-21)
@@ -43,7 +43,7 @@ Whole-function ports only.
 | **Honest** | **165** |
 
 
-**Post-review ratio:** 153/165 managed/native ≈ 93% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 164/165 managed/native ≈ 99% (src file LOC at HEAD; see tally).
 
 ## Tests
 

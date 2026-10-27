@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 222947
+    "managedCSharpLoc": 222958
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 74840,
+    "convertedThisRunManaged": 74851,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 84511,
+    "convertedBehaviorManaged": 84522,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -610,7 +610,7 @@
         "name": "p-map-radius-chunk1",
         "nativeLoc": 0,
         "managedLoc": 0,
-        "note": "p_map.cpp P_GetRadiusDamage/P_RadiusAttack flat subset; rocket splash parity. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage.",
+        "note": "p_map.cpp P_GetRadiusDamage/P_RadiusAttack flat subset; rocket splash parity. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage.",
         "bucket": "conversion",
         "nativeRanges": [],
         "conversionManagedCommit": "5376369124e3b7284de0c4c17ca2ef1c95124e4b",
@@ -621,7 +621,7 @@
         "bucket": "conversion",
         "nativeLoc": 0,
         "managedLoc": 0,
-        "note": "p_map.cpp P_RadiusAttack thrust path only (MapRadiusAttack.ApplyExplosionThrust + damage-mask thrustless). Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage.",
+        "note": "p_map.cpp P_RadiusAttack thrust path only (MapRadiusAttack.ApplyExplosionThrust + damage-mask thrustless). Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage.",
         "nativeRanges": [],
         "conversionManagedCommit": "5376369124e3b7284de0c4c17ca2ef1c95124e4b",
         "retired": true
@@ -631,7 +631,7 @@
         "bucket": "conversion",
         "nativeLoc": 0,
         "managedLoc": 0,
-        "note": "p_enemy.cpp P_Move spechit door/push and MF6_JUMPDOWN dropoff assist (MonsterBlockedMoveActions + MoveCore). Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports.",
+        "note": "p_enemy.cpp P_Move spechit door/push and MF6_JUMPDOWN dropoff assist (MonsterBlockedMoveActions + MoveCore). Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports.",
         "nativeRanges": [],
         "conversionManagedCommit": "d041aa6387365f324544a9ac7272a541c1ef2719",
         "retired": true
@@ -660,7 +660,7 @@
         "bucket": "conversion",
         "nativeLoc": 0,
         "managedLoc": 0,
-        "note": "p_enemy.cpp A_DoChase CantLeaveFloorPic illegal-step rollback (2740\u20132753). Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports.",
+        "note": "p_enemy.cpp A_DoChase CantLeaveFloorPic illegal-step rollback (2740\u20132753). Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports.",
         "nativeRanges": [],
         "conversionManagedCommit": "7a3a03aee4c5d634fea5b21957a1d77a6ee54df4",
         "retired": true
@@ -696,7 +696,7 @@
         "bucket": "recognition",
         "nativeLoc": 0,
         "managedLoc": 0,
-        "note": "p_mobj.cpp movement/thinker paths already in ActorPhysics/ProjectileActor (run 9 re-audit). Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port.",
+        "note": "p_mobj.cpp movement/thinker paths already in ActorPhysics/ProjectileActor (run 9 re-audit). Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port.",
         "nativeRanges": []
       },
       {
@@ -2812,7 +2812,7 @@
         "bucket": "conversion",
         "nativeLoc": 21,
         "managedLoc": 88,
-        "note": "P_PoisonMobj, received-poison tick cadence, SECF_KILLMONSTERS floor kill. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732.",
+        "note": "P_PoisonMobj, received-poison tick cadence, SECF_KILLMONSTERS floor kill. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732.",
         "nativeRanges": [
           {
             "file": "src/playsim/p_mobj.cpp",
@@ -4440,7 +4440,7 @@
         "note": "VmGrp/VmHog/VmRff readers in b051701e; chunk 71ea4f56 publicized types and added VmLegacyArchiveReaderTests only. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
         "nativeRanges": [],
         "nativeLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditPaddingReview": "\n\n### Out-of-body uncredit (104)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **179** |\n| **Out-of-body removed** | **179** |\n| **Honest** | **0** |\n",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "managedSourceFiles": [],
@@ -8128,7 +8128,7 @@
         "managedLoc": 0,
         "note": "KEYCONF lump comment strip, addkeysection/addmenukey, LoadKeys, player class KEYCONF helpers. Retired (2026-10-24): `--band` hull overlaps existing credit (keysections-save-chunk147 src/gamedata/keysections.cpp 57-66).",
         "nativeRanges": [],
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "nativeLoc": 0,
         "auditPaddingReview": "\n\n### Out-of-body uncredit (207)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **239** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **239** |\n",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
@@ -8170,7 +8170,7 @@
             ]
           }
         ],
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "nativeLoc": 196,
         "auditPaddingReview": "\n\n### Out-of-body uncredit (208)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **196** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **196** |\n"
       },
@@ -8180,7 +8180,7 @@
         "managedLoc": 0,
         "note": "VOXELDEF sprite name list, option block, ApplyVoxelToSprites. Retired (2026-10-23): out-of-body credit removed; honest **54** < **150**.",
         "nativeRanges": [],
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "nativeLoc": 0,
         "auditPaddingReview": "\n\n### Out-of-body uncredit (209)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **184** |\n| **Out-of-body removed** | **130** |\n| **Honest** | **54** |\n",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
@@ -8241,7 +8241,7 @@
         "managedLoc": 0,
         "note": "DSDA OPTIONS defaults, option_list keys, parseOptions apply. Retired (2026-10-23): out-of-body credit removed; honest **52** < **150**.",
         "nativeRanges": [],
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "nativeLoc": 0,
         "auditPaddingReview": "\n\n### Out-of-body uncredit (211)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **99** |\n| **Out-of-body removed** | **47** |\n| **Honest** | **52** |\n",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
@@ -8254,7 +8254,7 @@
         "managedLoc": 0,
         "note": "R_InitSpriteDefs texture hash chain only (trimmed re-audit) Retired (2026-10-23): out-of-body credit removed; honest **14** < **150**.",
         "nativeRanges": [],
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "nativeLoc": 0,
         "auditRationale": "Credits `SpriteNameId` hash bucket linking in `R_InitSpriteDefs` \u2014 not the full voxel lump name scan loop.",
         "auditSeams": "",
@@ -8269,7 +8269,7 @@
         "managedLoc": 0,
         "note": "InitActorNumsFromMapinfo resolve and P_GetSpawnableType. Retired (2026-10-23): out-of-body credit removed; honest **54** < **150**.",
         "nativeRanges": [],
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "nativeLoc": 0,
         "auditPaddingReview": "\n\n### Out-of-body uncredit (213)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **54** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **54** |\n",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
@@ -8282,7 +8282,7 @@
         "managedLoc": 0,
         "note": "ParseSpawnMap and InitClassMap. Retired (2026-10-23): out-of-body credit removed; honest **76** < **150**.",
         "nativeRanges": [],
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "nativeLoc": 0,
         "auditPaddingReview": "\n\n### Out-of-body uncredit (214)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **77** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **76** |\n",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
@@ -8295,7 +8295,7 @@
         "managedLoc": 0,
         "note": "UMapInfo multi-string, lump name, player action option. Retired (2026-10-23): out-of-body credit removed; honest **58** < **150**.",
         "nativeRanges": [],
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "nativeLoc": 0,
         "auditPaddingReview": "\n\n### Out-of-body uncredit (215)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **58** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **58** |\n",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
@@ -8323,7 +8323,7 @@
         "managedLoc": 0,
         "note": "TranslateLineDef flag translation and zero special. Retired (2026-10-23): out-of-body credit removed; honest **58** < **150**.",
         "nativeRanges": [],
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "nativeLoc": 0,
         "auditPaddingReview": "\n\n### Out-of-body uncredit (217)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **58** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **58** |\n",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
@@ -8336,7 +8336,7 @@
         "managedLoc": 0,
         "note": "ParseStandardProperty subset for UMAPINFO. Retired (2026-10-23): out-of-body credit removed; honest **62** < **150**.",
         "nativeRanges": [],
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "nativeLoc": 0,
         "auditPaddingReview": "\n\n### Out-of-body uncredit (218)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **62** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **62** |\n",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
@@ -8349,7 +8349,7 @@
         "managedLoc": 0,
         "note": "MAPINFO ParseSkill defaults and factor options. Retired (2026-10-23): out-of-body credit removed; honest **68** < **150**.",
         "nativeRanges": [],
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "nativeLoc": 0,
         "auditPaddingReview": "\n\n### Out-of-body uncredit (219)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **68** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **68** |\n",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
@@ -8362,7 +8362,7 @@
         "managedLoc": 0,
         "note": "TranslateLineDef simple line translation branch. Retired (2026-10-23): out-of-body credit removed; honest **60** < **150**.",
         "nativeRanges": [],
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "nativeLoc": 0,
         "auditPaddingReview": "\n\n### Out-of-body uncredit (220)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **60** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **60** |\n",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
@@ -8376,7 +8376,7 @@
         "note": "UMAPINFO extended properties, map lump ingest, CommitUMapinfo. Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **170** (50% of honest **339**).",
         "nativeRanges": [],
         "nativeLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditPaddingReview": "\n\n### Out-of-body uncredit (221)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **339** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **339** |\n",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "managedSourceFiles": [],
@@ -11977,7 +11977,7 @@
       {
         "name": "p-mobj-bounce-seek-chunk460",
         "bucket": "conversion",
-        "note": "PlayBounceSound, FloorBounceMissile, CanSeek, P_SeekerMissile Trimmed FloorBounceMissile after chunk726. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port.",
+        "note": "PlayBounceSound, FloorBounceMissile, CanSeek, P_SeekerMissile Trimmed FloorBounceMissile after chunk726. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port.",
         "auditSeams": "`S_Sound`, `P_ExplodeMissile`, `SetState`, and `VelFromAngle` are not hosted.",
         "auditRationale": "Credits bounce audio, floor/sky bounce branches, and seeker turn/pitch from `p_mobj.cpp`.",
         "managedSourceFiles": [
@@ -12037,7 +12037,7 @@
       {
         "name": "p-interaction-poison-switch-chunk462",
         "bucket": "conversion",
-        "note": "OkayToSwitchTarget, P_PoisonPlayer, P_PoisonDamage Trimmed P_PoisonPlayer/P_PoisonDamage after chunk732. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733.",
+        "note": "OkayToSwitchTarget, P_PoisonPlayer, P_PoisonDamage Trimmed P_PoisonPlayer/P_PoisonDamage after chunk732. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733.",
         "auditSeams": "`VMCall`, `P_DamageMobj`, `CallDie`, and skill/damage pipelines are not hosted.",
         "auditRationale": "Credits target-switch infight policy, player poison setup, and poison damage telefrag/buddha gates from `p_interaction.cpp` (P_PoisonMobj already chunk57).",
         "managedSourceFiles": [],
@@ -12250,7 +12250,7 @@
         ],
         "nativeLoc": 190,
         "managedLoc": 396,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "portCommits": [
           "4d6fead63aeae227fdcfd7c8e0f87d411e66042a"
         ],
@@ -12302,7 +12302,7 @@
       {
         "name": "p-interaction-damage-late-chunk474",
         "bucket": "conversion",
-        "note": "DamageMobj team scaling, player armor/health, drain, and death tail Merged: [473]. Trimmed DamageMobj 1281\u20131571 after chunk729. Trimmed DamageMobj 1281\u20131571 after chunk729. Trimmed DamageMobj 1281\u20131571 after chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729.",
+        "note": "DamageMobj team scaling, player armor/health, drain, and death tail Merged: [473]. Trimmed DamageMobj 1281\u20131571 after chunk729. Trimmed DamageMobj 1281\u20131571 after chunk729. Trimmed DamageMobj 1281\u20131571 after chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729.",
         "auditSeams": "`P_DamageMobj` hosted paths, `CallDie`, `P_GiveBody`, `S_Sound`, and event managers are not fully hosted.",
         "auditRationale": "Credits friendly-fire scaling, player invuln/armor/buddha, power-drain selection, monster buddha, and death attribution from `p_interaction.cpp` (1320\u20131571).",
         "managedSourceFiles": [],
@@ -12709,7 +12709,7 @@
         ],
         "nativeLoc": 263,
         "managedLoc": 366,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `BloodSplatsDisabled` / `SkipBleedActor` / `DefaultBleedDistance` / `JitterAngle` / `RandomBleedPitch` / `RandomBleedAngle` | `P_TraceBleed` 5245\u20135327 (5247: `if (!cl_bloodsplats)`; 5248: `return;`; 5254: `if ((actor->flags & MF_NOBLOOD) ||`) |\n| `MissileBleedSkip` / `PitchFromMissileVel` | `P_TraceBleed` 5329\u20135361 (5344: `if (target == NULL || missile->flags3 & MF3_BLOODLESSIMPACT)`; 5346: `return;`; 5349: `if (missile->Vel.Z != 0)`) |\n| `LineTargetBleedSkip` | `P_TraceBleed` 5369\u20135394 (5371: `if (t->linetarget == NULL || puff->flags3 & MF3_BLOODLESSIMPACT)`; 5373: `return;`; 5388: `if (target != NULL)`) |\n| `WallHitCreatesDecal` / `EvaluateRailActorHit` / `PortalCrossing` / `NonActorHitStops` / `RailTraceFlags` / `RailShootZ` / `RailPuffFlags` / `RailStopAtOne` / `RailBleedAllowed` | `ProcessRailHit` 5426\u20135487 (5429: `if (res.HitType == TRACE_CrossingPortal)`; 5436: `return TRACE_Continue;`; 5439: `if (res.HitType != TRACE_HitActor)`) |\n| `P_RailAttack` | `P_RailAttack` 5495\u20135567 (5500: `if (puffclass == NULL)`; 5513: `if (source->Level->localEventManager->WorldRailgunPreFired(damagetype\u2026`; 5515: `return;`) |\n| `ShouldRunTraceBleed` / `PlanBleedSprayPass` / `BuildBleedTraceIteration` / `TryPrepareWallDecal` / `RunMissileTargetBleed` / `RunLineTargetBleed` / `RunActorOnlyBleed` / `ProcessRailHitPolicy` / `AfterRailActorRecorded` / `BuildRailAttackSetup` / `RunTraceBleedSprayLoop` | bleed spray loop **5294\u20135326**, overload dispatch **5329\u20135394**, `ProcessRailHit` **5426\u20135487**, rail setup **5524\u20135567** |\n\n### Out-of-body uncredit (482)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **277** |\n| **Out-of-body removed** | **14** |\n| **Honest** | **263** |\n",
         "auditManagedLocJustification": "Bleed spray loop and rail `ProcessRailHit`/`P_RailAttack` setup helpers mirror control flow without hosting `Trace`, `DImpactDecal::StaticCreate`, or `pr_tracebleed`."
       },
@@ -12799,7 +12799,7 @@
         ],
         "nativeLoc": 154,
         "managedLoc": 205,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SkipWhenSpecialFloorclip` / `ComputeShallowestClip` / `RunAdjustFloorClip` / terrain+3D helpers | `AdjustFloorClip` 6006\u20136071 |\n| `PlayerSubValid` / `RunPlayerPointerSubstitution` / `SubstitutePlayerPointers` / `SubstituteSectorSoundTargets` | `PlayerPointerSubstitution` 6093\u20136133 |\n| `MorphSubstitutionBlocked` / `EvaluateMorphSubstitution` / `RunPreMorphHooks` / morph gates | `MorphPointerSubstitution` 6143\u20136190 |\n\n### Out-of-body uncredit (485)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **155** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **154** |\n"
       },
       {
@@ -12882,7 +12882,7 @@
         ],
         "nativeLoc": 168,
         "managedLoc": 241,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `ResolveThingFloorType` / `UseActorFloorTerrain` / `Valid3dFloor` / `SkipUnderwaterFloor` / `WalkDownThroughFloorPortal` | `P_GetThingFloorType` 7475\u20137485 (7477: `if (thing->floorterrain >= 0)`; 7479: `return thing->floorterrain;`; 7483: `return thing->Sector->GetTerrain(sector_t::floor);`) |\n| `HitWaterFlags` | `HitWaterFlags` 7494\u20137498 |\n| `CompareZForCheckAbove` / `SelectFloorTerrain` / `ReturnLiquidOnHeightSecPlane` / `SkipWhenPredicting` / `CheckAboveCenter` / `Splashable3dTop` / `ZNearPlane` / `BlockBelowBottomPlane` / `UseHeightSecTerrain` / `NoSplashDefinition` / `DealDamageOnLand` / `SkipNovelLowVelocity` / `SmallSplashMass` / `AllowSplash` / `UseSmallSplashDef` / `ClientSideSmallSplash` / `LiquidWithoutSplash` / `WalkUpThroughCeilingPortal` / `TrySplashAt3dTop` / `RejectBelowBottom` / `SpawnSmallSplash` / `SpawnRegularSplash` / `ReturnLiquidOnly` | `P_HitWater` 7500\u20137656 (7502: `if (thing->player && (thing->player->cheats & CF_PREDICTING))`; 7503: `return false;`; 7511: `if (checkabove)`) |\n\n### Out-of-body uncredit (491)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **173** |\n| **Out-of-body removed** | **5** |\n| **Honest** | **168** |\n"
       },
       {
@@ -12985,7 +12985,7 @@
         ],
         "nativeLoc": 311,
         "managedLoc": 491,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `BeginInvasionRegistration` | `SpawnMapThing` 7095\u20137106 |\n| `BuildPuffPostSpawnOutcome` / `SelectPuffCrashState` / `PlanPuffParticles` / `PlanPuffSounds` / `ApplyPuffPositionZ` / `ApplyPuffTicsRandomize` / `SpawnPuffActionRequiresType` | `P_SpawnPuff` 7116\u20137200; `DEFINE_ACTION_FUNCTION(AActor, SpawnPuff)` 7202\u20137215 |\n| `PlanBloodSpawnInitial` / `PlanBloodDamageState` / `WalkParentChainForBloodAdvance` / `RunSpawnBloodFinish` | `P_SpawnBlood` 7223\u20137318 |\n| `PlanBloodSplatter` | `P_BloodSplatter` 7337\u20137368 |\n| `PlanBloodSplatter2` | `P_BloodSplatter2` 7376\u20137408 |\n| `PlanRipperBlood` / `ResolveBloodTypeCvar` | `P_RipperBlood` 7429\u20137467 |\n| Micro-helpers (`PuffTypeValid`, `DamageStateAdvance`, splatter velocity, ripper offset, etc.) | same bands (crash priority, translation, bloodtype cvar gates) |\n\n### Out-of-body uncredit (489)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **311** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **311** |\n",
         "auditManagedLocJustification": "Puff/blood/splatter/ripper bodies are split across two VM files with explicit post-spawn plans and parent-chain state walk; managed LOC exceeds native due to named plan structs instead of inlined `Spawn`/`SetState` calls."
       },
@@ -13325,7 +13325,7 @@
         ],
         "nativeLoc": 176,
         "managedLoc": 237,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `DamageTypeSet` | `CallTakeSpecialDamage` 8621\u20138634 (8630: `return retval;`; 8632: `else return TakeSpecialDamage(inflictor, source, damage, damagetype);`) |\n| `SkipCrashWhenDontCorpse` / `CrashEligible` / `ExtremeCrashByHealth` / `PickExtremeTypedCrash` / `PickNormalTypedCrash` / `PickExtremeGenericCrash` / `PickNormalGenericCrash` / `MarkCrashedFlags3` | `Crash` 8636\u20138677 (8639: `if(!(flags6 & MF6_DONTCORPSE))`; 8641: `if (((flags & MF_CORPSE) || (flags6 & MF6_KILLED)) &&`; 8648: `if (DamageType != NAME_None)`) |\n| `AActor::SetIdle` | `SetIdle` 8679\u20138684 (8682: `if (idle == NULL) idle = SpawnState;`) |\n| `DefaultHealth` / `NonMonsterHealth` / `ScaleHealth` / `SpawnHealth` | `SpawnHealth` 8686\u20138703 (8689: `if (!(flags3 & MF3_ISMONSTER) || defhealth == 0)`; 8691: `return defhealth;`; 8693: `else if (flags & MF_FRIENDLY)`) |\n| `AActor::GetMaxHealth` | `GetMaxHealth` 8705\u20138715 (8714: `return ret;`) |\n| `RaiseRequiresCorpse` / `RaiseBlockedByTics` | `GetRaiseState` 8717\u20138736 (8719: `if (!(flags & MF_CORPSE))`; 8721: `return NULL; // not a monster`; 8724: `if (tics != -1 && // not lying still yet`) |\n| `ReviveUnlinkNeeded` / `ReviveFriendlySpawnFlag` | `Revive` 8738\u20138786 (8745: `if (flagchange) UnlinkFromWorld(&ctx);`; 8747: `if (flagchange) LinkToWorld(&ctx);`; 8755: `if (SpawnFlags & MTF_FRIENDLY) flags |= MF_FRIENDLY;`) |\n| `GibHealthDefault` | `GetGibHealth` 8788\u20138799 (8796: `return h;`; 8798: `return -SpawnHealth();`) |\n| `IsSentient` | `IsSentient` 8804\u20138807 (8806: `return health > 0 && SeeState != NULL;`) |\n| `SelectCrashState` / `RunCrash` / `TryGetRaiseState` / `RunRevive` / `ApplyReviveFlagDefaults` / `ClearRevivePoison` / `ResolveGibHealth` | `Crash` **8636\u20138677**, `GetRaiseState` **8717\u20138736**, `Revive` **8738\u20138786**, `GetGibHealth` **8788\u20138799** |\n\n### Out-of-body uncredit (501)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **176** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **176** |\n",
         "auditManagedLocJustification": "`RunCrash`/`RunRevive`/`TryGetRaiseState` mirror corpse crash, raise gating, and revive flag/poison reset without hosting `FindState`, `SetState`, or `UnlinkFromWorld`."
       },
@@ -13539,7 +13539,7 @@
       {
         "name": "p-interaction-actor-die-morph-chunk505",
         "bucket": "conversion",
-        "note": "AActor::Die part 1 (morph through kill/frag credit) (merged chunk 506) (merged chunk 506) (merged chunk 506) Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727.",
+        "note": "AActor::Die part 1 (morph through kill/frag credit) (merged chunk 506) (merged chunk 506) (merged chunk 506) Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727.",
         "auditSeams": "`VMCall`, `P_ExplodeMissile`, `P_ActivateThingSpecial`, `StatusBar`, and `Level->ExitLevel` are not hosted.",
         "auditRationale": "Split **AActor::Die** at the player-death block (`if (player)` at line 622). Part 1 credits morph death handoff, inventory OwnerDied walk, missile explode, corpse flags, specials, killcount/frags/spree/multikill/fraglimit from `p_interaction.cpp` (329\u2013620).",
         "managedSourceFiles": [
@@ -13639,7 +13639,7 @@
         ],
         "nativeLoc": 374,
         "managedLoc": 481,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|-------------------|\n| `RunPredictClient` / `RunEntryGates` / `PredictClientContext` / `SinglePlayerTearsDownPrediction` / `SkipWhenNotInLevel` / `SkipReservedServerSlot` / `ConsolePlayerOutOfRange` / `ShouldEnablePrediction` / `SkipReplayWhenCaughtUp` / `SkipReplayWhenNotLive` / `SkipReplayWhenJustSpawned` / `ClampPredictionEnd` / `EmptyPredictionWindow` / `ClampPredictionStart` / `CanRubberband` / `RubberbandDistanceExceeded` / `RubberbandHitLimit` / `ReseedWeaponPspriteTic` / `AdvanceWeaponPspriteWhenPredicting` / `WeaponPspriteTicWatermark` / `ShouldClearPredictingCheat` / `ShouldSkipPredictionReplay` / `TryBuildPredictionWindow` / `EvaluateRubberband` / `LastPredictedFromBase` / `RecordReplayDiag` / `AccumulateReplayYaw` / `ApplyPortalOffsetWhenSectorPresent` / `LocalCmdIndex` / `WeaponTickForIndex` / `RubberbandLerpPath` / `PausedSetsNoInterpolate` / `FoldYawDegrees` / `ReplayInputDegreesFromBam` / `PhantomYawDegrees` / `ShouldLogYawDiag` / `ShouldLogMoveDiag` / `ShouldLogPitchSummary` / `PitchClampHit` / `NonZeroReplayPitch` / `CountZeroedPitch` / `AccumulateReplayCmd` / `FinalizePredictionTick` | `P_PredictClient` 2021\u20132394 (2023: `if (!netgame)`; 2026: `if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS)`; 2030: `return;`) |\n\n### Out-of-body uncredit (509)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **374** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **374** |\n",
         "auditManagedLocJustification": "`P_PredictClient` replay/window/rubberband policy is a long native control-flow; managed code names each gate (netgame, reserved slot, catch-up) without padding helpers."
       },
@@ -13728,7 +13728,7 @@
         ],
         "nativeLoc": 193,
         "managedLoc": 290,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|-------------------|\n| `DehMiscInfo` / `CreateMiscStructKeys` / `ProcessMiscLine` / `RunPatchMiscLoop` | `PatchMisc` 2537\u20132730 (2539\u20132556: keys[]; 2561\u20132657: GetLine loop + HandleKey/specials; 525\u2013535: `HandleKey`) |\n| `FillMiscDefaultPatchPlan` / `FinalizeMiscInfighting` / `MiscDefaultPatchPlan` | 2659\u20132726: armor/health/player defaults + infighting normalize |\n| Key predicates / `ParseIntField` / infighting + explosion helpers | 2565\u20132589: BFG/rocket/infight lines; 2578\u20132580: alpha |\n| Powerup blend via `VmDehackedPatchMiscPowerups` + `PowerupBlendTypeNames` | 2590\u20132650: powerup color names + RGBA |\n\n### Out-of-body uncredit (513)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **194** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **193** |\n",
         "auditManagedLocJustification": "`PatchMisc` loop, `HandleKey` offset table, special-line dispatch, powerup RGBA, and default-item patch plan are explicit; managed exceeds native due to named helpers and `DehMiscInfo` instead of offsetof writes."
       },
@@ -13762,7 +13762,7 @@
         ],
         "nativeLoc": 185,
         "managedLoc": 286,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|-------------------|\n| `IsWeaponSlotValid` / `ShouldMakeStateDefines` / `LineEndsWithFrameSuffix` / `TryMapFrameLabel` / `FrameLabelForPrefix` / `IsAmmoTypeKey` / `IsDecalKey` / `IsAmmoUseKey` / `IsMinAmmoKey` / `IsMbf21BitsKey` / `NormalizeAmmoTypeIndex` / `DecalLookupSucceeded` / `ParseMbf21NumericToken` / `TokenIsNumeric` / `ApplyMbf21Token` / `ParseMbf21Line` / `ReadyStateIsChainsaw` / `HasReadyState` / `ResolveReadySound` / `LoopContinues` / `WeaponTypeMissing` / `FormatUnknownWeaponKey` / `TryApplyWeaponFrameLine` | `PatchWeapon` 2253\u20132437 (2261: `if (weapNum >= 0 && weapNum < 9 && (unsigned)weapNum < WeaponNames.Si\u2026`; 2264: `if (type != NULL)`; 2271: `if (type == NULL)`) |\n| `ClassifyWeaponPatchLine` / `ProcessWeaponPatchLine` / `WeaponPatchSession` / `DecodeMbf21WeaponBits` / `FinalizePatchWeapon` | main loop **2277\u2013407**, MBF21 **2352\u2013400**, tail **2409\u2013434** |\n\n### Out-of-body uncredit (514)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **185** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **185** |\n",
         "auditManagedLocJustification": "`ProcessWeaponPatchLine` and `FinalizePatchWeapon` model the `PatchWeapon` read loop and chainsaw ready-sound tail without hosting `GetLine`, `FindState`, or `InstallStates`."
       },
@@ -13799,7 +13799,7 @@
         ],
         "nativeLoc": 198,
         "managedLoc": 362,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `DecodeOldScriptNumber` / `DecodeOldScriptType` / `CountEnhancedScriptsBy12` / `CountLittleEnhancedScriptsBy8` / `IsAcsMagicHeader` / `ShouldSkipEnhancedChunks` / `InitScriptVarCount` / `ShouldSortScripts` / `IsDuplicateScriptNumber` / `ShouldSwapClosedFirst` / `SnamIndexToNameTableIndex` / `IsNamedScriptNumber` / `SaryChunkLargeEnough` / `FlagChunkEntryCount` / `LoopHasMoreFlagEntries` / `CompareScriptNumber` / `EnhancedUsesIntermediateLayout` / `MapOldScriptEntry` / `MapEnhancedScriptEntry` / `TryResolveDuplicateSwap` / `FindChunkPresent` / `EnhancedScriptEntrySize` / `ScriptDirectoryHeaderSkipWords` / `PtrOffsetAfterCount` / `HasScriptDirectoryChunk` / `OldFormatDuplicateScanEnabled` / `MaxScriptIndex` / `CanCompareAdjacent` / `SflgChunkPayloadOffset` / `SvctChunkPayloadOffset` / `SaryScriptNumberOffset` / `SnamStringTableOffset` / `SnamLookupBaseIndex` / `ResolveSnamStringOffset` / `ScriptPtrFound` / `ApplyScriptFlags` / `ApplyVarCount` / `VarCountChunkPresent` / `ArrayChunkPresent` / `NameChunkPresent` / `ContinueSaryWalk` / `ResetScriptsDirectory` | `LoadScriptsDirectory` 2794\u20132991 (2817: `if (NumScripts != 0)`; 2839: `if (scripts.b == NULL)`; 2843: `else if (*(uint32_t *)Data != MAKE_ID('A','C','S',0))`) |\n| `ScriptPtrSlot` / `ScriptsDirectoryScratch` / `ResolveEnhancedScriptCount` / `PopulateOldFormatDirectory` / `PopulateEnhancedFormatDirectory` / `InitializeScriptDefaults` / `SortScriptsInPlace` / `ResolveOldFormatAdjacentDuplicates` / `ApplySflgChunkEntries` / `ApplySvctChunkEntries` / `WalkSaryChunks` / `ApplySnamNameIndices` / `RunLoadScriptsDirectory` | format switch **2812\u20132881**, default init **2888\u20132992**, duplicate swap **2902\u20132917**, SFLG/SVCT/SARY/SNAM passes **2920\u20132990** |\n\n### Out-of-body uncredit (515)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **198** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **198** |\n",
         "auditManagedLocJustification": "`RunLoadScriptsDirectory` and chunk apply helpers model the ACS old/enhanced directory switch, qsort duplicate closed-first swap, and post-SPTR SFLG/SVCT/SARY/SNAM passes without hosting `FindChunk`, `ParseLocalArrayChunk`, or `UnescapeStringTable`."
       },
@@ -13835,7 +13835,7 @@
         ],
         "nativeLoc": 160,
         "managedLoc": 343,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ApplyInvasionSnapshot` / `RunApplyInvasionSnapshotPipeline` | `HCDEApplyInvasionSnapshot` **3351\u20133510** |\n| `RunClientCapabilityGate` | client + capability guards **3353\u2013359** |\n| `RunInitialHeaderValidation` / `RunHeaderValidationPipeline` / `TryReadSnapshotHeader` | magic + header size **3361\u2013383** |\n| `RunInvasionDisabledGametypeGate` / `TraceGametypeOverride` | disabled-mode gametype **3371\u2013378** (local `!invasionEnabled`) |\n| `ValidateSnapshotHeaderBytes` / `RunSnapshotHeaderValidation` | version/flags/state **3384\u2013390** |\n| `RunSpawnMetadataPipeline` / `ValidateSpawnMetadataBlock` | v2 spawn metadata **3417\u2013435** |\n| `BuildPayloadFromFields` / `PendingWaveFromState` | mirror field merge **3449\u2013471** |\n| `RunEmbeddedReplayPipeline` | authority + actor deltas **3475\u2013489** |\n| prior decision helpers (`VersionAllowed`, `ClampNonNegative`, \u2026) | shared predicates **3357\u2013end** |\n\n### Out-of-body uncredit (516)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **160** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **160** |\n",
         "auditManagedLocJustification": "Phased header validation, gametype gate, spawn-metadata branch, mirror apply hook, and embedded authority/actor replay mirror `HCDEApplyInvasionSnapshot` without hosting field readers or net globals."
       },
@@ -13868,7 +13868,7 @@
         ],
         "nativeLoc": 170,
         "managedLoc": 244,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|-------------------|\n| `RequiresDecoupledAnimations` / `NormalizeInterpolateTics` / `IsClearAnimation` / `AlreadyNone` / `ShouldClearToNone` / `AnimationNotFound` / `SameAnimationBlocked` / `StartFramePastEnd` / `LoopFramePastEnd` / `EndFramePastEnd` / `UseInstantPath` / `UseLoopFlag` / `ResolveLastFrame` / `ResolveStartFrame` / `ResolveLoopFrame` / `ComputeStartTic` / `ComputeSwitchOffset` / `ShouldUpdateInterpolation` / `StartTicInFuture` / `NegativeFramerateUsesModel` / `AnimationLength` / `WorldPausedOrFrozen` / `ModelTimerWithFrac` / `LoopFlagsFromSaf` / `ClearCurAnimToNone` / `MissingModelDef` / `NotFoundResult` / `FloorTic` / `IntFloorTic` / `InterpSameTic` / `ResetPrevAnimToInterp` / `FramerateAsFloat` / `ModelAnimLoopFlag` | `SetAnimationInternal` 6507\u20136676 (6509: `if(!self) ThrowAbortException(X_READ_NIL, \"In function parameter self\");`; 6511: `if(!(self->flags9 & MF9_DECOUPLEDANIMATIONS))`; 6518: `if(!BaseSpriteModelFrames.CheckKey(smf_class))`) |\n| `RunSetAnimationInternal` / `BuildResolvedAnimation` / `TryHandleClearAnimation` / `CheckAnimationFrameBounds` / `ShouldCapturePrevAnimInterpolation` | clear/not-found/bounds gates **6529\u20136607**, `curAnim` assign **6655\u2013672**, interpolation branch **6610\u20136644** |\n\n### Out-of-body uncredit (517)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **170** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **170** |\n",
         "auditManagedLocJustification": "`RunSetAnimationInternal` sequences decoupled-actor gates, frame bounds, and `curAnim` tic/frame assignment without hosting `FindFModel`, `calcFrames`, or `CalcBones`."
       },
@@ -13902,7 +13902,7 @@
         ],
         "nativeLoc": 246,
         "managedLoc": 424,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `Dem*` constants / `TryReadCStringBytes` / `TryComputeCommandSkip` / `TrySkipCommand` / `TrySkip*FromStream` / `TrySkipCStringAtZero` / `TrySkipSaveGame` / `IsZeroPayloadCommand` / per-opcode `TrySkip*` helpers / `CanAdvance` / `AdvanceCursor` / `UnknownCommand` | `Net_TrySkipCommand` 9261\u20139506 (9264\u20139277: CString scan; 9280\u20139496: opcode switch; 9498\u20139499: default; 9502\u20139504: skip bound) |\n\n### Out-of-body uncredit (518)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **246** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **246** |\n",
         "auditManagedLocJustification": "Full `Net_TrySkipCommand` switch is ported with explicit `Dem_*` opcode constants and per-command skip helpers; managed LOC exceeds native because C# names each case instead of inline `break` arms."
       },
@@ -13937,7 +13937,7 @@
         ],
         "nativeLoc": 217,
         "managedLoc": 218,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|-------------------|\n| `IdenticalValueTypes` / `BothNumeric` / `IsApproxEqOperator` / `ApproxEqAllowedForRegType` / `BothConstant` / `FoldStringEqual` / `FoldFloatEqual` / `FoldIntEqual` / `LeftIntIsNull` / `LeftFloatIsNull` / `LeftPointerIsNull` / `ShouldUnaryNotRight` / `ShouldBoolCastRight` / `PointerTypesCompatible` / `StateLabelNullCompare` / `ValueTypeNil` / `StringConstToCharEligible` / `TranslationIdLegacyCast` / `CanImplicitCastStringToName` / `RequestAddressForPointerCompare` / `RightNumericLeftString` / `VectorTypesComparable` / `CanCompareStateLabelToNull` / `CanCompareNullToStateLabel` / `PointerRegTypesMatch` / `CompatiblePointersOrNull` / `ShouldPromoteAfterNumeric` / `SimplifyEqAgainstZero` / `SimplifyNeqAgainstZero` / `SkipZeroSimplifyWhenApprox` / `EmitStringCompareUsesApprox` / `CmpCheckFlag` / `CmpApproxFlag` / `ClassifyReg` / `TryGetNullConstant` / `TryFoldConstantCompare` / `ShouldRewriteEqToUnaryNot` / `ShouldRewriteNeqToBoolCast` / `OperandTypesNeedPromotion` / `IncompatibleOperands` / `ResultValueTypeBool` | `Resolve` 4175\u20134391 (4181: `if (!left || !right)`; 4184: `return nullptr;`; 4188: `if (left->ValueType != right->ValueType && !(left->IsVector2() && rig\u2026`) |\n\n### Out-of-body uncredit (519)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **217** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **217** |\n",
         "auditManagedLocJustification": "`RunCompareEqResolvePipeline` sequences `FxCompareEq::Resolve` without hosting `FxTypeCast` emission."
       },
@@ -13993,7 +13993,7 @@
         ],
         "nativeLoc": 275,
         "managedLoc": 408,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `PatchThing` Bits/Mass/`ID #` loop and post-loop finalize in `d_dehacked.cpp` **1632\u20131906**. Excluded `GetLine`/`FindState`/`statedef.InstallStates`/`PushTouchedActor` call (**1901**), `I_Error` host (**1835\u20131839**), and `OrgHeights` table read (**1850**).\n\n| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `BitsTokenAccumulator` / `AccumulateBitsToken` / `ApplyBitsLayer0` / `ApplyBitsLayer1` / `ApplyBitsLayer2` | `Bits` parse + remap **1638\u20131819** |\n| `ApplyPatchThingFinalize` | finalize **1846\u20131898** |\n| `IsMassKey` / `MassFromVal` | `Mass` branch **1634\u20131636** |\n| `IsBitsKey` / `ParseBitsToken` / `StealthKeywordSetsZdoom` | `Bits` token loop **1638\u20131676** |\n| `ApplyTranslationBits` | **1680\u20131684** |\n| `HasTouchy` / `ClearTouchy` | **1686\u20131690** |\n| `HasBounces` / `ClearBounces` / `ApplyBouncesRemap` / `SelectMissileBounceFlags` / `GrenadeTrailSwap` / `DefaultBounceFactor` / `DefaultWallBounceFactor` / `ApplyNobloodForNonSentient` | **1692\u20131736** |\n| `StealthFriendHack` / `RemapFriend` / `ApplyFriendRemap` | **1738\u20131748** |\n| `TranslucentSetsVchanged2` / `ClearTranslucentBit` / `MarkTranslucentVchanged2` / `ResolveTranslucentAlpha` | **1750\u20131754**, **1806\u20131813** |\n| `MissileSetsNoteleport` / `ApplyMissileNoteleportFlags` / `ClearNoteleportWhenUnmissiled` / `ShouldClearNoteleport` / `ClearNoteleportFlag` | **1756\u20131768** |\n| `PlayerAlwaysFriendly` / `MergePlayerFriendlyFlags` | **1770\u20131772** |\n| `DoomCompatBounce` | **1778\u20131781** |\n| `IceDamageType` / `FireDamageType` / `GravityQuarter` | **1784\u20131797** |\n| `SetInvisibleRender` / `ClearInvisibleRender` | **1815\u20131818** |\n| `IsIdKey` / `IdKeySetsEdnum` | **1823\u20131825** |\n| `HeightPairInvalid` | **1833\u20131839** |\n| `ShouldRestoreCeilingHeight` | **1846\u20131851** |\n| `ShadowBecameSet` / `ShadowCleared` / `FinalizeShadowStyle` / `DefaultShadowAlpha` / `UseNormalStyleWhenUnshadow` | **1854\u20131867** |\n| `NormalizeSpeed` | **1871\u20131873** |\n| `ShouldPushTouchedActor` | **1876\u20131878** |\n| `ApplyCountKillFlags` / `ClearCountKillFlags` | **1883\u20131894** |\n\n### Out-of-body uncredit (521)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **275** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **275** |\n",
         "auditManagedLocJustification": "Bits token accumulator and layer-0/1/2 apply plus `ApplyPatchThingFinalize` mirror the nested `PatchThing` Bits branch and tail finalize without hosting `InstallStates`/`PushTouchedActor`."
       },
@@ -14137,7 +14137,7 @@
         ],
         "nativeLoc": 240,
         "managedLoc": 356,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `convertRawFunctionToFunctionPointer` **1775\u20131801** and `FxTypeCast::Resolve` early branches **1804\u20132016** (`codegen.cpp`).\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `PlanRawFunctionPointer` | `convertRawFunctionToFunctionPointer` **1775\u20131801** |\n| `InvalidCastTypes` | **1832\u20131844** |\n| `NullPtrToPointer` | **1851\u20131853** |\n| `NullPtrToIdTypes` / `VersionAtLeast` / `MakeVersion` | **1855\u20131859** |\n| `ClassDescendantAllowsCast` | **1957\u20131962** |\n| `NativeStructToWritablePointer` | **1965\u20131979** |\n| `CompatiblePointerTypes` | `AreCompatiblePointerTypes` **1982\u20131984** (helper at **267\u2013308**) |\n| `CompatibleVectors` | **1994\u20131999** |\n| `ClassifyResolveCast` | composite of **1831\u20132000** branches |\n| `RunTypeCastResolvePipeline` / `SelectSecondaryCastDelegate` / `ShouldConvertRawToFunctionPointer` / `ShouldConvertRawToVmFunction` / `NativeStructReadonlyBlocksWritable` / `DescribeObjectPointer` | `Resolve` dispatch **1815\u20132016** (raw fn **1815\u20131829**, secondary Fx* casts **1861\u20131993**, native struct **1965\u20131979**) |\n\n### Out-of-body uncredit (527)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **240** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **240** |\n",
         "auditManagedLocJustification": "`RunTypeCastResolvePipeline` sequences `FxTypeCast::Resolve` branches without hosting `FxFloatCast`/`FxIntCast` nodes or `ScriptPosition.Message`."
       },
@@ -14368,7 +14368,7 @@
         ],
         "nativeLoc": 197,
         "managedLoc": 210,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits count-flag/raise/orientation bands **2767\u20133028** plus `SetViewAngleNative`/`SetViewPitchNative` **3038\u20133086** (`p_actionfunctions.cpp`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RunChangeCountFlags` / `PlanChangeCountFlags` / `ApplyKillCount` / `CountsAsKill` | `A_ChangeCountFlags` **2794\u20132825** |\n| `TryRaiseMaster` / `RaiseChildrenOnLevel` / `RaiseSiblingsOnLevel` / `RaiseSelf` | `A_RaiseMaster` **2833\u20132843**; `A_RaiseChildren` **2850\u20132865**; `A_RaiseSiblings` **2873\u20132891**; `A_RaiseSelf` **2899\u20132904** |\n| `DecideMonsterRefire` / refire helpers | `A_MonsterRefire` **2938\u20132957** |\n| `TrySetAngle` / `TrySetPitch` / `TrySetRoll` / `TrySetViewAngle` / `TrySetViewPitch` | `A_SetAngle` **2968\u20132981**; `A_SetPitch` **2991\u20133004**; `A_SetRoll` **3015\u20133028**; `SetViewAngleNative` **3038\u20133086** |\n| `CheckFlagResult` | `CheckFlag` **2789\u20132790** |\n| `RefNull` | pointer null guards **2838**, **2881**, **2975**, **2998**, **3021**, **3041**, **3070** |\n\n### Out-of-body uncredit (530)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **199** |\n| **Out-of-body removed** | **2** |\n| **Honest** | **197** |\n",
         "auditManagedLocJustification": "Raise iterators and count-flag level totals mirror native control flow; `TrySet*` delegates host `SetAngle`/`SetPitch`/`SetRoll`/`SetView*` without inlining engine calls."
       },
@@ -14414,7 +14414,7 @@
         ],
         "nativeLoc": 176,
         "managedLoc": 209,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `FxAssign::Resolve` **2685\u20132860** (`codegen.cpp`).\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `BoolModifyAssignInvalid` | **2694\u20132700** |\n| `NeedsNumericPromotion` | **2705\u20132722** |\n| `NativeStructToMatchingPointer` | **2724\u20132729** |\n| `SameTypeOrRealPointerAlias` / `SkipVectorQuaternionPath` | **2731\u20132742** |\n| `DynArrayAssignPolicy` | **2757\u20132783** |\n| `MapAssignPolicy` | **2785\u20132811** |\n| `MapIteratorAssignPolicy` | **2813\u20132817** |\n| `StructAssignPolicy` | **2819\u20132833** |\n| `FallsThroughToTypeCast` | **2839\u20132843** |\n| `RequiresWritableAddress` / `ModifiableValueFails` | **2846\u20132850** |\n| `NormalizeBitWriteIndex` / `UsesDeprecatedFlagHandler` | **2854\u20132858** |\n| `ClassifyContainerAssign` | composite **2736\u20132834** |\n| `RunAssignResolvePipeline` / `AssignResolveInput` | full resolve orchestration **2685\u20132860** |\n\n### Out-of-body uncredit (532)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **176** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **176** |\n",
         "auditManagedLocJustification": "`RunAssignResolvePipeline` sequences `FxAssign::Resolve` decision bands without hosting `FxTypeCast` or `Emit`."
       },
@@ -14509,7 +14509,7 @@
         ],
         "nativeLoc": 258,
         "managedLoc": 356,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `FxAbs` **5576\u20135618**, `FxATan2` **5683\u20135713**, `FxATan2Vec` **5774\u20135787**, `FxNew` **5833\u20135871**, `FxMinMax::Resolve` **5962\u20136092** (`codegen.cpp`).\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `RunAbsResolve` / `ClassifyAbs` / `FoldAbsInt` / `FoldAbsFloat` | **5576\u20135618** |\n| `RunAtan2Resolve` / `Atan2RequiresNumeric` / `PlanAtan2FloatCasts` / `FoldAtan2Degrees` / `NeedsFloatCast` | **5683\u20135713** |\n| `RunAtan2VecResolve` | **5774\u20135787** |\n| `RunNewResolve` / `NewScopeMismatch` / `ResolveOuterSide` | **5833\u20135871** |\n| `RunMinMaxResolve` / `ClassifyMinMaxOperand` / `MinMaxValueType` / `PlanMinMaxIntToFloatCastIndices` / `FoldMinMax*Constants` / `ShouldSwapConstantToSecond` | **5962\u20136092** |\n\n### Out-of-body uncredit (537)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **258** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **258** |\n"
       },
       {
@@ -15981,8 +15981,8 @@
           }
         ],
         "nativeLoc": 165,
-        "managedLoc": 153,
-        "conversionManagedCommit": "8c0fe5e7e8f31d18d0647c3bf1fdefd17180cf2f"
+        "managedLoc": 164,
+        "conversionManagedCommit": "218d0fa5dea38aee1a21669a8e2a641b56c76d55"
       },
       {
         "name": "action-set-animation-natives-chunk559",
@@ -15995,7 +15995,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "8c0fe5e7e8f31d18d0647c3bf1fdefd17180cf2f",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -16068,7 +16068,7 @@
         ],
         "nativeLoc": 160,
         "managedLoc": 183,
-        "conversionManagedCommit": "8c0fe5e7e8f31d18d0647c3bf1fdefd17180cf2f"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "codegen-array-element-lifecycle-resolve-chunk561",
@@ -16095,7 +16095,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "8c0fe5e7e8f31d18d0647c3bf1fdefd17180cf2f",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -16110,7 +16110,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "8c0fe5e7e8f31d18d0647c3bf1fdefd17180cf2f",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -16139,7 +16139,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "8c0fe5e7e8f31d18d0647c3bf1fdefd17180cf2f",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -16154,7 +16154,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "8c0fe5e7e8f31d18d0647c3bf1fdefd17180cf2f",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -16241,7 +16241,7 @@
         ],
         "nativeLoc": 150,
         "managedLoc": 275,
-        "conversionManagedCommit": "8c0fe5e7e8f31d18d0647c3bf1fdefd17180cf2f",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "`ClientConnecting` late-join path and `HGetPacket` tail are separate functions; merged codegen sign helpers are credited only on the ZCC rows in the audit map."
       },
       {
@@ -16297,7 +16297,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "8c0fe5e7e8f31d18d0647c3bf1fdefd17180cf2f",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -16382,7 +16382,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "8c0fe5e7e8f31d18d0647c3bf1fdefd17180cf2f",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -16624,7 +16624,7 @@
           }
         ],
         "nativeLoc": 214,
-        "conversionManagedCommit": "8c0fe5e7e8f31d18d0647c3bf1fdefd17180cf2f",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "managedLoc": 279
       },
       {
@@ -16749,7 +16749,7 @@
           }
         ],
         "nativeLoc": 162,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "managedLoc": 177
       },
       {
@@ -16864,7 +16864,7 @@
           }
         ],
         "nativeLoc": 157,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "managedLoc": 258,
         "auditManagedLocJustification": "`RunDoCommandCase` sequences SAY\u2013SUICIDE case guards without hosting `Printf`, `cht_*`, or `ChangeLevel`."
       },
@@ -17312,7 +17312,7 @@
         ],
         "nativeLoc": 192,
         "managedLoc": 818,
-        "conversionManagedCommit": "8c0fe5e7e8f31d18d0647c3bf1fdefd17180cf2f",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "managedSourceFiles": [
           "csharp/src/HCDE.Net.Core/VmDNetNetEventWrite.cs",
           "csharp/src/HCDE.Net.Core/NetDynamicBuffer.cs",
@@ -17473,7 +17473,7 @@
         ],
         "nativeLoc": 167,
         "managedLoc": 232,
-        "conversionManagedCommit": "8c0fe5e7e8f31d18d0647c3bf1fdefd17180cf2f"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "i-net-pregame-service-chunk617",
@@ -17500,7 +17500,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "8c0fe5e7e8f31d18d0647c3bf1fdefd17180cf2f",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -17556,7 +17556,7 @@
         ],
         "nativeLoc": 204,
         "managedLoc": 199,
-        "conversionManagedCommit": "8c0fe5e7e8f31d18d0647c3bf1fdefd17180cf2f"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "i-net-query-client-lifecycle-chunk622",
@@ -17634,7 +17634,7 @@
         ],
         "nativeLoc": 164,
         "managedLoc": 275,
-        "conversionManagedCommit": "8c0fe5e7e8f31d18d0647c3bf1fdefd17180cf2f",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Session lifecycle (`I_QueryServerInfo` through `SetConnectFlow`) uses injected I/O; launcher bands were split to chunk 649."
       },
       {
@@ -17786,7 +17786,7 @@
         ],
         "nativeLoc": 295,
         "managedLoc": 318,
-        "conversionManagedCommit": "8c0fe5e7e8f31d18d0647c3bf1fdefd17180cf2f"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "i-net-cmd-setup-connect-chunk627",
@@ -17872,7 +17872,7 @@
         ],
         "nativeLoc": 181,
         "managedLoc": 213,
-        "conversionManagedCommit": "8c0fe5e7e8f31d18d0647c3bf1fdefd17180cf2f"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "i-net-get-packet-chunk625",
@@ -17898,7 +17898,7 @@
         ],
         "nativeLoc": 217,
         "managedLoc": 207,
-        "conversionManagedCommit": "8c0fe5e7e8f31d18d0647c3bf1fdefd17180cf2f"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "i-net-get-packet-chunk626",
@@ -17955,7 +17955,7 @@
         ],
         "nativeLoc": 150,
         "managedLoc": 203,
-        "conversionManagedCommit": "8c0fe5e7e8f31d18d0647c3bf1fdefd17180cf2f"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "i-net-runtime-setup-chunk629",
@@ -18022,7 +18022,7 @@
         ],
         "nativeLoc": 371,
         "managedLoc": 386,
-        "conversionManagedCommit": "8c0fe5e7e8f31d18d0647c3bf1fdefd17180cf2f"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "i-net-host-check-chunk630",
@@ -18050,7 +18050,7 @@
         ],
         "nativeLoc": 311,
         "managedLoc": 319,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Split pregame host loop into packet, HCDE service, and per-client drive phases without hosting `GetConnection` or master socket I/O."
       },
       {
@@ -18100,7 +18100,7 @@
         ],
         "nativeLoc": 176,
         "managedLoc": 166,
-        "conversionManagedCommit": "8c0fe5e7e8f31d18d0647c3bf1fdefd17180cf2f"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "i-net-host-game-finish-chunk632",
@@ -18156,7 +18156,7 @@
         ],
         "nativeLoc": 170,
         "managedLoc": 173,
-        "conversionManagedCommit": "c56ccf0446b0610d8d1855ffedb821ece0c0fd9e"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "i-net-guest-contact-reject-chunk633",
@@ -18202,7 +18202,7 @@
         ],
         "nativeLoc": 232,
         "managedLoc": 225,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "i-net-guest-services-join-chunk634",
@@ -18249,7 +18249,7 @@
         ],
         "nativeLoc": 304,
         "managedLoc": 303,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "i-net-init-network-chunk635",
@@ -18561,7 +18561,7 @@
         ],
         "nativeLoc": 371,
         "managedLoc": 374,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "i-protocol-stream-chunk637",
@@ -19020,7 +19020,7 @@
         ],
         "nativeLoc": 323,
         "managedLoc": 343,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "i-protocol-checked-chunk638",
@@ -19217,7 +19217,7 @@
         ],
         "nativeLoc": 163,
         "managedLoc": 272,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "HCDE server-mode accessors duplicate C++ guard branches as named natives for diagnostics and startup UI suppression."
       },
       {
@@ -19231,7 +19231,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -19246,7 +19246,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -19261,7 +19261,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -19276,7 +19276,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -19452,7 +19452,7 @@
         ],
         "nativeLoc": 160,
         "managedLoc": 324,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Ring-buffer eviction, lazy init, and CCMD entry points are split into explicit natives with injected time/I/O seams; managed LOC exceeds native credit because of separate state helpers and save-iterate bookkeeping."
       },
       {
@@ -19619,7 +19619,7 @@
         ],
         "nativeLoc": 242,
         "managedLoc": 330,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Orchestration contexts and format helpers mirror full `SV_*` control flow; LOC is above native credit because of explicit context types and string formatters."
       },
       {
@@ -19629,7 +19629,7 @@
         "auditRationale": "Whole-function bands for launcher respond and `I_Net*` pregame UI entry points.",
         "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GetLocalServerSnapshotNative` | `I_GetLocalServerSnapshot` 904\u2013907 |\n| `GetCachedServerQuerySnapshotNative` | `GetCachedServerQuerySnapshot` 955\u2013970 |\n| `EncodeLauncherInfoNative` | `SendLauncherInfo` encode 972\u20131042 |\n| `SendLauncherInfoNative` | `SendLauncherInfo` send 1044\u20131050 |\n| `WriteSessionTokenNative` | `WriteSessionToken` 1053\u20131066 |\n| `ReadSessionTokenNative` | `ReadSessionToken` 1068\u20131071 |\n| `TryHandleServerQueryNative` | `TryHandleServerQuery` 1073\u20131092 |\n| `INetErrorNative` | `I_NetError` 1641\u20131649 |\n| `INetInitNative` | `I_NetInit` 1651\u20131665 |\n| `INetMessageNative` | `I_NetMessage` 1672\u20131686 |\n| `INetLoopNative` | `I_NetLoop` 1697\u20131728 |\n| `INetClientConnectedNative` | `I_NetClientConnected` 1732\u20131750 |\n| `INetClientUpdatedNative` | `I_NetClientUpdated` 1753\u20131756 |\n| `INetClientDisconnectedNative` | `I_NetClientDisconnected` 1758\u20131770 |\n| `INetUpdatePlayersNative` | `I_NetUpdatePlayers` 1772\u20131780 |\n| `IShouldStartNetGameNative` | `I_ShouldStartNetGame` 1782\u20131787 |\n| `IGetKickClientsNative` | `I_GetKickClients` 1789\u20131796 |\n| `IGetBanClientsNative` | `I_GetBanClients` 1798\u20131805 |\n| `INetDoneNative` | `I_NetDone` 1807\u20131810 |\n\n### Out-of-body uncredit (649)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **278** |\n| **Out-of-body removed** | **132** |\n| **Honest** | **146** |\n",
         "managedSourceFiles": [],
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "name": "i-net-launcher-pregame-ui-chunk649",
         "nativeRanges": [],
         "nativeLoc": 0,
@@ -19700,7 +19700,7 @@
         ],
         "nativeLoc": 168,
         "managedLoc": 188,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "dehacked-pars-codeptr-chunk652",
@@ -19753,7 +19753,7 @@
         ],
         "nativeLoc": 188,
         "managedLoc": 356,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "sound-engine-start-sound-chunk654",
@@ -19767,7 +19767,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -19921,7 +19921,7 @@
         ],
         "nativeLoc": 270,
         "managedLoc": 413,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Restart/load/limit paths are split across four playsim VMs with explicit context structs and `GSnd`/`ReadSound` seams; managed LOC exceeds native credit because channel restart and stop/relink helpers are not collapsed into single-line wrappers."
       },
       {
@@ -19964,7 +19964,7 @@
         ],
         "nativeLoc": 247,
         "managedLoc": 268,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Phased source-sector, 3D-floor, nearby-line, and damage-group apply pipelines mirror `P_GeometryRadiusAttack` without hosting block iterators or trace."
       },
       {
@@ -19993,7 +19993,7 @@
         ],
         "nativeLoc": 189,
         "managedLoc": 242,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Phased `CreateLinkedPortals` pipeline mirrors grouping/displacement/finalize bands without hosting `CollectSectors` map mutation or actor relink."
       },
       {
@@ -20027,7 +20027,7 @@
         ],
         "nativeLoc": 175,
         "managedLoc": 281,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Phased opening, portal-queue, linked-portal, and managed 3D-floor rover loops mirror `PTR_SightTraverse` without hosting `P_SightOpening` or intercept iteration."
       },
       {
@@ -20064,7 +20064,7 @@
         ],
         "nativeLoc": 207,
         "managedLoc": 217,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-sight-check-traverse-intercepts-chunk665",
@@ -20077,7 +20077,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -20106,7 +20106,7 @@
         ],
         "nativeLoc": 208,
         "managedLoc": 207,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-maputl-line-opening-chunk667",
@@ -20141,7 +20141,7 @@
         ],
         "nativeLoc": 152,
         "managedLoc": 144,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-maputl-add-thing-intercepts-chunk668",
@@ -20167,7 +20167,7 @@
         ],
         "nativeLoc": 168,
         "managedLoc": 179,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-sight-line-policy-chunk669",
@@ -20180,7 +20180,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -20195,7 +20195,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -20244,7 +20244,7 @@
         ],
         "nativeLoc": 163,
         "managedLoc": 186,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "po-man-move-rotate-chunk672",
@@ -20257,7 +20257,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -20272,7 +20272,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -20405,7 +20405,7 @@
         ],
         "nativeLoc": 311,
         "managedLoc": 325,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "po-man-poly-thinker-init-chunk678",
@@ -20418,7 +20418,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -20433,7 +20433,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -20490,7 +20490,7 @@
         ],
         "nativeLoc": 271,
         "managedLoc": 270,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-maputl-portal-search-chunk682",
@@ -20561,7 +20561,7 @@
         ],
         "nativeLoc": 162,
         "managedLoc": 167,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-maputl-multi-block-lines-chunk683",
@@ -20706,7 +20706,7 @@
         ],
         "nativeLoc": 261,
         "managedLoc": 329,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-maputl-things-point-tail-chunk684",
@@ -20719,7 +20719,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -20802,7 +20802,7 @@
         ],
         "nativeLoc": 200,
         "managedLoc": 336,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "portal-change-clip-translate-chunk686",
@@ -20891,7 +20891,7 @@
         ],
         "nativeLoc": 151,
         "managedLoc": 199,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "portal-sector-displacement-chunk687",
@@ -20980,7 +20980,7 @@
         ],
         "nativeLoc": 231,
         "managedLoc": 251,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-destructible-health-groups-chunk689",
@@ -20993,7 +20993,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -21067,7 +21067,7 @@
         ],
         "nativeLoc": 237,
         "managedLoc": 305,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-destructible-geometry-combat-chunk690",
@@ -21080,7 +21080,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -21095,7 +21095,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -21126,7 +21126,7 @@
         ],
         "nativeLoc": 169,
         "managedLoc": 315,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Phased intercept loop, 3D-water splash, heightsec water, miss finalize, and ffloor-on-plane helpers mirror `TraceTraverse` without hosting `LineCheck` / `ThingCheck` bodies."
       },
       {
@@ -21140,7 +21140,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -21187,7 +21187,7 @@
         ],
         "nativeLoc": 219,
         "managedLoc": 268,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-teleport-core-chunk695",
@@ -21222,7 +21222,7 @@
         ],
         "nativeLoc": 192,
         "managedLoc": 192,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-teleport-silent-line-chunk696",
@@ -21248,7 +21248,7 @@
         ],
         "nativeLoc": 173,
         "managedLoc": 231,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-teleport-ev-group-chunk697",
@@ -21261,7 +21261,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -21300,7 +21300,7 @@
         ],
         "nativeLoc": 286,
         "managedLoc": 406,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-3dfloors-recalculate-chunk699",
@@ -21328,7 +21328,7 @@
         ],
         "nativeLoc": 245,
         "managedLoc": 316,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-psprite-setstate-chunk700",
@@ -21356,7 +21356,7 @@
         ],
         "nativeLoc": 155,
         "managedLoc": 189,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-effect-draw-rail-trail-chunk701",
@@ -21384,7 +21384,7 @@
         ],
         "nativeLoc": 312,
         "managedLoc": 368,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-enemy-do-chase-chunk702",
@@ -21412,7 +21412,7 @@
         ],
         "nativeLoc": 368,
         "managedLoc": 371,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-enemy-move-chunk703",
@@ -21440,7 +21440,7 @@
         ],
         "nativeLoc": 236,
         "managedLoc": 233,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-map-test-mobj-z-chunk704",
@@ -21475,7 +21475,7 @@
         ],
         "nativeLoc": 164,
         "managedLoc": 198,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-map-check-position-chunk705",
@@ -21501,7 +21501,7 @@
         ],
         "nativeLoc": 218,
         "managedLoc": 280,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-map-slide-move-chunk706",
@@ -21547,7 +21547,7 @@
         ],
         "nativeLoc": 311,
         "managedLoc": 302,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-enemy-look-targets-whole-chunk707",
@@ -21612,7 +21612,7 @@
         ],
         "nativeLoc": 250,
         "managedLoc": 254,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Phased goal/last-enemy helpers, TID iterator tail, and `LastLookActor` TID invalidation mirror `p_enemy.cpp` 1489\u20131777 with injected sight/blockmap seams."
       },
       {
@@ -21626,7 +21626,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -21641,7 +21641,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditSingleFunctionOversizeException": true,
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
@@ -21657,7 +21657,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -21695,7 +21695,7 @@
         ],
         "nativeLoc": 188,
         "managedLoc": 193,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-enemy-boss-death-chunk712",
@@ -21731,7 +21731,7 @@
         ],
         "nativeLoc": 169,
         "managedLoc": 159,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-map-mobj-fakez-trymove-tail-chunk713",
@@ -21774,7 +21774,7 @@
         ],
         "nativeLoc": 212,
         "managedLoc": 218,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-map-checkmove-fakez-push-chunk715",
@@ -21830,7 +21830,7 @@
         ],
         "nativeLoc": 194,
         "managedLoc": 265,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-map-use-traverse-chunk716",
@@ -21884,7 +21884,7 @@
         ],
         "nativeLoc": 240,
         "managedLoc": 282,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-user-player-think-band-chunk717",
@@ -21964,7 +21964,7 @@
         ],
         "nativeLoc": 186,
         "managedLoc": 190,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "portal-collect-use-lines-chunk718",
@@ -22032,7 +22032,7 @@
         ],
         "nativeLoc": 326,
         "managedLoc": 342,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-enemy-chase-range-chunk720",
@@ -22045,7 +22045,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -22060,7 +22060,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -22075,7 +22075,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -22246,7 +22246,7 @@
         ],
         "nativeLoc": 244,
         "managedLoc": 238,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-mobj-xy-movement-chunk724",
@@ -22275,7 +22275,7 @@
         ],
         "nativeLoc": 506,
         "managedLoc": 557,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-mobj-z-movement-chunk725",
@@ -22302,7 +22302,7 @@
         ],
         "nativeLoc": 258,
         "managedLoc": 294,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-mobj-explode-bounce-chunk726",
@@ -22315,7 +22315,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -22350,7 +22350,7 @@
         ],
         "nativeLoc": 467,
         "managedLoc": 555,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": false
       },
       {
@@ -22383,7 +22383,7 @@
         ],
         "nativeLoc": 553,
         "managedLoc": 617,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-interaction-damage-mobj-chunk729",
@@ -22412,7 +22412,7 @@
         ],
         "nativeLoc": 474,
         "managedLoc": 466,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-action-call-state-chain-chunk731",
@@ -22462,7 +22462,7 @@
         ],
         "nativeLoc": 221,
         "managedLoc": 258,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-interaction-poison-damage-chunk732",
@@ -22475,7 +22475,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -22514,7 +22514,7 @@
         ],
         "nativeLoc": 511,
         "managedLoc": 525,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-interaction-damage-dispatch-chunk733",
@@ -22568,7 +22568,7 @@
         ],
         "nativeLoc": 152,
         "managedLoc": 185,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-mobj-grind-chunk734",
@@ -22613,7 +22613,7 @@
         ],
         "nativeLoc": 150,
         "managedLoc": 181,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-mobj-fall-nightmare-chunk735",
@@ -22626,7 +22626,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -22641,7 +22641,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -22720,7 +22720,7 @@
         ],
         "nativeLoc": 159,
         "managedLoc": 221,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-action-pointer-sound-chunk739",
@@ -22784,7 +22784,7 @@
         ],
         "nativeLoc": 155,
         "managedLoc": 195,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-action-seeker-tracer-chunk740",
@@ -22797,7 +22797,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -22812,7 +22812,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -22932,7 +22932,7 @@
         ],
         "nativeLoc": 181,
         "managedLoc": 197,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-mobj-tid-missile-slam-chunk748",
@@ -23020,7 +23020,7 @@
         ],
         "nativeLoc": 163,
         "managedLoc": 208,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-mobj-hit-reflect-attack-chunk749",
@@ -23128,7 +23128,7 @@
         ],
         "nativeLoc": 180,
         "managedLoc": 231,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-mobj-orientation-shade-chunk750",
@@ -23235,7 +23235,7 @@
         ],
         "nativeLoc": 159,
         "managedLoc": 184,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-mobj-portal-bones-chunk751",
@@ -23342,7 +23342,7 @@
         ],
         "nativeLoc": 257,
         "managedLoc": 296,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-mobj-model-serialize-chunk752",
@@ -23355,7 +23355,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -23370,7 +23370,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -23562,7 +23562,7 @@
         ],
         "nativeLoc": 321,
         "managedLoc": 451,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-mobj-spawn-player-missile-chunk755",
@@ -23575,7 +23575,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
       },
@@ -23678,7 +23678,7 @@
         ],
         "nativeLoc": 192,
         "managedLoc": 353,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "~353/192 \u2248 184%: native has `DVector3`/`DMatrix3x3` from headers; managed spells out `Vec3` plus Rodrigues `RotationMatrixFromAxis`/`MultiplyMatrixVector` for lead-target math (163\u2013235). Iterator callback contexts mirror `GetActorIterator`/`Spawn` seams only."
       },
       {
@@ -23693,7 +23693,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -23708,7 +23708,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -23765,7 +23765,7 @@
         ],
         "nativeLoc": 172,
         "managedLoc": 309,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "dthinker-collection-early-chunk762",
@@ -23779,7 +23779,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -23794,7 +23794,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -23809,7 +23809,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -23917,7 +23917,7 @@
         ],
         "nativeLoc": 205,
         "managedLoc": 209,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-psprite-overlay-lifecycle-chunk770",
@@ -24108,7 +24108,7 @@
         ],
         "nativeLoc": 378,
         "managedLoc": 475,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "dthinker-serialize-instance-iterator-chunk773",
@@ -24279,7 +24279,7 @@
         ],
         "nativeLoc": 272,
         "managedLoc": 317,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-effect-particle-pool-splash-chunk775",
@@ -24404,7 +24404,7 @@
         ],
         "nativeLoc": 299,
         "managedLoc": 434,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-sector-special-danger-surround-heights-chunk776",
@@ -24533,7 +24533,7 @@
         ],
         "nativeLoc": 320,
         "managedLoc": 463,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-user-weapons-resurrect-sprite-scream-chunk777",
@@ -24708,7 +24708,7 @@
         ],
         "nativeLoc": 276,
         "managedLoc": 314,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-user-player-class-copy-chunk778",
@@ -24802,7 +24802,7 @@
         ],
         "nativeLoc": 180,
         "managedLoc": 348,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "auditManagedLocJustification": "~348/180 \u2248 193%: `CopyFrom` mirrors the full native field-copy list in C# property assignments; `PropagateMark` spells each `GC::Mark` target explicitly."
       },
       {
@@ -24901,7 +24901,7 @@
         ],
         "nativeLoc": 192,
         "managedLoc": 279,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-user-log-fov-pitch-chunk780",
@@ -25089,7 +25089,7 @@
         ],
         "nativeLoc": 239,
         "managedLoc": 241,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-3dfloor-support-chunk781",
@@ -25103,7 +25103,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -25229,7 +25229,7 @@
         ],
         "nativeLoc": 166,
         "managedLoc": 255,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-sector-terrain-portal-at-chunk783",
@@ -25318,7 +25318,7 @@
         ],
         "nativeLoc": 152,
         "managedLoc": 259,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-sector-glow-actions-chunk784",
@@ -25389,7 +25389,7 @@
         ],
         "nativeLoc": 159,
         "managedLoc": 261,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-3dfloor-colormap-add-chunk785",
@@ -25471,7 +25471,7 @@
         ],
         "nativeLoc": 202,
         "managedLoc": 378,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-map-find-floor-ceiling-chunk786",
@@ -25526,7 +25526,7 @@
         ],
         "nativeLoc": 181,
         "managedLoc": 357,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-map-teleport-move-chunk787",
@@ -25562,7 +25562,7 @@
         ],
         "nativeLoc": 171,
         "managedLoc": 235,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-sector-serialize-align-chunk788",
@@ -25651,7 +25651,7 @@
         ],
         "nativeLoc": 249,
         "managedLoc": 491,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-acs-stack-string-pool-chunk789",
@@ -25858,7 +25858,7 @@
         ],
         "nativeLoc": 249,
         "managedLoc": 355,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-acs-string-pool-gc-chunk790",
@@ -25940,7 +25940,7 @@
         ],
         "nativeLoc": 252,
         "managedLoc": 272,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "a-door-construct-ev-chunk794",
@@ -25954,7 +25954,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -26028,7 +26028,7 @@
         ],
         "nativeLoc": 281,
         "managedLoc": 368,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "a-ceiling-create-chunk796",
@@ -26042,7 +26042,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -26106,7 +26106,7 @@
         ],
         "nativeLoc": 172,
         "managedLoc": 265,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "a-floor-tick-elevator-chunk798",
@@ -26120,7 +26120,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -26135,7 +26135,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -26150,7 +26150,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -26165,7 +26165,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -26180,7 +26180,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -26195,7 +26195,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -26235,7 +26235,7 @@
         ],
         "nativeLoc": 155,
         "managedLoc": 184,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-spec-actor-sector-friction-chunk805",
@@ -26249,7 +26249,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -26264,7 +26264,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -26279,7 +26279,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -26342,7 +26342,7 @@
         ],
         "nativeLoc": 150,
         "managedLoc": 156,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-tags-manager-chunk809",
@@ -26556,7 +26556,7 @@
         ],
         "nativeLoc": 291,
         "managedLoc": 298,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-secnodes-freelist-chunk810",
@@ -26630,7 +26630,7 @@
         ],
         "nativeLoc": 175,
         "managedLoc": 180,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-3dmidtex-scroll-attach-chunk811",
@@ -26694,7 +26694,7 @@
         ],
         "nativeLoc": 212,
         "managedLoc": 251,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-map-projectile-combat-chunk812",
@@ -26768,7 +26768,7 @@
         ],
         "nativeLoc": 219,
         "managedLoc": 215,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-pspr-header-buttons-chunk813",
@@ -26798,7 +26798,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -26868,7 +26868,7 @@
         ],
         "nativeLoc": 197,
         "managedLoc": 288,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "r-interpolate-core-plane-chunk816",
@@ -27057,7 +27057,7 @@
         ],
         "nativeLoc": 231,
         "managedLoc": 266,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "r-interpolate-scroll-poly-chunk817",
@@ -27283,7 +27283,7 @@
         ],
         "nativeLoc": 256,
         "managedLoc": 267,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "p-user-actor-rollback-chunk818",
@@ -27427,7 +27427,7 @@
         ],
         "nativeLoc": 154,
         "managedLoc": 214,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "actor-ptr-select-chunk819",
@@ -27491,7 +27491,7 @@
         ],
         "nativeLoc": 165,
         "managedLoc": 208,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "mapthinker-scroll-chunk820",
@@ -27592,7 +27592,7 @@
         ],
         "nativeLoc": 361,
         "managedLoc": 409,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "sector-effect-move-chunk821",
@@ -27723,7 +27723,7 @@
         ],
         "nativeLoc": 342,
         "managedLoc": 352,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "decal-base-chunk822",
@@ -27855,7 +27855,7 @@
         ],
         "nativeLoc": 274,
         "managedLoc": 458,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "dynlight-tick-chunk823",
@@ -27910,7 +27910,7 @@
         ],
         "nativeLoc": 199,
         "managedLoc": 208,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "decal-spread-chunk824",
@@ -27982,7 +27982,7 @@
         ],
         "nativeLoc": 151,
         "managedLoc": 175,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "decal-impact-chunk825",
@@ -28064,7 +28064,7 @@
         ],
         "nativeLoc": 178,
         "managedLoc": 314,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "decal-fx-chunk827",
@@ -28166,7 +28166,7 @@
         ],
         "nativeLoc": 182,
         "managedLoc": 223,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "pillar-chunk828",
@@ -28221,7 +28221,7 @@
         ],
         "nativeLoc": 153,
         "managedLoc": 223,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "lightning-chunk829",
@@ -28312,7 +28312,7 @@
         ],
         "nativeLoc": 212,
         "managedLoc": 210,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "fscript-load-chunk830",
@@ -28368,7 +28368,7 @@
         ],
         "nativeLoc": 228,
         "managedLoc": 264,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "plat-tick-ev-chunk831",
@@ -28442,7 +28442,7 @@
         ],
         "nativeLoc": 339,
         "managedLoc": 343,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "quake-damage-start-chunk832",
@@ -28457,7 +28457,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -28504,7 +28504,7 @@
         ],
         "nativeLoc": 160,
         "managedLoc": 209,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "fscript-script-runtime-chunk835",
@@ -28594,7 +28594,7 @@
         ],
         "nativeLoc": 155,
         "managedLoc": 200,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "fscript-thinker-chunk836",
@@ -28712,7 +28712,7 @@
         ],
         "nativeLoc": 212,
         "managedLoc": 246,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "fscript-parser-core-chunk837",
@@ -28847,7 +28847,7 @@
         ],
         "nativeLoc": 198,
         "managedLoc": 227,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "fscript-parser-sf-mid-chunk838",
@@ -29042,7 +29042,7 @@
         ],
         "nativeLoc": 230,
         "managedLoc": 266,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "fscript-parser-sf-act-value-chunk845",
@@ -29057,7 +29057,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -29242,7 +29242,7 @@
         ],
         "nativeLoc": 168,
         "managedLoc": 172,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "fscript-parser-sf-level-chunk847",
@@ -29257,7 +29257,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -29273,7 +29273,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -29289,7 +29289,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -29305,7 +29305,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -29334,7 +29334,7 @@
         ],
         "nativeLoc": 215,
         "managedLoc": 284,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "fscript-parser-sf-ctrl-chunk852",
@@ -29537,7 +29537,7 @@
         "auditSingleFunctionOversizeException": true,
         "nativeLoc": 264,
         "managedLoc": 270,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "fscript-prepro-chunk857",
@@ -29552,7 +29552,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -29568,7 +29568,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -29584,7 +29584,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -29684,7 +29684,7 @@
         ],
         "nativeLoc": 344,
         "managedLoc": 357,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "fscript-oper-table-logic-chunk861",
@@ -29699,7 +29699,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -29715,7 +29715,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -29816,7 +29816,7 @@
         ],
         "nativeLoc": 210,
         "managedLoc": 224,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "fscript-parser-tokenize-chunk864",
@@ -29899,7 +29899,7 @@
         ],
         "nativeLoc": 235,
         "managedLoc": 231,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "fscript-parser-expr-eval-chunk866",
@@ -29990,7 +29990,7 @@
         ],
         "nativeLoc": 199,
         "managedLoc": 229,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "fscript-parser-run-chunk865",
@@ -30045,7 +30045,7 @@
         ],
         "nativeLoc": 155,
         "managedLoc": 198,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "fscript-parser-expr-eval-chunk867",
@@ -30076,7 +30076,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -30151,7 +30151,7 @@
         ],
         "nativeLoc": 154,
         "managedLoc": 178,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "fscript-parser-sf-tex-door-chunk870",
@@ -30182,7 +30182,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -30198,7 +30198,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -30214,7 +30214,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c",
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715",
         "retired": true
       },
       {
@@ -30362,7 +30362,7 @@
         ],
         "nativeLoc": 315,
         "managedLoc": 376,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "actor-action-corpse-chunk876",
@@ -30489,7 +30489,7 @@
         ],
         "nativeLoc": 215,
         "managedLoc": 375,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "bot-think-move-chunk878",
@@ -30609,7 +30609,7 @@
         ],
         "nativeLoc": 163,
         "managedLoc": 164,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "linked-sectors-remainder-chunk880",
@@ -30741,7 +30741,7 @@
         ],
         "nativeLoc": 345,
         "managedLoc": 380,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "bot-func-reach-fire-chunk883",
@@ -30796,7 +30796,7 @@
         ],
         "nativeLoc": 150,
         "managedLoc": 252,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "bot-func-body-travel-chunk885",
@@ -30892,7 +30892,7 @@
         ],
         "nativeLoc": 167,
         "managedLoc": 252,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "maploader-gl-subsectors-nodes-chunk889",
@@ -30932,7 +30932,7 @@
         ],
         "nativeLoc": 213,
         "managedLoc": 302,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "maploader-gl-render-sector-chunk890",
@@ -30980,7 +30980,7 @@
         ],
         "nativeLoc": 167,
         "managedLoc": 264,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "maploader-compatibility-chunk891",
@@ -31031,7 +31031,7 @@
         ],
         "nativeLoc": 171,
         "managedLoc": 497,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "maploader-slopes-spawn-chunk892",
@@ -31114,7 +31114,7 @@
         ],
         "nativeLoc": 344,
         "managedLoc": 557,
-        "conversionManagedCommit": "421bcc04fc2faa86fcf7c540299ad0cd174b398c"
+        "conversionManagedCommit": "797c274238af2aed653009d1963fb6c134d2c715"
       },
       {
         "name": "maploader-slopes-align-chunk893",
