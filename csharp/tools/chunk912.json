@@ -1,0 +1,34 @@
+[
+  {
+    "name": "p-acs-runscript-var-array-ops-chunk912",
+    "bucket": "conversion",
+    "note": "`DLevelScript::RunScript` `PCD_GT`…`PCD_GE` and script/map/world/global var/array assign/push/add through `PCD_ADDGLOBALARRAY` from `p_acs.cpp` (**7710–7874**). Follows **911** (**≤7709**); `PCD_SUBSCRIPTVAR` at **7876** deferred.",
+    "auditSeams": "`ACSLocalVariables`, `ACSLocalArrays`, `FBehavior::MapVars`, and full `RunScript` dispatch are not hosted; slice models stack pop/push and storage cell updates only.",
+    "auditRationale": "Honest **165**-line UNCredited band; exclusive `VmPAcsVmOpcode912Slice.cs` without modifying **911** `VmPAcsVmOpcode911Slice.cs`.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 7710 --end 7874` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native opcode region | Behavior ported |\n|----------------------|-----------------|\n| `PCD_GT` / `PCD_LE` / `PCD_GE` (**7710–7748**) | yes |\n| `PCD_ASSIGNSCRIPTVAR` … `PCD_ASSIGNGLOBALARRAY` (**7750–7789**) | yes |\n| `PCD_PUSHSCRIPTVAR` … `PCD_PUSHGLOBALARRAY` (**7791–7821**) | yes |\n| `PCD_ADDSCRIPTVAR` … `PCD_ADDGLOBALARRAY` (**7823–7874**) | yes |\n\n| Managed (`VmPAcsVmOpcode912Slice.cs`) | Native (`p_acs.cpp`) |\n|----------------------------------------|---------------------|\n| `TryApplyGt` | **7711–7722** |\n| `TryApplyLe` | **7724–7735** |\n| `TryApplyGe` | **7737–7748** |\n| `AssignScriptVar` / `AssignMapVar` / `AssignWorldVar` / `AssignGlobalVar` | **7750–7769** |\n| `AssignScriptArray` / `AssignMapArray` / `AssignWorldArray` / `AssignGlobalArray` | **7771–7789** |\n| `PushScriptVar` … `PushGlobalArray` | **7791–7821** |\n| `AddScriptVar` … `AddGlobalVar` | **7823–7841** |\n| `AddScriptArray` / `AddMapArray` / `AddWorldArray` / `AddGlobalArray` | **7843–7874** |\n| `AcsScriptArrayStore` / `AcsMapArrayStore` | array get/set backing **7772–7872** |\n\n### Chunk **912** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **165** |\n| **Net headline** | **+165** vs post-**911** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPAcsVmOpcode912Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "DLevelScript::RunScript",
+        "start": 7710,
+        "end": 7874,
+        "tests": [
+          "VmPAcsVmOpcode912SliceTests.TryApplyGe_ComparesSecondToTop",
+          "VmPAcsVmOpcode912SliceTests.TryApplyGt_MalformedWhenStackTooShallow",
+          "VmPAcsVmOpcode912SliceTests.AssignScriptVar_PopsStackTopIntoLocal",
+          "VmPAcsVmOpcode912SliceTests.PushWorldVar_PushesStoredValue",
+          "VmPAcsVmOpcode912SliceTests.AssignScriptArray_WritesIndexedCell",
+          "VmPAcsVmOpcode912SliceTests.PushMapArray_ResolvesArrayThroughMapVarCell",
+          "VmPAcsVmOpcode912SliceTests.AddGlobalVar_IncrementsSlot",
+          "VmPAcsVmOpcode912SliceTests.AddWorldArray_AddsToIndexedElement",
+          "VmPAcsVmOpcode912SliceTests.AddMapArray_UsesMapVarAsArrayId",
+          "VmPAcsVmOpcode912SliceTests.TryApplyLe_ReturnsOneWhenLessOrEqual"
+        ]
+      }
+    ]
+  }
+]
