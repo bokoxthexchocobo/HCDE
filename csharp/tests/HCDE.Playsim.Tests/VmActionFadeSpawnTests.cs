@@ -37,4 +37,12 @@ public class VmActionFadeSpawnTests
     [Fact]
     public void ShouldSpawnParticle_WhenLifetimeNonZero() =>
         Assert.True(VmActionFadeSpawn.ShouldSpawnParticle(10));
+
+    [Fact]
+    public void ClampPositiveFadeStep_ClampsWhenPositive() =>
+        Assert.Equal(0.5, VmActionFadeSpawn.ClampPositiveFadeStep(0.5));
+
+    [Fact]
+    public void AbsParticleSize_UsesMagnitude() =>
+        Assert.Equal(3.0, VmActionFadeSpawn.AbsParticleSize(-3));
 }
