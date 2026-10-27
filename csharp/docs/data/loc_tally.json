@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 55759,
+  "convertedThisRunNative": 55920,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 83222,
+  "convertedThisRunManaged": 83411,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 433046,
+  "remainingNative": 432885,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 74286,
+  "convertedBehaviorNative": 74447,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 75040,
-  "convertedBehaviorManaged": 92893,
+  "combinedBehaviorNative": 75201,
+  "convertedBehaviorManaged": 93082,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -33707,6 +33707,53 @@
       "nativeLoc": 229,
       "managedLoc": 233,
       "conversionManagedCommit": "1d594c975e8e690c1545137113206f05894a2de1"
+    },
+    {
+      "name": "a-floor-elevator-ev-change-chunk920",
+      "bucket": "conversion",
+      "note": "`DElevator::StartFloorSound`, `EV_DoElevator`, and `EV_DoChange` from `mapthinkers/a_floor.cpp` (**996\u20131154**). Post\u2013chunk **6** island (**941\u2013984** skipped); donut / VM glue (**516\u2013529**, **796\u2013863**) on **921**.",
+      "auditSeams": "Tag iterators, thinker spawn, height finders, texture/special hooks, and static `StartFloorSound` are injected.",
+      "auditRationale": "`--band` hull **992\u20131154** avoids chunk **919** (**\u2264788**) and chunk **6** tick (**941\u2013984**).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 920 --band` \u2192 hull **996\u20131154** UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `DElevator::StartFloorSound` (**992\u2013995**) | yes |\n| `EV_DoElevator` (**996\u20131095**) | yes |\n| `EV_DoChange` (**1098\u20131154**) | yes |\n\n| Managed | Native (`a_floor.cpp`) |\n|---------|----------------------|\n| `VmAFloorEvElevator920Slice.ElevatorStartFloorSound` | **992\u2013995** |\n| `VmAFloorEvElevator920Slice.EvDoElevator` | **996\u20131095** |\n| `VmAFloorEvDonutChange920Slice.EvDoChange` | **1098\u20131154** |\n\n### Chunk **920** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **161** |\n| **Net headline** | **+161** vs post-**919** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmAFloorEvDonutChange920Slice.cs",
+        "csharp/src/HCDE.Playsim/VmAFloorEvElevator920Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "DElevator::StartFloorSound",
+          "start": 992,
+          "end": 995,
+          "tests": [
+            "VmAFloorTickElevatorTests.EvDoElevator_Raise_SetsDestinations"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "FLevelLocals::EV_DoElevator",
+          "start": 996,
+          "end": 1095,
+          "tests": [
+            "VmAFloorTickElevatorTests.EvDoElevator_CurrentWithoutLine_ReturnsFalse",
+            "VmAFloorTickElevatorTests.EvDoElevator_Raise_SetsDestinations",
+            "VmAFloorTickElevatorTests.EvDoElevator_SkipsSectorWhenFloorAlreadyMoving"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "FLevelLocals::EV_DoChange",
+          "start": 1098,
+          "end": 1154,
+          "tests": [
+            "VmAFloorEvTests.EvDoChange_TrigChange_CopiesFrontTexture"
+          ]
+        }
+      ],
+      "nativeLoc": 161,
+      "managedLoc": 189,
+      "conversionManagedCommit": "a61715d076bd4fe02cf8a6973075fa66dde92223"
     }
   ],
   "behaviorNativeChecksum": 508086,
