@@ -7,6 +7,10 @@ public class VmActorDoDamageTests
         Assert.False(VmActorDoDamage.CheckClass("A", "A", exclude: true));
 
     [Fact]
+    public void CheckSpecies_ExcludeInverts() =>
+        Assert.False(VmActorDoDamage.CheckSpecies("imp", "imp", exclude: true));
+
+    [Fact]
     public void PassesFilterSpecies_EitherMode() =>
         Assert.True(VmActorDoDamage.PassesFilterSpecies(false, true, VmActorDoDamage.DmssFlags.Either));
 
@@ -23,14 +27,30 @@ public class VmActorDoDamageTests
         Assert.Equal(VmActorDoDamage.DamagePlan.Heal, VmActorDoDamage.PlanDoDamage(-5, passesFilter: true));
 
     [Fact]
+    public void HealMagnitude_Positive() =>
+        Assert.Equal(5, VmActorDoDamage.HealMagnitude(-5));
+
+    [Fact]
+    public void UseInflictorDamageType_WhenFlagged() =>
+        Assert.True(VmActorDoDamage.UseInflictorDamageType(true, VmActorDoDamage.DmssFlags.InflictorDmgType));
+
+    [Fact]
+    public void SetTicsOnPsprite_WhenFound() =>
+        Assert.True(VmActorDoDamage.SetTicsOnPsprite(fromPsprite: true, pspriteFound: true));
+
+    [Fact]
     public void SetTicsOnActor_WhenFromActor() =>
-        Assert.True(true);
+        Assert.True(VmActorDoDamage.ShouldSetActorTics(fromActor: true));
 
     [Fact]
-    public void DamageMasterTarget_RequiresMaster() =>
-        Assert.False(false);
+    public void ShouldDamageWhenPresent_Target() =>
+        Assert.True(VmActorDoDamage.ShouldDamageWhenPresent(new object()));
 
     [Fact]
-    public void ShouldDamageChild_WhenMasterMatches() =>
-        Assert.True(true);
+    public void ShouldDamageWhenPresent_TracerAbsent() =>
+        Assert.False(VmActorDoDamage.ShouldDamageWhenPresent(null));
+
+    [Fact]
+    public void PassesDoDamageFilter_BothRequired() =>
+        Assert.False(VmActorDoDamage.PassesDoDamageFilter(false, true, 0));
 }

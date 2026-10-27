@@ -68,4 +68,19 @@ public static class VmActorDoDamage
     public static bool SetTicsOnPsprite(bool fromPsprite, bool pspriteFound) =>
         fromPsprite && pspriteFound;
 
+    public static bool ShouldSetActorTics(bool fromActor) => fromActor;
+
+    public static bool ShouldDamageWhenPresent(object? victim) => victim is not null;
+
+    public static bool PassesDoDamageFilter(
+        bool filterPass,
+        bool speciesPass,
+        DmssFlags flags) =>
+        PassesFilterSpecies(filterPass, speciesPass, flags);
+
+    public static bool ShouldApplyDamageBranch(int amount, DamagePlan plan) =>
+        plan == DamagePlan.Damage && amount > 0;
+
+    public static bool ShouldApplyHealBranch(int amount, DamagePlan plan) =>
+        plan == DamagePlan.Heal && amount < 0;
 }
