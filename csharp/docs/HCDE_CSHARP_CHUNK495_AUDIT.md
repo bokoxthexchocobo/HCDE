@@ -1,41 +1,54 @@
-# Chunk 495 — P_AdjustFloorCeil, above/below intersectors, P_DoCrunch compat head Retired (2026-10-24): `--band` hull overlaps existing credit (p-map-crush-tail-decal-activate-chunk499 src/playsim/p_map.cpp 6679-6685).
+# Chunk 495 — Whole `P_AdjustFloorCeil`, `P_FindAboveIntersectors`, `P_FindBelowIntersectors`, and `P_DoCrunch` compat head (`p_map.cpp` 6523–6700).
 
 ## Scope
 
-P_AdjustFloorCeil, above/below intersectors, P_DoCrunch compat head Retired (2026-10-24): `--band` hull overlaps existing credit (p-map-crush-tail-decal-activate-chunk499 src/playsim/p_map.cpp 6679-6685).
+Whole `P_AdjustFloorCeil`, `P_FindAboveIntersectors`, `P_FindBelowIntersectors`, and `P_DoCrunch` compat head (`p_map.cpp` 6523–6700).
 
 ## Native ranges
 
+- `src/playsim/p_map.cpp` **P_AdjustFloorCeil** 6523–6566 (44 lines)
+- `src/playsim/p_map.cpp` **P_FindAboveIntersectors** 6574–6622 (49 lines)
+- `src/playsim/p_map.cpp` **P_FindBelowIntersectors** 6630–6678 (49 lines)
+- `src/playsim/p_map.cpp` **P_DoCrunch** 6686–6700 (15 lines)
 
-**Credited native LOC:** 0 (tally `nativeLoc` 0).
+**Credited native LOC:** 157 (tally `nativeLoc` 157).
 
 ## Managed
 
-(see conversion commit file list)
-Managed LOC (tally): 0.
-Conversion commit: `288ff231a733aef7eda9b0a9caa31a066bb51fa1`.
+`VmPMapSectorIntersectors.cs`
+Managed LOC (tally): 101.
+Conversion commit: `7556875fb0ce907058bb8f8e380e5df698f35819`.
 
 ## Padding review (2026-10-21)
 
+**Behavior ported (honest native credit)**
+
 | Managed | Native (`p_map.cpp`) |
 |---------|-------------------|
-| `SkipNonSolidThing` / `ApplyCrushDamageOnCadence` / `ShouldSkipIteratorCandidate` / `InvulnerableOrDormant` | `P_ChangeSector` 6482–6511 |
-| `PassMobjMonsterCheck` / `BridgeSkipsFloorSync` / `RestorePassmobjFlag` / `FromPMoveMonster` / `OrPassmobjFlags` | `P_AdjustFloorCeil` 6523–6566 (6528: `if ((thing->flags2 & MF2_PASSMOBJ) && (thing->flags3 & MF3_ISMONSTER))`; 6533: `if (cpos->movemidtex)`; 6538: `thing->flags2 |= MF2_PASSMOBJ;`) |
-| `SkipNoclip` / `RequiresSolid` / `BlockDistOutOfRange` / `SkipSpecialPickup` / `SkipCorpseUnlessIce` / `SkipAlwaysBlockingPair` / `AboveIntersection` | `P_FindAboveIntersectors` 6574–6622 (6576: `if (actor->flags & MF_NOCLIP)`; 6577: `return;`; 6579: `if (!(actor->flags & MF_SOLID))`) |
-| `BelowIntersection` / `HideBloodWhenTypeLow` | `P_FindBelowIntersectors` 6630–6678 (6632: `if (actor->flags & MF_NOCLIP)`; 6633: `return;`; 6635: `if (!(actor->flags & MF_SOLID))`) |
-| `CrusherCompatSkipsCorpse` / `CrushRequiresGrind` / `PlayCrushSoundWhenIdle` | `P_DoCrunch` 6686–6700 (6688: `if (!(thing && thing->CallGrind(true) && cpos)) return;`; 6690: `if ((thing->Level->i_compatflags2 & COMPATF2_DR_CRUSHER) &&`; 6699: `return;`) |
+| `PassMobjMonsterCheck` / `BridgeSkipsFloorSync` / `RestorePassmobjFlag` / `FromPMoveMonster` / `OrPassmobjFlags` | `P_AdjustFloorCeil` **6523–6566** |
+| `SkipNoclip` / `RequiresSolid` / `BlockDistOutOfRange` / `SkipSpecialPickup` / `SkipCorpseUnlessIce` / `SkipAlwaysBlockingPair` / `AboveIntersection` | `P_FindAboveIntersectors` **6574–6622** |
+| `BelowIntersection` / `HideBloodWhenTypeLow` | `P_FindBelowIntersectors` **6630–6678** |
+| `CrusherCompatSkipsCorpse` / `CrushRequiresGrind` / `PlayCrushSoundWhenIdle` | `P_DoCrunch` **6686–6700** |
 
-### Out-of-body uncredit (495)
+### Gross vs net
 
-| | `nativeLoc` |
-|--|----------:|
-| **Gross** | **187** |
-| **Out-of-body removed** | **30** |
-| **Honest** | **157** |
+| | Value |
+|--|------:|
+| Gross `nativeLoc` | **157** |
+| Net behavior-ported | **157** |
 
+
+**Post-review ratio:** 101/157 managed/native ≈ 64% (src file LOC at HEAD; see tally).
 
 ## Tests
 
+- `VmPMapSectorIntersectorsTests.AdjustFloor_MidtexPassmobj`
+- `VmPMapSectorIntersectorsTests.AdjustFloor_BridgeSkipsSync`
+- `VmPMapSectorIntersectorsTests.Above_SkipsNoclip`
+- `VmPMapSectorIntersectorsTests.Above_IntersectionBand`
+- `VmPMapSectorIntersectorsTests.Below_IntersectionBand`
+- `VmPMapSectorIntersectorsTests.Crunch_CompatSkipsCorpse`
+- `VmPMapSectorIntersectorsTests.Crunch_DamageCadence`
 
 ## Verified
 
@@ -47,4 +60,4 @@ Conversion commit: `288ff231a733aef7eda9b0a9caa31a066bb51fa1`.
 
 ## Credit rationale
 
-Credits 3DMidTex passmobj, bridge spawn-pos floor sync, intersector filtering, crush compat corpse skip, and crush damage cadence from `p_map.cpp` (6482–6700).
+Credits 3DMidTex passmobj, bridge spawn-pos floor sync, intersector filtering, and crush compat corpse skip from `p_map.cpp` (6523–6700).
