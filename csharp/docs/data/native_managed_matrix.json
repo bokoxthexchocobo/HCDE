@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 223423
+    "managedCSharpLoc": 223426
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 48151,
+    "convertedThisRunNative": 48306,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 77030,
+    "convertedThisRunManaged": 77108,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 440654,
+    "remainingNative": 440499,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 66678,
+    "convertedBehaviorNative": 66833,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 67432,
-    "convertedBehaviorManaged": 86701,
+    "combinedBehaviorNative": 67587,
+    "convertedBehaviorManaged": 86779,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -16420,16 +16420,60 @@
       {
         "name": "action-print-through-sight-chunk573",
         "bucket": "conversion",
-        "note": "Merged into action-range-through-wolf-chunk576 (coverage shrink pass).",
-        "auditSeams": "`Thrust`, `V_GetFont`, `strbin1`, `C_MidPrint`, `Printf`, and `P_RemoveThing` are not hosted. `P_RemoveThing`, `Spawn`, `P_SpawnParticle`, and state/translation setup in debris loop are not hosted. `P_SpawnParticle`, `P_CheckSight`, and player iteration in `CheckIfSeen` / `CheckSightOrRange` are not hosted.",
-        "auditRationale": "Managed helpers mirror only the decision math and gating in each action; I/O and actor mutation stay at seams. Alpha stepping, multiplier defaults, PR offsets, and SPF rotation match native formulas; spawn/remove calls are seams. Managed ports clamp/style/relative-vector setup and the distance branch of sight-or-range; sight checks and spawn calls are seams.",
-        "auditPaddingReview": "**Superseded chunk numbers:** 574, 575 (retired; credit lives only in chunk573.json / tally row `action-print-through-sight-chunk573`).\n\n**Fidelity review (2026-10-21):** Native credit is whole functions where every credited line has a managed counterpart; seam-only lines (`1420\u20131423`, `1452\u20131454`, `1474`, `1491\u20131492`, `1508\u20131509`, `1585\u20131586`) are excluded.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RecoilThrustAngleDegrees` | `A_Recoil` 1386\u20131387 |\n| `ResolveDollarString` / `ShouldPrintToLocalView` / `SelectMidPrintDuration` / `WithTemporaryMidTime` | `A_Print` 1405\u20131419 |\n| `ResolveDollarString` / `SelectMidPrintDuration` | `A_PrintBold` 1443\u20131451 |\n| `ShouldSkipLocalLog` / `ResolveDollarString` | `A_Log` 1470\u20131473 |\n| `ShouldSkipLocalLog` / `FormatLogInt` | `A_LogInt` 1490\u20131491 |\n| `ShouldSkipLocalLog` / `FormatLogFloat` | `A_LogFloat` 1507\u20131508 |\n| `MapTranslucentMode` / `ShouldClearAlpha1Flag` / `ClampAlpha` | `A_SetTranslucent` 1525\u20131529 |\n| `ApplySetRenderStyle` | `A_SetRenderStyle` 1544\u20131545 |\n| `FadeReduceDefault` / `ClearAlpha1RenderStyleFlag` / `AddFadeInReduce` / `StepFadeIn` | `A_FadeIn` 1570\u20131583 |\n\n**Fidelity review (2026-10-21):** Excluded `P_RemoveThing` (`1618\u20131619`, `1664\u20131666`), debris `Spawn`/`SetState` (`1697\u20131707`), and `P_SpawnParticle` (`1772`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `FadeReduceDefault` / `StepFadeOut` | `A_FadeOut` 1604\u20131615 |\n| `StepFadeToward` / `FinishFadeTo` | `A_FadeTo` 1639\u20131662 |\n| `NormalizeDebrisMultipliers` / `DebrisOffsetFromPr` | `A_SpawnDebris` 1685\u20131690, 1694\u20131695 |\n| `ClampParticleStartAlpha` / `ClampPositiveFadeStep` / `ShouldSpawnParticle` / `RotateRelPos` | `A_SpawnParticle` 1743\u20131746, 1755\u20131761 |\n\n**Fidelity review (2026-10-21):** No credit for `CheckIfSeen` (`1854\u20131878`, all `P_CheckSight`). `CheckSightOrRange` credits only `range *= range` (`1930`); player loop is seam. `A_SpawnParticleEx` excludes `P_SpawnParticle` (`1843`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `ClampParticleStartAlpha` / `ClampFadeStep` / `AbsParticleSize` / `ShouldSpawnParticleEx` / `NormalizeParticleStyle` | `A_SpawnParticleEx` 1804\u20131807, 1838\u20131841 |\n| `VerticalSightDelta` / `SquaredDistance2d` / `WithinRange` / `DoCheckSightOrRange` | `DoCheckSightOrRange` 1889\u20131914 |\n| `SquaredRange` | `CheckSightOrRange` 1930 |",
-        "managedSourceFiles": [],
-        "nativeRanges": [],
-        "nativeLoc": 0,
-        "managedLoc": 0,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-        "retired": true
+        "note": "Re-land: `A_FadeOut`, `A_FadeTo`, `A_SpawnDebris`, and `A_SpawnParticle` setup (`p_actionfunctions.cpp` **1598\u20131774**). `VmActionPrintLogRecoil` stays on **572** only; translucent/fade-in **1519\u20131589** deferred.",
+        "auditSeams": "`P_RemoveThing`, `Spawn`, `SetState`, `P_SpawnParticle`, and `P_CheckSight` are not hosted.",
+        "auditRationale": "Credits fade-out/to stepping, debris multiplier/offset gates, and particle clamp/rotate setup; spawn/remove at seams.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `FadeReduceDefault` / `StepFadeOut` | `A_FadeOut` **1598\u20131622** |\n| `StepFadeToward` / `FinishFadeTo` | `A_FadeTo` **1632\u20131668** |\n| `NormalizeDebrisMultipliers` / `DebrisOffsetFromPr` | `A_SpawnDebris` **1675\u20131714** |\n| `ClampParticleStartAlpha` / `ClampPositiveFadeStep` / `AbsParticleSize` / `ShouldSpawnParticle` / `RotateRelPos` | `A_SpawnParticle` **1722\u20131774** |\n\n### vs chunk **572**\n\n| | Lines |\n|--|------:|\n| **572** (`VmActionPrintLogRecoil` + rail) | **1267\u20131512** |\n| **573** (`VmActionFadeSpawn` only) | **1598\u20131774** |\n| Deferred (same file as **572**, uncredited) | **1519\u20131589** translucent/fade-in |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **155** |\n| Net behavior-ported | **155** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmActionFadeSpawn.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_FadeOut",
+            "start": 1598,
+            "end": 1622,
+            "tests": [
+              "VmActionFadeSpawnTests.StepFadeOut_ClampsAtZero",
+              "VmActionFadeSpawnTests.FadeReduceDefault_UsesTenthWhenZero"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_FadeTo",
+            "start": 1632,
+            "end": 1668,
+            "tests": [
+              "VmActionFadeSpawnTests.StepFadeToward_MovesTowardTarget",
+              "VmActionFadeSpawnTests.FinishFadeTo_RemovesAtTarget"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_SpawnDebris",
+            "start": 1675,
+            "end": 1714,
+            "tests": [
+              "VmActionFadeSpawnTests.NormalizeDebrisMultipliers_DefaultsNonPositive",
+              "VmActionFadeSpawnTests.DebrisOffsetFromPr_ScalesAround128"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_SpawnParticle",
+            "start": 1722,
+            "end": 1774,
+            "tests": [
+              "VmActionFadeSpawnTests.ClampParticleStartAlpha_BoundsUnit",
+              "VmActionFadeSpawnTests.RotateRelPos_MatchesSpawnParticleBranch",
+              "VmActionFadeSpawnTests.ShouldSpawnParticle_WhenLifetimeNonZero"
+            ]
+          }
+        ],
+        "nativeLoc": 155,
+        "managedLoc": 78,
+        "conversionManagedCommit": "6c5f402f83d5e8b085bd5b8c9832524653e54ad0",
+        "auditManagedLocJustification": "`VmActionFadeSpawn.cs` only (`VmActionPrintLogRecoil` exclusive to chunk **572**)."
       },
       {
         "name": "action-range-through-wolf-chunk576",
