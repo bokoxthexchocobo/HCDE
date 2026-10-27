@@ -7,6 +7,10 @@ public class VmActionRadiusGiveEligibilityTests
         Assert.True(VmActionRadiusGiveEligibility.SpeciesPasses(null, "imp", exclude: false));
 
     [Fact]
+    public void ClassPasses_WhenFilterNull() =>
+        Assert.True(VmActionRadiusGiveEligibility.ClassPasses(filterNull: true, sameClass: false, exclude: false));
+
+    [Fact]
     public void FilterSpeciesCombined_EitherMode() =>
         Assert.True(VmActionRadiusGiveEligibility.FilterSpeciesCombined(false, true, VmActionRadiusGiveEligibility.RgfEither));
 

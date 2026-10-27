@@ -19,6 +19,10 @@ public class VmActionLineEffectTests
         Assert.True(VmActionLineEffect.WolfAttackAbortsWithoutTarget(null));
 
     [Fact]
+    public void WolfAttackAbortsWithoutSight() =>
+        Assert.True(VmActionLineEffect.WolfAttackAbortsWithoutSight(false));
+
+    [Fact]
     public void LineEffectCanRun_WhenNotLinedone() =>
         Assert.True(VmActionLineEffect.LineEffectCanRun(0, 1));
 

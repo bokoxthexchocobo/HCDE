@@ -8,4 +8,10 @@ public static class VmActionWarp
     public static bool UseTidLookup(int flags) => (flags & WarpfUsetid) != 0;
 
     public static bool WarpFailsWithoutReference(object? reference) => reference is null;
+
+    public static int PrimeDualReturnCount(int numret) => numret > 1 ? 2 : numret;
+
+    public static bool ShouldPrimeChainSuccessFalse(int numret) => numret > 1;
+
+    public static bool ShouldClearStatePointer(int numret) => numret > 0;
 }

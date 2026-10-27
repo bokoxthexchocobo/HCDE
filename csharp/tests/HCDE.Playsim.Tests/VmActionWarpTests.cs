@@ -11,6 +11,10 @@ public class VmActionWarpTests
         Assert.True(VmActionWarp.UseTidLookup(VmActionWarp.WarpfUsetid));
 
     [Fact]
-    public void ShouldPrimeChainResult_WhenSlotPresent() =>
-        Assert.True(true);
+    public void PrimeDualReturnCount_WhenMultipleReturns() =>
+        Assert.Equal(2, VmActionWarp.PrimeDualReturnCount(3));
+
+    [Fact]
+    public void ShouldClearStatePointer_WhenAnyReturn() =>
+        Assert.True(VmActionWarp.ShouldClearStatePointer(1));
 }
