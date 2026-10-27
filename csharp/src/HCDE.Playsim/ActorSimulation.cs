@@ -3877,6 +3877,8 @@ public sealed class AuthoritySimulation
     public bool DisableAutoHealth { get; }
     public bool StrifeHealthPickups { get; }
     public bool RavenHealthPickups { get; }
+    /// <summary>Native <c>botinfo_t::firstthing</c> cursor for Cajun inventory roam scans.</summary>
+    public Actor? BotInventoryScanCursor { get; set; }
     public bool UnlimitedHealthPickups { get; }
     public bool InfiniteHealthItemUse { get; }
     public bool InfiniteStoredInventoryUse { get; }
@@ -3914,6 +3916,57 @@ public sealed class AuthoritySimulation
             && (!baddies || !a.Friendly)).ToArray())
             if (actor.Massacre()) killed++;
         return killed;
+    }
+
+    /// <summary>Map inventory pickups in native thinker-list order (<c>GetThinkerIterator&lt;AActor&gt;(NAME_Inventory)</c>).</summary>
+    public IEnumerable<Actor> EnumerateInventoryPickupsInThinkerOrder()
+    {
+        foreach (var thinker in Thinkers.SnapshotOrder())
+        {
+            if (thinker is Actor { Destroyed: false, SpecialPickup: true } actor
+                && PickupCatalog.IsPickup(actor.DoomEdNum, RavenHealthPickups))
+                yield return actor;
+        }
+    }
+
+    /// <summary>Native Cajun roam inventory destination pick (<c>b_think.cpp</c> 268–287).</summary>
+    public Actor? PickBotRoamInventoryDestination(int prBotmoveRandom)
+    {
+        var pickups = EnumerateInventoryPickupsInThinkerOrder().ToList();
+        if (pickups.Count == 0)
+            return null;
+
+        var index = 0;
+        if (BotInventoryScanCursor != null)
+        {
+            var cursorIndex = pickups.FindIndex(a => ReferenceEquals(a, BotInventoryScanCursor));
+            index = cursorIndex >= 0 ? cursorIndex + 1 : 0;
+        }
+
+        Actor? Next()
+        {
+            if (index >= pickups.Count)
+                return null;
+            return pickups[index++];
+        }
+
+        var item = Next();
+        if (item == null)
+            item = Next();
+        if (item == null)
+            return null;
+
+        var advance = prBotmoveRandom & 63;
+        while (advance > 0)
+        {
+            advance--;
+            item = Next();
+        }
+
+        if (item == null)
+            item = Next();
+        BotInventoryScanCursor = item;
+        return item;
     }
 
     /// <summary>Native sv_weaponstay: non-dropped weapons stay available.</summary>
