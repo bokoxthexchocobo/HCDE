@@ -19,14 +19,10 @@ public static class VmPMapProjectileCombat
         List<SpechitEntry> spechit,
         List<SpechitEntry> portalhit)
     {
-        if (special != 0)
-        {
+        if (ShouldRecordSpechit(special))
             spechit.Add(new SpechitEntry { Line = line, Refpos = refpos, Oldrefpos = oldrefpos });
-        }
-        if (isPortal)
-        {
+        if (ShouldRecordPortalHit(isPortal))
             portalhit.Add(new SpechitEntry { Line = line, Refpos = refpos, Oldrefpos = oldrefpos });
-        }
     }
 
     public static bool CheckRipLevel(int victimMin, int victimMax, int projectileLevel)
@@ -37,6 +33,30 @@ public static class VmPMapProjectileCombat
             return false;
         return true;
     }
+
+    public static bool ShouldRecordSpechit(int special) => special != 0;
+
+    public static bool ShouldRecordPortalHit(bool isPortal) => isPortal;
+
+    public static bool ShouldAdjustPortalCeiling(double openTop, double zofs, double ceilingz) =>
+        openTop - zofs < ceilingz;
+
+    public static bool ShouldAdjustPortalFloor(double openBottom, double zofs, double floorz) =>
+        openBottom - zofs > floorz;
+
+    public static bool ShouldLowerPortalDropoff(double openLowFloor, double zofs, double dropoffz) =>
+        openLowFloor - zofs < dropoffz;
+
+    public static int MissileDamageSides(bool ripper, int flags4Strife) =>
+        ripper ? 3 : (flags4Strife != 0 ? 3 : 7);
+
+    public static int MissileDamageCount(bool ripper) => ripper ? 2 : 1;
+
+    public static bool ShouldApplyMissileDamage(int damage, int flags6ForcePain, int flags7CausePain) =>
+        damage > 0 || flags6ForcePain != 0 || flags7CausePain != 0;
+
+    public static bool ShouldPoisonOnHit(int poisonDamage, int poisonDuration) =>
+        poisonDamage > 0 && poisonDuration != int.MinValue;
 
     public sealed class PortalProbeContext
     {
@@ -71,17 +91,17 @@ public static class VmPMapProjectileCombat
             if (ld.BackSector == null)
                 continue;
             var open = ctx.LineOpening(ld, pos);
-            if (open.Top - zofs < ceilingz)
+            if (ShouldAdjustPortalCeiling(open.Top, zofs, ceilingz))
             {
                 ceilingz = open.Top - zofs;
                 ret = true;
             }
-            if (open.Bottom - zofs > floorz)
+            if (ShouldAdjustPortalFloor(open.Bottom, zofs, floorz))
             {
                 floorz = open.Bottom - zofs;
                 ret = true;
             }
-            if (open.Bottom - zofs < dropoffz)
+            if (ShouldLowerPortalDropoff(open.Bottom, zofs, dropoffz))
                 dropoffz = open.Bottom - zofs;
         }
         ctx.AddZ(-zofs);
@@ -185,13 +205,11 @@ public static class VmPMapProjectileCombat
 
     public static void DoMissileDamage(CombatActor self, CombatActor victim, MissileDamageContext ctx)
     {
-        if (ctx.PoisonDamage > 0 && ctx.PoisonDuration != int.MinValue)
+        if (ShouldPoisonOnHit(ctx.PoisonDamage, ctx.PoisonDuration))
             ctx.PoisonMobj(victim, self);
         var ripper = ctx.Ripper;
-        var damage = ripper
-            ? ctx.MissileDamage(3, 2)
-            : ctx.MissileDamage(ctx.Flags4Strife != 0 ? 3 : 7, 1);
-        if (damage > 0 || ctx.Flags6ForcePain != 0 || ctx.Flags7CausePain != 0)
+        var damage = ctx.MissileDamage(MissileDamageSides(ripper, ctx.Flags4Strife), MissileDamageCount(ripper));
+        if (ShouldApplyMissileDamage(damage, ctx.Flags6ForcePain, ctx.Flags7CausePain))
             ctx.DamageMobj(victim, self, damage, "Unknown");
         else
             ctx.GiveBody(victim, -damage);
