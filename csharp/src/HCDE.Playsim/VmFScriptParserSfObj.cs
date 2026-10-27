@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary>Mobj query/kill/teleport <c>FParser::SF_*</c> from <c>fragglescript/t_func.cpp</c> (877–1039).</summary>
+/// <summary>Mobj query/teleport <c>FParser::SF_*</c> from <c>fragglescript/t_func.cpp</c> (927–1039); remove/kill in chunk **905** slice.</summary>
 public static partial class VmFScriptParser
 {
     public const int SvtFixed = 7;
@@ -32,31 +32,6 @@ public static partial class VmFScriptParser
 
     static object? OptionalActor(ParserContext ctx) =>
         ctx.TArgc > 0 ? ctx.ActorValue(ctx.TArgv[0]) : ctx.Script?.Trigger;
-
-    public static void SfRemoveObj(ParserContext ctx)
-    {
-        if (!CheckArgs(ctx, 1))
-            return;
-        var mo = ctx.ActorValue(ctx.TArgv[0]);
-        if (mo == null)
-            return;
-        ctx.ClearActorCounters(mo);
-        ctx.DestroyActor(mo);
-    }
-
-    public static void SfKillObj(ParserContext ctx)
-    {
-        object? mo;
-        if (ctx.TArgc > 0)
-            mo = ctx.ActorValue(ctx.TArgv[0]);
-        else
-            mo = ctx.Script?.Trigger;
-
-        if (mo == null)
-            return;
-        ctx.MarkActorMassacreKillable(mo);
-        ctx.DamageActorMassacre(mo, null, null, ctx.ActorHealth(mo));
-    }
 
     public static void SfObjX(ParserContext ctx) =>
         SetReturnDouble(ctx, ActorCoord(ctx, ctx.ActorX));

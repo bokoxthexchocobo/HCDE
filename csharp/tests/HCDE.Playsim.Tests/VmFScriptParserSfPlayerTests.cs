@@ -74,4 +74,36 @@ public class VmFScriptParserSfPlayerTests
         Assert.Null(ctx.TReturn.Mobj);
         Assert.Same(spawned, destroyed);
     }
+
+    [Fact]
+    public void SfRemoveObj_CallsDestroy()
+    {
+        var mo = new object();
+        var destroyed = false;
+        var ctx = new VmFScriptParser.ParserContext
+        {
+            TArgc = 1,
+            TArgv = [new VmFScriptParser.ScriptValue { Type = VmFScriptParser.SvtMobj, Mobj = mo }],
+            ActorValue = v => v.Mobj,
+            DestroyActor = _ => destroyed = true,
+        };
+        VmFScriptParser.SfRemoveObj(ctx);
+        Assert.True(destroyed);
+    }
+
+    [Fact]
+    public void SfKillObj_DefaultTrigger_MassacreDamage()
+    {
+        var mo = new object();
+        int? damage = null;
+        var ctx = new VmFScriptParser.ParserContext
+        {
+            Script = new VmFScriptScript.FsScript { Trigger = mo },
+            MarkActorMassacreKillable = _ => { },
+            ActorHealth = _ => 100,
+            DamageActorMassacre = (_, _, _, hp) => damage = hp,
+        };
+        VmFScriptParser.SfKillObj(ctx);
+        Assert.Equal(100, damage);
+    }
 }

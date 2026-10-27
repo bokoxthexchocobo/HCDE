@@ -19,22 +19,6 @@ public class VmFScriptParserSfObjTests
     }
 
     [Fact]
-    public void SfRemoveObj_CallsDestroy()
-    {
-        var mo = new object();
-        var destroyed = false;
-        var ctx = new VmFScriptParser.ParserContext
-        {
-            TArgc = 1,
-            TArgv = [new VmFScriptParser.ScriptValue { Type = VmFScriptParser.SvtMobj, Mobj = mo }],
-            ActorValue = v => v.Mobj,
-            DestroyActor = _ => destroyed = true,
-        };
-        VmFScriptParser.SfRemoveObj(ctx);
-        Assert.True(destroyed);
-    }
-
-    [Fact]
     public void SfTeleport_OneArg_UsesTrigger()
     {
         var mo = new object();

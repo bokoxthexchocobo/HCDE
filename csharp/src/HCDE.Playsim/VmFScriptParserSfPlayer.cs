@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary>Player and spawn <c>FParser::SF_*</c> from <c>fragglescript/t_func.cpp</c> (722–876).</summary>
+/// <summary>Player and spawn <c>FParser::SF_*</c> from <c>fragglescript/t_func.cpp</c> (722–869).</summary>
 public static partial class VmFScriptParser
 {
     public sealed partial class ParserContext
