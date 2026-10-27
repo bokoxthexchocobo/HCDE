@@ -160,7 +160,7 @@ public class VmAFloorEvTests
         s1.Lines.Add(new VmAFloorEv.StairLine { FrontSector = s1, BackSector = s2 });
         s2.Lines.Add(new VmAFloorEv.StairLine { TwoSided = true, BackSector = s3, FrontSector = s2 });
         var types = new List<int>();
-        VmAFloorEvDonutChange920Slice.EvDoDonut(
+        VmAFloorEvDonut921Slice.EvDoDonut(
             new VmAFloorEv.FloorEvContext
             {
                 SectorTagIterator = (_, _) => new[] { 0 },
@@ -182,7 +182,7 @@ public class VmAFloorEvTests
     public void EvDoDonut_SkipsWhenFloorPlaneMoving()
     {
         var sec = new VmAFloorEv.StairSector { SectorNum = 0 };
-        Assert.False(VmAFloorEvDonutChange920Slice.EvDoDonut(
+        Assert.False(VmAFloorEvDonut921Slice.EvDoDonut(
             new VmAFloorEv.FloorEvContext
             {
                 SectorTagIterator = (_, _) => new[] { 0 },

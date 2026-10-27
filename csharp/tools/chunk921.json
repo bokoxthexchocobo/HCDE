@@ -1,0 +1,38 @@
+[
+  {
+    "name": "a-floor-donut-elevator-head-chunk921",
+    "bucket": "conversion",
+    "note": "`EV_DoDonut` (**796–863**) and `DElevator` head through `OnDestroy` (**864–940**) from `mapthinkers/a_floor.cpp`. Hull **791–940** sits above chunk **919** (**≤788**) and below chunk **6** `DElevator::Tick` (**941+**).",
+    "auditSeams": "Tag iterators, `getNextSector`, thinker spawn, height finders, interpolation refs, and `Super::Construct` / `OnDestroy` are injected.",
+    "auditRationale": "Honest **150**-line UNCredited band; exclusive donut + elevator-head slices (chunk **920** keeps `EvDoChange` only on `VmAFloorEvDonutChange920Slice.cs`).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/mapthinkers/a_floor.cpp --start 791 --end 940` and `--chunk 921 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `EV_DoDonut` (**791–863**) | yes |\n| `DElevator` class head (**864–940**) | yes (**878–924** behavior; **925–940** comment seam before `Tick`) |\n\n| Managed | Native (`a_floor.cpp`) |\n|---------|----------------------|\n| `VmAFloorEvDonut921Slice.EvDoDonut` | **791–863** |\n| `VmAFloorElevatorHead921Slice.ConstructElevator` | **878–885** |\n| `VmAFloorElevatorHead921Slice.CaptureSerializeFields` / `ApplySerializeFields` | **887–897** |\n| `VmAFloorElevatorHead921Slice.DefinedFieldNames` | **899–903** |\n| `VmAFloorElevatorHead921Slice.OnDestroyElevator` | **911–924** |\n| (IMPLEMENT / pointer macros) | **871–876** |\n\n### Chunk **921** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**920** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmAFloorEvDonut921Slice.cs",
+      "csharp/src/HCDE.Playsim/VmAFloorElevatorHead921Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/mapthinkers/a_floor.cpp",
+        "symbol": "FLevelLocals::EV_DoDonut",
+        "start": 791,
+        "end": 863,
+        "tests": [
+          "VmAFloorEvTests.EvDoDonut_CreatesSlimeAndPillarThinkers",
+          "VmAFloorEvTests.EvDoDonut_SkipsWhenFloorPlaneMoving"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_floor.cpp",
+        "symbol": "DElevator",
+        "start": 864,
+        "end": 940,
+        "tests": [
+          "VmAFloorElevatorHead921SliceTests.ConstructElevator_WiresFloorAndCeilingData",
+          "VmAFloorElevatorHead921SliceTests.SerializeBundle_RoundTripsElevatorFields",
+          "VmAFloorElevatorHead921SliceTests.OnDestroyElevator_ReleasesInterpRefs"
+        ]
+      }
+    ]
+  }
+]
