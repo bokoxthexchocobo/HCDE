@@ -2,13 +2,33 @@ namespace HCDE.Playsim;
 
 public static class VmActorBoneEulerTransform
 {
+    public static (double X, double Y, double Z) ZeroEulerAngles() => (0, 0, 0);
+
+    public static bool ShouldReturnTransformPosition(int numret) => numret > 0;
+
+    public static bool ShouldReturnTransformForward(int numret) => numret > 1;
+
+    public static bool ShouldReturnTransformUp(int numret) => numret > 2;
+
+    public static bool MatrixFillEligible(bool outMatrixNonNull, bool getBoneSharedOk) =>
+        outMatrixNonNull && getBoneSharedOk;
+
+    public static bool EulerAnglesAvailable(bool getBoneSharedOk) => getBoneSharedOk;
+
+    public static bool TransformUsesActorBonePose(bool getBoneSharedOk, bool hasBonePositionFromActor) =>
+        getBoneSharedOk && hasBonePositionFromActor;
+
+    public static bool RawMatrixOutputRequested(bool outMatrixNonNull) => outMatrixNonNull;
+
+    public static bool BoneOverrideRequested(bool withOverride) => withOverride;
+
     public static (double X, double Y, double Z) GetBoneEulerAnglesNative(
         bool getBoneSharedOk,
         bool withOverride,
         double eulerX,
         double eulerY,
         double eulerZ) =>
-        getBoneSharedOk ? (eulerX, eulerY, eulerZ) : (0, 0, 0);
+        EulerAnglesAvailable(getBoneSharedOk) ? (eulerX, eulerY, eulerZ) : ZeroEulerAngles();
 
     public static (double X, double Y, double Z) GetNamedBoneEulerAnglesNative(
         bool getBoneSharedOk,
@@ -53,7 +73,7 @@ public static class VmActorBoneEulerTransform
         double upy = upY;
         double upz = upZ;
 
-        if (getBoneSharedOk && hasBonePositionFromActor)
+        if (TransformUsesActorBonePose(getBoneSharedOk, hasBonePositionFromActor))
         {
             positionX = outPosX;
             positionY = outPosY;
@@ -67,11 +87,11 @@ public static class VmActorBoneEulerTransform
         }
 
         _ = withOverride;
-        if (numret > 2)
+        if (ShouldReturnTransformUp(numret))
             _ = (upx, upy, upz);
-        if (numret > 1)
+        if (ShouldReturnTransformForward(numret))
             _ = (fwdx, fwdy, fwdz);
-        if (numret > 0)
+        if (ShouldReturnTransformPosition(numret))
             _ = (positionX, positionY, positionZ);
 
         _ = boneIndex;
@@ -134,12 +154,9 @@ public static class VmActorBoneEulerTransform
         int boneIndex,
         out bool shouldFillMatrix)
     {
-        shouldFillMatrix = false;
-        if (!outMatrixNonNull)
+        shouldFillMatrix = MatrixFillEligible(outMatrixNonNull, getBoneSharedOk);
+        if (!shouldFillMatrix)
             return;
-        if (!getBoneSharedOk)
-            return;
-        shouldFillMatrix = true;
         _ = (withOverride, boneIndex);
     }
 
