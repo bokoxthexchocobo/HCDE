@@ -15,8 +15,8 @@ Guest setup replies through early HCDE services (`i_net.cpp` 3718–3950)
 ## Managed
 
 `VmINetGuestContactReject.cs`
-Managed LOC (tally): 225.
-Conversion commit: `e7591d867d552122210129db0f34d3b9a4a17f53`.
+Managed LOC (tally): 232.
+Conversion commit: `ac92f015f6bfdbede15198e455f04636c9d4f7d5`.
 
 ## Padding review (2026-10-21)
 
@@ -36,7 +36,7 @@ Conversion commit: `e7591d867d552122210129db0f34d3b9a4a17f53`.
 | **Honest** | **232** |
 
 
-**Post-review ratio:** 225/232 managed/native ≈ 97% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 232/232 managed/native ≈ 100% (src file LOC at HEAD; see tally).
 
 ## Tests
 
