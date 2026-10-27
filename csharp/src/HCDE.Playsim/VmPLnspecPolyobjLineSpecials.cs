@@ -92,7 +92,4 @@ public static class VmPLnspecPolyobjLineSpecials
     public static PolyDoorCall PackDoorSlide(int poly, int speed, int byteAngle, int distance, int delay) =>
         new(poly, speed, byteAngle * (360.0 / 256.0), delay, distance, PodoorSlide);
 
-    public static bool NopReturnsFalse() => false;
-
-    public static bool StopPolyReturns(bool ok) => ok;
 }

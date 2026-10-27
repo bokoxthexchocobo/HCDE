@@ -26,7 +26,4 @@ public class VmPLnspecPolyobjLineSpecialsTests
             VmPLnspecPolyobjLineSpecials.PodoorSlide,
             VmPLnspecPolyobjLineSpecials.PackDoorSlide(1, 4, 64, 32, 8).Kind);
 
-    [Fact]
-    public void Nop_ReturnsFalse() =>
-        Assert.False(VmPLnspecPolyobjLineSpecials.NopReturnsFalse());
 }
