@@ -22,9 +22,9 @@ Polyobject ctor, thrust, bbox/link prep, move/rotate, unlink (`po_man.cpp` **715
 
 ## Managed
 
-`VmPoManPolyThinkerBands.cs`, `VmPoManThrustBlock.cs`, `VmPoManLinkUpdate.cs`, `VmPoManMoveRotate.cs`
-Managed LOC (tally): 764.
-Conversion commit: `6e52fe9191e4d2fbf254f9f2e8e85acf9c8a946f`.
+`VmPoManPolyThinkerBands.cs`, `VmPoManMoveRotate.cs`
+Managed LOC (tally): 428.
+Conversion commit: `399da7a7facb1dab62d7cf7cbe0662b041f436e5`.
 
 ## Padding review (2026-10-21)
 
@@ -52,7 +52,7 @@ Conversion commit: `6e52fe9191e4d2fbf254f9f2e8e85acf9c8a946f`.
 | Net behavior-ported | **245** |
 
 
-**Post-review ratio:** 764/245 managed/native ≈ 312% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 428/245 managed/native ≈ 175% (src file LOC at HEAD; see tally).
 
 ## Tests
 

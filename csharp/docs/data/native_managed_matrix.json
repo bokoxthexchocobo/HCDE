@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 47199,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 76491,
+    "convertedThisRunManaged": 76155,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 65726,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 66480,
-    "convertedBehaviorManaged": 86162,
+    "convertedBehaviorManaged": 85826,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -31701,12 +31701,10 @@
         "auditSeams": "Blockmap polyblocks, `P_CheckMove`/`P_DamageMobj`/`P_FindFloorCeil`, portal geometry injected at seams; thinker bands outside this hull stay other rows.",
         "auditRationale": "Contiguous uncredited `po_man.cpp` band between **671** (**\u2264703**) and **676** (**\u22651394**). Part **1/2** of retired **670/673/678** merge (no overlap with **671**).",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 679 --band \u2192 UNCredited, exit 0.",
-        "auditManagedLocJustification": "VmPoManPolyThinkerBands.cs, VmPoManThrustBlock.cs, VmPoManLinkUpdate.cs, VmPoManMoveRotate.cs.",
+        "auditManagedLocJustification": "VmPoManPolyThinkerBands.cs, VmPoManMoveRotate.cs (thrust/link bodies on chunk **677** `managedSourceFiles`).",
         "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `FPolyObj` | **715\u2013730** |\n| `GetMirror` | **738\u2013741** |\n| `ThrustMobj` | **749\u2013795** |\n| `UpdateLinks` | **803\u2013831** |\n| `UpdateBBox` | **833\u2013840** |\n| `CalcCenter` | **842\u2013850** |\n| `MovePolyobj` | **858\u2013888** |\n| `DoMovePolyobj` | **896\u2013910** |\n| `RotatePt` | **918\u2013927** |\n| `RotatePolyobj` | **935\u2013982** |\n| `UnLinkPolyobj` | **990\u20131017** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **245** |\n| Net behavior-ported | **245** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPoManPolyThinkerBands.cs",
-          "csharp/src/HCDE.Playsim/VmPoManThrustBlock.cs",
-          "csharp/src/HCDE.Playsim/VmPoManLinkUpdate.cs",
           "csharp/src/HCDE.Playsim/VmPoManMoveRotate.cs"
         ],
         "nativeRanges": [
@@ -31811,8 +31809,8 @@
           }
         ],
         "nativeLoc": 245,
-        "managedLoc": 764,
-        "conversionManagedCommit": "6e52fe9191e4d2fbf254f9f2e8e85acf9c8a946f"
+        "managedLoc": 428,
+        "conversionManagedCommit": "399da7a7facb1dab62d7cf7cbe0662b041f436e5"
       }
     ],
     "behaviorNativeChecksum": 508086,
