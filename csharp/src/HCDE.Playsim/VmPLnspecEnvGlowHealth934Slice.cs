@@ -115,6 +115,7 @@ public static class VmPLnspecEnvGlowHealth934Slice
         "LS_Ceiling_CrushAndRaise",
         "LS_Ceiling_LowerAndCrush",
         "LS_Ceiling_CrushStop",
+        "LS_Ceiling_CrushRaiseAndStay",
         "LS_Floor_CrushStop",
         "LS_Ceiling_MoveToValue",
         "LS_NOP",
