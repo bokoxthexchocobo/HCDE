@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 226231
+    "managedCSharpLoc": 226439
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 54796,
+    "convertedThisRunNative": 54955,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 81996,
+    "convertedThisRunManaged": 82204,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 434009,
+    "remainingNative": 433850,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 73323,
+    "convertedBehaviorNative": 73482,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 74077,
-    "convertedBehaviorManaged": 91667,
+    "combinedBehaviorNative": 74236,
+    "convertedBehaviorManaged": 91875,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -33488,6 +33488,41 @@
         "nativeLoc": 161,
         "managedLoc": 188,
         "conversionManagedCommit": "e56fdaab1546155e48b070b3cb3d8ea4d566203a"
+      },
+      {
+        "name": "p-acs-runscript-bitwise-ls-chunk915",
+        "bucket": "conversion",
+        "note": "`DLevelScript::RunScript` `PCD_ANDSCRIPTARRAY`\u2026`ANDGLOBALARRAY`, full `PCD_EOR*` / `PCD_OR*`, and `PCD_LSSCRIPTVAR`\u2026`LSGLOBALVAR` from `p_acs.cpp` (**8205\u20138363**). Follows **914** (**\u22648203**); `PCD_LSSCRIPTARRAY` at **8365** deferred.",
+        "auditSeams": "`FBehavior::SetArrayVal` / `GetArrayVal` and full `RunScript` dispatch are not hosted; slice models stack operand layout and in-place bitwise/shift updates only.",
+        "auditRationale": "Honest **159**-line UNCredited band; exclusive `VmPAcsVmOpcode915Slice.cs` without modifying **911\u2013914** slice files.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 8205 --end 8363` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native opcode region | Behavior ported |\n|----------------------|-----------------|\n| `PCD_ANDSCRIPTARRAY` \u2026 `PCD_ANDGLOBALARRAY` (**8205\u20138236**) | yes |\n| `PCD_EORSCRIPTVAR` \u2026 `PCD_EORGLOBALARRAY` (**8238\u20138289**) | yes |\n| `PCD_ORSCRIPTVAR` \u2026 `PCD_ORGLOBALARRAY` (**8291\u20138343**) | yes |\n| `PCD_LSSCRIPTVAR` \u2026 `PCD_LSGLOBALVAR` (**8345\u20138363**) | yes |\n\n| Managed (`VmPAcsVmOpcode915Slice.cs`) | Native (`p_acs.cpp`) |\n|----------------------------------------|---------------------|\n| `AndScriptArray` \u2026 `AndGlobalArray` | **8205\u20138236** |\n| `EorScriptVar` \u2026 `EorGlobalArray` | **8238\u20138289** |\n| `OrScriptVar` \u2026 `OrGlobalArray` | **8291\u20138343** |\n| `LsScriptVar` \u2026 `LsGlobalVar` | **8345\u20138363** |\n| `AcsScriptArrayStore` / `AcsMapArrayStore` | array backing **8208\u20138340** |\n\n### Chunk **915** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **159** |\n| **Net headline** | **+159** vs post-**914** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPAcsVmOpcode915Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript::RunScript",
+            "start": 8205,
+            "end": 8363,
+            "tests": [
+              "VmPAcsVmOpcode915SliceTests.AndScriptArray_BitwiseAndsCell",
+              "VmPAcsVmOpcode915SliceTests.EorGlobalVar_TogglesBits",
+              "VmPAcsVmOpcode915SliceTests.OrWorldArray_OrCombinesElement",
+              "VmPAcsVmOpcode915SliceTests.OrMapArray_ResolvesArrayThroughMapVar",
+              "VmPAcsVmOpcode915SliceTests.LsScriptVar_ShiftsLocalLeft",
+              "VmPAcsVmOpcode915SliceTests.LsGlobalVar_ShiftsByStackAmount",
+              "VmPAcsVmOpcode915SliceTests.AndGlobalArray_AndsInPlace",
+              "VmPAcsVmOpcode915SliceTests.EorScriptArray_UpdatesStoredValue",
+              "VmPAcsVmOpcode915SliceTests.OrScriptVar_MergesBits",
+              "VmPAcsVmOpcode915SliceTests.LsMapVar_LeftShiftsMapSlot"
+            ]
+          }
+        ],
+        "nativeLoc": 159,
+        "managedLoc": 208,
+        "conversionManagedCommit": "2b66dc22196cd792b25e2ac65f3d925cc57c3e86"
       }
     ],
     "behaviorNativeChecksum": 508086,
