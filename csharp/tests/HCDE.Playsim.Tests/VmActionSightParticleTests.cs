@@ -44,4 +44,16 @@ public class VmActionSightParticleTests
     [Fact]
     public void SquaredRange_DoublesInput() =>
         Assert.Equal(25, VmActionSightParticle.SquaredRange(5));
+
+    [Fact]
+    public void RangeOnlyHit_SkipsSightBranch() =>
+        Assert.True(VmActionSightParticle.RangeOnlyHit(false, 1, 0, 0, true, 4));
+
+    [Fact]
+    public void PlayerSightOrRangeHit_UsesAltCameraWhenNonPlayer() =>
+        Assert.True(VmActionSightParticle.PlayerSightOrRangeHit(true, false, true, false, true));
+
+    [Fact]
+    public void SightOrRangeLengthSquared_MatchesDistanceHelper() =>
+        Assert.Equal(25, VmActionSightParticle.SightOrRangeLengthSquared(3, 4, 9, true));
 }

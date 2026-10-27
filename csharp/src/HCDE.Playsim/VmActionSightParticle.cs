@@ -56,4 +56,27 @@ public static class VmActionSightParticle
         return checkSight && inSight;
     }
 
+    public static bool RangeOnlyHit(
+        bool cameraIsNull,
+        double dx,
+        double dy,
+        double dz,
+        bool twoDi,
+        double rangeSquared) =>
+        DoCheckSightOrRange(cameraIsNull, dx, dy, dz, twoDi, rangeSquared, false, false);
+
+    public static bool PlayerSightOrRangeHit(
+        bool playerInGame,
+        bool primaryHit,
+        bool hasCamera,
+        bool cameraIsPlayer,
+        bool cameraHit) =>
+        playerInGame
+        && (primaryHit
+            || (hasCamera && !cameraIsPlayer && cameraHit));
+
+    public static double SightOrRangeLengthSquared(double dx, double dy, double dz, bool twoDi) =>
+        SquaredDistance2d(dx, dy, dz, twoDi);
+
+    public static bool SkipSpawnWhenLifetimeZero(int lifetime) => lifetime == 0;
 }
