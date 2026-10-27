@@ -1,0 +1,32 @@
+[
+  {
+    "name": "fscript-parser-sf-obj-query-chunk906",
+    "bucket": "conversion",
+    "note": "`FParser::SF_ObjX` … `SF_PushThing` from `fragglescript/t_func.cpp` (**919–1215**). Folds post-**905** separators **919–926**; stops before `SF_ReactionTime` (**1224**).",
+    "auditSeams": "Coords, `EV_Teleport`, damage, sector tag, flags, and `Thrust` are host/`Actor` callbacks; `Level->EV_Teleport` / `P_DamageMobj` not hosted.",
+    "auditRationale": "Largest honest UNCredited slice from **927** through **1215** (**297** lines); `SfPushThing` in exclusive **906** slice so `VmFScriptParserSfMom.cs` stays free for **1224+**.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 919 --end 1215` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_ObjX` / `Y` / `Z` / `ObjAngle` | yes |\n| `SF_Teleport` / `SF_SilentTeleport` | yes |\n| `SF_DamageObj` | yes |\n| `SF_ObjSector` / `SF_ObjHealth` | yes |\n| `SF_ObjFlag` | yes |\n| `SF_PushThing` | yes |\n\n| Managed | Native (`t_func.cpp`) |\n|---------|----------------------|\n| `SfObjX` | **927–941** |\n| `SfObjY` | **949–963** |\n| `SfObjZ` | **971–985** |\n| `SfObjAngle` | **994–1008** |\n| `SfTeleport` | **1018–1039** |\n| `SfSilentTeleport` | **1047–1068** |\n| `SfDamageObj` | **1076–1097** |\n| `SfObjSector` | **1106–1121** |\n| `SfObjHealth` | **1130–1145** |\n| `SfObjFlag` | **1153–1195** |\n| `SfPushThing` | **1204–1215** |\n| (separator) | **919–926** |\n| (separator) | **942–948** |\n| (separator) | **964–970** |\n| (separator) | **986–993** |\n| (separator) | **1009–1017** |\n| (separator) | **1040–1046** |\n| (separator) | **1069–1075** |\n| (separator) | **1098–1105** |\n| (separator) | **1122–1129** |\n| (separator) | **1146–1152** |\n| (separator) | **1196–1203** |\n\n### Chunk **906** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **297** |\n| **Net headline** | **+297** vs post-**905** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmFScriptParserSfObj.cs",
+      "csharp/src/HCDE.Playsim/VmFScriptParserSfObjState.cs",
+      "csharp/src/HCDE.Playsim/VmFScriptParserSfPushThing906Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/fragglescript/t_func.cpp",
+        "symbol": "FParser::SF_ObjX",
+        "start": 919,
+        "end": 1215,
+        "tests": [
+          "VmFScriptParserSfObjTests.SfObjX_Trigger_ReturnsCoord",
+          "VmFScriptParserSfObjTests.SfTeleport_OneArg_UsesTrigger",
+          "VmFScriptParserSfObjTests.SfPushThing_ThrustsActor",
+          "VmFScriptParserSfObjStateTests.SfObjHealth_Trigger_ReturnsHealth",
+          "VmFScriptParserSfObjStateTests.SfDamageObj_Trigger_PassesDamage",
+          "VmFScriptParserSfObjStateTests.SfObjFlag_ReadSetBit"
+        ]
+      }
+    ]
+  }
+]

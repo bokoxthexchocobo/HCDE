@@ -30,17 +30,6 @@ public class VmFScriptParserSfMomTests
     }
 
     [Fact]
-    public void SfPushThing_ThrustsActor()
-    {
-        var actor = new Actor { Id = 1 };
-        var ctx = ActorCtx(actor, 3);
-        ctx.TArgv[1].IntValue = 0;
-        ctx.TArgv[2].IntValue = 4;
-        VmFScriptParser.SfPushThing(ctx);
-        Assert.NotEqual(0, actor.VelocityX.Raw);
-    }
-
-    [Fact]
     public void SfReactionTime_ReadWrite()
     {
         var actor = new Actor { Id = 1 };

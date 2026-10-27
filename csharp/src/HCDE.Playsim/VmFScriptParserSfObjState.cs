@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary>Mobj state <c>FParser::SF_*</c> from <c>fragglescript/t_func.cpp</c> (1041–1200).</summary>
+/// <summary>Mobj damage/sector/flags <c>FParser::SF_*</c> from <c>fragglescript/t_func.cpp</c> (1047–1195).</summary>
 public static partial class VmFScriptParser
 {
     public sealed partial class ParserContext

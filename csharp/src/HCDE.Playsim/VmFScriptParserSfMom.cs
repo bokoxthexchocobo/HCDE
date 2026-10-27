@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary>Momentum and trig <c>FParser::SF_*</c> from <c>fragglescript/t_func.cpp</c> (1201–1378).</summary>
+/// <summary>Momentum and trig <c>FParser::SF_*</c> from <c>fragglescript/t_func.cpp</c> (1224–1378); `SF_PushThing` in chunk **906** slice.</summary>
 public static partial class VmFScriptParser
 {
     public sealed partial class ParserContext
@@ -14,18 +14,6 @@ public static partial class VmFScriptParser
     {
         ctx.TReturn.Type = SvtMobj;
         ctx.TReturn.Mobj = mobj;
-    }
-
-    public static void SfPushThing(ParserContext ctx)
-    {
-        if (!CheckArgs(ctx, 3))
-            return;
-        var mo = AsActor(ctx.ActorValue(ctx.TArgv[0]));
-        if (mo == null)
-            return;
-        var angle = BamAngle.FromDegrees(ctx.FloatValue(ctx.TArgv[1]));
-        var force = ctx.FloatValue(ctx.TArgv[2]);
-        mo.Thrust(angle, force);
     }
 
     public static void SfReactionTime(ParserContext ctx)

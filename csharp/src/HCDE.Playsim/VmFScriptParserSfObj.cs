@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary>Mobj query/teleport <c>FParser::SF_*</c> from <c>fragglescript/t_func.cpp</c> (927–1039); remove/kill in chunk **905** slice.</summary>
+/// <summary>Mobj coords/teleport <c>FParser::SF_*</c> from <c>fragglescript/t_func.cpp</c> (927–1039); remove/kill in chunk **905**.</summary>
 public static partial class VmFScriptParser
 {
     public const int SvtFixed = 7;
