@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 224132
+    "managedCSharpLoc": 224141
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 50682,
+    "convertedThisRunNative": 50837,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 78494,
+    "convertedThisRunManaged": 78580,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 438123,
+    "remainingNative": 437968,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 69209,
+    "convertedBehaviorNative": 69364,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 69963,
-    "convertedBehaviorManaged": 88165,
+    "combinedBehaviorNative": 70118,
+    "convertedBehaviorManaged": 88251,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -32819,6 +32819,37 @@
         "nativeLoc": 203,
         "managedLoc": 103,
         "conversionManagedCommit": "bec1582d4c26c174bf59b8f7441871051fec122f"
+      },
+      {
+        "name": "action-model-animation-lookup-chunk895",
+        "bucket": "conversion",
+        "note": "`ESetAnimationFlags`, animation object registration seams (`DAnimationFrame`\u2013`DAnimationLayer`), and `FindFModel` (`p_actionfunctions.cpp` **6351\u20136505**). Excludes **6331\u20136349** `GetObjectToWorldMatrixRaw` (behavior on **585** `VmActionSetAnimationNatives`, native still uncredited). Stops before **517** `SetAnimationInternal` (**6507+**).",
+        "auditSeams": "`IMPLEMENT_CLASS` / `DEFINE_FIELD` bodies, `Models[]`, `BaseSpriteModelFrames`, and `AActor::modelData` storage are not hosted.",
+        "auditRationale": "SAF bit policy, `FindFModel` index resolution branches, and sprite-model key guard mirrored in `VmActionModelAnimation`; ZScript class registration credited as native inventory only.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_actionfunctions.cpp --start 6351 --end 6505` and `--chunk 895 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `Saf*` / `SkipSameAnimation` | `ESetAnimationFlags` **6355\u20136360** |\n| (seams) | `DAnimationFrame` \u2026 `DAnimationLayer` **6362\u20136471** |\n| `UseModelDefForSpriteFrames` / `ResolvePrimaryAnimId` / `TryResolveFindFModelModelIndex` | `FindFModel` **6473\u20136505** |\n\n### vs **585** / **517**\n\n| | Lines |\n|--|------:|\n| **GetObjectToWorldMatrixRaw** (585 file, not this row) | **6331\u20136349** |\n| **895** (this row) | **6351\u20136505** (**155**) |\n| **517** (`SetAnimationInternal`) | **6507+** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **155** |\n| Net behavior-ported | **155** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmActionModelAnimation.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "ESetAnimationFlags",
+            "start": 6351,
+            "end": 6505,
+            "tests": [
+              "VmActionModelAnimationTests.SkipSameAnimation_WhenNooverrideAndSameFrame",
+              "VmActionModelAnimationTests.ResolvePrimaryAnimId_PrefersActorSlot",
+              "VmActionModelAnimationTests.TryPickModelIndex_UsesAnimId",
+              "VmActionModelAnimationTests.TryResolveFindFModel_UsesActorAnimId",
+              "VmActionModelAnimationTests.TryResolveFindFModel_UsesModelDataSlotWhenAnimInvalid",
+              "VmActionModelAnimationTests.TryResolveFindFModel_MissingBaseSpriteKey"
+            ]
+          }
+        ],
+        "nativeLoc": 155,
+        "managedLoc": 86,
+        "conversionManagedCommit": "88442c5340829bc47029562cbeef2d44504058a4"
       }
     ],
     "behaviorNativeChecksum": 508086,
