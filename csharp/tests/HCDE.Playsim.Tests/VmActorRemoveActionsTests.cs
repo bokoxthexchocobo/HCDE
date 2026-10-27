@@ -62,4 +62,37 @@ public class VmActorRemoveActionsTests
     [Fact]
     public void ShouldSwapTeleFog_WhenTypesDiffer() =>
         Assert.True(VmActorRemoveActions.ShouldSwapTeleFog("A", "B"));
+
+    [Fact]
+    public void ShouldRemoveTarget_AndTracer_UsePresenceGate()
+    {
+        Assert.False(VmActorRemoveActions.ShouldRemoveTarget(null));
+        Assert.True(VmActorRemoveActions.ShouldRemoveTracer(new object()));
+    }
+
+    [Fact]
+    public void ShouldRemoveSiblingCandidate_MatchesNativeGuard()
+    {
+        var master = new object();
+        var self = new object();
+        var sibling = new object();
+        Assert.True(VmActorRemoveActions.ShouldRemoveSiblingCandidate(master, master, sibling, self, 0, false));
+        Assert.False(VmActorRemoveActions.ShouldRemoveSiblingCandidate(master, master, self, self, 0, false));
+    }
+
+    [Fact]
+    public void ApplySwappedTeleFogFields_RotatesDistinctTypes()
+    {
+        var (src, dst) = VmActorRemoveActions.ApplySwappedTeleFogFields("Src", "Dst");
+        Assert.Equal("Dst", src);
+        Assert.Equal("Src", dst);
+    }
+
+    [Fact]
+    public void ChildHealthAllowsRemove_WhenDeadOrRemoveAll()
+    {
+        Assert.True(VmActorRemoveActions.ChildHealthAllowsRemove(0, false));
+        Assert.False(VmActorRemoveActions.ChildHealthAllowsRemove(50, false));
+        Assert.True(VmActorRemoveActions.ChildHealthAllowsRemove(50, true));
+    }
 }

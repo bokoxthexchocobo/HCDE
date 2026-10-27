@@ -18,9 +18,11 @@
         "end": 4597,
         "tests": [
           "VmActorRemoveActionsTests.ShouldRemoveWhenPresent_Target",
+          "VmActorRemoveActionsTests.ShouldRemoveTarget_AndTracer_UsePresenceGate",
           "VmActorRemoveActionsTests.ShouldRemoveMaster_WhenSet",
           "VmActorRemoveActionsTests.ShouldRemoveChildInIterator_MatchesHealthGate",
           "VmActorRemoveActionsTests.RemoveSiblingsLoop_RequiresDistinctActor",
+          "VmActorRemoveActionsTests.ShouldRemoveSiblingCandidate_MatchesNativeGuard",
           "VmActorRemoveActionsTests.ShouldRemoveReference_WhenNonNull"
         ]
       },
@@ -32,7 +34,8 @@
         "tests": [
           "VmActorRemoveActionsTests.AssignTeleFogTypes_MatchesNativeFields",
           "VmActorRemoveActionsTests.SwapTeleFogWhenDistinct_SkipsWhenEqual",
-          "VmActorRemoveActionsTests.ShouldSwapTeleFog_WhenTypesDiffer"
+          "VmActorRemoveActionsTests.ShouldSwapTeleFog_WhenTypesDiffer",
+          "VmActorRemoveActionsTests.ApplySwappedTeleFogFields_RotatesDistinctTypes"
         ]
       }
     ]
