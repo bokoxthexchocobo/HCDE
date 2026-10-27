@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 54469,
+  "convertedThisRunNative": 54304,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 81603,
+  "convertedThisRunManaged": 81371,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 434336,
+  "remainingNative": 434501,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 72996,
+  "convertedBehaviorNative": 72831,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 73750,
-  "convertedBehaviorManaged": 91274,
+  "combinedBehaviorNative": 73585,
+  "convertedBehaviorManaged": 91042,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -33367,41 +33367,6 @@
       "nativeLoc": 176,
       "managedLoc": 215,
       "conversionManagedCommit": "4fb2ed99a2534121cec5445166eec8db786fa927"
-    },
-    {
-      "name": "p-acs-runscript-var-array-ops-chunk912",
-      "bucket": "conversion",
-      "note": "`DLevelScript::RunScript` `PCD_GT`\u2026`PCD_GE` and script/map/world/global var/array assign/push/add through `PCD_ADDGLOBALARRAY` from `p_acs.cpp` (**7710\u20137874**). Follows **911** (**\u22647709**); `PCD_SUBSCRIPTVAR` at **7876** deferred.",
-      "auditSeams": "`ACSLocalVariables`, `ACSLocalArrays`, `FBehavior::MapVars`, and full `RunScript` dispatch are not hosted; slice models stack pop/push and storage cell updates only.",
-      "auditRationale": "Honest **165**-line UNCredited band; exclusive `VmPAcsVmOpcode912Slice.cs` without modifying **911** `VmPAcsVmOpcode911Slice.cs`.",
-      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 7710 --end 7874` \u2192 UNCredited, exit 0.",
-      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native opcode region | Behavior ported |\n|----------------------|-----------------|\n| `PCD_GT` / `PCD_LE` / `PCD_GE` (**7710\u20137748**) | yes |\n| `PCD_ASSIGNSCRIPTVAR` \u2026 `PCD_ASSIGNGLOBALARRAY` (**7750\u20137789**) | yes |\n| `PCD_PUSHSCRIPTVAR` \u2026 `PCD_PUSHGLOBALARRAY` (**7791\u20137821**) | yes |\n| `PCD_ADDSCRIPTVAR` \u2026 `PCD_ADDGLOBALARRAY` (**7823\u20137874**) | yes |\n\n| Managed (`VmPAcsVmOpcode912Slice.cs`) | Native (`p_acs.cpp`) |\n|----------------------------------------|---------------------|\n| `TryApplyGt` | **7711\u20137722** |\n| `TryApplyLe` | **7724\u20137735** |\n| `TryApplyGe` | **7737\u20137748** |\n| `AssignScriptVar` / `AssignMapVar` / `AssignWorldVar` / `AssignGlobalVar` | **7750\u20137769** |\n| `AssignScriptArray` / `AssignMapArray` / `AssignWorldArray` / `AssignGlobalArray` | **7771\u20137789** |\n| `PushScriptVar` \u2026 `PushGlobalArray` | **7791\u20137821** |\n| `AddScriptVar` \u2026 `AddGlobalVar` | **7823\u20137841** |\n| `AddScriptArray` / `AddMapArray` / `AddWorldArray` / `AddGlobalArray` | **7843\u20137874** |\n| `AcsScriptArrayStore` / `AcsMapArrayStore` | array get/set backing **7772\u20137872** |\n\n### Chunk **912** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **165** |\n| **Net headline** | **+165** vs post-**911** |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPAcsVmOpcode912Slice.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_acs.cpp",
-          "symbol": "DLevelScript::RunScript",
-          "start": 7710,
-          "end": 7874,
-          "tests": [
-            "VmPAcsVmOpcode912SliceTests.TryApplyGe_ComparesSecondToTop",
-            "VmPAcsVmOpcode912SliceTests.TryApplyGt_MalformedWhenStackTooShallow",
-            "VmPAcsVmOpcode912SliceTests.AssignScriptVar_PopsStackTopIntoLocal",
-            "VmPAcsVmOpcode912SliceTests.PushWorldVar_PushesStoredValue",
-            "VmPAcsVmOpcode912SliceTests.AssignScriptArray_WritesIndexedCell",
-            "VmPAcsVmOpcode912SliceTests.PushMapArray_ResolvesArrayThroughMapVarCell",
-            "VmPAcsVmOpcode912SliceTests.AddGlobalVar_IncrementsSlot",
-            "VmPAcsVmOpcode912SliceTests.AddWorldArray_AddsToIndexedElement",
-            "VmPAcsVmOpcode912SliceTests.AddMapArray_UsesMapVarAsArrayId",
-            "VmPAcsVmOpcode912SliceTests.TryApplyLe_ReturnsOneWhenLessOrEqual"
-          ]
-        }
-      ],
-      "nativeLoc": 165,
-      "managedLoc": 232,
-      "conversionManagedCommit": "4395f2430c75452273281747fdf4640d2735b315"
     }
   ],
   "behaviorNativeChecksum": 508086,
