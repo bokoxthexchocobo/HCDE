@@ -21,8 +21,8 @@ GetTag, counters, damage factor, translation, RestoreSpecialPosition, PrintMiscA
 ## Managed
 
 `VmPMobjTagDamageRestore.cs`, `VmPMobjPrintMiscActorInfo.cs`
-Managed LOC (tally): 201.
-Conversion commit: `71d387b2f9ce15442b932e18242428fa7ffd5239`.
+Managed LOC (tally): 294.
+Conversion commit: `a70707fd6a5f54fefec006cc40ef01510b3c3244`.
 
 ## Padding review (2026-10-21)
 
@@ -48,7 +48,7 @@ Conversion commit: `71d387b2f9ce15442b932e18242428fa7ffd5239`.
 | **Honest** | **225** |
 
 
-**Post-review ratio:** 201/225 managed/native ≈ 89% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 294/225 managed/native ≈ 131% (src file LOC at HEAD; see tally).
 
 ## Tests
 
