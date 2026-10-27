@@ -36,4 +36,12 @@ public class ZccCompareEqResolveTests
         Assert.True(result.FoldedConstant);
         Assert.True(result.FoldedValue);
     }
+
+    [Fact]
+    public void VectorPairComparable_MatchesNativeVectorFamilies()
+    {
+        Assert.True(ZccCompareEqResolve.VectorPairComparable(true, true, false, false, false, false, false, false));
+        Assert.True(ZccCompareEqResolve.ApproxEqOperatorLegal(ZccCompareEqResolve.TkApproxEq, 1, 2, 1));
+        Assert.False(ZccCompareEqResolve.ApproxEqOperatorLegal(ZccCompareEqResolve.TkApproxEq, 1, 2, 3));
+    }
 }

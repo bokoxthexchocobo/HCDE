@@ -66,6 +66,21 @@ public static class ZccCompareEqResolve
 
     public static bool VectorTypesComparable(bool leftV2, bool rightV2) => leftV2 && rightV2;
 
+    public static bool VectorPairComparable(
+        bool leftV2, bool rightV2,
+        bool leftV3, bool rightV3,
+        bool leftV4, bool rightV4,
+        bool leftQuat, bool rightQuat) =>
+        (leftV2 && rightV2) || (leftV3 && rightV3) || (leftV4 && rightV4) || (leftQuat && rightQuat);
+
+    public static bool TypesComparableWithoutPromotion(bool sameType, bool vectorPair) =>
+        sameType || vectorPair;
+
+    public static bool ApproxEqOperatorLegal(int op, int regTypeFloat, int regTypeString, int actualReg) =>
+        op != TkApproxEq || ApproxEqAllowedForRegType(regTypeFloat, regTypeString, actualReg);
+
+    public static bool OperandRegIsNil(int regTypeNil, int actualReg) => actualReg == regTypeNil;
+
     public static bool CanCompareStateLabelToNull(bool leftState, bool rightNullPtr) =>
         leftState && rightNullPtr;
 
