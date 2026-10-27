@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 46436,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 74259,
+  "convertedThisRunManaged": 74321,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 64963,
   "recognitionBehaviorNative": 754,
   "combinedBehaviorNative": 65717,
-  "convertedBehaviorManaged": 83930,
+  "convertedBehaviorManaged": 83992,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -14150,8 +14150,8 @@
         }
       ],
       "nativeLoc": 159,
-      "managedLoc": 134,
-      "conversionManagedCommit": "a49522f2e5044d36863c3a0cb54643cc1feda84d",
+      "managedLoc": 196,
+      "conversionManagedCommit": "e9f380c98115a4cf245e66fccfb3d544f67fe899",
       "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `AActor::CheckLOF` guard/aim policy **2358\u20132516** (`p_actionfunctions.cpp`). Excluded `Trace`/`CheckLOFTraceFunc`/`COPY_AAPTR`.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `TargetNullWithoutAllow` | **2453\u20132468** |\n| `ScaleHeightOffset` | **2385\u20132395** |\n| `ScaleWidthOffset` / `ScaleOffsets` | **2397\u20132400**, **2434** |\n| `TraceOriginZ` | **2403\u20132409** |\n| `RangeExceeded` / `ResolveRange` | **2414\u20132420**, **2485\u20132487** |\n| `AdjustPitchRadians` / `VecToAngle` | **2440\u20132450** |\n| `JumpOnMissSuccess` / `TraceSuccess` | **2501\u20132502** |\n| `MinRangeFail` | **2504\u20132506** |\n| `ShouldLinkHitActor` | **2508\u20132512** |\n\n### Out-of-body uncredit (528)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **159** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **159** |\n"
     },
     {

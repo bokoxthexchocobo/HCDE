@@ -13,8 +13,8 @@ AActor::CheckLOF
 ## Managed
 
 `VmActionCheckLof.cs`
-Managed LOC (tally): 134.
-Conversion commit: `865297b53c10b2913e3f925e79b889c3b340e3bd`.
+Managed LOC (tally): 196.
+Conversion commit: `e9f380c98115a4cf245e66fccfb3d544f67fe899`.
 
 ## Padding review (2026-10-21)
 
@@ -41,7 +41,7 @@ Conversion commit: `865297b53c10b2913e3f925e79b889c3b340e3bd`.
 | **Honest** | **159** |
 
 
-**Post-review ratio:** 134/159 managed/native ≈ 84% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 196/159 managed/native ≈ 123% (src file LOC at HEAD; see tally).
 
 ## Tests
 
