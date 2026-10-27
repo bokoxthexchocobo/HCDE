@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 48151,
+  "convertedThisRunNative": 48356,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 77030,
+  "convertedThisRunManaged": 77171,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 440654,
+  "remainingNative": 440449,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 66678,
+  "convertedBehaviorNative": 66883,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 67432,
-  "convertedBehaviorManaged": 86701,
+  "combinedBehaviorNative": 67637,
+  "convertedBehaviorManaged": 86842,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -16404,16 +16404,90 @@
     {
       "name": "action-print-through-sight-chunk573",
       "bucket": "conversion",
-      "note": "Merged into action-range-through-wolf-chunk576 (coverage shrink pass).",
-      "auditSeams": "`Thrust`, `V_GetFont`, `strbin1`, `C_MidPrint`, `Printf`, and `P_RemoveThing` are not hosted. `P_RemoveThing`, `Spawn`, `P_SpawnParticle`, and state/translation setup in debris loop are not hosted. `P_SpawnParticle`, `P_CheckSight`, and player iteration in `CheckIfSeen` / `CheckSightOrRange` are not hosted.",
-      "auditRationale": "Managed helpers mirror only the decision math and gating in each action; I/O and actor mutation stay at seams. Alpha stepping, multiplier defaults, PR offsets, and SPF rotation match native formulas; spawn/remove calls are seams. Managed ports clamp/style/relative-vector setup and the distance branch of sight-or-range; sight checks and spawn calls are seams.",
-      "auditPaddingReview": "**Superseded chunk numbers:** 574, 575 (retired; credit lives only in chunk573.json / tally row `action-print-through-sight-chunk573`).\n\n**Fidelity review (2026-10-21):** Native credit is whole functions where every credited line has a managed counterpart; seam-only lines (`1420\u20131423`, `1452\u20131454`, `1474`, `1491\u20131492`, `1508\u20131509`, `1585\u20131586`) are excluded.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RecoilThrustAngleDegrees` | `A_Recoil` 1386\u20131387 |\n| `ResolveDollarString` / `ShouldPrintToLocalView` / `SelectMidPrintDuration` / `WithTemporaryMidTime` | `A_Print` 1405\u20131419 |\n| `ResolveDollarString` / `SelectMidPrintDuration` | `A_PrintBold` 1443\u20131451 |\n| `ShouldSkipLocalLog` / `ResolveDollarString` | `A_Log` 1470\u20131473 |\n| `ShouldSkipLocalLog` / `FormatLogInt` | `A_LogInt` 1490\u20131491 |\n| `ShouldSkipLocalLog` / `FormatLogFloat` | `A_LogFloat` 1507\u20131508 |\n| `MapTranslucentMode` / `ShouldClearAlpha1Flag` / `ClampAlpha` | `A_SetTranslucent` 1525\u20131529 |\n| `ApplySetRenderStyle` | `A_SetRenderStyle` 1544\u20131545 |\n| `FadeReduceDefault` / `ClearAlpha1RenderStyleFlag` / `AddFadeInReduce` / `StepFadeIn` | `A_FadeIn` 1570\u20131583 |\n\n**Fidelity review (2026-10-21):** Excluded `P_RemoveThing` (`1618\u20131619`, `1664\u20131666`), debris `Spawn`/`SetState` (`1697\u20131707`), and `P_SpawnParticle` (`1772`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `FadeReduceDefault` / `StepFadeOut` | `A_FadeOut` 1604\u20131615 |\n| `StepFadeToward` / `FinishFadeTo` | `A_FadeTo` 1639\u20131662 |\n| `NormalizeDebrisMultipliers` / `DebrisOffsetFromPr` | `A_SpawnDebris` 1685\u20131690, 1694\u20131695 |\n| `ClampParticleStartAlpha` / `ClampPositiveFadeStep` / `ShouldSpawnParticle` / `RotateRelPos` | `A_SpawnParticle` 1743\u20131746, 1755\u20131761 |\n\n**Fidelity review (2026-10-21):** No credit for `CheckIfSeen` (`1854\u20131878`, all `P_CheckSight`). `CheckSightOrRange` credits only `range *= range` (`1930`); player loop is seam. `A_SpawnParticleEx` excludes `P_SpawnParticle` (`1843`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `ClampParticleStartAlpha` / `ClampFadeStep` / `AbsParticleSize` / `ShouldSpawnParticleEx` / `NormalizeParticleStyle` | `A_SpawnParticleEx` 1804\u20131807, 1838\u20131841 |\n| `VerticalSightDelta` / `SquaredDistance2d` / `WithinRange` / `DoCheckSightOrRange` | `DoCheckSightOrRange` 1889\u20131914 |\n| `SquaredRange` | `CheckSightOrRange` 1930 |",
-      "managedSourceFiles": [],
-      "nativeRanges": [],
-      "nativeLoc": 0,
-      "managedLoc": 0,
-      "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-      "retired": true
+      "note": "Re-land: translucent/render/fade, debris, and particle setup (`p_actionfunctions.cpp` **1519\u20131774**). Print/log on **572** (**1267\u20131512**); sight/spawn bands stay off-tally.",
+      "auditSeams": "`P_RemoveThing`, `Spawn`, `SetState`, `P_SpawnParticle`, and `P_CheckSight` are not hosted.",
+      "auditRationale": "Credits style/alpha policy, fade stepping, debris multiplier/offset gates, and particle clamp/rotate setup; engine spawn/remove at seams.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `MapTranslucentMode` / `ShouldClearAlpha1Flag` / `ClampAlpha` | `A_SetTranslucent` **1519\u20131531** |\n| `ApplySetRenderStyle` | `A_SetRenderStyle` **1538\u20131547** |\n| `FadeReduceDefault` / `ClearAlpha1RenderStyleFlag` / `AddFadeInReduce` / `StepFadeIn` | `A_FadeIn` **1563\u20131589** |\n| `FadeReduceDefault` / `StepFadeOut` | `A_FadeOut` **1598\u20131622** |\n| `StepFadeToward` / `FinishFadeTo` | `A_FadeTo` **1632\u20131668** |\n| `NormalizeDebrisMultipliers` / `DebrisOffsetFromPr` | `A_SpawnDebris` **1675\u20131714** |\n| `ClampParticleStartAlpha` / `ClampPositiveFadeStep` / `AbsParticleSize` / `ShouldSpawnParticle` / `RotateRelPos` | `A_SpawnParticle` **1722\u20131774** (`P_SpawnParticle` seam) |\n\n### vs chunk **572**\n\n| | Lines |\n|--|------:|\n| **572** (rail/print/log) | **1267\u20131512** |\n| **573** (this row) | **1519\u20131774** |\n| Gap (comments/blanks) | **1513\u20131518**, inter-function separators |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **205** |\n| Net behavior-ported | **205** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmActionPrintLogRecoil.cs",
+        "csharp/src/HCDE.Playsim/VmActionFadeSpawn.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_SetTranslucent",
+          "start": 1519,
+          "end": 1531,
+          "tests": [
+            "VmActionPrintLogRecoilTests.MapTranslucentMode_MapsFuzzyMode",
+            "VmActionPrintLogRecoilTests.ClampAlpha_BoundsToUnitInterval"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_SetRenderStyle",
+          "start": 1538,
+          "end": 1547,
+          "tests": [
+            "VmActionPrintLogRecoilTests.ApplySetRenderStyle_ClampsAlpha"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_FadeIn",
+          "start": 1563,
+          "end": 1589,
+          "tests": [
+            "VmActionPrintLogRecoilTests.FadeReduceDefault_UsesTenthWhenZero",
+            "VmActionPrintLogRecoilTests.StepFadeIn_ClampsAndMarksRemove"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_FadeOut",
+          "start": 1598,
+          "end": 1622,
+          "tests": [
+            "VmActionFadeSpawnTests.StepFadeOut_ClampsAtZero",
+            "VmActionFadeSpawnTests.FadeReduceDefault_UsesTenthWhenZero"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_FadeTo",
+          "start": 1632,
+          "end": 1668,
+          "tests": [
+            "VmActionFadeSpawnTests.StepFadeToward_MovesTowardTarget",
+            "VmActionFadeSpawnTests.FinishFadeTo_RemovesAtTarget"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_SpawnDebris",
+          "start": 1675,
+          "end": 1714,
+          "tests": [
+            "VmActionFadeSpawnTests.NormalizeDebrisMultipliers_DefaultsNonPositive",
+            "VmActionFadeSpawnTests.DebrisOffsetFromPr_ScalesAround128"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_SpawnParticle",
+          "start": 1722,
+          "end": 1774,
+          "tests": [
+            "VmActionFadeSpawnTests.ClampParticleStartAlpha_BoundsUnit",
+            "VmActionFadeSpawnTests.RotateRelPos_MatchesSpawnParticleBranch",
+            "VmActionFadeSpawnTests.ShouldSpawnParticle_WhenLifetimeNonZero"
+          ]
+        }
+      ],
+      "nativeLoc": 205,
+      "managedLoc": 141,
+      "conversionManagedCommit": "b5cae9800c5a03167d40da5fb7dfb0d3d307aac9",
+      "auditManagedLocJustification": "`VmActionPrintLogRecoil.cs` (translucent/render/fade-in). `VmActionFadeSpawn.cs` (fade-out/to, debris, particle setup)."
     },
     {
       "name": "action-range-through-wolf-chunk576",
