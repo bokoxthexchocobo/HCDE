@@ -46,20 +46,26 @@ public static class VmPEffectVisualThinker
         public Func<int>? Random128 { get; set; }
     }
 
+    public static double DisconnectJitterAxis(int random, double scale) => (random - 128) * scale / 128;
+
+    public static double DisconnectHeightSample(int random, double height) => random * height / 256;
+
+    public static int DisconnectBloodColor(int random) => random < 128 ? 0x8b0000 : 0x800000;
+
     public static void DisconnectEffect(DisconnectState s)
     {
         for (var i = 64; i > 0; i--)
         {
             var p = s.JitterParticle?.Invoke();
             if (p == null) break;
-            var xo = ((s.Random128?.Invoke() ?? 0) - 128) * s.Radius / 128;
-            var yo = ((s.Random128?.Invoke() ?? 0) - 128) * s.Radius / 128;
-            var zo = (s.Random128?.Invoke() ?? 0) * s.Height / 256;
+            var xo = DisconnectJitterAxis(s.Random128?.Invoke() ?? 0, s.Radius);
+            var yo = DisconnectJitterAxis(s.Random128?.Invoke() ?? 0, s.Radius);
+            var zo = DisconnectHeightSample(s.Random128?.Invoke() ?? 0, s.Height);
             p.PosX = xo;
             p.PosY = yo;
             p.PosZ = zo;
             p.AccZ -= 1.0 / 4096;
-            p.Color = (s.Random128?.Invoke() ?? 0) < 128 ? 0x8b0000 : 0x800000;
+            p.Color = DisconnectBloodColor(s.Random128?.Invoke() ?? 0);
             p.Size = 4;
             s.Spawned++;
         }
@@ -138,7 +144,7 @@ public static class VmPEffectVisualThinker
             s.Destroyed = true;
             return;
         }
-        if (s.LevelFrozen && (s.Pt.Flags & SpfNotimefreeze) == 0)
+        if (IsFrozen(s))
         {
             s.Pt.Subsector = s.PointInRenderSubsector?.Invoke(s.Pt.PosX, s.Pt.PosY, s.Pt.PosZ);
             UpdateSpriteInfo(s, false, false);
