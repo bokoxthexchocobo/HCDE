@@ -37,8 +37,8 @@ public class VmFScriptParserTypeLegacy938SliceTests
         var invoke = VmFScriptParserTypeLegacy938Slice.BuildSetObjPosition(
             2, new object(), 10, 0, 0, 20, 30);
         Assert.NotNull(invoke);
-        Assert.Equal(20, invoke!.Y);
-        Assert.Equal(30, invoke.Z);
+        Assert.Equal(20, invoke!.Value.Y);
+        Assert.Equal(30, invoke.Value.Z);
     }
 
     [Fact]
