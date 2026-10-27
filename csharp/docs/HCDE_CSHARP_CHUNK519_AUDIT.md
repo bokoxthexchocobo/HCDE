@@ -13,7 +13,7 @@ FxCompareEq::Resolve
 ## Managed
 
 `ZccCompareEqResolve.cs`
-Managed LOC (tally): 203.
+Managed LOC (tally): 218.
 Conversion commit: `0d2e2f99841e6cd183d9c5fd7128f924cb9884fe`.
 
 ## Padding review (2026-10-21)
@@ -31,7 +31,7 @@ Conversion commit: `0d2e2f99841e6cd183d9c5fd7128f924cb9884fe`.
 | **Honest** | **217** |
 
 
-**Post-review ratio:** 203/217 managed/native ≈ 94% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 218/217 managed/native ≈ 100% (src file LOC at HEAD; see tally).
 
 ## Tests
 
