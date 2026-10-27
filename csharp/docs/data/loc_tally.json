@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 52998,
+  "convertedThisRunNative": 53295,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 80375,
+  "convertedThisRunManaged": 80570,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 435807,
+  "remainingNative": 435510,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 71525,
+  "convertedBehaviorNative": 71822,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 72279,
-  "convertedBehaviorManaged": 90046,
+  "combinedBehaviorNative": 72576,
+  "convertedBehaviorManaged": 90241,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -33148,6 +33148,39 @@
       "nativeLoc": 197,
       "managedLoc": 138,
       "conversionManagedCommit": "bb6fd4dfea6474d7c4a6d9a13b41f8e5b306caf3"
+    },
+    {
+      "name": "fscript-parser-sf-obj-query-chunk906",
+      "bucket": "conversion",
+      "note": "`FParser::SF_ObjX` \u2026 `SF_PushThing` from `fragglescript/t_func.cpp` (**919\u20131215**). Folds post-**905** separators **919\u2013926**; stops before `SF_ReactionTime` (**1224**).",
+      "auditSeams": "Coords, `EV_Teleport`, damage, sector tag, flags, and `Thrust` are host/`Actor` callbacks; `Level->EV_Teleport` / `P_DamageMobj` not hosted.",
+      "auditRationale": "Largest honest UNCredited slice from **927** through **1215** (**297** lines); `SfPushThing` in exclusive **906** slice so `VmFScriptParserSfMom.cs` stays free for **1224+**.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 919 --end 1215` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_ObjX` / `Y` / `Z` / `ObjAngle` | yes |\n| `SF_Teleport` / `SF_SilentTeleport` | yes |\n| `SF_DamageObj` | yes |\n| `SF_ObjSector` / `SF_ObjHealth` | yes |\n| `SF_ObjFlag` | yes |\n| `SF_PushThing` | yes |\n\n| Managed | Native (`t_func.cpp`) |\n|---------|----------------------|\n| `SfObjX` | **927\u2013941** |\n| `SfObjY` | **949\u2013963** |\n| `SfObjZ` | **971\u2013985** |\n| `SfObjAngle` | **994\u20131008** |\n| `SfTeleport` | **1018\u20131039** |\n| `SfSilentTeleport` | **1047\u20131068** |\n| `SfDamageObj` | **1076\u20131097** |\n| `SfObjSector` | **1106\u20131121** |\n| `SfObjHealth` | **1130\u20131145** |\n| `SfObjFlag` | **1153\u20131195** |\n| `SfPushThing` | **1204\u20131215** |\n| (separator) | **919\u2013926** |\n| (separator) | **942\u2013948** |\n| (separator) | **964\u2013970** |\n| (separator) | **986\u2013993** |\n| (separator) | **1009\u20131017** |\n| (separator) | **1040\u20131046** |\n| (separator) | **1069\u20131075** |\n| (separator) | **1098\u20131105** |\n| (separator) | **1122\u20131129** |\n| (separator) | **1146\u20131152** |\n| (separator) | **1196\u20131203** |\n\n### Chunk **906** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **297** |\n| **Net headline** | **+297** vs post-**905** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmFScriptParserSfObj.cs",
+        "csharp/src/HCDE.Playsim/VmFScriptParserSfObjState.cs",
+        "csharp/src/HCDE.Playsim/VmFScriptParserSfPushThing906Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_ObjX",
+          "start": 919,
+          "end": 1215,
+          "tests": [
+            "VmFScriptParserSfObjTests.SfObjX_Trigger_ReturnsCoord",
+            "VmFScriptParserSfObjTests.SfTeleport_OneArg_UsesTrigger",
+            "VmFScriptParserSfObjTests.SfPushThing_ThrustsActor",
+            "VmFScriptParserSfObjStateTests.SfObjHealth_Trigger_ReturnsHealth",
+            "VmFScriptParserSfObjStateTests.SfDamageObj_Trigger_PassesDamage",
+            "VmFScriptParserSfObjStateTests.SfObjFlag_ReadSetBit"
+          ]
+        }
+      ],
+      "nativeLoc": 297,
+      "managedLoc": 195,
+      "conversionManagedCommit": "337379b6c1236b43462963bfadcaef37850c416c"
     }
   ],
   "behaviorNativeChecksum": 508086,
