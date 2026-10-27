@@ -1,0 +1,29 @@
+[
+  {
+    "name": "p-lnspec-floor-stairs-ceiling-chunk900",
+    "bucket": "conversion",
+    "note": "Texture floors through `LS_Ceiling_CrushAndRaise` (`p_lnspec.cpp` **472–700**). Follows **899** (**≤470**); stops before `LS_Ceiling_LowerAndCrush` (**700+**).",
+    "auditSeams": "`EV_DoFloor`, `EV_StartWaggle`, `EV_DoChange`, `EV_DoDonut`, `EV_StopFloor`, `EV_BuildStairs`, `EV_DoPillar`, and `EV_DoCeiling` are not hosted.",
+    "auditRationale": "Texture/ceiling floor targets, waggle/transfer/donut, generalized floor target switch, stair flag/delay packing, repeatable generic-stair direction toggle, pillar crush mode, and ceiling value/crush argument wiring via `VmPLnspecFloorStairsCeilingSlice`.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 472 --end 700` and `--chunk 900 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| Texture / TxTy / raise-to-ceiling floors | **472–500** |\n| Waggle, transfer, donut, generic floor, floor stop | **502–573** |\n| `Stairs*` / `GenericStairs` | **575–650** |\n| `Pillar_*` | **652–668** |\n| `Ceiling_*` (through crush-and-raise) | **670–698** |\n\n### vs **899**\n\n| | Lines |\n|--|------:|\n| **899** | **241–470** |\n| **900** (this row) | **472–700** (**229**) |\n| `LS_Ceiling_LowerAndCrush` | **700+** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **229** |\n| Net behavior-ported | **229** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPLnspecFloorStairsCeilingSlice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Floor_RaiseByTexture",
+        "start": 472,
+        "end": 700,
+        "tests": [
+          "VmPLnspecFloorStairsCeilingSliceTests.GenericFloor_RaiseTargetSelectsHighest",
+          "VmPLnspecFloorStairsCeilingSliceTests.GenericStairs_TogglesOnRepeatableLine",
+          "VmPLnspecFloorStairsCeilingSliceTests.StairsBuildUp_UsesTicsDelay",
+          "VmPLnspecFloorStairsCeilingSliceTests.CeilingCrushAndRaise_HalvesUpSpeed",
+          "VmPLnspecFloorStairsCeilingSliceTests.FloorDonut_ScalesBothSpeeds"
+        ]
+      }
+    ]
+  }
+]
