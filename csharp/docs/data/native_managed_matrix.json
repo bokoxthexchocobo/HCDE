@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 225136
+    "managedCSharpLoc": 225302
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 52306,
+    "convertedThisRunNative": 52581,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 79914,
+    "convertedThisRunManaged": 80080,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 436499,
+    "remainingNative": 436224,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 70833,
+    "convertedBehaviorNative": 71108,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 71587,
-    "convertedBehaviorManaged": 89585,
+    "combinedBehaviorNative": 71862,
+    "convertedBehaviorManaged": 89751,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -33065,6 +33065,36 @@
         "nativeLoc": 289,
         "managedLoc": 240,
         "conversionManagedCommit": "6b784a85b34d689f6a2d5121c5e33770db97e58f"
+      },
+      {
+        "name": "p-lnspec-thrust-thing-lifecycle-chunk903",
+        "bucket": "conversion",
+        "note": "`ThrustThingHelper` through `LS_Thing_Deactivate` (`p_lnspec.cpp` **1205\u20131479**). Follows **902** (**\u22641203**); stops before `LS_Thing_Remove` (**1481+**). Wider than **1204\u20131450** to finish deactivate function.",
+        "auditSeams": "`Thrust`, `P_GiveBody`, `P_DamageMobj`, `CallActivate`/`CallDeactivate`, and actor iterators are not hosted.",
+        "auditRationale": "BYTEANGLE thrust clamp, Hexen backside reject, Z-thrust set/add, thing special/TID writes, damage/heal branches, THINGSPEC toggle, and activate/deactivate iterator prefetch via `VmPLnspecThrustThingLifecycleSlice`.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 1205 --end 1479` and `--chunk 903 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| `ThrustThingHelper` / `ThrustThing` | **1205\u20131237** |\n| `ThrustThingZ` | **1239\u20131271** |\n| `ThingSetSpecial` / `ThingChangeTid` | **1273\u20131328** |\n| `DamageThing` / `HealThing` | **1331\u20131395** |\n| `ToggleActivationType` | **1399\u20131419** |\n| `ThingActivate` / `ThingDeactivate` | **1421\u20131479** |\n\n### vs **902**\n\n| | Lines |\n|--|------:|\n| **902** | **915\u20131203** |\n| **903** (this row) | **1205\u20131479** (**275**) |\n| `LS_Thing_Remove` | **1481+** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **275** |\n| Net behavior-ported | **275** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPLnspecThrustThingLifecycleSlice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "ThrustThingHelper",
+            "start": 1205,
+            "end": 1479,
+            "tests": [
+              "VmPLnspecThrustThingLifecycleSliceTests.ThrustThingHelper_ClampsVelocity",
+              "VmPLnspecThrustThingLifecycleSliceTests.ThrustThing_HexenBacksideRejectsActivator",
+              "VmPLnspecThrustThingLifecycleSliceTests.ToggleActivationType_SwitchClearsActivate",
+              "VmPLnspecThrustThingLifecycleSliceTests.DamageThing_ZeroUsesTelefrag",
+              "VmPLnspecThrustThingLifecycleSliceTests.ApplyHealCap_RespectsMax"
+            ]
+          }
+        ],
+        "nativeLoc": 275,
+        "managedLoc": 166,
+        "conversionManagedCommit": "a2024e01792e5333889bc01a878a5ade28ddf85d"
       }
     ],
     "behaviorNativeChecksum": 508086,
