@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 52801,
+  "convertedThisRunNative": 52998,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 80237,
+  "convertedThisRunManaged": 80375,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 436004,
+  "remainingNative": 435807,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 71328,
+  "convertedBehaviorNative": 71525,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 72082,
-  "convertedBehaviorManaged": 89908,
+  "combinedBehaviorNative": 72279,
+  "convertedBehaviorManaged": 90046,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -33116,6 +33116,38 @@
       "nativeLoc": 220,
       "managedLoc": 156,
       "conversionManagedCommit": "a1829b5936566d5fad426d85c44f3db015c59998"
+    },
+    {
+      "name": "fscript-parser-sf-player-spawn-kill-chunk905",
+      "bucket": "conversion",
+      "note": "`FParser::SF_PlayerName` \u2026 `SF_KillObj` from `fragglescript/t_func.cpp` (**722\u2013918**). Follows **904** (**\u2264721**); `SF_ObjX` deferred at **927**.",
+      "auditSeams": "Player resolve, spawn, placement test, counter clear, massacre damage, and `Destroy` are host callbacks on `ParserContext`; `Spawn`/`P_TestMobjLocation`/`P_DamageMobj` are not hosted.",
+      "auditRationale": "Honest **197**-line UNCredited band after **904**; `SfRemoveObj`/`SfKillObj` live in exclusive `VmFScriptParserSfRemoveKill905Slice.cs` so `VmFScriptParserSfObj.cs` remains free for **927+**.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 722 --end 918` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_PlayerName` | yes |\n| `SF_PlayerObj` | yes |\n| `SF_Player` | yes |\n| `SF_Spawn` | yes |\n| `SF_RemoveObj` | yes |\n| `SF_KillObj` | yes |\n\n| Managed | Native (`t_func.cpp`) |\n|---------|----------------------|\n| `SfPlayerName` | **722\u2013745** |\n| `SfPlayerObj` | **753\u2013776** |\n| `SfPlayer` | **784\u2013807** |\n| `SfSpawn` | **817\u2013869** |\n| `SfRemoveObj` | **877\u2013888** |\n| `SfKillObj` | **896\u2013918** |\n| (separator) | **746\u2013752** |\n| (separator) | **777\u2013783** |\n| (separator) | **808\u2013816** |\n| (separator) | **870\u2013876** |\n| (separator) | **889\u2013895** |\n\n### Chunk **905** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **197** |\n| **Net headline** | **+197** vs post-**904** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmFScriptParserSfPlayer.cs",
+        "csharp/src/HCDE.Playsim/VmFScriptParserSfRemoveKill905Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_PlayerName",
+          "start": 722,
+          "end": 918,
+          "tests": [
+            "VmFScriptParserSfPlayerTests.SfPlayerName_NoTrigger_ScriptError",
+            "VmFScriptParserSfPlayerTests.SfPlayerName_ValidPlayer_ReturnsName",
+            "VmFScriptParserSfPlayerTests.SfPlayer_FromMobj_ReturnsPlayerNum",
+            "VmFScriptParserSfPlayerTests.SfSpawn_FailedLocation_ClearsReturn",
+            "VmFScriptParserSfPlayerTests.SfRemoveObj_CallsDestroy",
+            "VmFScriptParserSfPlayerTests.SfKillObj_DefaultTrigger_MassacreDamage"
+          ]
+        }
+      ],
+      "nativeLoc": 197,
+      "managedLoc": 138,
+      "conversionManagedCommit": "bb6fd4dfea6474d7c4a6d9a13b41f8e5b306caf3"
     }
   ],
   "behaviorNativeChecksum": 508086,
