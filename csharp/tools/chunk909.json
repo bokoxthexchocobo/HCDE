@@ -1,0 +1,51 @@
+[
+  {
+    "name": "fscript-parser-sf-tex-door-line-chunk909",
+    "bucket": "conversion",
+    "note": "`FParser::SF_SectorColormap` … `SF_SetLineTexture` from `fragglescript/t_func.cpp` (**1876–2038**, **2058–2070**, **2115–2239**). Re-lands retired **872**/**871** at honest **301** LOC; skips unhosted `runcommand` / `changemusic` (**2047–2105**).",
+    "auditSeams": "Colormap native no-op; doors via `LineSpecials.ExecuteDoorSpecial`; line specials via `ActorSpecialActions` / `LevelLine` flags; textures via `LevelSide` pics. `FS_EmulateCmd` / `FS_ChangeMusic` not hosted.",
+    "auditRationale": "Function-bounded UNCredited band after **908** / **869**; hub/skill `script_error` stubs match native; gap **2039–2057** + **2071–2114** left for future console/music hosts.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 1876 --end 2038` and `--start 2058 --end 2070` and `--start 2115 --end 2239` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_SectorColormap` | yes (no-op) |\n| `SF_CeilingTexture` | yes |\n| `SF_ChangeHubLevel` / `SF_StartSkill` | yes (`script_error`) |\n| `SF_OpenDoor` / `SF_CloseDoor` | yes |\n| `SF_LineTrigger` | yes |\n| `SF_SetLineBlocking` / `SF_SetLineMonsterBlocking` | yes |\n| `SF_SetLineTexture` | yes |\n\n**Deferred (zero credit)**\n\n| Native | Lines |\n|--------|------:|\n| `SF_RunCommand` | **2047–2050** |\n| `FS_ChangeMusic` / `SF_ChangeMusic` | **2077–2105** |\n\n| Managed | Native (`t_func.cpp`) |\n|---------|----------------------|\n| `SfSectorColormap` | **1883–1922** |\n| `SfCeilingTexture` | **1931–1965** |\n| `SfChangeHubLevel` | **1973–1976** |\n| `SfStartSkill` | **1979–1982** |\n| `SfOpenDoor` | **1992–2013** |\n| `SfCloseDoor` | **2021–2038** |\n| `SfLineTrigger` | **2058–2070** |\n| `SfSetLineBlocking` | **2115–2134** |\n| `SfSetLineMonsterBlocking` | **2142–2156** |\n| `SfSetLineTexture` | **2172–2239** |\n| (separator) | **1876–1882** |\n| (separator) | **1923–1930** |\n| (separator) | **1966–1972** |\n| (separator) | **1983–1991** |\n| (separator) | **2014–2020** |\n| (separator) | **2071–2076** |\n| (separator) | **2106–2114** |\n| (separator) | **2157–2171** |\n\n### Chunk **909** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **301** |\n| **Net headline** | **+301** vs post-**908** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmFScriptParserSfTexDoor.cs",
+      "csharp/src/HCDE.Playsim/VmFScriptParserSfLineOps.cs",
+      "csharp/src/HCDE.Playsim/VmFScriptInitFunctionsReg872.cs",
+      "csharp/src/HCDE.Playsim/VmFScriptInitFunctionsReg871.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/fragglescript/t_func.cpp",
+        "symbol": "FParser::SF_SectorColormap",
+        "start": 1876,
+        "end": 2038,
+        "tests": [
+          "VmFScriptParserSfTexDoorTests.SfCeilingTexture_SetsAndReturnsName",
+          "VmFScriptParserSfTexDoorTests.SfOpenDoor_StartsDoorMotion",
+          "VmFScriptParserSfTexDoorTests.SfCloseDoor_StartsClosingMotion"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_func.cpp",
+        "symbol": "FParser::SF_LineTrigger",
+        "start": 2058,
+        "end": 2070,
+        "tests": [
+          "VmFScriptParserSfLineOpsTests.SfLineTrigger_CallsFloorSpecial"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_func.cpp",
+        "symbol": "FParser::SF_SetLineBlocking",
+        "start": 2115,
+        "end": 2239,
+        "tests": [
+          "VmFScriptParserSfLineOpsTests.SfSetLineBlocking_SetsBlockingFlag",
+          "VmFScriptParserSfLineOpsTests.SfSetLineMonsterBlocking_SetsMonsterBlock",
+          "VmFScriptParserSfLineOpsTests.SfSetLineTexture_EternityLayout_UpdatesMid",
+          "VmFScriptParserSfLineOpsTests.SfSetLineTexture_LegacyLayout_UpdatesTopAndBottom"
+        ]
+      }
+    ]
+  }
+]

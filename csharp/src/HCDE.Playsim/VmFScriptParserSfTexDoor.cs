@@ -10,6 +10,12 @@ public static partial class VmFScriptParser
             CheckArgs(ctx, 1);
     }
 
+    public static void SfChangeHubLevel(ParserContext ctx) =>
+        ctx.ScriptError("FS hub system permanently disabled\n");
+
+    public static void SfStartSkill(ParserContext ctx) =>
+        ctx.ScriptError("startskill is not supported by this implementation!\n");
+
     public static void SfCeilingTexture(ParserContext ctx)
     {
         if (!CheckArgs(ctx, 1) || ctx.Simulation == null)
