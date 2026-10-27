@@ -232,16 +232,15 @@ public static class VmAFloorDflooorHead917Slice
         }
         if (sec.Nextsec != -1)
             return;
-        sec = origin;
         while (sec.Prevsec != -1)
         {
+            sec.Stairlock = 0;
             var prev = sectorByIndex?.Invoke(sec.Prevsec);
             if (prev == null)
-                break;
-            prev.Stairlock = 0;
+                return;
             sec = prev;
         }
-        origin.Stairlock = 0;
+        sec.Stairlock = 0;
     }
 
     public static bool TickFloorMover(
