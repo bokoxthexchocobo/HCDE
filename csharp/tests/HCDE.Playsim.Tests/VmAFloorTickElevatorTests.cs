@@ -69,7 +69,7 @@ public class VmAFloorTickElevatorTests
     [Fact]
     public void EvDoElevator_CurrentWithoutLine_ReturnsFalse()
     {
-        var ok = VmAFloorTickElevator.EvDoElevator(
+        var ok = VmAFloorEvElevator920Slice.EvDoElevator(
             new VmAFloorTickElevator.EvDoElevatorContext(),
             null,
             VmAFloorTickElevator.ElevateCurrent,
@@ -90,7 +90,7 @@ public class VmAFloorTickElevatorTests
             CeilingPointToDist = (_, _, z) => z + 1000,
         };
         VmAFloorTickElevator.ElevatorThinker? created = null;
-        VmAFloorTickElevator.EvDoElevator(
+        VmAFloorEvElevator920Slice.EvDoElevator(
             new VmAFloorTickElevator.EvDoElevatorContext
             {
                 SectorTagIterator = _ => new[] { 0 },
@@ -116,7 +116,7 @@ public class VmAFloorTickElevatorTests
     public void EvDoElevator_SkipsSectorWhenFloorAlreadyMoving()
     {
         var sec = new VmAFloorTickElevator.FloorSector();
-        var ok = VmAFloorTickElevator.EvDoElevator(
+        var ok = VmAFloorEvElevator920Slice.EvDoElevator(
             new VmAFloorTickElevator.EvDoElevatorContext
             {
                 SectorTagIterator = _ => new[] { 0 },

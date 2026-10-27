@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary>Floor line specials in <c>a_floor.cpp</c> (796–863, 1113–1154); EV floor/stair band on chunk **919** <see cref="VmAFloorEvLineFloor919Slice"/>.</summary>
+/// <summary>Shared floor-EV context types; donut/change on chunk **920** <see cref="VmAFloorEvDonutChange920Slice"/>; line floor/stair on **919**.</summary>
 public static class VmAFloorEv
 {
     public const int BuildUp = 0;
@@ -67,90 +67,6 @@ public static class VmAFloorEv
         public Action<StairSector, string>? SetFloorTexture { get; init; }
         public Action<StairSector, StairSector>? TransferSpecial { get; init; }
         public Func<StairSector, double, StairSector?>? FindModelFloorSector { get; init; }
-    }
-
-    public static bool EvDoChange(FloorEvContext ctx, EvLine? line, int changeType, int tag)
-    {
-        var rtn = false;
-        foreach (var secnum in ctx.SectorTagIterator?.Invoke(tag, null) ?? Array.Empty<int>())
-        {
-            var sec = ctx.SectorByIndex?.Invoke(secnum);
-            if (sec == null)
-                continue;
-            rtn = true;
-            switch (changeType)
-            {
-                case TrigChangeOnly:
-                    if (line?.FrontSector != null)
-                    {
-                        ctx.SetFloorTexture?.Invoke(sec, line.FrontSector.FloorTexture);
-                        ctx.TransferSpecial?.Invoke(sec, line.FrontSector);
-                    }
-                    break;
-                case NumChangeOnly:
-                    var model = ctx.FindModelFloorSector?.Invoke(sec, sec.CenterFloor);
-                    if (model != null)
-                    {
-                        ctx.SetFloorTexture?.Invoke(sec, model.FloorTexture);
-                        ctx.TransferSpecial?.Invoke(sec, model);
-                    }
-                    break;
-            }
-        }
-        return rtn;
-    }
-
-    public static bool EvDoDonut(FloorEvContext ctx, int tag, EvLine? line, double pillarspeed, double slimespeed)
-    {
-        var rtn = false;
-        foreach (var secnum in ctx.SectorTagIterator?.Invoke(tag, line) ?? Array.Empty<int>())
-        {
-            var s1 = ctx.SectorByIndex?.Invoke(secnum);
-            if (s1 == null || ctx.PlaneMovingFloor?.Invoke(s1) == true)
-                continue;
-            rtn = true;
-            if (s1.Lines.Count == 0)
-                continue;
-            var s2 = ctx.GetNextSector?.Invoke(s1, s1.Lines[0], s1);
-            if (s2 == null)
-                continue;
-            if ((ctx.CompatFlags2 & Compatf2Floormove) == 0 && ctx.PlaneMovingFloor?.Invoke(s2) == true)
-                continue;
-
-            foreach (var ln in s2.Lines)
-            {
-                if (ln.BackSector == null || ln.BackSector == s1)
-                    continue;
-                var s3 = ln.BackSector;
-                var slime = ctx.CreateStairThinker?.Invoke(s2);
-                if (slime != null)
-                {
-                    slime.Type = VmAFloorTickElevator.DonutRaise;
-                    slime.Crush = -1;
-                    slime.Direction = 1;
-                    slime.Speed = slimespeed;
-                    slime.Texture = s3.FloorTexture;
-                    var spot = new VmAFloorTickElevator.VertexSpot();
-                    var height = ctx.FindHighestFloorPoint?.Invoke(s3, spot) ?? 0;
-                    slime.FloorDestDist = s2.PointToDist?.Invoke(spot.X, spot.Y, height) ?? 0;
-                    ctx.StartFloorSound?.Invoke(slime);
-                }
-                var pillar = ctx.CreateStairThinker?.Invoke(s1);
-                if (pillar != null)
-                {
-                    pillar.Type = VmAFloorCreate.FloorLowerToNearest;
-                    pillar.Crush = -1;
-                    pillar.Direction = -1;
-                    pillar.Speed = pillarspeed;
-                    var spot = new VmAFloorTickElevator.VertexSpot();
-                    var height = ctx.FindHighestFloorPoint?.Invoke(s3, spot) ?? 0;
-                    pillar.FloorDestDist = s1.PointToDist?.Invoke(spot.X, spot.Y, height) ?? 0;
-                    ctx.StartFloorSound?.Invoke(pillar);
-                }
-                break;
-            }
-        }
-        return rtn;
     }
 
 }
