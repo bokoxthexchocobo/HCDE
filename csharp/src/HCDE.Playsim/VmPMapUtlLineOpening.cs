@@ -21,8 +21,6 @@ public static class VmPMapUtlLineOpening
 
     public static double PortalAdjustedFloor(bool portal, double z) => portal ? LineOpenMin : z;
 
-    public static bool OneSidedLineBlocksOpening(bool twoSided) => !twoSided;
-
     public readonly record struct Divline(double X, double Y, double Dx, double Dy);
 
     public sealed class LineOpeningState
@@ -72,7 +70,7 @@ public static class VmPMapUtlLineOpening
     {
         if (!LineOpening3dFloorsOnly(flags))
         {
-            if (OneSidedLineBlocksOpening(twoSided))
+            if (!twoSided)
             {
                 open.Range = 0;
                 return;
