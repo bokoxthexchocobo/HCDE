@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 224141
+    "managedCSharpLoc": 224200
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 50837,
+    "convertedThisRunNative": 51001,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 78580,
+    "convertedThisRunManaged": 78672,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 437968,
+    "remainingNative": 437804,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 69364,
+    "convertedBehaviorNative": 69528,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 70118,
-    "convertedBehaviorManaged": 88251,
+    "combinedBehaviorNative": 70282,
+    "convertedBehaviorManaged": 88343,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -32850,6 +32850,40 @@
         "nativeLoc": 155,
         "managedLoc": 86,
         "conversionManagedCommit": "88442c5340829bc47029562cbeef2d44504058a4"
+      },
+      {
+        "name": "action-viewroll-userfield-teleport-flags-chunk896",
+        "bucket": "conversion",
+        "note": "`SetViewRollNative`, `GetVar`/`GetArrayVar`, `A_SetUserVar*` / `A_SetUserArray*`, and `T_Flags` (`p_actionfunctions.cpp` **3088\u20133251**). Follows **raise/count** `SetViewPitchNative` (**3086**); stops before **526** `A_Teleport` (**3255+**).",
+        "auditSeams": "`COPY_AAPTR`, `FindSymbol`, `Printf`, `SetValue`, and `AActor::SetViewRoll` are not hosted.",
+        "auditRationale": "Ref-null guard, user scalar/array field validation, setter commit gates, and teleport flag constants mirrored in managed policy; ZScript field lookup bodies are seams.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_actionfunctions.cpp --start 3088 --end 3251` and `--chunk 896 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SetViewRollOnRef` | `SetViewRollNative` **3099\u20133102** |\n| `IsUserScalarField` | `GetVar` **3127\u20133133** |\n| `IsUserArrayField` / `ArrayIndexInBounds` | `GetArrayVar` **3176\u20133188** |\n| `CanCommitUserScalarWrite` / `CanCommitUserArrayWrite` / `UserArrayElementByteOffset` | `A_SetUserVar*` / `A_SetUserArray*` **3144\u20133222** |\n| `VmActionTeleportNativeFlags` / flag predicates | `T_Flags` **3237\u20133251** |\n\n### vs **raise/count** / **526**\n\n| | Lines |\n|--|------:|\n| `SetViewPitchNative` (other row) | ends **3086** |\n| **896** (this row) | **3088\u20133251** (**164**) |\n| **526** (`A_Teleport`) | **3255+** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **164** |\n| Net behavior-ported | **164** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmActionUserFieldAccess.cs",
+          "csharp/src/HCDE.Playsim/VmActionTeleportNativeFlags.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "SetViewRollNative",
+            "start": 3088,
+            "end": 3251,
+            "tests": [
+              "VmActionUserFieldAccessTests.SetViewRollOnRef_RequiresActor",
+              "VmActionUserFieldAccessTests.IsUserScalarField_AcceptsScalar",
+              "VmActionUserFieldAccessTests.UserArrayElementByteOffset_MatchesStride",
+              "VmActionUserFieldAccessTests.CanCommitUserArrayWrite_WhenFieldAndIndexValid",
+              "VmActionTeleportNativeFlagsTests.TelefragFlag_MatchesNativeEnum",
+              "VmActionTeleportNativeFlagsTests.UsesRandomDecide_WhenFlagSet",
+              "VmActionTeleportNativeFlagsTests.OverrideFlag_MatchesNativeEnum",
+              "VmActionTeleportNativeFlagsTests.SensitiveZFlag_MatchesNativeEnum"
+            ]
+          }
+        ],
+        "nativeLoc": 164,
+        "managedLoc": 92,
+        "conversionManagedCommit": "c09a0e9290fdca52bab908cff20e90ab2ad7a433"
       }
     ],
     "behaviorNativeChecksum": 508086,
