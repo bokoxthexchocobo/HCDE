@@ -22,4 +22,22 @@ public class VmINetAuthorityLiveTests
     {
         Assert.Equal("ECONNREFUSED", VmINetWinNetError.NetErrorNative(() => 10061));
     }
+
+    [Fact]
+    public void IIsPlayableClientSlotNative_RejectsReservedSlot()
+    {
+        var ctx = new NetClientSlotContext
+        {
+            MaxClients = 4,
+            Reserved = new ReservedServerSlotContext
+            {
+                GetHcdeServiceAuthoritySlot = () => 0,
+                UsesDedicatedServerSlot = () => true,
+            },
+        };
+        Assert.False(VmINetAuthorityLive.IIsPlayableClientSlotNative(ctx, 0));
+        Assert.True(VmINetAuthorityLive.IIsPlayableClientSlotNative(ctx, 1));
+        Assert.True(VmINetAuthorityLive.IVisibleClientSlotValidNative(ctx, 2));
+        Assert.False(VmINetAuthorityLive.IVisibleClientSlotValidNative(ctx, 3));
+    }
 }

@@ -3,6 +3,24 @@ namespace HCDE.Net.Core;
 /// <summary>Client slot mapping, HCDE authority, and live routing (<c>i_net.cpp</c> 4417–4623).</summary>
 public static class VmINetAuthorityLive
 {
+    public static bool ClientSlotInRange(int client, int maxClients) =>
+        client >= 0 && client < maxClients;
+
+    public static bool ClientSlotWithinPlayers(int client, int maxPlayers) =>
+        client >= 0 && client < maxPlayers;
+
+    public static bool IIsPlayableClientSlotNative(NetClientSlotContext ctx, int client) =>
+        ClientSlotInRange(client, ctx.MaxClients) && !IIsServerReservedSlotNative(ctx, client);
+
+    public static bool IVisibleClientSlotValidNative(NetClientSlotContext ctx, int visibleClient)
+    {
+        var maxVisible = IGetVisibleMaxClientsNative(ctx);
+        return visibleClient >= 0 && visibleClient < maxVisible;
+    }
+
+    static string ResyncDebugReason(string? reason) =>
+        string.IsNullOrEmpty(reason) ? "manual" : reason;
+
     public static bool IIsServerReservedSlotNative(NetClientSlotContext ctx, int client)
     {
         var reserved = IGetReservedServerSlotNative(ctx);
@@ -37,7 +55,7 @@ public static class VmINetAuthorityLive
     }
 
     public static bool IClientUsesHcdeServiceNative(NetClientSlotContext ctx, int client) =>
-        client >= 0 && client < ctx.MaxClients && ctx.IsHcdeConnect?.Invoke(client) == true;
+        ClientSlotInRange(client, ctx.MaxClients) && ctx.IsHcdeConnect?.Invoke(client) == true;
 
     public static int IGetHcdeServiceAuthoritySlotNative(NetAuthorityContext ctx) =>
         ctx.UsesDedicatedServerSlot?.Invoke() == true && ctx.HasAuthorityState?.Invoke() == true
@@ -52,7 +70,7 @@ public static class VmINetAuthorityLive
     }
 
     public static bool IIsHcdeServiceAuthoritySlotNative(NetAuthorityContext ctx, int client) =>
-        client >= 0 && client < ctx.MaxClients && client == IGetHcdeServiceAuthoritySlotNative(ctx);
+        ClientSlotInRange(client, ctx.MaxClients) && client == IGetHcdeServiceAuthoritySlotNative(ctx);
 
     public static bool IIsRemoteHcdeServiceAuthorityNative(NetAuthorityContext ctx, int client) =>
         !IIsLocalHcdeServiceAuthorityNative(ctx) && IIsHcdeServiceAuthoritySlotNative(ctx, client);
@@ -83,7 +101,7 @@ public static class VmINetAuthorityLive
         if (ctx.BeginReliableResyncRequest?.Invoke() != true)
             return false;
         ctx.SetNetBufferLength?.Invoke(ctx.HcdeServiceHeaderSize);
-        ctx.DebugMark?.Invoke($"guest requesting HCDE resync reason={reason ?? "manual"}");
+        ctx.DebugMark?.Invoke($"guest requesting HCDE resync reason={ResyncDebugReason(reason)}");
         ctx.CommitReliableResyncRequest?.Invoke();
         ctx.FlushReliableServices?.Invoke(true);
         return true;
@@ -99,7 +117,7 @@ public static class VmINetAuthorityLive
     {
         if (!IIsLocalHcdeServiceAuthorityNative(ctx.Authority))
             return false;
-        if (client < 0 || client >= ctx.MaxClients || client >= ctx.MaxPlayers)
+        if (!ClientSlotInRange(client, ctx.MaxClients) || !ClientSlotWithinPlayers(client, ctx.MaxPlayers))
             return false;
         if (ctx.GetStatus?.Invoke(client) == ctx.CstatNone || ctx.IsHcdeConnect?.Invoke(client) != true)
             return false;
@@ -108,7 +126,7 @@ public static class VmINetAuthorityLive
 
     public static bool IIsHcdeLiveRoutablePeerNative(HcdeLiveRouteContext ctx, int client)
     {
-        if (client < 0 || client >= ctx.MaxClients || client == ctx.ConsolePlayer
+        if (!ClientSlotInRange(client, ctx.MaxClients) || client == ctx.ConsolePlayer
             || !IClientUsesHcdeServiceNative(ctx.Slots, client))
             return false;
         if (IIsHcdeClientSetupInProgressNative(ctx.Setup, client))
