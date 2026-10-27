@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 51001,
+  "convertedThisRunNative": 51165,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 78672,
+  "convertedThisRunManaged": 78838,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 437804,
+  "remainingNative": 437640,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 69528,
+  "convertedBehaviorNative": 69692,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 70282,
-  "convertedBehaviorManaged": 88343,
+  "combinedBehaviorNative": 70446,
+  "convertedBehaviorManaged": 88509,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -32868,6 +32868,36 @@
       "nativeLoc": 164,
       "managedLoc": 92,
       "conversionManagedCommit": "c09a0e9290fdca52bab908cff20e90ab2ad7a433"
+    },
+    {
+      "name": "p-action-seeker-tracer-chunk897",
+      "bucket": "conversion",
+      "note": "`A_SeekerMissile`, `DoTracer2`, `A_Tracer2`, and `A_Tracer` (`p_actionfunctions.cpp` **730\u2013893**). Follows **739** pointer/sound (**728**); stops before `A_BulletAttack` (**894+**). `CheckIfSeen` in the same managed file targets **1854+** (uncredited; deferred).",
+      "auditSeams": "`pr_seekermissile`, `P_RoughMonsterSearch`, `P_SeekerMissile`, `Spawn`, `P_SpawnPuff`, and `VelFromAngle` are not hosted.",
+      "auditRationale": "SMF sticky-tracer policy, seeker turn clamps, tracer steering, vertical chase, and tic-gated smoke/puff orchestration mirrored in `VmPActionSeekerTracer`.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_actionfunctions.cpp --start 730 --end 893` and `--chunk 897 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `Smf*` / `SeekerMissile` | `A_SeekerMissile` **742\u2013781** |\n| `DoTracer2` | `DoTracer2` **791\u2013837** |\n| `TracerAction` | `A_Tracer2` **839\u2013845**, `A_Tracer` **853\u2013887** |\n| (seams) | `pr_seekermissile` **735**, `SMF_*` **736\u2013741** |\n\n### vs **739** / bullet band\n\n| | Lines |\n|--|------:|\n| **739** (`A_StopSoundEx`) | ends **728** |\n| **897** (this row) | **730\u2013893** (**164**) |\n| `A_BulletAttack` | **894+** |\n\n### Deferred in file (not this row)\n\n| Managed | Native |\n|---------|--------|\n| `CheckIfSeen` | **1854\u20131878** (uncredited) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **164** |\n| Net behavior-ported | **164** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPActionSeekerTracer.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_SeekerMissile",
+          "start": 730,
+          "end": 893,
+          "tests": [
+            "VmPActionSeekerTracerTests.SeekerMissile_StickyPlayerTracerWhenNoLook",
+            "VmPActionSeekerTracerTests.SeekerMissile_LookClearsTracerOnMiss",
+            "VmPActionSeekerTracerTests.DoTracer2_SkipsDeadTracer",
+            "VmPActionSeekerTracerTests.DoTracer2_TurnsTowardTracer",
+            "VmPActionSeekerTracerTests.TracerAction_SkipsOffTic"
+          ]
+        }
+      ],
+      "nativeLoc": 164,
+      "managedLoc": 166,
+      "conversionManagedCommit": "40c40a1d56d57b2311f32e5b5ae891b8357a6124"
     }
   ],
   "behaviorNativeChecksum": 508086,
