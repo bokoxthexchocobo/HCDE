@@ -2,12 +2,83 @@
   {
     "name": "action-jump-radius-rail-chunk572",
     "bucket": "conversion",
-    "note": "Merged into action-print-through-sight-chunk573 (coverage shrink pass).",
-    "auditSeams": "`P_RailAttack`, `P_DamageMobj`, `P_AimLineAttack`, flash spawn, and `FRailParams` fill are not hosted.",
-    "auditRationale": "Whole-function ports for jump and the damage-selection prefix of radius-self; railgun credit stops before `P_RailAttack` setup.",
-    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `JumpShouldChangeState` | `A_Jump` 923\u2013934 (`maxchance >= 256 \\|\\| pr_cajump() < maxchance`) |\n| `RadiusDamageSteps` / `BfgDamagePerRoll` / `SumBfgDamage` / `SelectActualDamage` | `A_RadiusDamageSelf` 960\u2013978: BFG self-damage sums `((pr_bfgselfdamage() & 7) + 1)` per step (`damageSteps=2`, `pr=2` \u2192 6; `pr=3` \u2192 8) |\n| `CustomRailgunShouldAbort` / `NormalizeRailRange` / `NormalizeRailSparsity` / `StealthVisDirOnFire` / `SpreadJitter` | `A_CustomRailgun` 1290\u20131347 (defaults, aim abort, stealth, spread) |",
-    "managedSourceFiles": [],
-    "nativeRanges": [],
-    "retired": true
+    "note": "Re-land: `A_CustomRailgun`, `A_Recoil`, and print/log actions (`p_actionfunctions.cpp` **1267–1512**). Jump/radius-self remain on combat rows (**923–1022**).",
+    "auditSeams": "`P_RailAttack`, `P_AimLineAttack`, `A_CustomRailgun_ShadowHandling`, `Thrust`, `V_GetFont`, `strbin1`, `C_MidPrint`, and `Printf` are not hosted.",
+    "auditRationale": "Disjoint from retired **573**/**576** hulls; credits railgun setup through `FRailParams` fill, recoil thrust angle, and print/log gating helpers.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 572 --band` → UNCredited, exit 0.",
+    "auditManagedLocJustification": "`VmActionJumpRadiusRail.cs` (rail setup). `VmActionPrintLogRecoil.cs` (recoil/print/log policy).",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `CustomRailgunShouldAbort` / `NormalizeRailRange` / `NormalizeRailSparsity` / `StealthVisDirOnFire` / `SpreadJitter` / `FillRailParams` / `FlashDamageFlags` | `A_CustomRailgun` **1267–1374** (policy through spread + param fill; `P_RailAttack` seam) |\n| `RecoilThrustAngleDegrees` | `A_Recoil` **1381–1388** |\n| `ResolveDollarString` / `ShouldPrintToLocalView` / `SelectMidPrintDuration` / `WithTemporaryMidTime` | `A_Print` **1398–1425** |\n| `ResolveDollarString` / `SelectMidPrintDuration` | `A_PrintBold` **1433–1456** |\n| `ShouldSkipLocalLog` / `ResolveDollarString` | `A_Log` **1464–1476** |\n| `ShouldSkipLocalLog` / `FormatLogInt` | `A_LogInt` **1484–1493** |\n| `ShouldSkipLocalLog` / `FormatLogFloat` | `A_LogFloat` **1501–1512** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **203** |\n| Net behavior-ported | **203** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmActionJumpRadiusRail.cs",
+      "csharp/src/HCDE.Playsim/VmActionPrintLogRecoil.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_CustomRailgun",
+        "start": 1267,
+        "end": 1374,
+        "tests": [
+          "VmActionJumpRadiusRailTests.CustomRailgunShouldAbort_WhenAimWithoutTarget",
+          "VmActionJumpRadiusRailTests.NormalizeRailRange_DefaultsWhenZero",
+          "VmActionJumpRadiusRailTests.SpreadJitter_ScalesWhenNotExplicitAngle"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_Recoil",
+        "start": 1381,
+        "end": 1388,
+        "tests": [
+          "VmActionPrintLogRecoilTests.RecoilThrustAngleDegrees_AddsHalfTurn"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_Print",
+        "start": 1398,
+        "end": 1425,
+        "tests": [
+          "VmActionPrintLogRecoilTests.ShouldPrintToLocalView_WhenSelfOrTargetLocal",
+          "VmActionPrintLogRecoilTests.WithTemporaryMidTime_SwapsDuration"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_PrintBold",
+        "start": 1433,
+        "end": 1456,
+        "tests": [
+          "VmActionPrintLogRecoilTests.SelectMidPrintDuration_UsesDefaultWhenNonPositive"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_Log",
+        "start": 1464,
+        "end": 1476,
+        "tests": [
+          "VmActionPrintLogRecoilTests.ShouldSkipLocalLog_WhenLocalAndNotSelfView"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_LogInt",
+        "start": 1484,
+        "end": 1493,
+        "tests": [
+          "VmActionPrintLogRecoilTests.FormatLogInt_MatchesPrintf"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_LogFloat",
+        "start": 1501,
+        "end": 1512,
+        "tests": [
+          "VmActionPrintLogRecoilTests.FormatLogFloat_MatchesPrintf"
+        ]
+      }
+    ]
   }
 ]
