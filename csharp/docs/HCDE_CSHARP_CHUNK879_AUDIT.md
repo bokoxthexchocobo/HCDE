@@ -1,28 +1,31 @@
-# Chunk 879 — Cajun `Check_LOS`, `IsLeader`, `Choose_Mate`, and `Find_enemy` from `b_func.cpp` (subset; **Reachable** / **Dofire** deferred).
+# Chunk 879 — Cajun `Reachable`, `Dofire`, `Check_LOS`, `IsLeader`, `Choose_Mate`, and `Find_enemy` from `b_func.cpp`. **`FCajunMaster::BotTick`** still deferred.
 
 ## Scope
 
-Cajun `Check_LOS`, `IsLeader`, `Choose_Mate`, and `Find_enemy` from `b_func.cpp` (subset; **Reachable** / **Dofire** deferred).
+Cajun `Reachable`, `Dofire`, `Check_LOS`, `IsLeader`, `Choose_Mate`, and `Find_enemy` from `b_func.cpp`. **`FCajunMaster::BotTick`** still deferred.
 
 ## Native ranges
 
 - `src/playsim/bots/b_func.cpp` **b_func headers** 44–44 (1 lines)
+- `src/playsim/bots/b_func.cpp` **DBot::Reachable** 45–124 (80 lines)
 - `src/playsim/bots/b_func.cpp` **b_func separators** 126–133 (8 lines)
 - `src/playsim/bots/b_func.cpp` **DBot::Check_LOS** 134–144 (11 lines)
 - `src/playsim/bots/b_func.cpp` **b_func separators** 146–150 (5 lines)
+- `src/playsim/bots/b_func.cpp` **DBot::Dofire** 151–266 (116 lines)
+- `src/playsim/bots/b_func.cpp` **b_func separators** 267–267 (1 lines)
 - `src/playsim/bots/b_func.cpp` **FCajunMaster::IsLeader** 268–280 (13 lines)
 - `src/playsim/bots/b_func.cpp` **b_func separators** 324–326 (3 lines)
 - `src/playsim/bots/b_func.cpp` **DBot::Choose_Mate** 327–395 (69 lines)
 - `src/playsim/bots/b_func.cpp` **b_func separators** 397–397 (1 lines)
 - `src/playsim/bots/b_func.cpp` **DBot::Find_enemy** 398–449 (52 lines)
 
-**Credited native LOC:** 163 (tally `nativeLoc` 163).
+**Credited native LOC:** 360 (tally `nativeLoc` 360).
 
 ## Managed
 
-`VmBBotFunc.cs`
-Managed LOC (tally): 164.
-Conversion commit: `d5fa317a364d718918fafc8bf1d3515b055fb6eb`.
+`VmBBotFunc.cs`, `VmBBotFuncReachFire.cs`
+Managed LOC (tally): 628.
+Conversion commit: `4894427b8bef42e983d68a8140fcdeeb050b77a3`.
 
 ## Padding review (2026-10-21)
 
@@ -30,53 +33,59 @@ Conversion commit: `d5fa317a364d718918fafc8bf1d3515b055fb6eb`.
 
 | Native | Behavior ported |
 |--------|-----------------|
+| `DBot::Reachable` (**45–124**) | **yes** (`CollectPathIntercepts` / line+thing intercept walk) |
+| `DBot::Dofire` (**151–266**) | **yes** (reaction timer, melee/BFG/projectile/hitscan branches; `CheckLos` for LOS gates) |
 | `DBot::Check_LOS` | **yes** |
 | `FCajunMaster::IsLeader` | **yes** |
 | `DBot::Choose_Mate` | **yes** |
-| `DBot::Find_enemy` | **yes** (DM scan + coop `P_RoughMonsterSearch` via `ActorEnemySearchActions`) |
-| `DBot::Reachable` (**45–124**) | **no** (`FPathTraverse` not wired) |
-| `DBot::Dofire` (**151–266**) | **no** (`FireRox` / body nodes) |
+| `DBot::Find_enemy` | **yes** (DM scan + coop `P_RoughMonsterSearch`) |
 | `FCajunMaster::BotTick` (**284–322**) | **no** (`WhatToGet`) |
 
 | Managed | Native (`b_func.cpp`) |
 |---------|----------------------|
+| `Reachable` | **45–124** |
+| `Dofire` | **151–266** |
 | `CheckLos` | **134–144** |
 | `IsLeader` | **268–280** |
 | `ChooseMate` | **327–395** |
 | `FindEnemy` | **398–449** |
-| (headers / `pr_botdofire` decl / separators) | **1–44**, **125–133**, **145–150**, **267**, **281–283**, **324–326**, **396–397** |
+| (headers / `pr_botdofire` decl / separators) | **44**, **126–133**, **146–150**, **267**, **324–326**, **397** |
 
-### Test setup notes (879 debugging, 2026-10-23)
+### Test setup notes
 
 | Test | Setup | Native alignment |
 |------|--------|------------------|
-| `CheckLos_*` / `OpenRoom` | `LightLevel = 160` on sector | `Find_enemy` dark skip uses `WHATS_DARK` (**50**); open-room LOS must not false-fail when `Distance2D > DARK_DIST` (~76) with default light **0** (`b_bot.h` **57–58**) |
-| `FindEnemy_DeathmatchPicksVisiblePlayerOpponent` | Two coop-spawned `PlayerPawn`s in slots; `deathmatch: true` on `FindEnemy` | Exercises DM player scan (**420–445**) without relying on DM-only map start filtering in `AuthoritySimulation.Start` |
-| `FindEnemy_DeathmatchPicksVisibleBotTarget` | `PlayerPawn` vs non-friendly `BotPawn` (`AddBot`) | DM may target any shootable non-teammate in sight; invasion `BotPawn` stands in for a non-player mobj |
-| `FindEnemy_CoopPicksMapMonsterNotPlayers` | Cajun `player->mo` = `PlayerPawn` at (**192**,**192**); fellow coop player + `Type` **3001** monster | Coop `Find_enemy` calls `P_RoughMonsterSearch(player->mo, 20)` (**405–407**); `IsOkayToAttack` blocks coop player-vs-player (**3996–3997** `p_mobj.cpp`) so **3001** monster wins over fellow player |
+| `Reachable_*` | open room vs one-sided blocking line | `FPathTraverse` line/thing intercept sequencing |
+| `Dofire_*` | `CajunBotWeaponInfo` pistol, bot skill **100**, enemy at **48** units | melee `MoveCombatDist==0` path (**190–194**) |
+| `CheckLos_*` / `OpenRoom` | `LightLevel = 160` | `WHATS_DARK` / `DARK_DIST` for `Find_enemy` |
+| `FindEnemy_*` | DM / coop fixtures per prior **879** land | unchanged |
 
 ### Gross vs net
 
 | | Value |
 |--|------:|
-| Gross `nativeLoc` | **213** |
-| Net behavior-ported | **213** |
+| Gross `nativeLoc` | **409** |
+| Net behavior-ported | **409** |
 
 ### Out-of-body uncredit (879)
 
 | | `nativeLoc` |
 |--|----------:|
-| **Gross** | **213** |
+| **Gross** | **409** |
 | **Out-of-body removed** | **50** |
-| **Honest** | **163** |
+| **Honest** | **359** |
 
 
-**Post-review ratio:** 164/163 managed/native ≈ 101% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 628/360 managed/native ≈ 174% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmBBotFuncTests.CheckLos_RequiresSightAndFov`
+- `VmBBotFuncReachFireTests.Reachable_TrueInOpenRoom`
+- `VmBBotFuncReachFireTests.Reachable_FalseThroughOneSidedWall`
 - `VmBBotFuncTests.CheckLos_BlockedLineFails`
+- `VmBBotFuncReachFireTests.Dofire_SetsAttackWhenMeleeInRangeAndLos`
+- `VmBBotFuncReachFireTests.Dofire_WaitsWhileReactionTimerRuns`
 - `VmBBotFuncTests.IsLeader_WhenAnotherBotTargetsPlayer`
 - `VmBBotFuncTests.ChooseMate_PicksVisibleCoopPartner`
 - `VmBBotFuncTests.ChooseMate_SkipsPlayerAlreadyChosenAsLeaderMate`
@@ -90,8 +99,8 @@ Conversion commit: `d5fa317a364d718918fafc8bf1d3515b055fb6eb`.
 
 ## Seams
 
-Direct `CombatTrace.CheckSight`, `Actor.CheckFov`, and `ActorEnemySearchActions.RoughMonsterSearch` — no host hooks. **`DBot::Reachable`** omitted until managed `FPathTraverse` is wired on `AuthoritySimulation`. **`DBot::Dofire`** omitted (`FireRox` / `SetBodyAt` / `FakeFire` not landed). **`FCajunMaster::BotTick`** omitted (`WhatToGet` not landed).
+`AuthoritySimulation.CajunReachable` / `CajunDoFire` call `VmBBotFuncReachFire` (path intercept traverse, `FireRox` / `SetBodyAt` / `FakeFire` on `CajunMasterState`). `CheckLos` uses `CombatTrace.CheckSight` + `Actor.CheckFov`; `FindEnemy` uses `ActorEnemySearchActions.RoughMonsterSearch`. Rocket branch in `Dofire` calls off-tally `FireRox` (chunk **885** retired band) without crediting **454–585** on this row.
 
 ## Credit rationale
 
-First honest `b_func.cpp` band after retired **878**; sight/mate/enemy paths unblock `ThinkForMove` re-land without duplicating **875** movement credit.
+Expand **879** so `uncredited_range_check --band` hull stays **44–449** (same file as prior sight/mate/enemy credit) while adding uncredited **45–124** and **151–266**; disjoint reach/fire bands cannot pass `--band` on a new chunk row without overlapping this row's **126–150** credit.

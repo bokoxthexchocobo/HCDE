@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 46436,
+    "convertedThisRunNative": 46633,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 74949,
+    "convertedThisRunManaged": 75413,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 442369,
+    "remainingNative": 442172,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 64963,
+    "convertedBehaviorNative": 65160,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 84620,
+    "combinedBehaviorNative": 65914,
+    "convertedBehaviorManaged": 85084,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -30510,14 +30510,15 @@
       {
         "name": "bot-func-sight-mate-enemy-chunk879",
         "bucket": "conversion",
-        "note": "Cajun `Check_LOS`, `IsLeader`, `Choose_Mate`, and `Find_enemy` from `b_func.cpp` (subset; **Reachable** / **Dofire** deferred).",
-        "auditSeams": "Direct `CombatTrace.CheckSight`, `Actor.CheckFov`, and `ActorEnemySearchActions.RoughMonsterSearch` \u2014 no host hooks. **`DBot::Reachable`** omitted until managed `FPathTraverse` is wired on `AuthoritySimulation`. **`DBot::Dofire`** omitted (`FireRox` / `SetBodyAt` / `FakeFire` not landed). **`FCajunMaster::BotTick`** omitted (`WhatToGet` not landed).",
-        "auditRationale": "First honest `b_func.cpp` band after retired **878**; sight/mate/enemy paths unblock `ThinkForMove` re-land without duplicating **875** movement credit.",
+        "note": "Cajun `Reachable`, `Dofire`, `Check_LOS`, `IsLeader`, `Choose_Mate`, and `Find_enemy` from `b_func.cpp`. **`FCajunMaster::BotTick`** still deferred.",
+        "auditSeams": "`AuthoritySimulation.CajunReachable` / `CajunDoFire` call `VmBBotFuncReachFire` (path intercept traverse, `FireRox` / `SetBodyAt` / `FakeFire` on `CajunMasterState`). `CheckLos` uses `CombatTrace.CheckSight` + `Actor.CheckFov`; `FindEnemy` uses `ActorEnemySearchActions.RoughMonsterSearch`. Rocket branch in `Dofire` calls off-tally `FireRox` (chunk **885** retired band) without crediting **454\u2013585** on this row.",
+        "auditRationale": "Expand **879** so `uncredited_range_check --band` hull stays **44\u2013449** (same file as prior sight/mate/enemy credit) while adding uncredited **45\u2013124** and **151\u2013266**; disjoint reach/fire bands cannot pass `--band` on a new chunk row without overlapping this row's **126\u2013150** credit.",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 879 --band \u2192 UNCredited, exit 0.",
-        "auditManagedLocJustification": "`VmBBotFunc.cs`.",
-        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `DBot::Check_LOS` | **yes** |\n| `FCajunMaster::IsLeader` | **yes** |\n| `DBot::Choose_Mate` | **yes** |\n| `DBot::Find_enemy` | **yes** (DM scan + coop `P_RoughMonsterSearch` via `ActorEnemySearchActions`) |\n| `DBot::Reachable` (**45\u2013124**) | **no** (`FPathTraverse` not wired) |\n| `DBot::Dofire` (**151\u2013266**) | **no** (`FireRox` / body nodes) |\n| `FCajunMaster::BotTick` (**284\u2013322**) | **no** (`WhatToGet`) |\n\n| Managed | Native (`b_func.cpp`) |\n|---------|----------------------|\n| `CheckLos` | **134\u2013144** |\n| `IsLeader` | **268\u2013280** |\n| `ChooseMate` | **327\u2013395** |\n| `FindEnemy` | **398\u2013449** |\n| (headers / `pr_botdofire` decl / separators) | **1\u201344**, **125\u2013133**, **145\u2013150**, **267**, **281\u2013283**, **324\u2013326**, **396\u2013397** |\n\n### Test setup notes (879 debugging, 2026-10-23)\n\n| Test | Setup | Native alignment |\n|------|--------|------------------|\n| `CheckLos_*` / `OpenRoom` | `LightLevel = 160` on sector | `Find_enemy` dark skip uses `WHATS_DARK` (**50**); open-room LOS must not false-fail when `Distance2D > DARK_DIST` (~76) with default light **0** (`b_bot.h` **57\u201358**) |\n| `FindEnemy_DeathmatchPicksVisiblePlayerOpponent` | Two coop-spawned `PlayerPawn`s in slots; `deathmatch: true` on `FindEnemy` | Exercises DM player scan (**420\u2013445**) without relying on DM-only map start filtering in `AuthoritySimulation.Start` |\n| `FindEnemy_DeathmatchPicksVisibleBotTarget` | `PlayerPawn` vs non-friendly `BotPawn` (`AddBot`) | DM may target any shootable non-teammate in sight; invasion `BotPawn` stands in for a non-player mobj |\n| `FindEnemy_CoopPicksMapMonsterNotPlayers` | Cajun `player->mo` = `PlayerPawn` at (**192**,**192**); fellow coop player + `Type` **3001** monster | Coop `Find_enemy` calls `P_RoughMonsterSearch(player->mo, 20)` (**405\u2013407**); `IsOkayToAttack` blocks coop player-vs-player (**3996\u20133997** `p_mobj.cpp`) so **3001** monster wins over fellow player |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **213** |\n| Net behavior-ported | **213** |\n\n### Out-of-body uncredit (879)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **213** |\n| **Out-of-body removed** | **50** |\n| **Honest** | **163** |\n",
+        "auditManagedLocJustification": "`VmBBotFunc.cs` + `VmBBotFuncReachFire.cs` (Reachable traverse + Dofire combat).",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `DBot::Reachable` (**45\u2013124**) | **yes** (`CollectPathIntercepts` / line+thing intercept walk) |\n| `DBot::Dofire` (**151\u2013266**) | **yes** (reaction timer, melee/BFG/projectile/hitscan branches; `CheckLos` for LOS gates) |\n| `DBot::Check_LOS` | **yes** |\n| `FCajunMaster::IsLeader` | **yes** |\n| `DBot::Choose_Mate` | **yes** |\n| `DBot::Find_enemy` | **yes** (DM scan + coop `P_RoughMonsterSearch`) |\n| `FCajunMaster::BotTick` (**284\u2013322**) | **no** (`WhatToGet`) |\n\n| Managed | Native (`b_func.cpp`) |\n|---------|----------------------|\n| `Reachable` | **45\u2013124** |\n| `Dofire` | **151\u2013266** |\n| `CheckLos` | **134\u2013144** |\n| `IsLeader` | **268\u2013280** |\n| `ChooseMate` | **327\u2013395** |\n| `FindEnemy` | **398\u2013449** |\n| (headers / `pr_botdofire` decl / separators) | **44**, **126\u2013133**, **146\u2013150**, **267**, **324\u2013326**, **397** |\n\n### Test setup notes\n\n| Test | Setup | Native alignment |\n|------|--------|------------------|\n| `Reachable_*` | open room vs one-sided blocking line | `FPathTraverse` line/thing intercept sequencing |\n| `Dofire_*` | `CajunBotWeaponInfo` pistol, bot skill **100**, enemy at **48** units | melee `MoveCombatDist==0` path (**190\u2013194**) |\n| `CheckLos_*` / `OpenRoom` | `LightLevel = 160` | `WHATS_DARK` / `DARK_DIST` for `Find_enemy` |\n| `FindEnemy_*` | DM / coop fixtures per prior **879** land | unchanged |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **409** |\n| Net behavior-ported | **409** |\n\n### Out-of-body uncredit (879)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **409** |\n| **Out-of-body removed** | **50** |\n| **Honest** | **359** |\n",
         "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmBBotFunc.cs"
+          "csharp/src/HCDE.Playsim/VmBBotFunc.cs",
+          "csharp/src/HCDE.Playsim/VmBBotFuncReachFire.cs"
         ],
         "nativeRanges": [
           {
@@ -30527,6 +30528,16 @@
             "end": 44,
             "tests": [
               "VmBBotFuncTests.CheckLos_RequiresSightAndFov"
+            ]
+          },
+          {
+            "file": "src/playsim/bots/b_func.cpp",
+            "symbol": "DBot::Reachable",
+            "start": 45,
+            "end": 124,
+            "tests": [
+              "VmBBotFuncReachFireTests.Reachable_TrueInOpenRoom",
+              "VmBBotFuncReachFireTests.Reachable_FalseThroughOneSidedWall"
             ]
           },
           {
@@ -30555,6 +30566,25 @@
             "end": 150,
             "tests": [
               "VmBBotFuncTests.CheckLos_RequiresSightAndFov"
+            ]
+          },
+          {
+            "file": "src/playsim/bots/b_func.cpp",
+            "symbol": "DBot::Dofire",
+            "start": 151,
+            "end": 266,
+            "tests": [
+              "VmBBotFuncReachFireTests.Dofire_SetsAttackWhenMeleeInRangeAndLos",
+              "VmBBotFuncReachFireTests.Dofire_WaitsWhileReactionTimerRuns"
+            ]
+          },
+          {
+            "file": "src/playsim/bots/b_func.cpp",
+            "symbol": "b_func separators",
+            "start": 267,
+            "end": 267,
+            "tests": [
+              "VmBBotFuncTests.IsLeader_WhenAnotherBotTargetsPlayer"
             ]
           },
           {
@@ -30607,9 +30637,9 @@
             ]
           }
         ],
-        "nativeLoc": 163,
-        "managedLoc": 164,
-        "conversionManagedCommit": "5eb70108f126410c7261bea91053d590a2f73ce4"
+        "nativeLoc": 360,
+        "managedLoc": 628,
+        "conversionManagedCommit": "4894427b8bef42e983d68a8140fcdeeb050b77a3"
       },
       {
         "name": "linked-sectors-remainder-chunk880",
