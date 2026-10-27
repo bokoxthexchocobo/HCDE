@@ -29,8 +29,8 @@ Whole `P_DisconnectEffect` and `DVisualThinker` lifecycle/render helpers (`p_eff
 ## Managed
 
 `VmPEffectVisualThinker.cs`
-Managed LOC (tally): 238.
-Conversion commit: `08a1b5e4fba88dedc4f0bdcbf6842757271d3a4f`.
+Managed LOC (tally): 244.
+Conversion commit: `69380297317c879dc909515ef5d44215a02e074f`.
 
 ## Padding review (2026-10-21)
 
@@ -52,7 +52,7 @@ Conversion commit: `08a1b5e4fba88dedc4f0bdcbf6842757271d3a4f`.
 | **Honest** | **244** |
 
 
-**Post-review ratio:** 238/244 managed/native ≈ 98% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 244/244 managed/native ≈ 100% (src file LOC at HEAD; see tally).
 
 ## Tests
 
