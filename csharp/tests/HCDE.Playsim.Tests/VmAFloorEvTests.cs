@@ -5,7 +5,7 @@ public class VmAFloorEvTests
     [Fact]
     public void EvDoFloor_CallsCreateFloorPerTag()
     {
-        var ok = VmAFloorEv.EvDoFloor(
+        var ok = VmAFloorEvLineFloor919Slice.EvDoFloor(
             new VmAFloorEv.FloorEvContext
             {
                 SectorTagIterator = (_, _) => new[] { 0 },
@@ -29,11 +29,31 @@ public class VmAFloorEvTests
     }
 
     [Fact]
+    public void EvFloorCrushStop_OnlyRaiseAndCrush()
+    {
+        var sec = new VmAFloorEv.StairSector { FloorData = new object() };
+        var destroyed = false;
+        VmAFloorEvLineFloor919Slice.EvFloorCrushStop(
+            new VmAFloorEv.FloorEvContext
+            {
+                SectorTagIterator = (_, _) => new[] { 0 },
+                SectorByIndex = _ => sec,
+                IsFloorThinker = _ => true,
+                GetFloorThinkerType = _ => VmAFloorCreate.FloorRaiseAndCrush,
+                StopSequence = _ => { },
+                DestroyFloorData = _ => destroyed = true,
+            },
+            1,
+            null);
+        Assert.True(destroyed);
+    }
+
+    [Fact]
     public void EvStopFloor_DestroyActiveThinker()
     {
         var sec = new VmAFloorEv.StairSector { FloorData = new object() };
         var destroyed = false;
-        VmAFloorEv.EvStopFloor(
+        VmAFloorEvLineFloor919Slice.EvStopFloor(
             new VmAFloorEv.FloorEvContext
             {
                 SectorTagIterator = (_, _) => new[] { 0 },
@@ -68,7 +88,7 @@ public class VmAFloorEvTests
     [Fact]
     public void EvBuildStairs_ZeroSpeed_ReturnsFalse()
     {
-        Assert.False(VmAFloorEv.EvBuildStairs(new VmAFloorEv.FloorEvContext(), 1, VmAFloorEv.BuildUp, null, 8, 0, 0, 0, 0, 0));
+        Assert.False(VmAFloorEvLineFloor919Slice.EvBuildStairs(new VmAFloorEv.FloorEvContext(), 1, VmAFloorEv.BuildUp, null, 8, 0, 0, 0, 0, 0));
     }
 
     [Fact]
@@ -95,7 +115,7 @@ public class VmAFloorEvTests
             BackSector = sec1,
         });
         var thinkers = 0;
-        var ok = VmAFloorEv.EvBuildStairs(
+        var ok = VmAFloorEvLineFloor919Slice.EvBuildStairs(
             new VmAFloorEv.FloorEvContext
             {
                 SectorTagIterator = (_, _) => new[] { 0 },
