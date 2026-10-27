@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 223582
+    "managedCSharpLoc": 223597
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 48806,
+    "convertedThisRunNative": 48964,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 77401,
+    "convertedThisRunManaged": 77487,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 439999,
+    "remainingNative": 439841,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 67333,
+    "convertedBehaviorNative": 67491,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 68087,
-    "convertedBehaviorManaged": 87072,
+    "combinedBehaviorNative": 68245,
+    "convertedBehaviorManaged": 87158,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -32453,6 +32453,39 @@
         "nativeLoc": 160,
         "managedLoc": 127,
         "conversionManagedCommit": "41fc05c3582cf4902b8b4cd8d8af91f7f49e44db"
+      },
+      {
+        "name": "action-settics-damage-chunk580",
+        "bucket": "conversion",
+        "note": "`A_SetTics` through `A_DamageTracer` (`p_actionfunctions.cpp` **3994\u20134151**, contiguous function band). Re-land of retired **543** (no **3751\u20133762** on **577**).",
+        "auditSeams": "`FindPSprite`, `COPY_AAPTR`, `P_DamageMobj`, and `P_GiveBody` are not hosted.",
+        "auditRationale": "Tic assignment branches, damage-flag assembly, filter/species gating, kill/heal amount policy, and target/tracer null guards.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 580 --band` \u2192 UNCredited; chunk **543** retired (no overlap).",
+        "auditManagedLocJustification": "`VmActorDoDamage.cs` mirrors `DoDamage` policy and `A_SetTics` / `A_Damage*` guard bands.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SetTicsOnPsprite` / `ShouldSetActorTics` | `A_SetTics` **3999\u20134011** |\n| `DmssFlags` | `DMSS` **4033\u20134045** |\n| `CheckClass` / `CheckSpecies` / `PassesFilterSpecies` / `AssembleDamageFlags` / `AdjustKillAmount` / `PlanDoDamage` / `HealMagnitude` / `UseInflictorDamageType` | `DoDamage` **4049\u20134078** (`P_DamageMobj`/`P_GiveBody` seam) |\n| `ShouldDamageWhenPresent` | `A_DamageTarget` **4124\u20134125**, `A_DamageTracer` **4148\u20134149** |\n| (wrappers/param) | `A_DamageSelf` **4087\u20134103** (`COPY_AAPTR` seam) |\n\nInter-function comment blocks **4016\u20134032**, **4081\u20134086**, **4104\u20134109**, **4128\u20134133** sit inside the **3994\u20134151** band but carry no separate managed helpers.\n\n### vs chunk **543** / **577**\n\n| | Lines |\n|--|------:|\n| **543** (retired) | \u2014 |\n| **577** (`DoCheckSpecies`/`DoCheckClass`) | **3751\u20133762** (excluded) |\n| **580** (this row) | **3994\u20134151** (**158**) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **158** |\n| Net behavior-ported | **158** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmActorDoDamage.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_SetTics",
+            "start": 3994,
+            "end": 4151,
+            "tests": [
+              "VmActorDoDamageTests.SetTicsOnPsprite_WhenFound",
+              "VmActorDoDamageTests.SetTicsOnActor_WhenFromActor",
+              "VmActorDoDamageTests.AssembleDamageFlags_KillAddsNoFactor",
+              "VmActorDoDamageTests.PassesDoDamageFilter_BothRequired",
+              "VmActorDoDamageTests.PlanDoDamage_HealWhenNegative",
+              "VmActorDoDamageTests.ShouldDamageWhenPresent_Target",
+              "VmActorDoDamageTests.ShouldDamageWhenPresent_TracerAbsent"
+            ]
+          }
+        ],
+        "nativeLoc": 158,
+        "managedLoc": 86,
+        "conversionManagedCommit": "863f5ff4cc46927168bbced47441e18f8d9623e6"
       }
     ],
     "behaviorNativeChecksum": 508086,
