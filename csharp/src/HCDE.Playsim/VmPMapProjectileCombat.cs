@@ -25,11 +25,17 @@ public static class VmPMapProjectileCombat
             portalhit.Add(new SpechitEntry { Line = line, Refpos = refpos, Oldrefpos = oldrefpos });
     }
 
+    public static bool RipBelowVictimMinimum(int victimMin, int projectileLevel) =>
+        victimMin > 0 && projectileLevel < victimMin;
+
+    public static bool RipAboveVictimMaximum(int victimMax, int projectileLevel) =>
+        victimMax > 0 && projectileLevel > victimMax;
+
     public static bool CheckRipLevel(int victimMin, int victimMax, int projectileLevel)
     {
-        if (victimMin > 0 && projectileLevel < victimMin)
+        if (RipBelowVictimMinimum(victimMin, projectileLevel))
             return false;
-        if (victimMax > 0 && projectileLevel > victimMax)
+        if (RipAboveVictimMaximum(victimMax, projectileLevel))
             return false;
         return true;
     }
