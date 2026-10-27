@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 224667
+    "managedCSharpLoc": 224896
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 51804,
+    "convertedThisRunNative": 52017,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 79445,
+    "convertedThisRunManaged": 79674,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 437001,
+    "remainingNative": 436788,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 70331,
+    "convertedBehaviorNative": 70544,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 71085,
-    "convertedBehaviorManaged": 89116,
+    "combinedBehaviorNative": 71298,
+    "convertedBehaviorManaged": 89345,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -33005,6 +33005,36 @@
         "nativeLoc": 229,
         "managedLoc": 218,
         "conversionManagedCommit": "56dcf7a9df108f955316f6e21dbdd6c12e07adaa"
+      },
+      {
+        "name": "p-lnspec-ceiling-movers-chunk901",
+        "bucket": "conversion",
+        "note": "`LS_Ceiling_LowerAndCrush` through `LS_Generic_Ceiling` (`p_lnspec.cpp` **701\u2013913**). Follows **900** (**\u2264700**); stops before `LS_Generic_Crusher` (**915+**). Trimmed past **900** to complete generic-ceiling function.",
+        "auditSeams": "`EV_DoCeiling`, `EV_CeilingCrushStop`, and `EV_StopCeiling` are not hosted.",
+        "auditRationale": "Ceiling crush-stop gametype gate, move-to-value sign, crush-type slowdown flags, silent crush variants, instant movers, and generalized ceiling target switch via `VmPLnspecCeilingMoversSlice`.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 701 --end 913` and `--chunk 901 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| Lower/crush + crush-stop | **701\u2013729** |\n| Crush-raise / move-to-value / instant | **731\u2013774** |\n| Crush A/dist/silent variants | **776\u2013810** |\n| Raise/lower/to-instant movers | **812\u2013876** |\n| `CeilingStop` / `GenericCeiling` | **878\u2013913** |\n\n### vs **900**\n\n| | Lines |\n|--|------:|\n| **900** | **472\u2013700** |\n| **901** (this row) | **701\u2013913** (**213**) |\n| `LS_Generic_Crusher` | **915+** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **213** |\n| Net behavior-ported | **213** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPLnspecCeilingMoversSlice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Ceiling_LowerAndCrush",
+            "start": 701,
+            "end": 913,
+            "tests": [
+              "VmPLnspecCeilingMoversSliceTests.CeilingCrushStop_HexenDefaultRemoves",
+              "VmPLnspecCeilingMoversSliceTests.CeilingMoveToValueTimes8_NegativeHeight",
+              "VmPLnspecCeilingMoversSliceTests.GenericCeiling_RaiseTargetSelectsHighest",
+              "VmPLnspecCeilingMoversSliceTests.GenericCeiling_CrushFlagSetsTwenty",
+              "VmPLnspecCeilingMoversSliceTests.CeilingCrushAndRaiseDist_UsesDistAsHeight"
+            ]
+          }
+        ],
+        "nativeLoc": 213,
+        "managedLoc": 229,
+        "conversionManagedCommit": "cb171a266f7ae072d722bf19b51a0d5c00c70c95"
       }
     ],
     "behaviorNativeChecksum": 508086,
