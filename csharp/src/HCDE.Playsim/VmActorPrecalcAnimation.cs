@@ -74,8 +74,6 @@ public static class VmActorPrecalcAnimation
 
     public static float DefaultInterpolationWhenUnset => -1f;
 
-    public static bool FindAnimationFrameInternalCreatesInterpFrame(bool shouldFind) => shouldFind;
-
     public static bool CalculateAnimationInternalUsesModelTimerPlusOne(double timer, double tic) => tic > timer;
 
     public static bool CalculateAnimationUiUsesTimeFrac(double timer, double tic, double frac) =>

@@ -11,8 +11,6 @@ public static class VmActorPrecalcBones
     public static int RangeBoneApplyEnd(int frameBoneCount, int overrideSlotCount, int start, int length) =>
         Math.Min(frameBoneCount, Math.Min(overrideSlotCount, start + length));
 
-    public static bool ShouldApplyMaskedBone(bool maskAtIndex) => maskAtIndex;
-
     public static bool ShouldRecalcBonesAfterApply(int appliedBoneCount, bool uiPath) =>
         appliedBoneCount > 0 && !uiPath;
 
@@ -41,8 +39,6 @@ public static class VmActorPrecalcBones
         return count;
     }
 
-    public static bool OverwriteBonesSkipsCalcBonesComment(bool uiPath) => uiPath;
-
     public static bool GrowBoneOverridesToModelJointCount(int currentSize, int jointCount, out int newSize)
     {
         newSize = jointCount;
@@ -57,8 +53,6 @@ public static class VmActorPrecalcBones
     public static bool MaskedSetRequiresPositiveMaskCount(int maskedCount) => maskedCount > 0;
 
     public static int ClampBoneLoopStart(int start, int overrideSlots) => start < 0 ? 0 : Math.Min(start, overrideSlots);
-
-    public static bool UiSetBonesSkipsCalcBones(bool uiPath) => uiPath;
 
     public static bool GameSetBonesRunsCalcBones(int applied, bool uiPath) => ShouldRecalcBonesAfterApply(applied, uiPath);
 
@@ -90,13 +84,9 @@ public static class VmActorPrecalcBones
     public static bool SetBonesResizesToJointCount(int jointCount, int currentOverrides) =>
         GrowBoneOverridesToModelJointCount(currentOverrides, jointCount, out _);
 
-    public static int RangeLoopStartIndex(int start, int endExclusive) => start;
-
     public static bool RangeLoopContinues(int i, int endExclusive) => i < endExclusive;
 
     public static bool MaskLoopContinues(int i, int upperBound) => i < upperBound;
-
-    public static bool MaskLoopAppliesWhenTrue(bool maskValue) => maskValue;
 
     public static bool OverwriteBonesUsesMode(int mode) => mode >= 0;
 
@@ -114,7 +104,7 @@ public static class VmActorPrecalcBones
 
     public static bool CalcBonesAfterSetWhenGameplay(int applied, bool ui) => GameSetBonesRunsCalcBones(applied, ui);
 
-    public static bool CalcBonesSkippedForUiSet(int applied, bool ui) => UiSetBonesSkipsCalcBones(ui) && applied > 0;
+    public static bool CalcBonesSkippedForUiSet(int applied, bool ui) => ui && applied > 0;
 
     public static bool OverwriteMaskHonorsMaskArray(ReadOnlySpan<bool> mask, int index) =>
         index < mask.Length && mask[index];
@@ -123,8 +113,6 @@ public static class VmActorPrecalcBones
         Math.Min(MaskedLoopUpperBound(frameBones, overrideSlots), mask.Length);
 
     public static bool BoneOverrideSetUsesTic(double tic, double modeTic) => Math.Abs(tic - modeTic) < 1e-9;
-
-    public static bool OverwriteSkipsInterpolation(bool overwritePath) => overwritePath;
 
     public static int SingleModelDataSlot => 1;
 
@@ -137,4 +125,7 @@ public static class VmActorPrecalcBones
 
     public static double SelectBoneApplyTic(bool uiPath, double modelTimer, double timeFrac) =>
         uiPath ? UiBoneApplyTic(modelTimer, timeFrac) : GameBoneApplyTic(modelTimer);
+
+    public static bool MaskedBoneLoopShouldApply(ReadOnlySpan<bool> mask, int index) =>
+        index < mask.Length && mask[index];
 }
