@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary><c>FLevelLocals::CreateFloor</c> from <c>a_floor.cpp</c> (281–538).</summary>
+/// <summary><c>FLevelLocals::CreateFloor</c> from <c>a_floor.cpp</c> (**281–514**); chunk **918**.</summary>
 public static class VmAFloorCreate
 {
     public const int FloorLowerToLowest = 0;
