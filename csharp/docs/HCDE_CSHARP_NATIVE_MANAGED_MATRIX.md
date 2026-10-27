@@ -6,15 +6,15 @@ Generated: 2026-10-27. Machine-readable: [`data/native_managed_matrix.json`](dat
 
 - Native engine scope: `src/` `*.cpp` / `*.c` only → **508,086** lines.
 - Excluded from engine scope: libraries/ (vendored deps), tools/ (build utilities), protocol/ (shared constants; mirrored in HCDE.Protocol).
-- Managed implementation: `csharp/src/**/*.cs` → **226,613** lines.
+- Managed implementation: `csharp/src/**/*.cs` → **226,902** lines.
 
 ### Run tally
 
-- Converted this run (native behavior, tested): **55,105** native lines.
+- Converted this run (native behavior, tested): **55,269** native lines.
 - Recognition this run (already ported, tested): **-4,686** native lines.
-- Added this run (managed): **82,378** C# lines.
-- Cumulative conversion (native): **73,632**; recognition: **754**; combined: **74,386**.
-- Native engine remaining (scope): **433,700** lines.
+- Added this run (managed): **82,667** C# lines.
+- Cumulative conversion (native): **73,796**; recognition: **754**; combined: **74,550**.
+- Native engine remaining (scope): **433,536** lines.
 
 Native lines count toward conversion only when matching behavior is implemented and covered by regression tests.
 
