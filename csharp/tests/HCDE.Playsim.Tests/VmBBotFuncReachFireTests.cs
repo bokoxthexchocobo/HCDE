@@ -79,6 +79,28 @@ public class VmBBotFuncReachFireTests
         Assert.True(player.CanPickupItems);
     }
 
+    [Fact]
+    public void SetBodyAt_ReusesExistingBodyNode()
+    {
+        var sim = OpenRoomSim();
+        var cajun = new VmBBotGame.CajunMasterState();
+        VmBBotFuncReachFire.SetBodyAt(sim, cajun, 10, 20, 0, hostNum: 1);
+        var first = cajun.Body1;
+        VmBBotFuncReachFire.SetBodyAt(sim, cajun, 30, 40, 0, hostNum: 1);
+        Assert.Same(first, cajun.Body1);
+        Assert.Equal(30, cajun.Body1!.X.ToDouble());
+    }
+
+    [Fact]
+    public void FakeFire_ReturnsPositiveDistanceInOpenRoom()
+    {
+        var sim = OpenRoomSim();
+        var player = sim.Players.First();
+        var target = sim.AddBot(96, 0);
+        var dist = VmBBotFuncReachFire.FakeFire(sim, player, target, new VmBBotMove.UserCmd());
+        Assert.True(dist >= VmBBotFuncReachFire.SafeSelfMisdist);
+    }
+
     static AuthoritySimulation OpenRoomSim() => AuthoritySimulation.Start(new PlayLevel
     {
         Sectors = [new LevelSector { CeilingHeight = 128, LightLevel = 160 }],
