@@ -22,7 +22,7 @@ public class VmFScriptParserTypeLegacy938SliceTests
         var invoke = VmFScriptParserTypeLegacy938Slice.BuildSpawnExplosion(
             3, 1, 2, 0, 5, null, 7);
         Assert.NotNull(invoke);
-        Assert.Equal(0, invoke!.ReturnState);
+        Assert.Equal(0, invoke!.Value.ReturnState);
     }
 
     [Fact]
