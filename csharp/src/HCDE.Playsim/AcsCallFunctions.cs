@@ -379,7 +379,7 @@ internal static partial class AcsCallFunctions
                 return VmPAcsCallfunc924Slice.TryFixedQuantize(stack, function, argCount, out result);
             case GetLineX:
             case GetLineY:
-                return TryGetLineCoordinate(sim, stack, function == GetLineY, argCount, out result);
+                return VmPAcsCallfunc925Slice.TryGetLineCoordinate(sim, stack, function == GetLineY, argCount, out result);
             case GetSectorHealth:
             case GetLineHealth:
                 return VmPAcsCallfunc924Slice.TryGetDestructibleHealth(sim, stack, function == GetLineHealth, argCount, out result);
@@ -816,46 +816,6 @@ internal static partial class AcsCallFunctions
 
         var line = AcsLineActivation.FirstLineFromId(sim, lineId);
         result = line is null ? 0 : AcsLineActivation.Pack(line);
-        return true;
-    }
-
-    private static bool TryGetLineCoordinate(
-        AuthoritySimulation sim,
-        List<int> stack,
-        bool yAxis,
-        int argCount,
-        out int result)
-    {
-        result = 0;
-        if (argCount < 3 || stack.Count < argCount)
-            return false;
-
-        var start = stack.Count - argCount;
-        var lineId = stack[start];
-        var along = AcsToDouble(stack[start + 1]);
-        var perpRaw = stack[start + 2];
-        stack.RemoveRange(start, argCount);
-
-        var line = AcsLineActivation.FirstLineFromId(sim, lineId);
-        if (line is null)
-            return true;
-
-        var deltaX = line.X2 - line.X1;
-        var deltaY = line.Y2 - line.Y1;
-        var value = (yAxis ? line.Y1 : line.X1) + (yAxis ? deltaY : deltaX) * along;
-        if (perpRaw != 0)
-        {
-            var perpDistance = AcsToDouble(perpRaw);
-            var length = Math.Sqrt(deltaX * deltaX + deltaY * deltaY);
-            if (length > 0)
-            {
-                var normalX = deltaY / length;
-                var normalY = -deltaX / length;
-                value += (yAxis ? normalY : normalX) * perpDistance;
-            }
-        }
-
-        result = AcsFixedPoint.FromDouble(value);
         return true;
     }
 

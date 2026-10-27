@@ -80,7 +80,7 @@ internal static partial class AcsCallFunctions
             case InvasionIsSpawnUsingFallback:
             case InvasionGetSpawnFallbackSource:
             case InvasionControlAction:
-                return TryInvasionCall(sim, stack, function, argCount, out result);
+                return VmPAcsCallfunc925Slice.TryInvasionCall(sim, stack, function, argCount, out result);
             default:
                 return TryAbsentCallFuncs(sim, stack, scriptActivator, stringTable, globalStrings, function, argCount, out result);
         }
@@ -233,24 +233,6 @@ internal static partial class AcsCallFunctions
         stack.RemoveRange(start, argCount);
         sim.SetTeamScore(team, score);
         result = 1;
-        return true;
-    }
-
-    private static bool TryInvasionCall(AuthoritySimulation sim, List<int> stack, int function, int argCount, out int result)
-    {
-        result = 0;
-        if (function == InvasionControlAction)
-        {
-            if (argCount < 1 || stack.Count < argCount) return false;
-            var start = stack.Count - argCount;
-            _ = stack[start];
-            stack.RemoveRange(start, argCount);
-            result = 0;
-            return true;
-        }
-
-        if (argCount != 0) return false;
-        result = sim.Invasion.QueryAcs(function) ?? 0;
         return true;
     }
 

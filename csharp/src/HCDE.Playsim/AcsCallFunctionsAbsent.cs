@@ -64,7 +64,7 @@ internal static partial class AcsCallFunctions
             case StartSlideshow:
                 return VmPAcsCallfunc924Slice.TryStartSlideshow(sim, stack, stringTable, globalStrings, argCount, out result);
             case SetSubtitleNumber:
-                return TrySetSubtitleNumber(sim, stack, argCount, out result);
+                return VmPAcsCallfunc925Slice.TrySetSubtitleNumber(sim, stack, argCount, out result);
             case SetSectorGlow:
                 return VmPAcsCallfunc924Slice.TrySetSectorGlow(sim, stack, argCount, out result);
             case SetFogDensity:
@@ -190,16 +190,6 @@ internal static partial class AcsCallFunctions
         activator.Z = Fixed.FromDouble(reference.Z.ToDouble() + zofs);
         ActorPhysics.RefreshOnMobj(sim, activator);
         result = 1;
-        return true;
-    }
-
-    private static bool TrySetSubtitleNumber(AuthoritySimulation sim, List<int> stack, int argCount, out int result)
-    {
-        result = 0;
-        if (argCount < 1 || stack.Count < argCount) return false;
-        var start = stack.Count - argCount;
-        sim.AcsSubtitleNumber = stack[start];
-        stack.RemoveRange(start, argCount);
         return true;
     }
 
