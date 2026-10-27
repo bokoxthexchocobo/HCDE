@@ -2,7 +2,7 @@ namespace HCDE.Playsim;
 
 /// <summary>
 /// `StartFloorSound`, `DFloor::Serialize` / field defs, and `DFloor::Tick` head through stairlock promote from <c>mapthinkers/a_floor.cpp</c> (**1–200**).
-/// Exclusive to chunk **917**; defers **201+** stairlock chain and **SetFloorChangeType** (**233+**).
+/// Exclusive to chunk **917**; defers `SetFloorChangeType` (**233+**) and `CreateFloor` (**281+**).
 /// </summary>
 public static class VmAFloorDflooorHead917Slice
 {
@@ -27,6 +27,8 @@ public static class VmAFloorDflooorHead917Slice
         public string SeqName { get; set; } = "";
         public object? FloorData { get; set; }
         public int Stairlock { get; set; }
+        public int Prevsec { get; set; } = -1;
+        public int Nextsec { get; set; } = -1;
         public Action<SectorSpecial>? SetSpecial { get; set; }
         public Action<string>? SetFloorTexture { get; set; }
     }
@@ -203,11 +205,52 @@ public static class VmAFloorDflooorHead917Slice
         return true;
     }
 
+    public static void ReleaseStairlockChainIfComplete(
+        FloorSector origin,
+        Func<int, FloorSector?>? sectorByIndex)
+    {
+        if (origin.Stairlock != StairlockBuilding)
+            return;
+        var sec = origin;
+        sec.Stairlock = StairlockDone;
+        while (sec.Prevsec != -1)
+        {
+            var prev = sectorByIndex?.Invoke(sec.Prevsec);
+            if (prev == null || prev.Stairlock == StairlockBuilding)
+                break;
+            sec = prev;
+        }
+        if (sec.Prevsec != -1)
+            return;
+        sec = origin;
+        while (sec.Nextsec != -1)
+        {
+            var next = sectorByIndex?.Invoke(sec.Nextsec);
+            if (next == null || next.Stairlock == StairlockBuilding)
+                break;
+            sec = next;
+        }
+        if (sec.Nextsec != -1)
+            return;
+        sec = origin;
+        while (sec.Prevsec != -1)
+        {
+            var prev = sectorByIndex?.Invoke(sec.Prevsec);
+            if (prev == null)
+                break;
+            prev.Stairlock = 0;
+            sec = prev;
+        }
+        origin.Stairlock = 0;
+    }
+
     public static bool TickFloorMover(
         FloorThinker floor,
         Func<FloorSector, double, double, int, int, bool, bool, VmADoorTickSound.MoveResult> moveFloor,
         Action<FloorSector>? stopSequence,
-        Action<FloorThinker>? stopInterpolation)
+        Action<FloorThinker>? stopInterpolation,
+        Func<int, FloorSector?>? sectorByIndex = null,
+        Action<FloorThinker>? destroy = null)
     {
         if (AdvanceStairTiming(floor))
             return false;
@@ -237,7 +280,8 @@ public static class VmAFloorDflooorHead917Slice
             floor.Sector.FloorData = null;
             stopInterpolation?.Invoke(floor);
             floor.StopInterpolationCalled = true;
-            PromoteStairlockBuilding(floor.Sector);
+            ReleaseStairlockChainIfComplete(floor.Sector, sectorByIndex);
+            destroy?.Invoke(floor);
             return true;
         }
 

@@ -96,7 +96,7 @@ public class VmAFloorDflooorHead917SliceTests
         Assert.Equal("FLAT1", tex);
         Assert.True(stopped);
         Assert.True(floor.StopInterpolationCalled);
-        Assert.Equal(VmAFloorDflooorHead917Slice.StairlockDone, sec.Stairlock);
+        Assert.Equal(0, sec.Stairlock);
         Assert.Null(sec.FloorData);
     }
 
@@ -130,5 +130,23 @@ public class VmAFloorDflooorHead917SliceTests
     {
         var sec = new VmAFloorDflooorHead917Slice.FloorSector { Stairlock = 0 };
         Assert.False(VmAFloorDflooorHead917Slice.PromoteStairlockBuilding(sec));
+    }
+
+    [Fact]
+    public void ReleaseStairlockChainIfComplete_ClearsLinearChain()
+    {
+        var a = new VmAFloorDflooorHead917Slice.FloorSector { Stairlock = VmAFloorDflooorHead917Slice.StairlockDone };
+        var b = new VmAFloorDflooorHead917Slice.FloorSector
+        {
+            Stairlock = VmAFloorDflooorHead917Slice.StairlockBuilding,
+            Prevsec = 0,
+            Nextsec = 2,
+        };
+        var c = new VmAFloorDflooorHead917Slice.FloorSector { Stairlock = VmAFloorDflooorHead917Slice.StairlockDone, Prevsec = 1 };
+        VmAFloorDflooorHead917Slice.FloorSector? Sector(int i) => i switch { 0 => a, 1 => b, 2 => c, _ => null };
+        VmAFloorDflooorHead917Slice.ReleaseStairlockChainIfComplete(b, Sector);
+        Assert.Equal(0, a.Stairlock);
+        Assert.Equal(0, b.Stairlock);
+        Assert.Equal(0, c.Stairlock);
     }
 }
