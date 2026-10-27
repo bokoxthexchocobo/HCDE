@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 54635,
+  "convertedThisRunNative": 54796,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 81808,
+  "convertedThisRunManaged": 81996,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 434170,
+  "remainingNative": 434009,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 73162,
+  "convertedBehaviorNative": 73323,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 73916,
-  "convertedBehaviorManaged": 91479,
+  "combinedBehaviorNative": 74077,
+  "convertedBehaviorManaged": 91667,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -33437,6 +33437,41 @@
       "nativeLoc": 166,
       "managedLoc": 205,
       "conversionManagedCommit": "f032d63738ccf842eadd50cb35b43a08fba16f5e"
+    },
+    {
+      "name": "p-acs-runscript-div-mod-and-chunk914",
+      "bucket": "conversion",
+      "note": "`DLevelScript::RunScript` `PCD_DIVMAPARRAY`\u2026`PCD_DIVGLOBALARRAY`, full `PCD_MOD*`, and `PCD_ANDSCRIPTVAR`\u2026`PCD_ANDGLOBALVAR` from `p_acs.cpp` (**8043\u20138203**). Follows **913** (**\u22648041**); `PCD_ANDSCRIPTARRAY` at **8205** deferred.",
+      "auditSeams": "`FBehavior::SetArrayVal` / `GetArrayVal` and full `RunScript` loop are not hosted; slice models zero-divisor script states and stack operand layout only.",
+      "auditRationale": "Honest **161**-line UNCredited band; exclusive `VmPAcsVmOpcode914Slice.cs` without modifying **911\u2013913** slice files.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 8043 --end 8203` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native opcode region | Behavior ported |\n|----------------------|-----------------|\n| `PCD_DIVMAPARRAY` \u2026 `PCD_DIVGLOBALARRAY` (**8043\u20138081**) | yes |\n| `PCD_MODSCRIPTVAR` \u2026 `PCD_MODGLOBALARRAY` (**8083\u20138182**) | yes |\n| `PCD_ANDSCRIPTVAR` \u2026 `PCD_ANDGLOBALVAR` (**8185\u20138203**) | yes |\n\n| Managed (`VmPAcsVmOpcode914Slice.cs`) | Native (`p_acs.cpp`) |\n|----------------------------------------|---------------------|\n| `DivMapArray` | **8043\u20138055** |\n| `DivWorldArray` | **8057\u20138068** |\n| `DivGlobalArray` | **8070\u20138081** |\n| `ModScriptVar` \u2026 `ModGlobalVar` | **8083\u20138129** |\n| `ModScriptArray` \u2026 `ModGlobalArray` | **8131\u20138182** |\n| `AndScriptVar` \u2026 `AndGlobalVar` | **8185\u20138203** |\n| `AcsScriptArrayStore` / `AcsMapArrayStore` | array backing **8139\u20138179** |\n\n### Chunk **914** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **161** |\n| **Net headline** | **+161** vs post-**913** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPAcsVmOpcode914Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::RunScript",
+          "start": 8043,
+          "end": 8203,
+          "tests": [
+            "VmPAcsVmOpcode914SliceTests.DivWorldArray_DividesElement",
+            "VmPAcsVmOpcode914SliceTests.DivMapArray_ReturnsDivideByZero",
+            "VmPAcsVmOpcode914SliceTests.ModScriptVar_ReturnsModulusByZero",
+            "VmPAcsVmOpcode914SliceTests.ModGlobalVar_AppliesModulo",
+            "VmPAcsVmOpcode914SliceTests.ModScriptArray_UpdatesCell",
+            "VmPAcsVmOpcode914SliceTests.ModMapArray_UsesMapVarCellAsArrayId",
+            "VmPAcsVmOpcode914SliceTests.DivGlobalArray_DetectsZeroDivisor",
+            "VmPAcsVmOpcode914SliceTests.AndWorldVar_BitwiseAndsStackTop",
+            "VmPAcsVmOpcode914SliceTests.AndMapVar_ClearsBits",
+            "VmPAcsVmOpcode914SliceTests.ModWorldArray_ModulusOnElement"
+          ]
+        }
+      ],
+      "nativeLoc": 161,
+      "managedLoc": 188,
+      "conversionManagedCommit": "e56fdaab1546155e48b070b3cb3d8ea4d566203a"
     }
   ],
   "behaviorNativeChecksum": 508086,
