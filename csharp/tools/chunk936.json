@@ -1,0 +1,31 @@
+[
+  {
+    "name": "p-lnspec-linespecial-tail-registry-chunk936",
+    "bucket": "conversion",
+    "note": "`LineSpecials[]` opcodes **208–284** and `LineSpecialTable` / `P_GetMaxLineSpecial` head (`p_lnspec.cpp` **3755–3904**). Follows **935** (through **207** at **≤3754**); **3905–3982** sub-150 deferred.",
+    "auditSeams": "`actionspecials.h`, `qsort`/`stricmp`, and `P_FindLineSpecial` search body remain host seams.",
+    "auditRationale": "Honest **150**-line UNCredited band completing dispatch tail plus registry sizing; exclusive `VmPLnspecLineSpecialDispatch936Slice.cs`.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 3755 --end 3904` and `--chunk 936 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| chunk **936** hull (dispatch tail + registry head) | **3755–3904** |\n| `DispatchOpcodes208Through284` | `LineSpecials[]` **3755–3833** |\n| `TailDispatchName` / `TailDispatchIsNop` | opcode lookup **3755–3832** |\n| `TailDispatchIsSectorEnv` | **3759–3767** |\n| `TailDispatchIsElevator` | **3792–3794** |\n| `TailDispatchIsExit` | **3790–3791** |\n| `LS_ChangeCamera` table slot | **3786** (handler elsewhere) |\n| `DEFINE_SPECIAL` / `LineSpecialNames` | **3835–3838** |\n| `lscmp` name compare seam | **3840–3843** |\n| `ScanMaxSpecialNumber` | ctor max scan **3851–3856** |\n| `RegistrySlotCount` | `Resize(max+1)` **3857** |\n| null slot init loop | **3858–3861** |\n| `qsort` populate loop | **3863–3868** |\n| `CanAssignRegistrySlot` | slot index bounds **3864–3867** |\n| `MaxLineSpecialFromRegistrySize` | `P_GetMaxLineSpecial` **3878–3881** |\n| `LineSpecialInfoInRange` | `P_GetLineSpecialInfo` **3889–3896** |\n| `P_FindLineSpecial` header only | comment **3897–3903** |\n| glow/automap slots | **3826–3831** |\n| floor/ceiling EE cluster | **3804–3825** |\n| ACS always / scroll cluster | **3770–3778** |\n| transfer NOP slots | **3756–3758**, **3769**, **3774** |\n| plat/light tail | **3779–3785** |\n| stairs/door stop cluster | **3818–3825** |\n\n### Chunk **936** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**935** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPLnspecLineSpecialDispatch936Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LineSpecials",
+        "start": 3755,
+        "end": 3904,
+        "tests": [
+          "VmPLnspecLineSpecialDispatch936SliceTests.TailDispatchEntryCount_Is77",
+          "VmPLnspecLineSpecialDispatch936SliceTests.TailDispatchName_StartsAtTranslucentLine",
+          "VmPLnspecLineSpecialDispatch936SliceTests.TailDispatchName_ChangeCameraIsTableSlotOnly",
+          "VmPLnspecLineSpecialDispatch936SliceTests.TailDispatchName_EndsAtGenericCrusherDist",
+          "VmPLnspecLineSpecialDispatch936SliceTests.ScanMaxSpecialNumber_FindsLargest",
+          "VmPLnspecLineSpecialDispatch936SliceTests.MaxLineSpecialFromRegistrySize_MatchesNative",
+          "VmPLnspecLineSpecialDispatch936SliceTests.BinarySearchMidpoint_ComputesAverage"
+        ]
+      }
+    ]
+  }
+]
