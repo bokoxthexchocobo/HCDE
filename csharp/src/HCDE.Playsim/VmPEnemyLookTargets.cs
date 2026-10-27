@@ -104,6 +104,23 @@ public static class VmPEnemyLookTargets
     static bool IsShootableActive(BlockLink link, string selfId) =>
         (link.Flags & MfShootable) != 0 && link.Id != selfId && link.Health > 0 && (link.Flags2 & Mf2Dormant) == 0;
 
+    public static bool WithinMonsterLookRange(double distance2d) => distance2d <= MonsLookRange;
+
+    public static bool MonsterLookRollPasses(LookActorState actor) =>
+        (actor.PrLookForMonsters?.Invoke() ?? 255) >= PrLookForMonstersThreshold;
+
+    public static bool SameMonsterSpecies(LookActorState actor, MonsterCandidate mo) =>
+        mo.Species == actor.Species;
+
+    public static bool RequiresVisibilityCheck(LookActorState actor) =>
+        (actor.Flags3 & Mf3Nosightcheck) == 0;
+
+    public static bool TidHateMatchesLink(LookActorState lookee, BlockLink link) =>
+        link.Tid == lookee.TidToHate;
+
+    public static bool TidHateMatchesTarget(BlockLink link, int tidToHate) =>
+        link.Target != null && link.TargetTid == tidToHate;
+
     public static bool LookForMonsters(LookActorState actor)
     {
         if (actor.PlayerCanSeeActor?.Invoke() != true)
@@ -114,13 +131,13 @@ public static class VmPEnemyLookTargets
         {
             if ((mo.Flags3 & Mf3Ismonster) == 0 || mo.Id == actor.ActorId || mo.Health <= 0)
                 continue;
-            if (mo.Distance2d > MonsLookRange)
+            if (!WithinMonsterLookRange(mo.Distance2d))
                 continue;
-            if ((actor.PrLookForMonsters?.Invoke() ?? 255) < PrLookForMonstersThreshold)
+            if (!MonsterLookRollPasses(actor))
                 continue;
             if (++count >= MonsLookLimit)
                 return false;
-            if (mo.Species == actor.Species)
+            if (SameMonsterSpecies(actor, mo))
                 continue;
             if (actor.CheckSight?.Invoke(actor.ActorId, mo.Id) != true)
                 continue;
@@ -139,9 +156,9 @@ public static class VmPEnemyLookTargets
                 continue;
 
             object? other;
-            if (link.Tid == lookee.TidToHate)
+            if (TidHateMatchesLink(lookee, link))
                 other = link.Id;
-            else if (link.Target != null && link.TargetTid == lookee.TidToHate)
+            else if (TidHateMatchesTarget(link, lookee.TidToHate))
             {
                 other = link.Target;
                 if ((link.TargetFlags & MfShootable) == 0 || link.TargetHealth <= 0 || (link.TargetFlags2 & Mf2Dormant) != 0)
@@ -150,7 +167,7 @@ public static class VmPEnemyLookTargets
             else
                 continue;
 
-            if ((lookee.Flags3 & Mf3Nosightcheck) == 0 && lookee.IsVisible?.Invoke(other, true) != true)
+            if (RequiresVisibilityCheck(lookee) && lookee.IsVisible?.Invoke(other, true) != true)
                 continue;
             return other;
         }
@@ -192,7 +209,7 @@ public static class VmPEnemyLookTargets
                     continue;
                 if (--c == 0)
                     break;
-                if ((actor.Flags3 & Mf3Nosightcheck) == 0 && actor.IsVisible?.Invoke(candidate, allaround) != true)
+                if (RequiresVisibilityCheck(actor) && actor.IsVisible?.Invoke(candidate, allaround) != true)
                     continue;
                 ResetReactionIfLeavingGoal(actor);
                 actor.Target = candidate;
