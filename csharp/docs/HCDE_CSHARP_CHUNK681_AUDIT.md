@@ -16,7 +16,7 @@ Whole `AActor::UnlinkFromWorld`, `FixMapthingPos`, `LinkToWorld`, and `SetOrigin
 ## Managed
 
 `VmPMapUtlActorWorldLink.cs`
-Managed LOC (tally): 256.
+Managed LOC (tally): 270.
 Conversion commit: `2b05aefd0489c3c9c6203e40da2a09c345d9353f`.
 
 ## Padding review (2026-10-21)
@@ -37,7 +37,7 @@ Conversion commit: `2b05aefd0489c3c9c6203e40da2a09c345d9353f`.
 | **Honest** | **271** |
 
 
-**Post-review ratio:** 256/271 managed/native ≈ 94% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 270/271 managed/native ≈ 100% (src file LOC at HEAD; see tally).
 
 ## Tests
 
