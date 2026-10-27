@@ -1,0 +1,31 @@
+[
+  {
+    "name": "p-lnspec-autosave-communicator-chunk932",
+    "bucket": "conversion",
+    "note": "`LS_Autosave` through `LS_GlassBreak` spawn midpoint (`p_lnspec.cpp` **3155–3304**). Pivot from **2869–3018** (overlaps `VmPLnspecSetPlayerProperty` **2911–3128**); **3019–3129** sub-150 deferred.",
+    "auditSeams": "`P_NoiseAlert`, `P_DamageMobj`, `P_ChangeSwitchTexture`, `Spawn`, `Net_WriteInt8`, and sector iterators remain host seams.",
+    "auditRationale": "Honest **150**-line UNCredited band; exclusive `VmPLnspecAutosaveCommunicator932Slice.cs` without duplicating SetPlayerProperty credit.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 3155 --end 3304` and `--chunk 932 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| `BuildAutosave` / `AutosaveShouldQueue` | `LS_Autosave` **3155–3162** |\n| `NextSkillFromArg` | `LS_ChangeSkill` **3167–3174** |\n| `NoiseAlertTarget` / `NoiseAlertEmitter` | `LS_NoiseAlert` **3183–3205** |\n| `BuildCommunicator` | `LS_SendToCommunicator` **3215–3243** |\n| `ForceFieldApplies` / thrust yaw | `LS_ForceField` **3252–3256** |\n| `ClearForceFieldAnySector` | `LS_ClearForceField` **3265–3274** |\n| `BuildGlassBreak` / `GlassBreakSpawnPoint` | `LS_GlassBreak` **3283–3304** |\n| `GlassBreakStripBlocking` | line flag clear **3283** |\n| `CommunicatorRejectBackside` | **3215–3216** |\n| `CommunicatorSoundName` / subtitle key | **3220–3237** |\n\n### Chunk **932** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**931** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPLnspecAutosaveCommunicator932Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Autosave",
+        "start": 3155,
+        "end": 3304,
+        "tests": [
+          "VmPLnspecAutosaveCommunicator932SliceTests.BuildAutosave_QueuesWhenNotSaving",
+          "VmPLnspecAutosaveCommunicator932SliceTests.BuildAutosave_SkipsDuringSaveGame",
+          "VmPLnspecAutosaveCommunicator932SliceTests.NextSkillFromArg_ClampsPastSkillCount",
+          "VmPLnspecAutosaveCommunicator932SliceTests.NoiseAlertEmitter_ReusesTargetWhenTidsMatch",
+          "VmPLnspecAutosaveCommunicator932SliceTests.BuildCommunicator_RejectsBacksideWhenFrontOnly",
+          "VmPLnspecAutosaveCommunicator932SliceTests.BuildCommunicator_FormatsSoundAndSubtitle",
+          "VmPLnspecAutosaveCommunicator932SliceTests.BuildGlassBreak_OffsetsSpawnAlongNormal"
+        ]
+      }
+    ]
+  }
+]
