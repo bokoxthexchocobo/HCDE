@@ -108,6 +108,31 @@ public static class VmPUserPlayerThink
 
     public static bool MusicInfoUsesWildcard(MusicInfoContext ctx) => ctx.IsConsolePlayer && ctx.Arg0 == 0;
 
+    public static bool MusicChangeReadyAfterTick(MusicInfoContext ctx) =>
+        MusicInfoTickActive(ctx) && MusicInfoFiredAfterDecrement(ctx.Tics);
+
+    public static bool MusicInfoShouldLookupChange(MusicInfoContext ctx) =>
+        MusicChangeReadyAfterTick(ctx) && MusicInfoUsesLookup(ctx);
+
+    public static bool MusicInfoShouldWildcardChange(MusicInfoContext ctx) =>
+        MusicChangeReadyAfterTick(ctx) && MusicInfoUsesWildcard(ctx);
+
+    public static void ApplyPlayerAngleOffsets(Span<double> targets, Span<double> angles, Span<double> prevAngles)
+    {
+        for (var i = 0; i < 3; i++)
+        {
+            if (ApplyAngleOffset(targets[i]))
+            {
+                angles[i] += targets[i];
+                prevAngles[i] = angles[i];
+            }
+
+            targets[i] = 0;
+        }
+    }
+
+    public static bool SafePositionShouldStore(bool force, bool isSafe) => force || isSafe;
+
     public static bool EnvironmentTriggersFx(EnvironmentContext ctx) => ctx.Underwater || ctx.Secret;
 
     public static bool ShouldSkipThink(EnvironmentContext ctx) => BotFrozenSkip(ctx.Frozen, ctx.HasBot);

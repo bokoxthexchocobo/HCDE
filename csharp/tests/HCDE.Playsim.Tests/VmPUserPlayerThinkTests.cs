@@ -47,6 +47,23 @@ public class VmPUserPlayerThinkTests
         Assert.True(VmPUserPlayerThink.MusicInfoFiredAfterDecrement(0));
 
     [Fact]
+    public void MusicInfo_LookupChangeWhenConsoleAndArg() =>
+        Assert.True(VmPUserPlayerThink.MusicInfoShouldLookupChange(
+            new VmPUserPlayerThink.MusicInfoContext(0, true, true, 2, 1)));
+
+    [Fact]
+    public void PlayerThink_AngleOffsetLoopClearsTargets()
+    {
+        Span<double> targets = [5, 0, 3];
+        Span<double> angles = [10, 20, 30];
+        Span<double> prev = [0, 0, 0];
+        VmPUserPlayerThink.ApplyPlayerAngleOffsets(targets, angles, prev);
+        Assert.Equal(15, angles[0]);
+        Assert.Equal(0, targets[0]);
+        Assert.Equal(0, targets[1]);
+    }
+
+    [Fact]
     public void SafePos_ValidOnFloor() =>
         Assert.True(VmPUserPlayerThink.SafePosValidOnFloor(
             new VmPUserPlayerThink.SafePosSample(new object(), 0, 0, 10, 10, 0, 24, 0, 41, false, 0, true)));
