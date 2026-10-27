@@ -275,11 +275,11 @@ internal static partial class AcsCallFunctions
             case CheckActorProperty:
                 return TryCheckActorProperty(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case GetMaxInventory:
-                return TryGetMaxInventory(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
+                return VmPAcsCallfunc923Slice.TryGetMaxInventory(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case DamageActor:
-                return TryDamageActor(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
+                return VmPAcsCallfunc923Slice.TryDamageActor(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case CheckClass:
-                return TryCheckClass(stack, stringTable, globalStrings, argCount, out result);
+                return VmPAcsCallfunc923Slice.TryCheckClass(stack, stringTable, globalStrings, argCount, out result);
             case CheckActorClass:
                 return TryCheckActorClass(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case UniqueTid:
@@ -309,9 +309,9 @@ internal static partial class AcsCallFunctions
             case SpawnDecal:
                 return TrySpawnDecal(sim, stack, scriptActivator, argCount, out result);
             case CheckProximity:
-                return TryCheckProximity(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
+                return VmPAcsCallfunc923Slice.TryCheckProximity(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case CheckActorState:
-                return TryCheckActorState(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
+                return VmPAcsCallfunc923Slice.TryCheckActorState(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case StrCmp:
             case StrICmp:
                 return TryStringCompare(stack, stringTable, globalStrings, function == StrICmp, argCount, out result);
@@ -333,7 +333,7 @@ internal static partial class AcsCallFunctions
             case CheckFlag:
                 return TryCheckFlag(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case SetActorFlag:
-                return TrySetActorFlag(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
+                return VmPAcsCallfunc923Slice.TrySetActorFlag(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case GetActorFloorTexture:
                 return TryGetActorFloorTexture(sim, stack, scriptActivator, globalStrings, argCount, out result);
             case GetActorFloorTerrain:
@@ -366,13 +366,13 @@ internal static partial class AcsCallFunctions
             case QuakeEx:
                 return TryQuakeEx(stack, argCount, out result);
             case SetSectorDamage:
-                return TrySetSectorDamage(sim, stack, stringTable, globalStrings, argCount, out result);
+                return VmPAcsCallfunc923Slice.TrySetSectorDamage(sim, stack, stringTable, globalStrings, argCount, out result);
             case SetSectorTerrain:
-                return TrySetSectorTerrain(sim, stack, stringTable, globalStrings, argCount, out result);
+                return VmPAcsCallfunc923Slice.TrySetSectorTerrain(sim, stack, stringTable, globalStrings, argCount, out result);
             case SpawnParticle:
-                return TrySpawnParticle(stack, argCount, out result);
+                return VmPAcsCallfunc923Slice.TrySpawnParticle(stack, argCount, out result);
             case SetMusicVolume:
-                return TrySetMusicVolume(sim, stack, argCount, out result);
+                return VmPAcsCallfunc923Slice.TrySetMusicVolume(sim, stack, argCount, out result);
             case Floor:
             case Round:
             case Ceil:
@@ -548,63 +548,6 @@ internal static partial class AcsCallFunctions
         return true;
     }
 
-    private static bool TryGetMaxInventory(
-        AuthoritySimulation sim,
-        List<int> stack,
-        Actor? activator,
-        string[] stringTable,
-        AcsGlobalStrings globalStrings,
-        int argCount,
-        out int result)
-    {
-        result = 0;
-        if (argCount < 2 || stack.Count < argCount)
-            return false;
-
-        var start = stack.Count - argCount;
-        var tid = stack[start];
-        var stringId = stack[start + 1];
-        stack.RemoveRange(start, argCount);
-
-        var actor = ResolveActor(sim, tid, activator);
-        result = actor is { Destroyed: false }
-            ? AcsPlayerInventory.Count(actor, AcsStringIds.Lookup(stringId, stringTable, globalStrings), max: true)
-            : 0;
-        return true;
-    }
-
-    private static bool TryDamageActor(
-        AuthoritySimulation sim,
-        List<int> stack,
-        Actor? activator,
-        string[] stringTable,
-        AcsGlobalStrings globalStrings,
-        int argCount,
-        out int result)
-    {
-        result = 0;
-        if (argCount < 6 || stack.Count < argCount)
-            return false;
-
-        var start = stack.Count - argCount;
-        var targetTid = stack[start];
-        var targetPointer = stack[start + 1];
-        var inflictorTid = stack[start + 2];
-        var inflictorPointer = stack[start + 3];
-        var amount = stack[start + 4];
-        var damageTypeStringId = stack[start + 5];
-        stack.RemoveRange(start, argCount);
-
-        var target = AcsActorPointer.Resolve(sim, ResolveActor(sim, targetTid, activator), targetPointer);
-        if (target is not { Destroyed: false })
-            return true;
-
-        var inflictor = AcsActorPointer.Resolve(sim, ResolveActor(sim, inflictorTid, activator), inflictorPointer);
-        var damageType = AcsStringIds.Lookup(damageTypeStringId, stringTable, globalStrings);
-        ActorDamage.ApplyWithNativeResult(target, amount, out result, inflictor, DamageFlags.None, damageType, inflictor);
-        return true;
-    }
-
     private static bool TryCheckActorClass(
         AuthoritySimulation sim,
         List<int> stack,
@@ -726,65 +669,6 @@ internal static partial class AcsCallFunctions
     private static bool TryGetWeapon(Actor? activator, AcsGlobalStrings globalStrings, out int result)
     {
         result = globalStrings.Add(AcsPlayerInventory.ReadyWeaponClassName(activator));
-        return true;
-    }
-
-    private static bool TryCheckProximity(
-        AuthoritySimulation sim,
-        List<int> stack,
-        Actor? activator,
-        string[] stringTable,
-        AcsGlobalStrings globalStrings,
-        int argCount,
-        out int result)
-    {
-        result = 0;
-        if (argCount < 3 || stack.Count < argCount)
-            return false;
-
-        var start = stack.Count - argCount;
-        var tid = stack[start];
-        var classStringId = stack[start + 1];
-        var distanceFixed = stack[start + 2];
-        var required = argCount > 3 ? stack[start + 3] : 1;
-        var flags = argCount > 4 ? stack[start + 4] : 0;
-        var pointerSelector = argCount > 5 ? stack[start + 5] : 0;
-        stack.RemoveRange(start, argCount);
-
-        var actor = ResolveActor(sim, tid, activator);
-        if (actor is null)
-            return true;
-
-        var className = AcsStringIds.Lookup(classStringId, stringTable, globalStrings);
-        result = VmPThingsRaiseRemoveWarpProximity.Check(actor, className, AcsToDouble(distanceFixed), required, flags, pointerSelector) ? 1 : 0;
-        return true;
-    }
-
-    private static bool TryCheckActorState(
-        AuthoritySimulation sim,
-        List<int> stack,
-        Actor? activator,
-        string[] stringTable,
-        AcsGlobalStrings globalStrings,
-        int argCount,
-        out int result)
-    {
-        result = 0;
-        if (argCount < 2 || stack.Count < argCount)
-            return false;
-
-        var start = stack.Count - argCount;
-        var tid = stack[start];
-        var stateStringId = stack[start + 1];
-        var exact = argCount > 2 && stack[start + 2] != 0;
-        stack.RemoveRange(start, argCount);
-
-        var actor = ResolveActor(sim, tid, activator);
-        if (actor is null)
-            return true;
-
-        var stateName = AcsStringIds.Lookup(stateStringId, stringTable, globalStrings);
-        result = AcsActorStates.HasNamedState(actor, stateName, exact) ? 1 : 0;
         return true;
     }
 
@@ -1441,79 +1325,6 @@ internal static partial class AcsCallFunctions
         return true;
     }
 
-    private static bool TrySetSectorDamage(AuthoritySimulation sim, List<int> stack, string[] stringTable,
-        AcsGlobalStrings globalStrings, int argCount, out int result)
-    {
-        result = 0;
-        if (argCount < 2 || stack.Count < argCount)
-            return false;
-
-        var start = stack.Count - argCount;
-        var tag = stack[start];
-        var amount = stack[start + 1];
-        var damageType = argCount > 2 ? AcsStringIds.Lookup(stack[start + 2], stringTable, globalStrings) : "None";
-        var interval = argCount > 3 ? Math.Max(1, stack[start + 3]) : 32;
-        var leakiness = argCount > 4 ? stack[start + 4] : 0;
-        stack.RemoveRange(start, argCount);
-
-        foreach (var sector in sim.Level.Sectors.Where(sector => sector.MatchesTag(tag)))
-        {
-            sector.DamageAmount = amount;
-            sector.DamageType = damageType.Length == 0 ? "None" : damageType;
-            sector.DamageInterval = unchecked((short)interval);
-            sector.Leakiness = unchecked((short)leakiness);
-        }
-        return true;
-    }
-
-    private static bool TrySetSectorTerrain(
-        AuthoritySimulation sim,
-        List<int> stack,
-        string[] stringTable,
-        AcsGlobalStrings globalStrings,
-        int argCount,
-        out int result)
-    {
-        result = 0;
-        if (argCount < 3 || stack.Count < argCount)
-            return false;
-
-        var start = stack.Count - argCount;
-        var tag = stack[start];
-        var position = stack[start + 1];
-        var terrainId = stack[start + 2];
-        stack.RemoveRange(start, argCount);
-
-        var terrainName = AcsStringIds.LookupTerminated(terrainId, stringTable, globalStrings);
-        SectorTerrain.ApplyTagged(sim, tag, terrainName, position);
-        return true;
-    }
-
-    private static bool TrySpawnParticle(List<int> stack, int argCount, out int result)
-    {
-        result = 1;
-        if (argCount < 1 || stack.Count < argCount)
-            return false;
-
-        var start = stack.Count - argCount;
-        stack.RemoveRange(start, argCount);
-        return true;
-    }
-
-    private static bool TrySetMusicVolume(AuthoritySimulation sim, List<int> stack, int argCount, out int result)
-    {
-        result = 1;
-        if (argCount < 1 || stack.Count < argCount)
-            return false;
-
-        var start = stack.Count - argCount;
-        var volumeFixed = stack[start];
-        stack.RemoveRange(start, argCount);
-
-        sim.MusicVolume = AcsToDouble(volumeFixed);
-        return true;
-    }
-
     private static bool TryPlayActorSound(
         AuthoritySimulation sim,
         List<int> stack,
@@ -1645,42 +1456,6 @@ internal static partial class AcsCallFunctions
 
         var flagName = AcsStringIds.Lookup(flagStringId, stringTable, globalStrings);
         result = AcsActorFlags.TryGet(actor, flagName, out var value) && value ? 1 : 0;
-        return true;
-    }
-
-    private static bool TrySetActorFlag(
-        AuthoritySimulation sim,
-        List<int> stack,
-        Actor? activator,
-        string[] stringTable,
-        AcsGlobalStrings globalStrings,
-        int argCount,
-        out int result)
-    {
-        result = 0;
-        if (argCount < 3 || stack.Count < argCount)
-            return false;
-
-        var start = stack.Count - argCount;
-        var tid = stack[start];
-        var flagStringId = stack[start + 1];
-        var flagValue = stack[start + 2];
-        stack.RemoveRange(start, argCount);
-
-        var flagName = AcsStringIds.Lookup(flagStringId, stringTable, globalStrings);
-        var set = flagValue != 0;
-        if (tid == 0)
-        {
-            if (activator is { Destroyed: false } && AcsActorFlags.TrySet(activator, flagName, set))
-                result = 1;
-            return true;
-        }
-
-        foreach (var actor in AcsActorTid.AllFromTid(sim, tid))
-        {
-            if (AcsActorFlags.TrySet(actor, flagName, set))
-                result++;
-        }
         return true;
     }
 
@@ -2029,26 +1804,6 @@ internal static partial class AcsCallFunctions
             Ceil => integral + 0x10000,
             _ => 0,
         };
-        return true;
-    }
-
-    private static bool TryCheckClass(List<int> stack, string[] stringTable, AcsGlobalStrings globalStrings, int argCount, out int result)
-    {
-        result = 0;
-        if (argCount < 1 || stack.Count < argCount)
-            return false;
-
-        var start = stack.Count - argCount;
-        var stringId = stack[start];
-        stack.RemoveRange(start, argCount);
-
-        var className = AcsStringIds.Lookup(stringId, stringTable, globalStrings);
-        result = DoomActorCatalog.TryEditorNumberForClassName(className, out _)
-            || className.Equals("DoomPlayer", StringComparison.OrdinalIgnoreCase)
-            || ActorInventoryActions.IsManagedPowerup(className)
-            || PickupCatalog.TryEditorNumberForDropName(className, out _)
-            || PickupCatalog.TryEditorNumberForDropName(className, out _, strifeHealth: true)
-            || PickupCatalog.TryEditorNumberForDropName(className, out _, ravenHealth: true) ? 1 : 0;
         return true;
     }
 
