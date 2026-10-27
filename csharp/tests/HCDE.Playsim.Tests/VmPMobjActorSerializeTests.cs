@@ -48,4 +48,29 @@ public class VmPMobjActorSerializeTests
         var g = new VmPMobjActorSerialize.FlagPersistGate(0, VmPMobjActorSerialize.Mf2Thruspecies, 0, VmPMobjActorSerialize.Mf6Thruspecies, 0);
         Assert.True(VmPMobjActorSerialize.ShouldPersistThruSpecies(g));
     }
+
+    [Fact]
+    public void Serialize_RunPipelineRecordsSuperAndTail()
+    {
+        var s = new VmPMobjActorSerialize.SerializeActorState { IsRollback = false, Special = 5, Writing = true };
+        var core = false;
+        var terrain = false;
+        VmPMobjActorSerialize.RunSerializePipeline(
+            s,
+            () => core = true,
+            () => terrain = true,
+            () => { },
+            null);
+        Assert.True(core);
+        Assert.True(terrain);
+        Assert.Contains("Super", s.SerializedKeys);
+    }
+
+    [Fact]
+    public void Serialize_WaterAndSpeciesPersist()
+    {
+        Assert.True(VmPMobjActorSerialize.WaterLevelPersist(1));
+        Assert.True(VmPMobjActorSerialize.SpeciesPersist(2));
+        Assert.False(VmPMobjActorSerialize.ThruBitsPersist(0));
+    }
 }

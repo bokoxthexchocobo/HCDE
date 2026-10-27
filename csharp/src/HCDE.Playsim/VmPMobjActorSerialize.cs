@@ -191,4 +191,28 @@ public static class VmPMobjActorSerialize
         RecordField(s, "Super");
         return true;
     }
+
+    public static bool EffectsPersist(uint effects) => effects != 0;
+
+    public static bool FountainColorPersist(int color) => color != 0;
+
+    public static bool ThruBitsPersist(int bits) => bits != 0;
+
+    public static bool SpeciesPersist(int species) => species != 0;
+
+    public static bool WaterLevelPersist(int level) => level != 0;
+
+    public static bool BoomWaterLevelPersist(int level) => level != 0;
+
+    public static void RunSerializePipeline(
+        SerializeActorState s,
+        Action serializeCoreFields,
+        Action serializeTerrain,
+        Action serializeArgs,
+        Action? serializeUserLights)
+    {
+        SerializeSuperCalled(s);
+        serializeCoreFields();
+        ApplySerializeTail(s, serializeTerrain, serializeArgs, serializeUserLights);
+    }
 }
