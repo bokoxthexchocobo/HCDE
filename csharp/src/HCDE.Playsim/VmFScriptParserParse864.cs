@@ -9,6 +9,7 @@ public static partial class VmFScriptParser
     public const int TokenOperatorParse = 3;
     public const int TokenNameParse = 4;
     public const int TokenFunctionParse = 5;
+    private const char TextColorEscape = '\x1c';
 
     public sealed class ScriptParseState
     {
@@ -75,6 +76,12 @@ public static partial class VmFScriptParser
 
     private static void AppendChar(ScriptParseState st, int toknIndex, char c) =>
         st.Tokens[toknIndex] += c;
+
+    private static void AppendColorEscape(ScriptParseState st, int toknIndex, char digit)
+    {
+        AppendChar(st, toknIndex, TextColorEscape);
+        AppendChar(st, toknIndex, (char)(digit + 'A' - '0'));
+    }
 
     public static void NextToken(ScriptParseState st)
     {
@@ -178,10 +185,7 @@ public static partial class VmFScriptParser
                             {
                                 st.Rover++;
                                 if (st.Rover < st.Data.Length && st.Data[st.Rover] >= '0' && st.Data[st.Rover] <= '9')
-                                {
-                                    AppendChar(st, toknIndex, '\x1c');
-                                    AppendChar(st, toknIndex, (char)(st.Data[st.Rover] + 'A' - '0'));
-                                }
+                                    AppendColorEscape(st, toknIndex, st.Data[st.Rover]);
                                 else if (st.Rover < st.Data.Length)
                                     AppendChar(st, toknIndex, EscapeSequence(st.Data[st.Rover]));
                             }
