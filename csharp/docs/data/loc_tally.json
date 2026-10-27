@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 56537,
+  "convertedThisRunNative": 56687,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 84075,
+  "convertedThisRunManaged": 84200,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 432268,
+  "remainingNative": 432118,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 75064,
+  "convertedBehaviorNative": 75214,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 75818,
-  "convertedBehaviorManaged": 93746,
+  "combinedBehaviorNative": 75968,
+  "convertedBehaviorManaged": 93871,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -33918,6 +33918,36 @@
       "nativeLoc": 150,
       "managedLoc": 170,
       "conversionManagedCommit": "e790957c0f68ebce102c105c8a18250c5391aea8"
+    },
+    {
+      "name": "p-acs-callfunc-line-invasion-console-chunk925",
+      "bucket": "conversion",
+      "note": "`DLevelScript::CallFunction` tail (**6916\u20137007**), `PRINTNAME` / enhanced PC readers, `ACS_RunConsoleCommandString`, and `CharArrayParms` head from `p_acs.cpp` (**6916\u20137065**). Continues **924**; `RunScript` at **7092** deferred.",
+      "auditSeams": "`Net_*` invasion exports, `AddCommandString`, and full `FACSStackMemory` remain host seams.",
+      "auditRationale": "Honest **150**-line UNCredited band in **6614\u20137509** corridor; exclusive `VmPAcsCallfunc925Slice.cs`.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 6916 --end 7065` and `--chunk 925 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `GetLineHealth` tail (**6916\u20136918**) | yes |\n| `GetLineX`/`Y` (**6919\u20136934**) | yes |\n| `SetSubtitleNumber` / invasion ACSF (**6936\u20137001**) | yes |\n| `CallFunction` close (**7003\u20137007**) | yes |\n| `PRINTNAME_*` (**7010\u20137017**) | yes |\n| `NEXTWORD`\u2026`TAGSTR` manifest (**7020\u20137026**) | yes |\n| `getbyte` / `getshort` (**7028\u20137040**) | yes |\n| `ACS_RunConsoleCommandString` (**7042\u20137061**) | yes |\n| `CharArrayParms` head (**7063\u20137065**) | yes |\n\n| Managed (`VmPAcsCallfunc925Slice.cs`) | Native (`p_acs.cpp`) |\n|--------------------------------------|---------------------|\n| `TryGetLineCoordinate` (incl. health tail seam) | **6916\u20136934** |\n| `TrySetSubtitleNumber` | **6936\u20136952** |\n| `TryInvasionCall` | **6954\u20137001** |\n| `CallFunction` fall-through | **7003\u20137007** |\n| `PrintName*` constants | **7010\u20137017** |\n| Reader manifest (`NEXTBYTE`/`NEXTSHORT` parity) | **7020\u20137026** |\n| `ReadEnhancedByte` / `ReadEnhancedShort` | **7028\u20137040** |\n| `RunScriptConsoleCommand` | **7042\u20137061** |\n| `TryPopCharArrayParms` | **7063\u20137065** |\n\n### Chunk **925** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**924** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPAcsCallfunc925Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::CallFunction",
+          "start": 6916,
+          "end": 7065,
+          "tests": [
+            "AcsCallFunctionTests.CallFunc_GetLineX_ReturnsMidpointAlongTaggedLine",
+            "AcsCallFunctionTests.CallFunc_GetLineY_AppliesPerpendicularOffset",
+            "AcsAbsentCallFuncChunk11Tests.CallFunc_StartSlideshowAndSubtitle_StorePresentationState",
+            "AcsAbsentOpcodeChunk10Tests.CallFunc_InvasionGetWave_Wire19702",
+            "AcsCallFunctionTests.CallFunc_GetLineHealth_ReturnsFirstTaggedLineHealth"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 125,
+      "conversionManagedCommit": "0c4e071cd13a130f9fcabd5c41ff2e67bc5454e1"
     }
   ],
   "behaviorNativeChecksum": 508086,
