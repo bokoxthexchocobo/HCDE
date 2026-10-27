@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 46954,
+  "convertedThisRunNative": 47199,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 75727,
+  "convertedThisRunManaged": 76491,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 441851,
+  "remainingNative": 441606,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 65481,
+  "convertedBehaviorNative": 65726,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 66235,
-  "convertedBehaviorManaged": 85398,
+  "combinedBehaviorNative": 66480,
+  "convertedBehaviorManaged": 86162,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -31677,6 +31677,126 @@
       "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
       "nativeLoc": 0,
       "conversionManagedCommit": "6f09ab4a59fc473f8f83bddf253e4b42175b6ea1"
+    },
+    {
+      "name": "po-man-core-move-chunk679",
+      "bucket": "conversion",
+      "note": "Polyobject ctor, thrust, bbox/link prep, move/rotate, unlink (`po_man.cpp` **715\u20131017**).",
+      "auditSeams": "Blockmap polyblocks, `P_CheckMove`/`P_DamageMobj`/`P_FindFloorCeil`, portal geometry injected at seams; thinker bands outside this hull stay other rows.",
+      "auditRationale": "Contiguous uncredited `po_man.cpp` band between **671** (**\u2264703**) and **676** (**\u22651394**). Part **1/2** of retired **670/673/678** merge (no overlap with **671**).",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 679 --band \u2192 UNCredited, exit 0.",
+      "auditManagedLocJustification": "VmPoManPolyThinkerBands.cs, VmPoManThrustBlock.cs, VmPoManLinkUpdate.cs, VmPoManMoveRotate.cs.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `FPolyObj` | **715\u2013730** |\n| `GetMirror` | **738\u2013741** |\n| `ThrustMobj` | **749\u2013795** |\n| `UpdateLinks` | **803\u2013831** |\n| `UpdateBBox` | **833\u2013840** |\n| `CalcCenter` | **842\u2013850** |\n| `MovePolyobj` | **858\u2013888** |\n| `DoMovePolyobj` | **896\u2013910** |\n| `RotatePt` | **918\u2013927** |\n| `RotatePolyobj` | **935\u2013982** |\n| `UnLinkPolyobj` | **990\u20131017** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **245** |\n| Net behavior-ported | **245** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPoManPolyThinkerBands.cs",
+        "csharp/src/HCDE.Playsim/VmPoManThrustBlock.cs",
+        "csharp/src/HCDE.Playsim/VmPoManLinkUpdate.cs",
+        "csharp/src/HCDE.Playsim/VmPoManMoveRotate.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "FPolyObj::FPolyObj",
+          "start": 715,
+          "end": 730,
+          "tests": [
+            "VmPoManPolyThinkerBandsTests.FPolyObjConstruct_ClearsDefaults"
+          ]
+        },
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "FPolyObj::GetMirror",
+          "start": 738,
+          "end": 741,
+          "tests": [
+            "VmPoManPolyThinkerBandsTests.FPolyObjGetMirror_ReturnsMirrorNum"
+          ]
+        },
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "FPolyObj::ThrustMobj",
+          "start": 749,
+          "end": 795,
+          "tests": [
+            "VmPoManThrustBlockTests.ThrustMobj_AddsVelocityFromSideNormal"
+          ]
+        },
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "FPolyObj::UpdateLinks",
+          "start": 803,
+          "end": 831,
+          "tests": [
+            "VmPoManLinkUpdateTests.UpdateLinks_MovesDisplacementGroupOncePerPortalGroup"
+          ]
+        },
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "FPolyObj::UpdateBBox",
+          "start": 833,
+          "end": 840,
+          "tests": [
+            "VmPoManLinkUpdateTests.UpdateBBox_AdjustsLinesAndCenter"
+          ]
+        },
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "FPolyObj::CalcCenter",
+          "start": 842,
+          "end": 850,
+          "tests": [
+            "VmPoManLinkUpdateTests.CalcCenter_AveragesVertices"
+          ]
+        },
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "FPolyObj::MovePolyobj",
+          "start": 858,
+          "end": 888,
+          "tests": [
+            "VmPoManMoveRotateTests.MovePolyobj_RollsBackWhenBlocked"
+          ]
+        },
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "FPolyObj::DoMovePolyobj",
+          "start": 896,
+          "end": 910,
+          "tests": [
+            "VmPoManMoveRotateTests.MovePolyobj_AppliesDeltaWhenClear"
+          ]
+        },
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "RotatePt",
+          "start": 918,
+          "end": 927,
+          "tests": [
+            "VmPoManPolyThinkerBandsTests.RotatePt_RotatesAboutStart"
+          ]
+        },
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "FPolyObj::RotatePolyobj",
+          "start": 935,
+          "end": 982,
+          "tests": [
+            "VmPoManMoveRotateTests.RotatePolyobj_RestoresVerticesWhenBlocked"
+          ]
+        },
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "FPolyObj::UnLinkPolyobj",
+          "start": 990,
+          "end": 1017,
+          "tests": [
+            "VmPoManLinkUpdateTests.LinkPolyobj_AssignsCellsInComputedBox"
+          ]
+        }
+      ],
+      "nativeLoc": 245,
+      "managedLoc": 764,
+      "conversionManagedCommit": "6e52fe9191e4d2fbf254f9f2e8e85acf9c8a946f"
     }
   ],
   "behaviorNativeChecksum": 508086,
