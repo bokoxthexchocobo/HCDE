@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 227635
+    "managedCSharpLoc": 227521
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 57587,
+    "convertedThisRunNative": 57437,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 84832,
+    "convertedThisRunManaged": 84718,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 431218,
+    "remainingNative": 431368,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 76114,
+    "convertedBehaviorNative": 75964,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 76868,
-    "convertedBehaviorManaged": 94503,
+    "combinedBehaviorNative": 76718,
+    "convertedBehaviorManaged": 94389,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -34125,38 +34125,6 @@
         "nativeLoc": 150,
         "managedLoc": 90,
         "conversionManagedCommit": "299a5becd4cf362b2cd21673e95449614c676234"
-      },
-      {
-        "name": "p-lnspec-blocking-automap-camera-chunk931",
-        "bucket": "conversion",
-        "note": "`LS_Line_SetTextureScale` close through `LS_ChangeCamera` head (`p_lnspec.cpp` **2719\u20132868**). Follows **930** (**\u22642718**); `ChangeCamera` tail and **2882+** deferred.",
-        "auditSeams": "Line iterators, `line_t` flag mutation, player iteration, `R_ClearPastViewer`, and `AMLS_COUNT` remain host seams.",
-        "auditRationale": "Honest **150**-line slice in **2269\u20133129** corridor; exclusive `VmPLnspecBlockingAutomapCamera931Slice.cs`.",
-        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 2719 --end 2868` and `--chunk 931 --band` \u2192 UNCredited, exit 0.",
-        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| Texture scale close | **2715\u20132719** |\n| `BlockingRejectZeroId` / `DecodeBlockingArgs` / `ApplyBlocking` | `LS_Line_SetBlocking` **2721\u20132765** |\n| `AutomapFlagsRejectZeroId` / `DecodeAutomapFlags` / `ApplyAutomapFlags` | `LS_Line_SetAutomapFlags` **2767\u20132798** |\n| `AutomapStyleInRange` | `LS_Line_SetAutomapStyle` **2800\u20132815** |\n| `BeginChangeCamera` / `ShouldIterateAllPlayers` | `LS_ChangeCamera` **2817\u20132858** |\n| `SelectCameraForPlayer` / `UpdateCheatsForCamera` | **2842\u20132871** (through **2868** in band) |\n| `ShouldClearViewerOnCameraChange` | **2853\u20132856**, **2873\u20132876** (seam) |\n| `ResolveCameraFromTid` | **2821\u20132829** |\n\n### Chunk **931** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**930** |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPLnspecBlockingAutomapCamera931Slice.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Line_SetBlocking",
-            "start": 2719,
-            "end": 2868,
-            "tests": [
-              "VmPLnspecBlockingAutomapCamera931SliceTests.Blocking_RejectsZeroLineId",
-              "VmPLnspecBlockingAutomapCamera931SliceTests.Blocking_DecodesSetAndClearWords",
-              "VmPLnspecBlockingAutomapCamera931SliceTests.AutomapFlags_RejectsZeroId",
-              "VmPLnspecBlockingAutomapCamera931SliceTests.AutomapStyle_RejectsOutOfRange",
-              "VmPLnspecBlockingAutomapCamera931SliceTests.ChangeCamera_SetsRevertCheatWhenArg2",
-              "VmPLnspecBlockingAutomapCamera931SliceTests.ChangeCamera_IteratesAllPlayersWhenWhoSet",
-              "VmPLnspecBlockingAutomapCamera931SliceTests.ApplyBlocking_MergesFlags"
-            ]
-          }
-        ],
-        "nativeLoc": 150,
-        "managedLoc": 114,
-        "conversionManagedCommit": "f30eea47e13ed88e2acbbdd1710f967f75c23bf1"
       }
     ],
     "behaviorNativeChecksum": 508086,

@@ -48,7 +48,7 @@ public class VmPLnspecBlockingAutomapCamera931SliceTests
     [Fact]
     public void ApplyBlocking_MergesFlags()
     {
-        var (f, f2) = VmPLnspecBlockingAutomapCamera931Slice.ApplyBlocking(0, 0, [2], [1]);
+        var (f, f2) = VmPLnspecBlockingAutomapCamera931Slice.ApplyBlocking(0, 0, [2, 0], [1, 0]);
         Assert.Equal(2, f);
         Assert.Equal(0, f2);
     }
