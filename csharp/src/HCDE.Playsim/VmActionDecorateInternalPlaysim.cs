@@ -15,10 +15,4 @@ public static class VmActionDecorateInternalPlaysim
 
     public static int FloatIntrinsicReturnCount(bool numretPositive) =>
         numretPositive ? 1 : 0;
-
-    public static bool IntIntrinsicUsesActionReturn(bool isIntIntrinsic) =>
-        isIntIntrinsic;
-
-    public static bool BoolIntrinsicUsesActionReturn(bool isBoolIntrinsic) =>
-        isBoolIntrinsic;
 }
