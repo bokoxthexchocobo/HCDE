@@ -186,7 +186,8 @@ public static class VmPLnspecLineSpecialDispatch935Slice
 
     public static bool ContinuedDispatchIsLight(int opcode) => opcode is >= 109 and <= 117;
 
-    public static bool ContinuedDispatchIsThingSpawn(int opcode) => opcode is >= 130 and <= 137 or opcode is 139;
+    public static bool ContinuedDispatchIsThingSpawn(int opcode) =>
+        (opcode >= 130 && opcode <= 137) || opcode == 139;
 
     public static int ContinuedDispatchEntryCount() => DispatchOpcodes58Through207.Length;
 }
