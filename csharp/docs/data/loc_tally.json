@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 58037,
+  "convertedThisRunNative": 57887,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 85296,
+  "convertedThisRunManaged": 85149,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 430768,
+  "remainingNative": 430918,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 76564,
+  "convertedBehaviorNative": 76414,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 77318,
-  "convertedBehaviorManaged": 94967,
+  "combinedBehaviorNative": 77168,
+  "convertedBehaviorManaged": 94820,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -34205,38 +34205,6 @@
       "nativeLoc": 150,
       "managedLoc": 170,
       "conversionManagedCommit": "16a41edc7da1701f50d3069422344d9095264ce1"
-    },
-    {
-      "name": "p-lnspec-env-glow-health-chunk934",
-      "bucket": "conversion",
-      "note": "`LS_SetGlobalFogParameter` close, glow/health specials, and `LineSpecials[]` through opcode **57** (`p_lnspec.cpp` **3455\u20133604**). Follows **933** (**\u22643454**); dispatch continuation at **3605+** deferred.",
-      "auditSeams": "Sector/line iterators, `PalEntry`, `P_SetHealthGroupHealth`, and `lnSpecFunc` host binding remain seams.",
-      "auditRationale": "Honest **150**-line UNCredited band toward **3982**; exclusive `VmPLnspecEnvGlowHealth934Slice.cs`.",
-      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 3455 --end 3604` and `--chunk 934 --band` \u2192 UNCredited, exit 0.",
-      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| `GlobalFogSwitchExhausted` | `LS_SetGlobalFogParameter` default **3453\u20133456** |\n| `BuildFloorGlow` / `ResolveGlowColor` | `LS_Sector_SetFloorGlow` **3458\u20133473** |\n| `BuildCeilingGlow` | `LS_Sector_SetCeilingGlow` **3475\u20133490** |\n| `BuildLineHealth` / `ClampLineHealth` | `LS_Line_SetHealth` **3492\u20133509** |\n| `BuildSectorHealth` / `SectorHealthPart` | `LS_Sector_SetHealth` **3511\u20133543** |\n| `LineSpecialDispatchThrough57` | `LineSpecials[]` **3545\u20133604** |\n| `DispatchName` / `DispatchIsNop` | table lookup **3547\u20133604** |\n| `DispatchIsDoorCluster` | door opcodes **3557\u20133561** |\n| `PackGlowRgb` | `PalEntry` **3462**, **3479** |\n| negative height invalidates glow | **3463**, **3480** |\n| health group propagation | **3505\u20133506**, **3526\u20133539** |\n\n### Chunk **934** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**933** |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPLnspecEnvGlowHealth934Slice.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_SetGlobalFogParameter",
-          "start": 3455,
-          "end": 3604,
-          "tests": [
-            "VmPLnspecEnvGlowHealth934SliceTests.GlobalFogSwitchExhausted_RejectsUnknownType",
-            "VmPLnspecEnvGlowHealth934SliceTests.BuildFloorGlow_InvalidatesColorWhenHeightNegative",
-            "VmPLnspecEnvGlowHealth934SliceTests.BuildLineHealth_ClampsNegative",
-            "VmPLnspecEnvGlowHealth934SliceTests.BuildSectorHealth_SelectsCeilingPart",
-            "VmPLnspecEnvGlowHealth934SliceTests.DispatchName_MapsGlassBreakOpcode",
-            "VmPLnspecEnvGlowHealth934SliceTests.DispatchIsDoorCluster_RecognizesRaiseRange",
-            "VmPLnspecEnvGlowHealth934SliceTests.CountDispatchEntries_MatchesNativeHead"
-          ]
-        }
-      ],
-      "nativeLoc": 150,
-      "managedLoc": 147,
-      "conversionManagedCommit": "a2db5067693cf20e3ca834d19212dddbc28976ae"
     }
   ],
   "behaviorNativeChecksum": 508086,
