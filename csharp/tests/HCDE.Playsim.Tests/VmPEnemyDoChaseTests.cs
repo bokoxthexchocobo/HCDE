@@ -15,6 +15,7 @@ public class VmPEnemyDoChaseTests
     {
         var s = new VmPEnemyDoChase.DoChaseState
         {
+            TargetHealth = 1,
             TargetHasPlayer = true,
             TargetPlayerCheats = VmPEnemyDoChase.CfNotarget,
             TargetFlags = VmPEnemyDoChase.MfShootable,
@@ -22,6 +23,8 @@ public class VmPEnemyDoChaseTests
         VmPEnemyDoChase.DoChase(s);
         Assert.True(s.TargetNull);
         Assert.Equal(0, s.Threshold);
+        Assert.True(s.LastEnemyCleared);
+        Assert.True(s.LastHeardCleared);
     }
 
     [Fact]

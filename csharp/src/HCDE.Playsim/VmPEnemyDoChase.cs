@@ -86,6 +86,8 @@ public static class VmPEnemyDoChase
         public int MapTime { get; set; }
         public int Ticrate { get; set; } = 35;
         public bool ExitedEarly { get; set; }
+        public bool LastEnemyCleared { get; set; }
+        public bool LastHeardCleared { get; set; }
         public bool WanderCalled { get; set; }
         public bool IdleCalled { get; set; }
         public bool MeleeStateApplied { get; set; }
@@ -121,6 +123,29 @@ public static class VmPEnemyDoChase
 
     static double DeltaAngle(double yaw, double targetDir) => targetDir * 45 - yaw;
 
+    public static bool TargetInvisibleToChaser(DoChaseState s) =>
+        !s.TargetNull && !s.TargetIsGoal &&
+        ((s.TargetRenderFlags & RfInvisible) != 0 || (s.TargetFlags8 & Mf8Minvisible) != 0);
+
+    public static void ClearInvisibleTarget(DoChaseState s)
+    {
+        if (TargetInvisibleToChaser(s))
+            s.TargetNull = true;
+    }
+
+    public static void ApplyNotargetPlayerClear(DoChaseState s)
+    {
+        s.TargetNull = true;
+        s.Threshold = 0;
+        s.LastEnemyCleared = true;
+        s.LastHeardCleared = true;
+    }
+
+    public static bool MissileChaseBlockedByMoveCount(DoChaseState s) =>
+        !s.IsFast && s.MoveCount != 0;
+
+    public static bool StealthMonsterActive(DoChaseState s) => (s.Flags & MfStealth) != 0;
+
     public static void DoChase(DoChaseState s)
     {
         if ((s.Flags5 & Mf5Inconversation) != 0)
@@ -129,14 +154,13 @@ public static class VmPEnemyDoChase
             return;
         s.Flags7 |= Mf7Inchase;
 
-        if ((s.Flags & MfStealth) != 0)
+        if (StealthMonsterActive(s))
             s.RenderFlags = -1;
 
         if (s.ReactionTime > 0)
             s.ReactionTime--;
 
-        if (!s.TargetNull && ((s.TargetRenderFlags & RfInvisible) != 0 || (s.TargetFlags8 & Mf8Minvisible) != 0) && !s.TargetIsGoal)
-            s.TargetNull = true;
+        ClearInvisibleTarget(s);
 
         if (s.Threshold > 0)
         {
@@ -172,10 +196,7 @@ public static class VmPEnemyDoChase
             s.TargetNull = true;
 
         if (!s.TargetNull && !s.TargetIsGoal && s.TargetHasPlayer && (s.TargetPlayerCheats & CfNotarget) != 0)
-        {
-            s.TargetNull = true;
-            s.Threshold = 0;
-        }
+            ApplyNotargetPlayerClear(s);
 
         if (s.TargetNull || (s.TargetFlags & MfShootable) == 0)
         {
@@ -275,7 +296,7 @@ public static class VmPEnemyDoChase
 
             if (s.MissileStateSet)
             {
-                if (!s.IsFast && s.MoveCount != 0)
+                if (MissileChaseBlockedByMoveCount(s))
                     goto Nomissile;
                 if (s.CheckMissileRange?.Invoke() != true)
                     goto Nomissile;
