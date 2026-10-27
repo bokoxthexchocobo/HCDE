@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 223723
+    "managedCSharpLoc": 224006
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 49511,
+    "convertedThisRunNative": 50076,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 77802,
+    "convertedThisRunManaged": 78085,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 439294,
+    "remainingNative": 438729,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 68038,
+    "convertedBehaviorNative": 68603,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 68792,
-    "convertedBehaviorManaged": 87473,
+    "combinedBehaviorNative": 69357,
+    "convertedBehaviorManaged": 87756,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -32706,6 +32706,53 @@
         "nativeLoc": 169,
         "managedLoc": 90,
         "conversionManagedCommit": "92f4c99083b4dae93e8217790fd4c90925b31cf6"
+      },
+      {
+        "name": "action-precalc-animation-bones-chunk584",
+        "bucket": "conversion",
+        "note": "`CalculateAnimationInternal` through `GetRenderStyle` (`p_actionfunctions.cpp` **7245\u20137809**). Follows **560** layer animation (**7244**).",
+        "auditSingleFunctionOversizeException": true,
+        "auditSeams": "`FindFModel`, `SetGetBoneShared`, `calcFrames`, `PrecalculateFrame`, `CalcBones`, and `LegacyRenderStyles` are not hosted.",
+        "auditRationale": "Cohesive precalc animation calculate/find/blend/offset plus bones set/mask/range/overwrite and render-style scan (**565** native LOC oversize band).",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_actionfunctions.cpp --start 7245 --end 7809` and `--chunk 584 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `HasModelForPrecalc` / `ShouldAbortCalculateWhenLayerMissing` / sample tic helpers | `CalculateAnimationInternal` **7246\u20137266**, `CalculateAnimation*` **7268\u20137304** |\n| `ShouldAbortCalculateFrameWhenMissing` / model null guards | `CalculateAnimationFrame` **7306\u20137330** |\n| `ShouldFindAnimationFrame` / `FindAnimationFrameUiTic` / `ShouldUsePrevAnimFrame` | `FindAnimationFrameInternal` **7332\u20137355**, `FindAnimationFrame*` **7357\u20137449** |\n| `CanBlendPrecalcFrameData` / quaternion & translation helpers | `BlendAnimationFrames` **7454\u20137481**, `OffsetAnimationFrame` **7483\u20137512** |\n| `VmActorPrecalcBones` apply counts / mask / range / UI tic gates | `SetBones*` / `OverwriteBones*` **7514\u20137755**, `ForceRecalculateBones` **7757\u20137764** |\n| `ScanLegacyRenderStyleIndex` | `GetRenderStyle` **7801\u20137808** |\n\n### vs chunk **560**\n\n| | Lines |\n|--|------:|\n| **560** (layer animation) | ends **7244** |\n| **584** (this row) | **7245\u20137809** (**565** hull) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **565** |\n| Net behavior-ported | **565** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmActorPrecalcAnimation.cs",
+          "csharp/src/HCDE.Playsim/VmActorPrecalcBones.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "CalculateAnimationInternal",
+            "start": 7245,
+            "end": 7449,
+            "tests": [
+              "VmActorPrecalcAnimationTests.ShouldFindAnimationFrame_RequiresLayerAndNonNegativeTic",
+              "VmActorPrecalcAnimationTests.FindAnimationFrameUiTic_AddsFracWhenUnpaused",
+              "VmActorPrecalcAnimationTests.CanBlendPrecalcFrameData_RequiresEqualSizes",
+              "VmActorPrecalcAnimationTests.GameAnimationSampleTic_AddsOne",
+              "VmActorPrecalcAnimationTests.ShouldWriteFindAnimationRetSlot_MatchesNativeNumret"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "BlendAnimationFrames",
+            "start": 7450,
+            "end": 7809,
+            "tests": [
+              "VmActorPrecalcAnimationTests.OffsetBoneTranslation_AddsComponents",
+              "VmActorPrecalcAnimationTests.MultiplyQuaternion_IdentityTimesRotation",
+              "VmActorPrecalcAnimationTests.ScanLegacyRenderStyleIndex_FindsMatch",
+              "VmActorPrecalcBonesTests.BoneOverrideApplyCount_TakesMinimum",
+              "VmActorPrecalcBonesTests.RangeBoneApplyEnd_ClampsStartPlusLength",
+              "VmActorPrecalcBonesTests.ShouldRecalcBonesAfterApply_SkipsUiPath",
+              "VmActorPrecalcBonesTests.CountMaskedBoneApplications_CountsTrueEntries"
+            ]
+          }
+        ],
+        "nativeLoc": 565,
+        "managedLoc": 283,
+        "conversionManagedCommit": "92b0205cd33f70af6b563d32a61464dab0a2c0c6"
       }
     ],
     "behaviorNativeChecksum": 508086,
