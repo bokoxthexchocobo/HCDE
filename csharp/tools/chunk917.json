@@ -1,0 +1,49 @@
+[
+  {
+    "name": "a-floor-dfloor-head-tick-chunk917",
+    "bucket": "conversion",
+    "note": "`StartFloorSound`, `DFloor::Serialize` / `DEFINE_FIELD`, and `DFloor::Tick` through stairlock promote from `mapthinkers/a_floor.cpp` (**1–200**). Stops before stairlock chain **201+** and `SetFloorChangeType` **233+**; wider **1–940** deferred.",
+    "auditSeams": "`MoveFloor`, `SN_*` sequences, interpolation stop, and full stairlock chain walk are injected; no reuse of retired chunk **798** tally row.",
+    "auditRationale": "Honest **200**-line UNCredited pivot after `p_acs` RunScript corridor; exclusive `VmAFloorDflooorHead917Slice.cs` (chunk **798** retired, **0** matrix credit).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/mapthinkers/a_floor.cpp --start 1 --end 200` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `StartFloorSound` (**45–61**) | yes |\n| `DFloor::Serialize` (**72–90**) | yes |\n| `DEFINE_FIELD` bundle (**92–106**) | yes (field manifest) |\n| `DFloor::Tick` (**114–200**) | yes (through `stairlock = -1`; **201–225** deferred) |\n\n| Managed (`VmAFloorDflooorHead917Slice.cs`) | Native (`a_floor.cpp`) |\n|---------------------------------------------|----------------------|\n| `PlayFloorSound` / `ShouldSkipFloorSound` | **45–61** |\n| `CaptureSerializeFields` / `ApplySerializeFields` | **72–90** |\n| `DfloorDefinedFieldNames` | **92–106** |\n| `AdvanceStairTiming` | **119–143** |\n| `TickFloorMover` / `ApplyPastDestFloorChange` | **145–200** |\n| `PromoteStairlockBuilding` | **198–200** |\n\n### Chunk **917** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **200** |\n| **Net headline** | **+200** vs post-**916** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmAFloorDflooorHead917Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/mapthinkers/a_floor.cpp",
+        "symbol": "StartFloorSound",
+        "start": 45,
+        "end": 61,
+        "tests": [
+          "VmAFloorDflooorHead917SliceTests.PlayFloorSound_UsesSeqTypeWhenSet",
+          "VmAFloorDflooorHead917SliceTests.PlayFloorSound_SkipsWhenSilentMove"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_floor.cpp",
+        "symbol": "DFloor::Serialize",
+        "start": 72,
+        "end": 106,
+        "tests": [
+          "VmAFloorDflooorHead917SliceTests.SerializeBundle_RoundTripsFields",
+          "VmAFloorDflooorHead917SliceTests.DfloorDefinedFieldNames_MatchesSerializeArity"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_floor.cpp",
+        "symbol": "DFloor::Tick",
+        "start": 114,
+        "end": 200,
+        "tests": [
+          "VmAFloorDflooorHead917SliceTests.AdvanceStairTiming_ResetCountZero_SetsResetStair",
+          "VmAFloorDflooorHead917SliceTests.AdvanceStairTiming_PauseTime_ReturnsEarly",
+          "VmAFloorDflooorHead917SliceTests.TickFloorMover_PastDest_AppliesTextureAndPromotesStairlock",
+          "VmAFloorDflooorHead917SliceTests.TickFloorMover_BuildStairPastDest_BecomesWaitStair",
+          "VmAFloorDflooorHead917SliceTests.PromoteStairlockBuilding_NoOpWhenNotBuilding"
+        ]
+      }
+    ]
+  }
+]
