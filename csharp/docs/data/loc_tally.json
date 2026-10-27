@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 53673,
+  "convertedThisRunNative": 53974,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 80871,
+  "convertedThisRunManaged": 81078,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 435132,
+  "remainingNative": 434831,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 72200,
+  "convertedBehaviorNative": 72501,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 72954,
-  "convertedBehaviorManaged": 90542,
+  "combinedBehaviorNative": 73255,
+  "convertedBehaviorManaged": 90749,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -33248,6 +33248,58 @@
       "nativeLoc": 215,
       "managedLoc": 194,
       "conversionManagedCommit": "dcd7e3c73c0786cf5de90021bef26eabdfffcc3e"
+    },
+    {
+      "name": "fscript-parser-sf-tex-door-line-chunk909",
+      "bucket": "conversion",
+      "note": "`FParser::SF_SectorColormap` \u2026 `SF_SetLineTexture` from `fragglescript/t_func.cpp` (**1876\u20132038**, **2058\u20132070**, **2115\u20132239**). Re-lands retired **872**/**871** at honest **301** LOC; skips unhosted `runcommand` / `changemusic` (**2047\u20132105**).",
+      "auditSeams": "Colormap native no-op; doors via `LineSpecials.ExecuteDoorSpecial`; line specials via `ActorSpecialActions` / `LevelLine` flags; textures via `LevelSide` pics. `FS_EmulateCmd` / `FS_ChangeMusic` not hosted.",
+      "auditRationale": "Function-bounded UNCredited band after **908** / **869**; hub/skill `script_error` stubs match native; gap **2039\u20132057** + **2071\u20132114** left for future console/music hosts.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 1876 --end 2038` and `--start 2058 --end 2070` and `--start 2115 --end 2239` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_SectorColormap` | yes (no-op) |\n| `SF_CeilingTexture` | yes |\n| `SF_ChangeHubLevel` / `SF_StartSkill` | yes (`script_error`) |\n| `SF_OpenDoor` / `SF_CloseDoor` | yes |\n| `SF_LineTrigger` | yes |\n| `SF_SetLineBlocking` / `SF_SetLineMonsterBlocking` | yes |\n| `SF_SetLineTexture` | yes |\n\n**Deferred (zero credit)**\n\n| Native | Lines |\n|--------|------:|\n| `SF_RunCommand` | **2047\u20132050** |\n| `FS_ChangeMusic` / `SF_ChangeMusic` | **2077\u20132105** |\n\n| Managed | Native (`t_func.cpp`) |\n|---------|----------------------|\n| `SfSectorColormap` | **1883\u20131922** |\n| `SfCeilingTexture` | **1931\u20131965** |\n| `SfChangeHubLevel` | **1973\u20131976** |\n| `SfStartSkill` | **1979\u20131982** |\n| `SfOpenDoor` | **1992\u20132013** |\n| `SfCloseDoor` | **2021\u20132038** |\n| `SfLineTrigger` | **2058\u20132070** |\n| `SfSetLineBlocking` | **2115\u20132134** |\n| `SfSetLineMonsterBlocking` | **2142\u20132156** |\n| `SfSetLineTexture` | **2172\u20132239** |\n| (separator) | **1876\u20131882** |\n| (separator) | **1923\u20131930** |\n| (separator) | **1966\u20131972** |\n| (separator) | **1983\u20131991** |\n| (separator) | **2014\u20132020** |\n| (separator) | **2071\u20132076** |\n| (separator) | **2106\u20132114** |\n| (separator) | **2157\u20132171** |\n\n### Chunk **909** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **301** |\n| **Net headline** | **+301** vs post-**908** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmFScriptParserSfTexDoor.cs",
+        "csharp/src/HCDE.Playsim/VmFScriptParserSfLineOps.cs",
+        "csharp/src/HCDE.Playsim/VmFScriptInitFunctionsReg872.cs",
+        "csharp/src/HCDE.Playsim/VmFScriptInitFunctionsReg871.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_SectorColormap",
+          "start": 1876,
+          "end": 2038,
+          "tests": [
+            "VmFScriptParserSfTexDoorTests.SfCeilingTexture_SetsAndReturnsName",
+            "VmFScriptParserSfTexDoorTests.SfOpenDoor_StartsDoorMotion",
+            "VmFScriptParserSfTexDoorTests.SfCloseDoor_StartsClosingMotion"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_LineTrigger",
+          "start": 2058,
+          "end": 2070,
+          "tests": [
+            "VmFScriptParserSfLineOpsTests.SfLineTrigger_CallsFloorSpecial"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_SetLineBlocking",
+          "start": 2115,
+          "end": 2239,
+          "tests": [
+            "VmFScriptParserSfLineOpsTests.SfSetLineBlocking_SetsBlockingFlag",
+            "VmFScriptParserSfLineOpsTests.SfSetLineMonsterBlocking_SetsMonsterBlock",
+            "VmFScriptParserSfLineOpsTests.SfSetLineTexture_EternityLayout_UpdatesMid",
+            "VmFScriptParserSfLineOpsTests.SfSetLineTexture_LegacyLayout_UpdatesTopAndBottom"
+          ]
+        }
+      ],
+      "nativeLoc": 301,
+      "managedLoc": 207,
+      "conversionManagedCommit": "a2b536e6cfc347c5155d484733728d16f77be841"
     }
   ],
   "behaviorNativeChecksum": 508086,
