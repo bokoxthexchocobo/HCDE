@@ -33,6 +33,8 @@ public static class VmActorRemoveActions
 
     public static bool ShouldRunRemoveChildrenLoop(object? nextActor) => nextActor is not null;
 
+    public static bool ShouldRunRemoveSiblingsInnerLoop(object? nextActor) => nextActor is not null;
+
     public static bool ShouldRunRemoveSiblingsLoop(object? selfMaster) => selfMaster is not null;
 
     public static bool RemoveSiblingsLoop(
