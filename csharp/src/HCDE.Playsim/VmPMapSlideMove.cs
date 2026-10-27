@@ -9,6 +9,21 @@ public static class VmPMapSlideMove
     public const int CfPredicting = 1;
     public const double OrigFriction = 1;
 
+    public static bool IcyFloorSlide(
+        int flags8,
+        bool varFriction,
+        double z,
+        double floorZ,
+        double moveLenSq,
+        object? friction) =>
+        (flags8 & Mf8Nofrictionbounce) == 0 && moveLenSq > 16 && varFriction && z <= floorZ && friction != null;
+
+    public static bool SlideGruntEligible(bool hasPlayer, bool playerIsMo, int health, int cheats) =>
+        hasPlayer && playerIsMo && health > 0 && (cheats & CfPredicting) == 0;
+
+    public static bool SlideOpeningBlocksActor(double range, double top, double bottom, double actorZ, double height, double actorTop, double maxStep) =>
+        range < height || top < actorTop || bottom - actorZ > maxStep;
+
     public readonly record struct Vec2(double X, double Y)
     {
         public double LengthSquared() => X * X + Y * Y;
@@ -85,15 +100,14 @@ public static class VmPMapSlideMove
     {
         var mo = st.Actor;
         var friction = st.Friction;
-        var icyfloor = (mo.Flags8 & Mf8Nofrictionbounce) == 0 && st.TmMove.LengthSquared() > 16 &&
-                       st.VarFriction && mo.Z <= mo.FloorZ && friction != null;
+        var icyfloor = IcyFloorSlide(mo.Flags8, st.VarFriction, mo.Z, mo.FloorZ, st.TmMove.LengthSquared(), friction);
 
         if (ld.DeltaX == 0)
         {
             if (icyfloor && Math.Abs(st.TmMove.X) > Math.Abs(st.TmMove.Y))
             {
                 st.TmMove = new Vec2(-st.TmMove.X / 2, st.TmMove.Y / 2);
-                if (mo.HasPlayer && mo.PlayerIsMo && mo.PlayerHealth > 0 && (mo.PlayerCheats & CfPredicting) == 0)
+                if (SlideGruntEligible(mo.HasPlayer, mo.PlayerIsMo, mo.PlayerHealth, mo.PlayerCheats))
                     st.PlayGrunt?.Invoke();
             }
             else st.TmMove = new Vec2(0, st.TmMove.Y);
@@ -105,7 +119,7 @@ public static class VmPMapSlideMove
             if (icyfloor && Math.Abs(st.TmMove.Y) > Math.Abs(st.TmMove.X))
             {
                 st.TmMove = new Vec2(st.TmMove.X / 2, -st.TmMove.Y / 2);
-                if (mo.HasPlayer && mo.PlayerIsMo && mo.PlayerHealth > 0 && (mo.PlayerCheats & CfPredicting) == 0)
+                if (SlideGruntEligible(mo.HasPlayer, mo.PlayerIsMo, mo.PlayerHealth, mo.PlayerCheats))
                     st.PlayGrunt?.Invoke();
             }
             else st.TmMove = new Vec2(st.TmMove.X, 0);
@@ -122,7 +136,7 @@ public static class VmPMapSlideMove
         if (icyfloor && deltaangle > Math.PI / 4 && deltaangle < 3 * Math.PI / 4)
         {
             movelen /= 2;
-            if (mo.HasPlayer && mo.PlayerIsMo && mo.PlayerHealth > 0 && (mo.PlayerCheats & CfPredicting) == 0)
+            if (SlideGruntEligible(mo.HasPlayer, mo.PlayerIsMo, mo.PlayerHealth, mo.PlayerCheats))
                 st.PlayGrunt?.Invoke();
             st.TmMove = new Vec2(Math.Cos(lineangle) * movelen, Math.Sin(lineangle) * movelen);
             return;
@@ -153,7 +167,7 @@ public static class VmPMapSlideMove
             if (li == null) continue;
             if (st.BlockAllSlideLines || IsSlideLineBlocked(st, mo, li)) goto isblocking;
             var open = SlideLineOpening(st, mo, li, intercept.HitX, intercept.HitY);
-            if (open.Range < mo.Height || open.Top < mo.Top || open.Bottom - mo.Z > mo.MaxStepHeight)
+            if (SlideOpeningBlocksActor(open.Range, open.Top, open.Bottom, mo.Z, mo.Height, mo.Top, mo.MaxStepHeight))
                 goto isblocking;
             if (mo.Z < open.Bottom)
             {
