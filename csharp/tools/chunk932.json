@@ -1,0 +1,30 @@
+[
+  {
+    "name": "p-lnspec-camera-setplayerproperty-chunk932",
+    "bucket": "conversion",
+    "note": "`ChangeCamera` activator tail, `PROP_*` enum, and `LS_SetPlayerProperty` power branch through all-player grant (`p_lnspec.cpp` **2869–3018**). Follows **931** (**≤2868**); flag-property `switch` at **3027** deferred; **3019–3129** sub-150 tail deferred.",
+    "auditSeams": "`R_ClearPastViewer`, `GiveInventoryType`, `FindInventory`, `Destroy`, and player iteration remain host seams.",
+    "auditRationale": "Honest **150**-line slice in **2269–3129** corridor; exclusive `VmPLnspecCameraProperty932Slice.cs`.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 2869 --end 3018` and `--chunk 932 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| `AssignActivatorCamera` | `ChangeCamera` activator branch **2869–2872** |\n| `ShouldClearViewer` | **2873–2876** |\n| `ChangeCamera` return | **2879–2880** |\n| `PROP_*` constants | enum **2882–2909** |\n| `ShouldRejectPropertyCall` | `LS_SetPlayerProperty` guard **2918–2919** |\n| `IsPowerProperty` / `PowerIndex` / `PowerNameAt` | power table **2922–2946** |\n| `PowerEntryValid` / `IsAllMapPower` | **2943–2946**, **2952–2963** |\n| `IsGivePower` / activator give-take | **2948–2979** |\n| `ApplyToAllPlayers` / `PlayerSlotActive` | all-player loop **2981–3018** |\n| `AllmapFlags2ForGrant` | console ALLMAP **2960–2963**, **3001–3004** |\n| `InvulnerabilityBlendApplies` | **2955–2958**, **2996–2999** |\n| `PowerGrantUsesInventory` / `PowerRevokeUsesDestroy` | inventory paths **2952–2973**, **2993–3014** |\n\n### Chunk **932** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**931** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPLnspecCameraProperty932Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_ChangeCamera",
+        "start": 2869,
+        "end": 3018,
+        "tests": [
+          "VmPLnspecCameraProperty932SliceTests.AssignActivatorCamera_ClearsRevertWhenNoCamera",
+          "VmPLnspecCameraProperty932SliceTests.ShouldRejectPropertyCall_WhenNoActivatorPlayer",
+          "VmPLnspecCameraProperty932SliceTests.PowerBranch_RejectsInvalidPowerSlot",
+          "VmPLnspecCameraProperty932SliceTests.AllmapGrant_UpdatesLevelFlags",
+          "VmPLnspecCameraProperty932SliceTests.InvulnerabilityBlend_AppliesOnGive",
+          "VmPLnspecCameraProperty932SliceTests.ShouldClearViewer_WhenReferenceChanges"
+        ]
+      }
+    ]
+  }
+]
