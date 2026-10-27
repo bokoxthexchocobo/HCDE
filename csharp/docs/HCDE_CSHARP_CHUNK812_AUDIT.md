@@ -30,8 +30,8 @@ Special-line recording, portal floor/ceiling probe, rip level, and projectile co
 ## Managed
 
 `VmPMapProjectileCombat.cs`
-Managed LOC (tally): 213.
-Conversion commit: `b55cd347b4044e2245f984bd5d2960ce838e8d7c`.
+Managed LOC (tally): 221.
+Conversion commit: `f21529e3c3312472a5d2c15efc389ba635822d21`.
 
 ## Padding review (2026-10-21)
 
@@ -53,7 +53,7 @@ Conversion commit: `b55cd347b4044e2245f984bd5d2960ce838e8d7c`.
 | **Honest** | **219** |
 
 
-**Post-review ratio:** 213/219 managed/native ≈ 97% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 221/219 managed/native ≈ 101% (src file LOC at HEAD; see tally).
 
 ## Tests
 
