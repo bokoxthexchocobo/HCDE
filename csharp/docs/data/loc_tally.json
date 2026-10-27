@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 48306,
+  "convertedThisRunNative": 48468,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 77108,
+  "convertedThisRunManaged": 77190,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 440499,
+  "remainingNative": 440337,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 66833,
+  "convertedBehaviorNative": 66995,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 67587,
-  "convertedBehaviorManaged": 86779,
+  "combinedBehaviorNative": 67749,
+  "convertedBehaviorManaged": 86861,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -32123,6 +32123,65 @@
       "nativeLoc": 316,
       "managedLoc": 461,
       "conversionManagedCommit": "d3c0970e81081f8117b1334c6cf25086566f581d"
+    },
+    {
+      "name": "action-sight-particle-ex-chunk574",
+      "bucket": "conversion",
+      "note": "`A_SpawnParticleEx`, `DoCheckSightOrRange`, `CheckSightOrRange`, and `CheckRange` (`p_actionfunctions.cpp` **1777\u20131981**). `CheckIfSeen` (**1854\u20131878**) excluded (sight seam).",
+      "auditSeams": "`P_SpawnParticle`, `P_CheckSight`, and player-table iteration bodies are not hosted.",
+      "auditRationale": "ParticleEx clamp/style/rotate setup plus shared sight-or-range distance and per-player gating helpers.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 574 --band` \u2192 UNCredited, exit 0.",
+      "auditManagedLocJustification": "`VmActionSightParticle.cs` mirrors particle ex setup and `DoCheckSightOrRange` pipeline.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `ClampParticleStartAlpha` / `ClampFadeStep` / `AbsParticleSize` / `NormalizeParticleStyle` / `RotateParticleExRelPos` / `ShouldSpawnParticleEx` | `A_SpawnParticleEx` **1777\u20131846** (`P_SpawnParticle` **1843** seam) |\n| `VerticalSightDelta` / `SquaredDistance2d` / `WithinRange` / `DoCheckSightOrRange` | `DoCheckSightOrRange` **1887\u20131922** |\n| `SquaredRange` / `PlayerSightOrRangeHit` | `CheckSightOrRange` **1924\u20131951** (loop gating; `P_CheckSight` seam) |\n| `SquaredRange` / `RangeOnlyHit` / `PlayerSightOrRangeHit` | `CheckRange` **1954\u20131981** |\n\n### vs chunk **573**\n\n| | Lines |\n|--|------:|\n| **573** (`VmActionFadeSpawn`) | **1598\u20131774** |\n| **574** (this row) | **1777\u20131981** |\n| Gap | **1775\u20131776** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **162** |\n| Net behavior-ported | **162** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmActionSightParticle.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_SpawnParticleEx",
+          "start": 1777,
+          "end": 1846,
+          "tests": [
+            "VmActionSightParticleTests.ClampParticleStartAlpha_BoundsUnit",
+            "VmActionSightParticleTests.NormalizeParticleStyle_ClampsInvalid",
+            "VmActionSightParticleTests.RotateParticleExRelPos_MatchesNative"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DoCheckSightOrRange",
+          "start": 1887,
+          "end": 1922,
+          "tests": [
+            "VmActionSightParticleTests.DoCheckSightOrRange_DistanceBeforeSight",
+            "VmActionSightParticleTests.VerticalSightDelta_UsesTopWhenAbove"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "CheckSightOrRange",
+          "start": 1924,
+          "end": 1951,
+          "tests": [
+            "VmActionSightParticleTests.SquaredRange_DoublesInput",
+            "VmActionSightParticleTests.WithinRange_ComparesSquared"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "CheckRange",
+          "start": 1954,
+          "end": 1981,
+          "tests": [
+            "VmActionSightParticleTests.SquaredRange_DoublesInput",
+            "VmActionSightParticleTests.SquaredDistance2d_IgnoresZIn2dMode"
+          ]
+        }
+      ],
+      "nativeLoc": 162,
+      "managedLoc": 82,
+      "conversionManagedCommit": "9bc0de4c8f439dade920e341e7315c0dc0163e6e"
     }
   ],
   "behaviorNativeChecksum": 508086,
