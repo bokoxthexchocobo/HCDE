@@ -30,8 +30,6 @@ public static class VmPLnspecAutosaveCommunicator932Slice
         object? iteratorHit) =>
         emitterTid == 0 ? activator : emitterTid == targetTid ? target : iteratorHit;
 
-    public static bool NoiseAlertCanRun(object? target) => target != null;
-
     public static bool CommunicatorRejectBackside(bool frontOnly, bool backSide) => frontOnly && backSide;
 
     public static bool CommunicatorRequiresInventory(object? activator, object? player, bool hasCommunicator) =>
@@ -41,19 +39,11 @@ public static class VmPLnspecAutosaveCommunicator932Slice
 
     public static string CommunicatorSubtitleKey(int identify) => $"TXT_COMM{identify}";
 
-    public static bool CommunicatorShouldSetLogNumber(bool noLog) => !noLog;
-
-    public static bool CommunicatorPlaysLocally(bool checkLocalView) => checkLocalView;
-
-    public static bool ForceFieldApplies(object? activator) => activator != null;
-
     public static int ForceFieldDamage() => 16;
 
     public static double ForceFieldThrustSpeed() => 7.8125;
 
     public static double ForceFieldThrustYawDegrees(double actorYawDegrees) => actorYawDegrees + 180.0;
-
-    public static bool ClearForceFieldAnySector(bool sectorHit) => sectorHit;
 
     public static int GlassBreakStripBlocking(int lineFlags) =>
         lineFlags & ~(MlBlocking | MlBlockEverything);
@@ -115,8 +105,8 @@ public static class VmPLnspecAutosaveCommunicator932Slice
         return new(
             CommunicatorSoundName(voc),
             CommunicatorSubtitleKey(identify),
-            CommunicatorShouldSetLogNumber(noLog),
-            CommunicatorPlaysLocally(localView));
+            !noLog,
+            localView);
     }
 
     public readonly record struct GlassBreakInvoke(
@@ -126,6 +116,11 @@ public static class VmPLnspecAutosaveCommunicator932Slice
         bool UseType,
         double SpawnX,
         double SpawnY);
+
+    public readonly record struct ForceFieldInvoke(int Damage, double ThrustSpeed, double ThrustYawDegrees);
+
+    public static ForceFieldInvoke? BuildForceField(object? activator, double actorYawDegrees) =>
+        activator == null ? null : new(ForceFieldDamage(), ForceFieldThrustSpeed(), ForceFieldThrustYawDegrees(actorYawDegrees));
 
     public static GlassBreakInvoke BuildGlassBreak(
         int lineFlags,
