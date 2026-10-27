@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 54128,
+  "convertedThisRunNative": 54304,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 81156,
+  "convertedThisRunManaged": 81371,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 434677,
+  "remainingNative": 434501,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 72655,
+  "convertedBehaviorNative": 72831,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 73409,
-  "convertedBehaviorManaged": 90827,
+  "combinedBehaviorNative": 73585,
+  "convertedBehaviorManaged": 91042,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -33331,6 +33331,42 @@
       "nativeLoc": 154,
       "managedLoc": 78,
       "conversionManagedCommit": "de8050a8ee9246b90b79dbc7424336a00c4b09fd"
+    },
+    {
+      "name": "p-acs-runscript-call-return-arith-chunk911",
+      "bucket": "conversion",
+      "note": "`DLevelScript::RunScript` call tail, return opcodes, and `PCD_ADD`\u2026`PCD_LT` from `p_acs.cpp` (**7534\u20137709**). Chunk **17** keeps **7526\u20137533** (`PCD_CALLSTACK` head); **7701+** deferred.",
+      "auditSeams": "`GetFunction`, `Printf`, profile `AddRun`, placement-new `CallReturn`, and full `RunScript` loop are not hosted; slice models stack/locals/return frame policy only.",
+      "auditRationale": "Honest **176**-line UNCredited band after **910** (`t_func` dry); exclusive `VmPAcsVmOpcode911Slice.cs` without touching **910** `VmFScriptParserSfMath.cs`.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 7534 --end 7709` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native opcode region | Behavior ported |\n|----------------------|-----------------|\n| `PCD_CALL` / `PCD_CALLDISCARD` else tail (**7534\u20137570**) | yes |\n| `PCD_RETURNVOID` / `PCD_RETURNVAL` (**7573\u20137607**) | yes |\n| `PCD_ADD` \u2026 `PCD_NE` (**7609\u20137696**) | yes |\n| `PCD_LT` (**7698\u20137709**) | yes |\n\n| Managed (`VmPAcsVmOpcode911Slice.cs`) | Native (`p_acs.cpp`) |\n|----------------------------------------|---------------------|\n| `ResolveEmbeddedCallTarget` / `ResolveCallStackTarget` / `MaskCallStackFuncnum` | **7534\u20137538**, callstack tag clear **7532\u20137533** (head credited **17**) |\n| `IsFunctionMissing` / `WouldOverflowStackForCall` / `TryEnterScriptFunction` | **7541\u20137569** |\n| `PopReturnValueOperand` / `RestoreReturnFrame` / `ShouldPushReturnValue` | **7573\u20137607** |\n| `TryApplyAdd` | **7609\u20137620** |\n| `TryApplySubtract` | **7622\u20137633** |\n| `TryApplyMultiply` | **7635\u20137646** |\n| `TryApplyDivide` | **7648\u20137658** |\n| `TryApplyModulus` | **7660\u20137670** |\n| `TryApplyEq` | **7672\u20137683** |\n| `TryApplyNe` | **7685\u20137696** |\n| `TryApplyLt` | **7698\u20137709** |\n| `ZeroInitializeLocalSlots` / `CallReturnStackWords` / `BuildCallReturnFrame` | **7557\u20137564**, frame sizing **7562\u20137564** |\n\n### Chunk **911** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **176** |\n| **Net headline** | **+176** vs post-**910** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPAcsVmOpcode911Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::RunScript",
+          "start": 7534,
+          "end": 7709,
+          "tests": [
+            "VmPAcsVmOpcode911SliceTests.ResolveEmbeddedCallTarget_UsesActiveModuleAndByte",
+            "VmPAcsVmOpcode911SliceTests.ResolveCallStackTarget_StripsLibraryTag",
+            "VmPAcsVmOpcode911SliceTests.WouldOverflowStackForCall_RespectsMargin",
+            "VmPAcsVmOpcode911SliceTests.TryApplyAdd_CombinesTopTwoSlots",
+            "VmPAcsVmOpcode911SliceTests.TryApplyAdd_MalformedWhenStackTooShallow",
+            "VmPAcsVmOpcode911SliceTests.TryApplyDivide_SetsDivideByZeroState",
+            "VmPAcsVmOpcode911SliceTests.TryApplyModulus_SetsModulusByZeroState",
+            "VmPAcsVmOpcode911SliceTests.TryApplyEq_ReturnsOneWhenEqual",
+            "VmPAcsVmOpcode911SliceTests.TryApplyLt_ComparesSecondToTop",
+            "VmPAcsVmOpcode911SliceTests.RestoreReturnFrame_PushesValueWhenNotDiscarded",
+            "VmPAcsVmOpcode911SliceTests.TryEnterScriptFunction_InitializesLocalsAndAdvancesPc"
+          ]
+        }
+      ],
+      "nativeLoc": 176,
+      "managedLoc": 215,
+      "conversionManagedCommit": "4fb2ed99a2534121cec5445166eec8db786fa927"
     }
   ],
   "behaviorNativeChecksum": 508086,
