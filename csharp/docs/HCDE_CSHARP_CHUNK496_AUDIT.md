@@ -1,39 +1,51 @@
-# Chunk 496 — P_PushUp, P_PushDown, and PIT_FloorDrop sector move policy Retired (2026-10-24): `--band` hull overlaps existing credit (p-map-crush-tail-decal-activate-chunk499 src/playsim/p_map.cpp 6822-6830).
+# Chunk 496 — Whole `P_PushUp`, `P_PushDown`, and `PIT_FloorDrop` (`p_map.cpp` 6762–6939).
 
 ## Scope
 
-P_PushUp, P_PushDown, and PIT_FloorDrop sector move policy Retired (2026-10-24): `--band` hull overlaps existing credit (p-map-crush-tail-decal-activate-chunk499 src/playsim/p_map.cpp 6822-6830).
+Whole `P_PushUp`, `P_PushDown`, and `PIT_FloorDrop` (`p_map.cpp` 6762–6939).
 
 ## Native ranges
 
+- `src/playsim/p_map.cpp` **P_PushUp** 6762–6821 (60 lines)
+- `src/playsim/p_map.cpp` **P_PushDown** 6831–6885 (55 lines)
+- `src/playsim/p_map.cpp` **PIT_FloorDrop** 6893–6939 (47 lines)
 
-**Credited native LOC:** 0 (tally `nativeLoc` 0).
+**Credited native LOC:** 162 (tally `nativeLoc` 162).
 
 ## Managed
 
-(see conversion commit file list)
-Managed LOC (tally): 0.
-Conversion commit: `ee89053440a814537fbb7c1b0d9e77dc4cfec4e6`.
+`VmPMapSectorPush.cs`
+Managed LOC (tally): 144.
+Conversion commit: `ab7a9a726bf3d034c93034af0f6fcae7e071061a`.
 
 ## Padding review (2026-10-21)
 
+**Behavior ported (honest native credit)**
+
 | Managed | Native (`p_map.cpp`) |
 |---------|-------------------|
-| `PushUp_BlocksOnCeiling` / `PushUp_SkipThruActors` / `SkipSameSpecies` / `SkipReflectiveMissile` / `CannotPushIntersect` / `SkipPushIntersect` / `PushUp_KeepPositionAndCrunch` / `PushUp_CrunchAndUpdate` / `PushUp_RestoreOldZ` / `CeilingLower_AboveCeiling` / `CeilingLower_FitsBetween` / `CeilingLower_CrunchOnPushFail` / `CeilingRaise_SkipBridge` / `CeilingRaise_DoomCompatMove` / `CeilingRaise_PassobjStack` / `CeilingRaise_StackZ` / `ViewZDelta` | `P_PushUp` 6762–6821 (6768: `if (thing->Top() > thing->ceilingz)`; 6770: `return 1;`; 6773: `if (thing->flags2 & MF2_THRUACTORS)`) |
-| `PushDown_BlocksOnFloor` / `OnlyPushDownWhenAbove` / `StackBelow` | `P_PushDown` 6831–6885 (6837: `if (thing->Z() <= thing->floorz)`; 6839: `return 1;`; 6851: `if (thing->flags6 & MF6_THRUSPECIES && thing->GetSpecies() == interse…`) |
-| `FloorDrop_NoChange` / `FloorDrop_SkipBridge` / `FloorDrop_GravityMove` / `RelativeFloorFollow` / `LiftDropWhenNoGravityChange` / `FloorRaise_OnFloor` / `FloorRaise_MarkNoFitBridge` / `FloorRaise_UseRelativePath` / `FloorRaise_SnapToFloor` / `CeilingLower_ClampToFloor` / `CeilingLower_OnFloorAtStart` / `CeilingLower_ResetToFloor` | `PIT_FloorDrop` 6893–6939 (6900: `if (oldfloorz == thing->floorz) return;`; 6901: `if (thing->flags4 & MF4_ACTLIKEBRIDGE) return; // do not move bridge …`; 6903: `if (thing->Vel.Z == 0 &&`) |
+| `PushUp_BlocksOnCeiling` / `PushUp_SkipThruActors` / `SkipSameSpecies` / `SkipReflectiveMissile` / `CannotPushIntersect` / `SkipPushIntersect` / `PushUp_KeepPositionAndCrunch` / `PushUp_CrunchAndUpdate` / `PushUp_RestoreOldZ` / `CeilingLower_AboveCeiling` / `CeilingLower_FitsBetween` / `CeilingLower_CrunchOnPushFail` / `CeilingRaise_SkipBridge` / `CeilingRaise_DoomCompatMove` / `CeilingRaise_PassobjStack` / `CeilingRaise_StackZ` / `ViewZDelta` | `P_PushUp` **6762–6821** |
+| `PushDown_BlocksOnFloor` / `OnlyPushDownWhenAbove` / `StackBelow` | `P_PushDown` **6831–6885** |
+| `FloorDrop_NoChange` / `FloorDrop_SkipBridge` / `FloorDrop_GravityMove` / `RelativeFloorFollow` / `LiftDropWhenNoGravityChange` / `FloorRaise_OnFloor` / `FloorRaise_MarkNoFitBridge` / `FloorRaise_UseRelativePath` / `FloorRaise_SnapToFloor` / `CeilingLower_ClampToFloor` / `CeilingLower_OnFloorAtStart` / `CeilingLower_ResetToFloor` | `PIT_FloorDrop` **6893–6939** |
 
-### Out-of-body uncredit (496)
+### Gross vs net
 
-| | `nativeLoc` |
-|--|----------:|
-| **Gross** | **162** |
-| **Out-of-body removed** | **0** |
-| **Honest** | **162** |
+| | Value |
+|--|------:|
+| Gross `nativeLoc` | **162** |
+| Net behavior-ported | **162** |
 
+
+**Post-review ratio:** 144/162 managed/native ≈ 89% (src file LOC at HEAD; see tally).
 
 ## Tests
 
+- `VmPMapSectorPushTests.PushUp_CeilingBlock`
+- `VmPMapSectorPushTests.PushUp_ThruActors`
+- `VmPMapSectorPushTests.Push_SkipReflective`
+- `VmPMapSectorPushTests.Push_CannotPushBridge`
+- `VmPMapSectorPushTests.PushDown_FloorBlock`
+- `VmPMapSectorPushTests.FloorDrop_MovesWithSector`
 
 ## Verified
 
@@ -45,4 +57,4 @@ Conversion commit: `ee89053440a814537fbb7c1b0d9e77dc4cfec4e6`.
 
 ## Credit rationale
 
-Credits ceiling/floor push blocks, thru-species/reflective skips, push mass/bridge gates, and floor-drop gravity policy from `p_map.cpp` (6762–6939).
+Credits ceiling/floor push blocks, thru-species/reflective skips, push mass/bridge gates, and floor-drop gravity policy from `p_map.cpp` (6762–6939). Disjoint from retired **499** crush-tail slices (no active tally credit on **6822–6830**).
