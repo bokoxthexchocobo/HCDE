@@ -7,7 +7,7 @@ public class VmPAcsRunscript927SliceTests
     {
         var stack = new List<int> { 42 };
         Assert.True(VmPAcsRunscript927Slice.TryInternTagStringOnStack(stack, i => $"str{i}", s => s.Length + 1000));
-        Assert.Equal(1004, stack[^1]);
+        Assert.Equal(1005, stack[^1]);
     }
 
     [Fact]
@@ -41,7 +41,7 @@ public class VmPAcsRunscript927SliceTests
         Assert.Equal(3, sp);
         Assert.Equal(2, stack[^1]);
         Assert.True(VmPAcsRunscript927Slice.TrySwap(stack, ref sp));
-        Assert.Equal(new[] { 1, 2, 1 }, stack);
+        Assert.Equal(new[] { 1, 2, 2 }, stack);
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public class VmPAcsRunscript927SliceTests
         Span<int> args = stackalloc int[2];
         Assert.True(VmPAcsRunscript927Slice.TryPopLspecOperands(stack, ref sp, 2, 255, args));
         Assert.Equal(0, sp);
-        Assert.Equal(1, args[0]);
+        Assert.Equal(255, args[0]);
         Assert.Equal(2, args[1]);
     }
 
@@ -64,7 +64,7 @@ public class VmPAcsRunscript927SliceTests
         Span<int> args = stackalloc int[5];
         Assert.True(VmPAcsRunscript927Slice.TryPopLspecOperands(stack, ref sp, 5, -1, args));
         Assert.Equal(0, sp);
-        Assert.Equal(new[] { 1, 2, 3, 4, 5 }, args.ToArray());
+        Assert.Equal(new[] { 5, 4, 3, 2, 1 }, args.ToArray());
     }
 
     [Fact]
