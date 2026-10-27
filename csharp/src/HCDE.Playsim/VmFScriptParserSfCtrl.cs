@@ -3,6 +3,14 @@ namespace HCDE.Playsim;
 /// <summary>Control-flow and HUD <c>FParser::SF_*</c> from <c>fragglescript/t_func.cpp</c> (502–721).</summary>
 public static partial class VmFScriptParser
 {
+    public sealed partial class ParserContext
+    {
+        public Action<string> MidPrint { get; init; } = _ => { };
+        public Func<float> GetConMidTime { get; init; } = () => 3f;
+        public Action<float> SetConMidTime { get; init; } = _ => { };
+        public Action<VmFScriptScript.FsScript, string> ParseInclude { get; init; } = (_, _) => { };
+    }
+
     const float AttnIdle = 1.001f;
 
     public static bool MobjLocalView(ParserContext ctx, object? mobj) =>
@@ -21,6 +29,22 @@ public static partial class VmFScriptParser
     }
 
     public static void SfReturn(ParserContext ctx) => throw new FsTerminatorException();
+
+    public static void SfInclude(ParserContext ctx)
+    {
+        if (!CheckArgs(ctx, 1) || ctx.Script == null)
+            return;
+        string tempstr;
+        if (ctx.TArgv[0].Type == SvtString)
+        {
+            tempstr = ctx.StringValue(ctx.TArgv[0]);
+            if (tempstr.Length > 8)
+                tempstr = tempstr[..8];
+        }
+        else
+            tempstr = $"{ctx.IntValue(ctx.TArgv[0])}";
+        ctx.ParseInclude(ctx.Script, tempstr);
+    }
 
     public static void SfBeep(ParserContext ctx)
     {
@@ -60,7 +84,7 @@ public static partial class VmFScriptParser
     public static void SfTip(ParserContext ctx)
     {
         if (ctx.TArgc > 0 && ctx.Script?.Trigger != null && MobjLocalView(ctx, ctx.Script.Trigger))
-            ctx.PrintHigh($"{GetFormatString(ctx, 0)}\n");
+            ctx.MidPrint(GetFormatString(ctx, 0));
     }
 
     public static void SfTimedTip(ParserContext ctx)
@@ -69,7 +93,10 @@ public static partial class VmFScriptParser
             return;
         if (ctx.Script?.Trigger == null || !MobjLocalView(ctx, ctx.Script.Trigger))
             return;
-        ctx.PrintHigh($"{GetFormatString(ctx, 1)}\n");
+        var saved = ctx.GetConMidTime();
+        ctx.SetConMidTime(ctx.IntValue(ctx.TArgv[0]) / 100f);
+        ctx.MidPrint(GetFormatString(ctx, 1));
+        ctx.SetConMidTime(saved);
     }
 
     public static void SfPlayerTip(ParserContext ctx)
@@ -81,7 +108,7 @@ public static partial class VmFScriptParser
             return;
         var mo = ctx.PlayerMo(plnum);
         if (mo != null && MobjLocalView(ctx, mo))
-            ctx.PrintHigh($"{GetFormatString(ctx, 1)}\n");
+            ctx.MidPrint(GetFormatString(ctx, 1));
     }
 
     public static void SfMessage(ParserContext ctx)

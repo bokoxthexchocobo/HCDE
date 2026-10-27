@@ -102,21 +102,65 @@ public class VmFScriptParserSfCtrlTests
     }
 
     [Fact]
-    public void SfTip_PrintsForLocalView()
+    public void SfTip_MidPrintsForLocalView()
     {
         string? printed = null;
         var trigger = new object();
         var ctx = new VmFScriptParser.ParserContext
         {
             Script = new VmFScriptScript.FsScript { Trigger = trigger },
-            PrintHigh = s => printed = s,
+            MidPrint = s => printed = s,
             LocalView = new VmPMobjLocalViewTouch.LocalViewQuery { ConsoleCamera = trigger },
             FormatStringFromArgs = (_, _) => "tip",
             TArgv = [new VmFScriptParser.ScriptValue()],
         };
         ctx.TArgc = 1;
         VmFScriptParser.SfTip(ctx);
-        Assert.Equal("tip\n", printed);
+        Assert.Equal("tip", printed);
+    }
+
+    [Fact]
+    public void SfTimedTip_RestoresConMidTime()
+    {
+        float midtime = 2.5f;
+        string? printed = null;
+        var trigger = new object();
+        var ctx = new VmFScriptParser.ParserContext
+        {
+            Script = new VmFScriptScript.FsScript { Trigger = trigger },
+            MidPrint = s => printed = s,
+            GetConMidTime = () => midtime,
+            SetConMidTime = v => midtime = v,
+            LocalView = new VmPMobjLocalViewTouch.LocalViewQuery { ConsoleCamera = trigger },
+            FormatStringFromArgs = (_, _) => "timed",
+            IntValue = v => v.IntValue,
+            TArgv = [new VmFScriptParser.ScriptValue(), new VmFScriptParser.ScriptValue()],
+        };
+        ctx.TArgc = 2;
+        ctx.TArgv[0].Type = VmFScriptParser.SvtInt;
+        ctx.TArgv[0].IntValue = 500;
+        VmFScriptParser.SfTimedTip(ctx);
+        Assert.Equal("timed", printed);
+        Assert.Equal(2.5f, midtime);
+    }
+
+    [Fact]
+    public void SfInclude_ParsesStringLumpName()
+    {
+        string? included = null;
+        var script = new VmFScriptScript.FsScript();
+        var ctx = new VmFScriptParser.ParserContext
+        {
+            Script = script,
+            ParseInclude = (s, lump) => included = lump,
+            StringValue = v => v.String,
+            TArgv = [new VmFScriptParser.ScriptValue()],
+        };
+        ctx.TArgc = 1;
+        ctx.TArgv[0].Type = VmFScriptParser.SvtString;
+        ctx.TArgv[0].String = "MYINCLUDE";
+        VmFScriptParser.SfInclude(ctx);
+        Assert.Equal("MYINCLUD", included);
     }
 
     [Fact]
