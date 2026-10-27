@@ -7,6 +7,19 @@ public static class VmINetGetPacket
     public const byte NcmdSetup = 0x80;
     public const byte NcmdExit = 0x04;
     public const int SocketError = -1;
+    public const int MinDatagramBytes = 5;
+    public const int TransmitCrcBytes = 4;
+
+    public static bool DatagramTooShort(int msgSize) => msgSize < MinDatagramBytes;
+
+    public static bool UnknownClientRequiresSetup(byte payloadCmd) => (payloadCmd & NcmdSetup) == 0;
+
+    public static bool PayloadIsCompressed(byte cmdByte) => (cmdByte & NcmdCompressed) != 0;
+
+    public static byte StripCompressionFlag(byte cmdByte) => (byte)(cmdByte & ~NcmdCompressed);
+
+    public static bool LateJoinAdmissionAllowed(bool authority, bool dedicatedServer, bool lateJoinEnabled) =>
+        authority && (dedicatedServer || lateJoinEnabled);
 
     public static void GetPacketNative(GetPacketNativeContext ctx)
     {
@@ -81,22 +94,22 @@ public static class VmINetGetPacket
             return (-1, 0);
         }
 
-        if (msgSize < 5)
+        if (DatagramTooShort(msgSize))
         {
             ctx.IncrementPacketTooShort?.Invoke();
             return (-1, 0);
         }
 
-        var dataStart = 4;
-        var payloadSize = msgSize - 4;
-        if (client == -1 && (ctx.TransmitBuffer[dataStart] & NcmdSetup) == 0)
+        var dataStart = TransmitCrcBytes;
+        var payloadSize = msgSize - TransmitCrcBytes;
+        if (client == -1 && UnknownClientRequiresSetup(ctx.TransmitBuffer[dataStart]))
             return (-1, 0);
 
         if (!VerifyPacketCrc(ctx, dataStart, payloadSize, out var setup))
             return (-1, 0);
 
-        ctx.NetBuffer[0] = (byte)(ctx.TransmitBuffer[dataStart] & ~NcmdCompressed);
-        if ((ctx.TransmitBuffer[dataStart] & NcmdCompressed) != 0)
+        ctx.NetBuffer[0] = StripCompressionFlag(ctx.TransmitBuffer[dataStart]);
+        if (PayloadIsCompressed(ctx.TransmitBuffer[dataStart]))
         {
             if (!TryDecodeCompressed(ctx, dataStart, msgSize, payloadSize, out msgSize))
                 return (-1, 0);
@@ -187,8 +200,7 @@ public static class VmINetGetPacket
         int msgSize)
     {
         var authority = ctx.IsLocalHcdeServiceAuthority?.Invoke() == true;
-        var listenLateJoin = !ctx.DedicatedServerMode && ctx.LateJoinEnabled;
-        var admissionAllowed = authority && (ctx.DedicatedServerMode || listenLateJoin);
+        var admissionAllowed = LateJoinAdmissionAllowed(authority, ctx.DedicatedServerMode, ctx.LateJoinEnabled);
         ctx.NetBufferLength = Math.Max(msgSize, 0);
         var processed = admissionAllowed && ctx.TryProcessSetupConnect?.Invoke(fromAddr) == true;
         if (processed)
