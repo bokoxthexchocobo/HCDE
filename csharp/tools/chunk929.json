@@ -1,0 +1,31 @@
+[
+  {
+    "name": "p-lnspec-sector-color-scale-chunk929",
+    "bucket": "conversion",
+    "note": "`LS_Sector_SetColor` through `LS_Sector_SetCeilingScale2` (`p_lnspec.cpp` **2419–2568**). Follows **928** (**≤2418**); `LS_Sector_SetRotation` at **2568+** deferred.",
+    "auditSeams": "Sector tag iterators, `PalEntry`, and `sector_t::SetColor`/`SetFade`/offset/scale application remain host seams.",
+    "auditRationale": "Honest **150**-line slice in **2269–3129** corridor; exclusive `VmPLnspecScrollSector929Slice.cs`.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 2419 --end 2568` and `--chunk 929 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| `SectorSetColor` | `LS_Sector_SetColor` **2421–2432** |\n| `SectorSetFade` | `LS_Sector_SetFade` **2434–2444** |\n| `CeilingPanning` / `PanningOffset` | `LS_Sector_SetCeilingPanning` **2446–2460** |\n| `FloorPanning` / `BuildFloorPanning` | `LS_Sector_SetFloorPanning` **2462–2476** |\n| `BuildCeilingPanning` | `LS_Sector_SetCeilingPanning` invoke seam **2452–2458** |\n| `InvertedScalePair` | scale prep **2493–2496**, **2516–2519** |\n| `SectorSetFloorScale` / `InvertScaleComponent` | `LS_Sector_SetFloorScale` **2478–2499** |\n| `SectorSetCeilingScale` | `LS_Sector_SetCeilingScale` **2501–2522** |\n| `SectorSetFloorScale2` / `InvertScaleFactor65536` | `LS_Sector_SetFloorScale2` **2524–2544** |\n| `SectorSetCeilingScale2` | `LS_Sector_SetCeilingScale2` **2546–2566** |\n| `ShouldApplyScale2X` / `ShouldApplyScale2Y` | **2538–2541**, **2560–2563** |\n| Gravity close seam | **2419** |\n\n### Chunk **929** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**928** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPLnspecScrollSector929Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Sector_SetColor",
+        "start": 2419,
+        "end": 2568,
+        "tests": [
+          "VmPLnspecScrollSector929SliceTests.Panning_CombinesIntAndFrac",
+          "VmPLnspecScrollSector929SliceTests.FloorScale_InvertsNonZero",
+          "VmPLnspecScrollSector929SliceTests.Scale2_Uses65536Factors",
+          "VmPLnspecScrollSector929SliceTests.CeilingScale_MatchesFloorInvert",
+          "VmPLnspecScrollSector929SliceTests.SectorSetColor_CarriesDesaturate",
+          "VmPLnspecScrollSector929SliceTests.ShouldApplyScale2_SkipsZeroFactor",
+          "VmPLnspecScrollSector929SliceTests.BuildFloorPanning_MarksFloorPlane"
+        ]
+      }
+    ]
+  }
+]
