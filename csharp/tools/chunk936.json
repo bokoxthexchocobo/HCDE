@@ -23,7 +23,7 @@
           "VmPLnspecLineSpecialDispatch936SliceTests.TailDispatchName_EndsAtGenericCrusherDist",
           "VmPLnspecLineSpecialDispatch936SliceTests.ScanMaxSpecialNumber_FindsLargest",
           "VmPLnspecLineSpecialDispatch936SliceTests.MaxLineSpecialFromRegistrySize_MatchesNative",
-          "VmPLnspecLineSpecialDispatch936SliceTests.BinarySearchMidpoint_ComputesAverage"
+          "VmPLnspecLineSpecialDispatch936SliceTests.CanAssignRegistrySlot_RejectsOutOfRange"
         ]
       }
     ]
