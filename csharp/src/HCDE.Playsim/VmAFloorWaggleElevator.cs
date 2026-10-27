@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary>Elevator lifecycle and waggle thinkers from <c>a_floor.cpp</c> (878–939, 1167–1353).</summary>
+/// <summary>Waggle thinkers and <c>EV_StartWaggle</c> from <c>a_floor.cpp</c> (**1163–1353**); chunk **922**.</summary>
 public static class VmAFloorWaggleElevator
 {
     public const int WglstateExpand = 1;
