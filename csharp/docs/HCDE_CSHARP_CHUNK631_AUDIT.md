@@ -15,7 +15,7 @@ Start-game ack wait, abort send, and `HostGame` through net message (`i_net.cpp`
 ## Managed
 
 `VmINetHostStartAck.cs`
-Managed LOC (tally): 166.
+Managed LOC (tally): 185.
 Conversion commit: `855f194ae78c20ae806fcae6dc0f1fd3c149db2a`.
 
 ## Padding review (2026-10-21)
@@ -35,7 +35,7 @@ Conversion commit: `855f194ae78c20ae806fcae6dc0f1fd3c149db2a`.
 | **Honest** | **176** |
 
 
-**Post-review ratio:** 166/176 managed/native ≈ 94% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 185/176 managed/native ≈ 105% (src file LOC at HEAD; see tally).
 
 ## Tests
 
