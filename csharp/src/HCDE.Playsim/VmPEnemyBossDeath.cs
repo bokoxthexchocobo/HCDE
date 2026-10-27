@@ -52,9 +52,20 @@ public static class VmPEnemyBossDeath
         public int[] Args { get; init; } = Array.Empty<int>();
     }
 
+    public const int MaxPlayersBossScan = 8;
+
+    public static bool BossCountsAsLiving(int health, int flags) =>
+        health > 0 || (flags & MfIcecorpse) != 0;
+
+    public static bool Map07LowerFloorOnBoss1(bool map07Special, int flags8, bool sameReplacement) =>
+        map07Special && ((flags8 & Mf8Map07Boss1) != 0 || sameReplacement);
+
+    public static bool Map07RaiseFloorOnBoss2(bool map07Special, int flags8, bool sameReplacement) =>
+        map07Special && ((flags8 & Mf8Map07Boss2) != 0 || sameReplacement);
+
     public static bool AnyPlayerAlive(LevelBossContext ctx)
     {
-        for (var i = 0; i < 8; i++)
+        for (var i = 0; i < MaxPlayersBossScan; i++)
         {
             if (ctx.PlayerInGame?.Invoke(i) == true && (ctx.PlayerHealth?.Invoke(i) ?? 0) > 0)
                 return true;
@@ -65,7 +76,7 @@ public static class VmPEnemyBossDeath
 
     public static bool LivingBossRemains(BossActor self, BossActor other) =>
         !other.IsSelf
-        && (other.Health > 0 || (other.Flags & MfIcecorpse) != 0)
+        && BossCountsAsLiving(other.Health, other.Flags)
         && (other.TypeName == self.TypeName || other.ReplaceeTypeName == self.ReplaceeTypeName);
 
     public static bool CheckBossDeath(BossActor self, LevelBossContext ctx)
@@ -136,10 +147,9 @@ public static class VmPEnemyBossDeath
 
         plan.RunVictory = true;
         plan.Speckill = (ctx.LevelFlags & LevelSpeckillmonsters) != 0;
-        plan.Map07Lower666 = (ctx.LevelFlags & LevelMap07Special) != 0
-            && ((flags8 & Mf8Map07Boss1) != 0 || ctx.SameReplacement);
-        plan.Map07Raise667 = (ctx.LevelFlags & LevelMap07Special) != 0
-            && ((flags8 & Mf8Map07Boss2) != 0 || ctx.SameReplacement);
+        var map07 = (ctx.LevelFlags & LevelMap07Special) != 0;
+        plan.Map07Lower666 = Map07LowerFloorOnBoss1(map07, flags8, ctx.SameReplacement);
+        plan.Map07Raise667 = Map07RaiseFloorOnBoss2(map07, flags8, ctx.SameReplacement);
         plan.SpecAction = ctx.LevelFlags & LevelSpecactionsmask;
         plan.ExitLevel = !ExitBlockedByDmflags(ctx);
         return plan;
