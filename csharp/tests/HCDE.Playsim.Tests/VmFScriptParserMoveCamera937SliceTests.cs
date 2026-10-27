@@ -13,16 +13,16 @@ public class VmFScriptParserMoveCamera937SliceTests
     public void BuildMoveCamera_RejectsNullTarget()
     {
         Assert.Null(VmFScriptParserMoveCamera937Slice.BuildMoveCamera(
-            new object(), null, 0, 0, 0, 0, 1, 1, 5, 0, 90, 0, 0));
+            new object(), null, 0, 0, 0, 0, 1, 1, 5, 0, 90, 0, 5));
     }
 
     [Fact]
     public void BuildMoveCamera_ReturnsZeroWhenFinished()
     {
         var invoke = VmFScriptParserMoveCamera937Slice.BuildMoveCamera(
-            new object(), new object(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            new object(), new object(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         Assert.NotNull(invoke);
-        Assert.Equal(0, invoke!.ReturnCode);
+        Assert.Equal(0, invoke!.Value.ReturnCode);
     }
 
     [Fact]
