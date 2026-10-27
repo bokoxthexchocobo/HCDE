@@ -1,0 +1,31 @@
+[
+  {
+    "name": "fscript-parser-sf-mom-trig-chunk907",
+    "bucket": "conversion",
+    "note": "`FParser::SF_ReactionTime` … `SF_PointToDist` from `fragglescript/t_func.cpp` (**1216–1378**). Folds post-**906** separators **1216–1223**; stops before `SF_SetCamera` (**1391**).",
+    "auditSeams": "`SetState`, `AcsActorPointer`, and `Actor` velocity/target fields are playsim-hosted; camera natives deferred.",
+    "auditRationale": "Honest **163**-line UNCredited band on exclusive `VmFScriptParserSfMom.cs` after **906** `PushThing` split; function-bounded through `PointToDist`.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 1216 --end 1378` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_ReactionTime` | yes |\n| `SF_MobjTarget` | yes |\n| `SF_MobjMomx` / `Momy` / `Momz` | yes |\n| `SF_PointToAngle` / `SF_PointToDist` | yes |\n\n| Managed | Native (`t_func.cpp`) |\n|---------|----------------------|\n| `SfReactionTime` | **1224–1238** |\n| `SfMobjTarget` | **1247–1269** |\n| `SfMobjMomx` | **1277–1292** |\n| `SfMobjMomy` | **1300–1315** |\n| `SfMobjMomz` | **1323–1338** |\n| `SfPointToAngle` | **1349–1360** |\n| `SfPointToDist` | **1369–1378** |\n| (separator) | **1216–1223** |\n| (separator) | **1239–1246** |\n| (separator) | **1270–1276** |\n| (separator) | **1293–1299** |\n| (separator) | **1316–1322** |\n| (separator) | **1339–1346** |\n| (separator) | **1361–1368** |\n\n### Chunk **907** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **163** |\n| **Net headline** | **+163** vs post-**906** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmFScriptParserSfMom.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/fragglescript/t_func.cpp",
+        "symbol": "FParser::SF_ReactionTime",
+        "start": 1216,
+        "end": 1378,
+        "tests": [
+          "VmFScriptParserSfMomTests.SfReactionTime_ReadWrite",
+          "VmFScriptParserSfMomTests.SfMobjTarget_SetsTarget",
+          "VmFScriptParserSfMomTests.SfMobjMomx_ReadWrite",
+          "VmFScriptParserSfMomTests.SfMobjMomy_ReadWrite",
+          "VmFScriptParserSfMomTests.SfMobjMomz_ReadWrite",
+          "VmFScriptParserSfMomTests.SfPointToAngle_East",
+          "VmFScriptParserSfMomTests.SfPointToDist_AxisDistance"
+        ]
+      }
+    ]
+  }
+]

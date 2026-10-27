@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary>Momentum and trig <c>FParser::SF_*</c> from <c>fragglescript/t_func.cpp</c> (1224–1378); `SF_PushThing` in chunk **906** slice.</summary>
+/// <summary>Reaction/momentum/trig <c>FParser::SF_*</c> from <c>fragglescript/t_func.cpp</c> (1216–1378); `SF_PushThing` in chunk **906** slice.</summary>
 public static partial class VmFScriptParser
 {
     public sealed partial class ParserContext
