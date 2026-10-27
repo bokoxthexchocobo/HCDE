@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 222640
+    "managedCSharpLoc": 222693
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 74533,
+    "convertedThisRunManaged": 74582,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 84204,
+    "convertedBehaviorManaged": 84253,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -12250,7 +12250,7 @@
         ],
         "nativeLoc": 190,
         "managedLoc": 396,
-        "conversionManagedCommit": "80f13da052ffc612c619bd5758057e0547716c13",
+        "conversionManagedCommit": "22dcb2c8d1ae8f907f4770a677b06cc89b9cbbb7",
         "portCommits": [
           "4d6fead63aeae227fdcfd7c8e0f87d411e66042a"
         ],
@@ -12799,7 +12799,7 @@
         ],
         "nativeLoc": 154,
         "managedLoc": 205,
-        "conversionManagedCommit": "80f13da052ffc612c619bd5758057e0547716c13",
+        "conversionManagedCommit": "22dcb2c8d1ae8f907f4770a677b06cc89b9cbbb7",
         "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SkipWhenSpecialFloorclip` / `ComputeShallowestClip` / `RunAdjustFloorClip` / terrain+3D helpers | `AdjustFloorClip` 6006\u20136071 |\n| `PlayerSubValid` / `RunPlayerPointerSubstitution` / `SubstitutePlayerPointers` / `SubstituteSectorSoundTargets` | `PlayerPointerSubstitution` 6093\u20136133 |\n| `MorphSubstitutionBlocked` / `EvaluateMorphSubstitution` / `RunPreMorphHooks` / morph gates | `MorphPointerSubstitution` 6143\u20136190 |\n\n### Out-of-body uncredit (485)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **155** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **154** |\n"
       },
       {
@@ -12882,7 +12882,7 @@
         ],
         "nativeLoc": 168,
         "managedLoc": 241,
-        "conversionManagedCommit": "80f13da052ffc612c619bd5758057e0547716c13",
+        "conversionManagedCommit": "22dcb2c8d1ae8f907f4770a677b06cc89b9cbbb7",
         "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `ResolveThingFloorType` / `UseActorFloorTerrain` / `Valid3dFloor` / `SkipUnderwaterFloor` / `WalkDownThroughFloorPortal` | `P_GetThingFloorType` 7475\u20137485 (7477: `if (thing->floorterrain >= 0)`; 7479: `return thing->floorterrain;`; 7483: `return thing->Sector->GetTerrain(sector_t::floor);`) |\n| `HitWaterFlags` | `HitWaterFlags` 7494\u20137498 |\n| `CompareZForCheckAbove` / `SelectFloorTerrain` / `ReturnLiquidOnHeightSecPlane` / `SkipWhenPredicting` / `CheckAboveCenter` / `Splashable3dTop` / `ZNearPlane` / `BlockBelowBottomPlane` / `UseHeightSecTerrain` / `NoSplashDefinition` / `DealDamageOnLand` / `SkipNovelLowVelocity` / `SmallSplashMass` / `AllowSplash` / `UseSmallSplashDef` / `ClientSideSmallSplash` / `LiquidWithoutSplash` / `WalkUpThroughCeilingPortal` / `TrySplashAt3dTop` / `RejectBelowBottom` / `SpawnSmallSplash` / `SpawnRegularSplash` / `ReturnLiquidOnly` | `P_HitWater` 7500\u20137656 (7502: `if (thing->player && (thing->player->cheats & CF_PREDICTING))`; 7503: `return false;`; 7511: `if (checkabove)`) |\n\n### Out-of-body uncredit (491)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **173** |\n| **Out-of-body removed** | **5** |\n| **Honest** | **168** |\n"
       },
       {
@@ -13835,7 +13835,7 @@
         ],
         "nativeLoc": 160,
         "managedLoc": 343,
-        "conversionManagedCommit": "80f13da052ffc612c619bd5758057e0547716c13",
+        "conversionManagedCommit": "22dcb2c8d1ae8f907f4770a677b06cc89b9cbbb7",
         "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ApplyInvasionSnapshot` / `RunApplyInvasionSnapshotPipeline` | `HCDEApplyInvasionSnapshot` **3351\u20133510** |\n| `RunClientCapabilityGate` | client + capability guards **3353\u2013359** |\n| `RunInitialHeaderValidation` / `RunHeaderValidationPipeline` / `TryReadSnapshotHeader` | magic + header size **3361\u2013383** |\n| `RunInvasionDisabledGametypeGate` / `TraceGametypeOverride` | disabled-mode gametype **3371\u2013378** (local `!invasionEnabled`) |\n| `ValidateSnapshotHeaderBytes` / `RunSnapshotHeaderValidation` | version/flags/state **3384\u2013390** |\n| `RunSpawnMetadataPipeline` / `ValidateSpawnMetadataBlock` | v2 spawn metadata **3417\u2013435** |\n| `BuildPayloadFromFields` / `PendingWaveFromState` | mirror field merge **3449\u2013471** |\n| `RunEmbeddedReplayPipeline` | authority + actor deltas **3475\u2013489** |\n| prior decision helpers (`VersionAllowed`, `ClampNonNegative`, \u2026) | shared predicates **3357\u2013end** |\n\n### Out-of-body uncredit (516)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **160** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **160** |\n",
         "auditManagedLocJustification": "Phased header validation, gametype gate, spawn-metadata branch, mirror apply hook, and embedded authority/actor replay mirror `HCDEApplyInvasionSnapshot` without hosting field readers or net globals."
       },
@@ -13937,7 +13937,7 @@
         ],
         "nativeLoc": 217,
         "managedLoc": 203,
-        "conversionManagedCommit": "80f13da052ffc612c619bd5758057e0547716c13",
+        "conversionManagedCommit": "22dcb2c8d1ae8f907f4770a677b06cc89b9cbbb7",
         "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|-------------------|\n| `IdenticalValueTypes` / `BothNumeric` / `IsApproxEqOperator` / `ApproxEqAllowedForRegType` / `BothConstant` / `FoldStringEqual` / `FoldFloatEqual` / `FoldIntEqual` / `LeftIntIsNull` / `LeftFloatIsNull` / `LeftPointerIsNull` / `ShouldUnaryNotRight` / `ShouldBoolCastRight` / `PointerTypesCompatible` / `StateLabelNullCompare` / `ValueTypeNil` / `StringConstToCharEligible` / `TranslationIdLegacyCast` / `CanImplicitCastStringToName` / `RequestAddressForPointerCompare` / `RightNumericLeftString` / `VectorTypesComparable` / `CanCompareStateLabelToNull` / `CanCompareNullToStateLabel` / `PointerRegTypesMatch` / `CompatiblePointersOrNull` / `ShouldPromoteAfterNumeric` / `SimplifyEqAgainstZero` / `SimplifyNeqAgainstZero` / `SkipZeroSimplifyWhenApprox` / `EmitStringCompareUsesApprox` / `CmpCheckFlag` / `CmpApproxFlag` / `ClassifyReg` / `TryGetNullConstant` / `TryFoldConstantCompare` / `ShouldRewriteEqToUnaryNot` / `ShouldRewriteNeqToBoolCast` / `OperandTypesNeedPromotion` / `IncompatibleOperands` / `ResultValueTypeBool` | `Resolve` 4175\u20134391 (4181: `if (!left || !right)`; 4184: `return nullptr;`; 4188: `if (left->ValueType != right->ValueType && !(left->IsVector2() && rig\u2026`) |\n\n### Out-of-body uncredit (519)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **217** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **217** |\n",
         "auditManagedLocJustification": "`RunCompareEqResolvePipeline` sequences `FxCompareEq::Resolve` without hosting `FxTypeCast` emission."
       },
@@ -16749,7 +16749,7 @@
           }
         ],
         "nativeLoc": 162,
-        "conversionManagedCommit": "80f13da052ffc612c619bd5758057e0547716c13",
+        "conversionManagedCommit": "22dcb2c8d1ae8f907f4770a677b06cc89b9cbbb7",
         "managedLoc": 177
       },
       {
@@ -19020,7 +19020,7 @@
         ],
         "nativeLoc": 323,
         "managedLoc": 343,
-        "conversionManagedCommit": "80f13da052ffc612c619bd5758057e0547716c13"
+        "conversionManagedCommit": "22dcb2c8d1ae8f907f4770a677b06cc89b9cbbb7"
       },
       {
         "name": "i-protocol-checked-chunk638",
@@ -19964,7 +19964,7 @@
         ],
         "nativeLoc": 247,
         "managedLoc": 268,
-        "conversionManagedCommit": "80f13da052ffc612c619bd5758057e0547716c13",
+        "conversionManagedCommit": "22dcb2c8d1ae8f907f4770a677b06cc89b9cbbb7",
         "auditManagedLocJustification": "Phased source-sector, 3D-floor, nearby-line, and damage-group apply pipelines mirror `P_GeometryRadiusAttack` without hosting block iterators or trace."
       },
       {
@@ -20027,7 +20027,7 @@
         ],
         "nativeLoc": 175,
         "managedLoc": 281,
-        "conversionManagedCommit": "80f13da052ffc612c619bd5758057e0547716c13",
+        "conversionManagedCommit": "22dcb2c8d1ae8f907f4770a677b06cc89b9cbbb7",
         "auditManagedLocJustification": "Phased opening, portal-queue, linked-portal, and managed 3D-floor rover loops mirror `PTR_SightTraverse` without hosting `P_SightOpening` or intercept iteration."
       },
       {
@@ -21126,7 +21126,7 @@
         ],
         "nativeLoc": 169,
         "managedLoc": 315,
-        "conversionManagedCommit": "80f13da052ffc612c619bd5758057e0547716c13",
+        "conversionManagedCommit": "22dcb2c8d1ae8f907f4770a677b06cc89b9cbbb7",
         "auditManagedLocJustification": "Phased intercept loop, 3D-water splash, heightsec water, miss finalize, and ffloor-on-plane helpers mirror `TraceTraverse` without hosting `LineCheck` / `ThingCheck` bodies."
       },
       {
@@ -21612,7 +21612,7 @@
         ],
         "nativeLoc": 250,
         "managedLoc": 235,
-        "conversionManagedCommit": "80f13da052ffc612c619bd5758057e0547716c13",
+        "conversionManagedCommit": "22dcb2c8d1ae8f907f4770a677b06cc89b9cbbb7",
         "auditManagedLocJustification": "Phased goal/last-enemy helpers, TID iterator tail, and `LastLookActor` TID invalidation mirror `p_enemy.cpp` 1489\u20131777 with injected sight/blockmap seams."
       },
       {
@@ -21964,7 +21964,7 @@
         ],
         "nativeLoc": 186,
         "managedLoc": 190,
-        "conversionManagedCommit": "80f13da052ffc612c619bd5758057e0547716c13"
+        "conversionManagedCommit": "22dcb2c8d1ae8f907f4770a677b06cc89b9cbbb7"
       },
       {
         "name": "portal-collect-use-lines-chunk718",
@@ -22462,7 +22462,7 @@
         ],
         "nativeLoc": 221,
         "managedLoc": 258,
-        "conversionManagedCommit": "80f13da052ffc612c619bd5758057e0547716c13"
+        "conversionManagedCommit": "22dcb2c8d1ae8f907f4770a677b06cc89b9cbbb7"
       },
       {
         "name": "p-interaction-poison-damage-chunk732",
@@ -22932,7 +22932,7 @@
         ],
         "nativeLoc": 181,
         "managedLoc": 197,
-        "conversionManagedCommit": "80f13da052ffc612c619bd5758057e0547716c13"
+        "conversionManagedCommit": "22dcb2c8d1ae8f907f4770a677b06cc89b9cbbb7"
       },
       {
         "name": "p-mobj-tid-missile-slam-chunk748",
@@ -26234,8 +26234,8 @@
           }
         ],
         "nativeLoc": 155,
-        "managedLoc": 135,
-        "conversionManagedCommit": "80f13da052ffc612c619bd5758057e0547716c13"
+        "managedLoc": 184,
+        "conversionManagedCommit": "bf6498e9c78eedb7da9d0a7227d65eecc677ba6b"
       },
       {
         "name": "p-spec-actor-sector-friction-chunk805",
@@ -26868,7 +26868,7 @@
         ],
         "nativeLoc": 197,
         "managedLoc": 288,
-        "conversionManagedCommit": "80f13da052ffc612c619bd5758057e0547716c13"
+        "conversionManagedCommit": "22dcb2c8d1ae8f907f4770a677b06cc89b9cbbb7"
       },
       {
         "name": "r-interpolate-core-plane-chunk816",
@@ -27855,7 +27855,7 @@
         ],
         "nativeLoc": 274,
         "managedLoc": 458,
-        "conversionManagedCommit": "80f13da052ffc612c619bd5758057e0547716c13"
+        "conversionManagedCommit": "22dcb2c8d1ae8f907f4770a677b06cc89b9cbbb7"
       },
       {
         "name": "dynlight-tick-chunk823",
@@ -29242,7 +29242,7 @@
         ],
         "nativeLoc": 168,
         "managedLoc": 172,
-        "conversionManagedCommit": "80f13da052ffc612c619bd5758057e0547716c13"
+        "conversionManagedCommit": "22dcb2c8d1ae8f907f4770a677b06cc89b9cbbb7"
       },
       {
         "name": "fscript-parser-sf-level-chunk847",
