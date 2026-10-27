@@ -19,6 +19,36 @@ public class VmINetGuestContactHostTests
     }
 
     [Fact]
+    public void GuestContactHostRejectionsNative_AppliesGameInfoService()
+    {
+        var packets = 1;
+        var hasGameInfo = false;
+        var buffer = new byte[64];
+        buffer[0] = 0x80;
+        buffer[1] = 12;
+        buffer[2] = 4;
+        VmINetGuestContactReject.GuestContactHostRejectionsNative(new GuestContactHostContext
+        {
+            NetBuffer = buffer,
+            NetBufferLength = 20,
+            NcmdSetup = 0x80,
+            PreHcdeService = 12,
+            HcdeServiceHeaderSize = 3,
+            ConsolePlayer = 0,
+            IsHcdeConnect = () => true,
+            GetConnection = () => packets-- > 0 ? new HostGetConnectionResult(true, (1u, 2)) : default,
+            CheckHcdePregameService = (_, _, _) => true,
+            HasGameInfo = _ => hasGameInfo,
+            SetHasGameInfo = (_, _) => hasGameInfo = true,
+            SetTicDup = _ => { },
+            SetGameId = _ => { },
+            ReadServerInfo = (_, _) => { },
+            MaxTicDup = 4,
+        });
+        Assert.True(hasGameInfo);
+    }
+
+    [Fact]
     public void GuestContactHostRejectionsNative_DedicatedLateJoinRetry()
     {
         var packets = 1;

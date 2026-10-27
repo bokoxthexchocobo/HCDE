@@ -9,6 +9,72 @@ public static class VmINetGuestContactReject
     private const byte HpsConsolePlayer = 8;
     private const byte HpsMapLoad = 9;
 
+    public static bool HandlePreInProgress(GuestContactHostContext ctx)
+    {
+        if (ctx.DedicatedJoinMode && ctx.DedicatedLateJoinRetryPendingSend)
+        {
+            ctx.DebugMark?.Invoke("ignoring PRE_IN_PROGRESS while dedicated late-join retry is pending send");
+            return true;
+        }
+        if (!ctx.DedicatedJoinMode && !ctx.DedicatedLateJoinRetryAttempted)
+        {
+            ctx.DedicatedLateJoinRetryAttempted = true;
+            ctx.DedicatedLateJoinRetryPendingSend = true;
+            ctx.DedicatedJoinMode = true;
+            ctx.ClearHostSessionToken?.Invoke();
+            ctx.ClearHostHcdeConnect?.Invoke();
+            ctx.NetMessage?.Invoke("Server is mid-match. Retrying dedicated late join...");
+            ctx.NetLog?.Invoke("Retrying connect with dedicated late-join flags after PRE_IN_PROGRESS");
+            ctx.DebugMark?.Invoke("guest connect fallback: retrying as dedicated late-join");
+            return true;
+        }
+        if (ctx.DedicatedJoinMode)
+            ctx.FatalNetError?.Invoke("The dedicated server rejected late join. The server may be running an older build.");
+        else
+            ctx.FatalNetError?.Invoke("The game has already started");
+        return false;
+    }
+
+    public static bool HandlePreConnectAck(GuestContactHostContext ctx, int msgSize)
+    {
+        if (ctx.ConsolePlayer != -1)
+            return true;
+        if (msgSize < 9)
+            return true;
+        ctx.SetHostSessionToken?.Invoke(ctx.ReadSessionToken?.Invoke(5) ?? 0);
+        ctx.DedicatedLateJoinRetryPendingSend = false;
+        var ackFlags = msgSize >= 10 ? ctx.NetBuffer[9] : (byte)0;
+        if ((ackFlags & ctx.PreConnectAckDedicated) != 0)
+            ctx.DedicatedJoinMode = true;
+        var serviceConnect = (ackFlags & ctx.PreConnectAckHcdeService) != 0;
+        if (serviceConnect)
+        {
+            if (msgSize < 12)
+                ctx.FatalNetError?.Invoke("Malformed HCDE service connect acknowledgement");
+            if (ctx.NetBuffer[10] != ctx.HcdeConnectProtocolVersion)
+                ctx.FatalNetError?.Invoke("Unsupported HCDE service connect version from server");
+            ctx.SetHostHcdeConnect?.Invoke(ctx.NetBuffer[10], ctx.NetBuffer[11]);
+            ctx.Printf?.Invoke($"NetSession:: HCDE service connect negotiated v{ctx.NetBuffer[10]} flags=0x{ctx.NetBuffer[11]:x2}");
+        }
+        var announcedMaxClients = ctx.NetBuffer[4];
+        if (announcedMaxClients < 1 || announcedMaxClients > ctx.MaxPlayers)
+        {
+            ctx.DebugMark?.Invoke($"ignored connect ack: invalid max-clients={announcedMaxClients}");
+            return true;
+        }
+        ctx.MaxClients = announcedMaxClients;
+        if (ctx.GetHostStatus?.Invoke() != ctx.CstatWaiting)
+        {
+            ctx.SetHostStatus?.Invoke(ctx.CstatWaiting);
+            ctx.NetClientUpdated?.Invoke(0);
+        }
+        ctx.UpdatePlayers?.Invoke(ctx.NetBuffer[3], ctx.MaxClients);
+        if (!serviceConnect)
+            ctx.FatalNetError?.Invoke("Server did not negotiate HCDE service. The host is not running HCDE or is an incompatible build.");
+        ctx.NetMessage?.Invoke("Waiting for server assignment");
+        return false;
+    }
+
     public static bool GuestContactHostRejectionsNative(GuestContactHostContext ctx)
     {
         while (ctx.GetConnection?.Invoke() is { GotPacket: true } conn)
@@ -23,27 +89,8 @@ public static class VmINetGuestContactReject
                 ctx.FatalNetError?.Invoke("The game is full");
             else if (pre == ctx.PreInProgress)
             {
-                if (ctx.DedicatedJoinMode && ctx.DedicatedLateJoinRetryPendingSend)
-                {
-                    ctx.DebugMark?.Invoke("ignoring PRE_IN_PROGRESS while dedicated late-join retry is pending send");
+                if (HandlePreInProgress(ctx))
                     continue;
-                }
-                if (!ctx.DedicatedJoinMode && !ctx.DedicatedLateJoinRetryAttempted)
-                {
-                    ctx.DedicatedLateJoinRetryAttempted = true;
-                    ctx.DedicatedLateJoinRetryPendingSend = true;
-                    ctx.DedicatedJoinMode = true;
-                    ctx.ClearHostSessionToken?.Invoke();
-                    ctx.ClearHostHcdeConnect?.Invoke();
-                    ctx.NetMessage?.Invoke("Server is mid-match. Retrying dedicated late join...");
-                    ctx.NetLog?.Invoke("Retrying connect with dedicated late-join flags after PRE_IN_PROGRESS");
-                    ctx.DebugMark?.Invoke("guest connect fallback: retrying as dedicated late-join");
-                    continue;
-                }
-                if (ctx.DedicatedJoinMode)
-                    ctx.FatalNetError?.Invoke("The dedicated server rejected late join. The server may be running an older build.");
-                else
-                    ctx.FatalNetError?.Invoke("The game has already started");
             }
             else if (pre == ctx.PreWrongPassword)
                 ctx.FatalNetError?.Invoke("Invalid password");
@@ -68,41 +115,8 @@ public static class VmINetGuestContactReject
                 ctx.FatalNetError?.Invoke("The server timed out during HCDE setup");
             else if (pre == ctx.PreConnectAck)
             {
-                if (ctx.ConsolePlayer != -1)
+                if (HandlePreConnectAck(ctx, msgSize))
                     continue;
-                if (msgSize < 9)
-                    continue;
-                ctx.SetHostSessionToken?.Invoke(ctx.ReadSessionToken?.Invoke(5) ?? 0);
-                ctx.DedicatedLateJoinRetryPendingSend = false;
-                var ackFlags = msgSize >= 10 ? ctx.NetBuffer[9] : (byte)0;
-                if ((ackFlags & ctx.PreConnectAckDedicated) != 0)
-                    ctx.DedicatedJoinMode = true;
-                var serviceConnect = (ackFlags & ctx.PreConnectAckHcdeService) != 0;
-                if (serviceConnect)
-                {
-                    if (msgSize < 12)
-                        ctx.FatalNetError?.Invoke("Malformed HCDE service connect acknowledgement");
-                    if (ctx.NetBuffer[10] != ctx.HcdeConnectProtocolVersion)
-                        ctx.FatalNetError?.Invoke("Unsupported HCDE service connect version from server");
-                    ctx.SetHostHcdeConnect?.Invoke(ctx.NetBuffer[10], ctx.NetBuffer[11]);
-                    ctx.Printf?.Invoke($"NetSession:: HCDE service connect negotiated v{ctx.NetBuffer[10]} flags=0x{ctx.NetBuffer[11]:x2}");
-                }
-                var announcedMaxClients = ctx.NetBuffer[4];
-                if (announcedMaxClients < 1 || announcedMaxClients > ctx.MaxPlayers)
-                {
-                    ctx.DebugMark?.Invoke($"ignored connect ack: invalid max-clients={announcedMaxClients}");
-                    continue;
-                }
-                ctx.MaxClients = announcedMaxClients;
-                if (ctx.GetHostStatus?.Invoke() != ctx.CstatWaiting)
-                {
-                    ctx.SetHostStatus?.Invoke(ctx.CstatWaiting);
-                    ctx.NetClientUpdated?.Invoke(0);
-                }
-                ctx.UpdatePlayers?.Invoke(ctx.NetBuffer[3], ctx.MaxClients);
-                if (!serviceConnect)
-                    ctx.FatalNetError?.Invoke("Server did not negotiate HCDE service. The host is not running HCDE or is an incompatible build.");
-                ctx.NetMessage?.Invoke("Waiting for server assignment");
             }
             else if (pre == ctx.PreHcdeService)
             {
@@ -199,9 +213,7 @@ public static class VmINetGuestContactReject
                         break;
                     if (ctx.CheckHcdePregameService?.Invoke(0, ctx.HcdeServiceHeaderSize + 9, "guest service gameinfo") != true)
                         break;
-                    if (ctx.HasGameInfo?.Invoke(ctx.ConsolePlayer) != true)
-                    {
-                    }
+                    VmINetGuestContactHost.HandleGameInfoService(ctx, conn.From);
                     break;
                 default:
                     break;
