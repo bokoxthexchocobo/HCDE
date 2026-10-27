@@ -5,12 +5,14 @@ namespace HCDE.Playsim;
 /// <summary>Math and query <c>FParser::SF_*</c> from <c>fragglescript/t_func.cpp</c> (2242–2393).</summary>
 public static partial class VmFScriptParser
 {
+    const double FsFracUnit = 65536.0;
+
     /// <summary>Native <c>fixedvalue</c> from <c>t_variable.cpp</c> (58–63).</summary>
     static double FsFixValue(ParserContext ctx, ScriptValue v) =>
         v.Type == SvtFixed ? v.FixedValue
-        : v.Type == SvtString ? double.Parse(ctx.StringValue(v), CultureInfo.InvariantCulture) * 65536.0
-        : v.Type == SvtMobj ? -65536.0
-        : ctx.IntValue(v) * 65536.0;
+        : v.Type == SvtString ? double.Parse(ctx.StringValue(v), CultureInfo.InvariantCulture) * FsFracUnit
+        : v.Type == SvtMobj ? -FsFracUnit
+        : ctx.IntValue(v) * FsFracUnit;
 
     static void SetReturnFsFix(ParserContext ctx, double fsfix)
     {
@@ -29,7 +31,7 @@ public static partial class VmFScriptParser
 
     public static void SfMin(ParserContext ctx)
     {
-        if (!CheckArgs(ctx, 1))
+        if (!CheckArgs(ctx, 2))
             return;
         var n1 = FsFixValue(ctx, ctx.TArgv[0]);
         var n2 = FsFixValue(ctx, ctx.TArgv[1]);
