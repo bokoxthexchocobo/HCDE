@@ -1,0 +1,29 @@
+[
+  {
+    "name": "p-lnspec-crusher-plat-exit-tele-chunk902",
+    "bucket": "conversion",
+    "note": "Generic crushers through `LS_Teleport_Line` (`p_lnspec.cpp` **915–1203**). Follows **901** (**≤913**); stops before `LS_ThrustThing` (**1215+**). Wider than **914–1200** to finish teleport-line function.",
+    "auditSeams": "`EV_DoCeiling` (crushers), `EV_DoPlat`, `EV_StopPlat`, `CheckIfExitIsGood`, `ExitLevel`, `ChangeLevel`, and `EV_Teleport*` are not hosted.",
+    "auditRationale": "Crusher slowdown/hexen modes, plat stop gametype gate, Heretic raise-and-stay default, generic lift target switch, exit gating, teleport flag packing, and silent line teleport args via `VmPLnspecCrusherPlatExitTeleSlice`.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 915 --end 1203` and `--chunk 902 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| `GenericCrusher*` | **915–935** |\n| `Plat_*` / `Generic_Lift` | **937–1065** |\n| `Exit_*` | **1067–1087** |\n| `Teleport_*` | **1089–1203** |\n\n### vs **901**\n\n| | Lines |\n|--|------:|\n| **901** | **701–913** |\n| **902** (this row) | **915–1203** (**289**) |\n| `LS_ThrustThing` | **1215+** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **289** |\n| Net behavior-ported | **289** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPLnspecCrusherPlatExitTeleSlice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Generic_Crusher",
+        "start": 915,
+        "end": 1203,
+        "tests": [
+          "VmPLnspecCrusherPlatExitTeleSliceTests.GenericCrusher_SlowSpeedUsesSlowdownMode",
+          "VmPLnspecCrusherPlatExitTeleSliceTests.PlatStop_HexenDefaultRemoves",
+          "VmPLnspecCrusherPlatExitTeleSliceTests.GenericLift_TargetTwoUsesDownToNearest",
+          "VmPLnspecCrusherPlatExitTeleSliceTests.TeleportNoFog_UseAngTwoAddsRotateBoom",
+          "VmPLnspecCrusherPlatExitTeleSliceTests.ExitNormal_RequiresGoodExit"
+        ]
+      }
+    ]
+  }
+]
