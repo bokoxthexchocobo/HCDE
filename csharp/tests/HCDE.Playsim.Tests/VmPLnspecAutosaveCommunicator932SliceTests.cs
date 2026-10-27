@@ -59,6 +59,6 @@ public class VmPLnspecAutosaveCommunicator932SliceTests
         Assert.Equal(0, invoke.LineFlags);
         Assert.True(invoke.SpawnJunk);
         Assert.Equal(2, invoke.SpawnX);
-        Assert.Equal(2, invoke.SpawnY);
+        Assert.Equal(-2, invoke.SpawnY);
     }
 }
