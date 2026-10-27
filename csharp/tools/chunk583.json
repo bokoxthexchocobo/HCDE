@@ -1,0 +1,92 @@
+[
+  {
+    "name": "action-remove-telefog-chunk583",
+    "bucket": "conversion",
+    "note": "`A_RemoveTarget` through `A_SwapTeleFog` (`p_actionfunctions.cpp` **4471–4635**). `DoRemove` body stays on **547** (**4441–4463**); stops before **547** `A_SetHealth` (**4652+**).",
+    "auditSeams": "`COPY_AAPTR`, `P_RemoveThing`, thinker iterators, and `PClassActor` filter resolution are not hosted.",
+    "auditRationale": "Remove-family dispatch guards and telefog assignment/swap mirrored by `VmActorRemoveActions` (parallel to **581** kill wrappers); **547** keeps exclusive `VmActorDoRemove.cs` for `DoRemove` filter policy only.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 583 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `ShouldRemoveWhenPresent` | `A_RemoveTarget` **4478–4480**, `A_RemoveTracer` **4497–4499**, `A_Remove` **4592–4594** |\n| `ShouldRemoveMaster` | `A_RemoveMaster` **4516–4518** |\n| `ShouldRemoveChildInIterator` / `IsRemoveChildOfMaster` | `A_RemoveChildren` **4541–4543** |\n| `ShouldRunRemoveSiblingsLoop` / `RemoveSiblingsLoop` | `A_RemoveSiblings` **4565–4571** |\n| `ShouldRemoveReference` | `A_Remove` **4591–4594** |\n| `AssignTeleFogTypes` | `A_SetTeleFog` **4613–4614** |\n| `ShouldSwapTeleFog` / `SwapTeleFogWhenDistinct` | `A_SwapTeleFog` **4628–4632** |\n\n### vs chunk **547** / **581**\n\n| | Lines |\n|--|------:|\n| **547** (`DoRemove`) | **4441–4463** |\n| **581** (kill family) | **4158–4422** |\n| **583** (this row) | **4471–4635** (**165** function-edge sum) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **165** |\n| Net behavior-ported | **165** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmActorRemoveActions.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_RemoveTarget",
+        "start": 4471,
+        "end": 4483,
+        "tests": [
+          "VmActorRemoveActionsTests.ShouldRemoveWhenPresent_Target",
+          "VmActorRemoveActionsTests.ShouldRemoveWhenPresent_Null"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_RemoveTracer",
+        "start": 4490,
+        "end": 4502,
+        "tests": [
+          "VmActorRemoveActionsTests.ShouldRemoveWhenPresent_Target"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_RemoveMaster",
+        "start": 4509,
+        "end": 4521,
+        "tests": [
+          "VmActorRemoveActionsTests.ShouldRemoveMaster_WhenSet"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_RemoveChildren",
+        "start": 4528,
+        "end": 4547,
+        "tests": [
+          "VmActorRemoveActionsTests.ShouldRemoveChildInIterator_MatchesHealthGate",
+          "VmActorRemoveActionsTests.ShouldRemoveChildInIterator_RemoveAllIgnoresHealth"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_RemoveSiblings",
+        "start": 4554,
+        "end": 4576,
+        "tests": [
+          "VmActorRemoveActionsTests.ShouldRunRemoveSiblingsLoop_WhenMasterSet",
+          "VmActorRemoveActionsTests.RemoveSiblingsLoop_RequiresDistinctActor"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_Remove",
+        "start": 4583,
+        "end": 4597,
+        "tests": [
+          "VmActorRemoveActionsTests.ShouldRemoveReference_WhenNonNull"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_SetTeleFog",
+        "start": 4607,
+        "end": 4616,
+        "tests": [
+          "VmActorRemoveActionsTests.AssignTeleFogTypes_MatchesNativeFields"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_SwapTeleFog",
+        "start": 4625,
+        "end": 4635,
+        "tests": [
+          "VmActorRemoveActionsTests.SwapTeleFogWhenDistinct_SkipsWhenEqual",
+          "VmActorRemoveActionsTests.ShouldSwapTeleFog_WhenTypesDiffer"
+        ]
+      }
+    ]
+  }
+]
