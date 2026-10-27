@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 58037,
+  "convertedThisRunNative": 58187,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 85297,
+  "convertedThisRunManaged": 85489,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 430768,
+  "remainingNative": 430618,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 76564,
+  "convertedBehaviorNative": 76714,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 77318,
-  "convertedBehaviorManaged": 94968,
+  "combinedBehaviorNative": 77468,
+  "convertedBehaviorManaged": 95160,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -34237,6 +34237,38 @@
       "nativeLoc": 150,
       "managedLoc": 148,
       "conversionManagedCommit": "a2db5067693cf20e3ca834d19212dddbc28976ae"
+    },
+    {
+      "name": "p-lnspec-linespecial-dispatch-chunk935",
+      "bucket": "conversion",
+      "note": "`LineSpecials[]` opcodes **58\u2013207** (`p_lnspec.cpp` **3605\u20133754**). Follows **934** (through opcode **57** at **\u22643604**); table continues at **3755+** deferred.",
+      "auditSeams": "`lnSpecFunc` binding and per-special handlers remain host seams; dispatch table credits names only (not handler bodies).",
+      "auditRationale": "Honest **150**-line UNCredited band toward **3982**; exclusive `VmPLnspecLineSpecialDispatch935Slice.cs`.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 3605 --end 3754` and `--chunk 935 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| `DispatchOpcodes58Through207` | `LineSpecials[]` **3605\u20133754** |\n| `ContinuedDispatchName` | opcode\u2192name lookup **3605\u20133754** |\n| `ContinuedDispatchIsNop` | NOP slots **3605**, **3647\u20133650**, **3655**, **3665**, **3668\u20133671**, etc. |\n| `ContinuedDispatchIsPlat` | plat cluster **3607\u20133612**, **3719**, **3753\u20133754** |\n| `ContinuedDispatchIsTeleport` | **3617\u20133625**, **3701** |\n| `ContinuedDispatchIsAcs` | **3627\u20133632** |\n| `ContinuedDispatchIsLight` | **3656\u20133664** |\n| `ContinuedDispatchIsThingSpawn` | **3677\u20133684**, **3686** |\n| polyobj movers | **3606**, **3633\u20133639** |\n| floor/ceiling instant | **3613\u20133616** |\n| ACS / FS / fog table slots | **3697\u20133699**, **3704\u20133706** |\n| align/pan/scale slots | **3730\u20133736**, **3738\u20133739** |\n| generic movers | **3747\u20133752** |\n| `LS_SetPlayerProperty` table entry only | **3738** (handler body credited elsewhere) |\n\n### Chunk **935** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**934** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPLnspecLineSpecialDispatch935Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LineSpecials",
+          "start": 3605,
+          "end": 3754,
+          "tests": [
+            "VmPLnspecLineSpecialDispatch935SliceTests.ContinuedDispatchEntryCount_Is150",
+            "VmPLnspecLineSpecialDispatch935SliceTests.ContinuedDispatchName_MapsTeleportOpcode",
+            "VmPLnspecLineSpecialDispatch935SliceTests.ContinuedDispatchIsAcs_RecognizesExecute",
+            "VmPLnspecLineSpecialDispatch935SliceTests.ContinuedDispatchIsNop_ScrollTextureSlot",
+            "VmPLnspecLineSpecialDispatch935SliceTests.ContinuedDispatchName_TableSlotForSetPlayerProperty",
+            "VmPLnspecLineSpecialDispatch935SliceTests.ContinuedDispatchName_EndsAtPerpetualRaiseLip",
+            "VmPLnspecLineSpecialDispatch935SliceTests.ContinuedDispatchIsLight_IncludesStrobe"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 192,
+      "conversionManagedCommit": "12a4eab6d9b8cea0edc9a03c46a33086496ac1be"
     }
   ],
   "behaviorNativeChecksum": 508086,
