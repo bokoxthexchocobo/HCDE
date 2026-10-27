@@ -6,6 +6,57 @@ public static partial class VmFScriptParser
     static bool SectorCeilingActive(AuthoritySimulation sim, int sectorIndex) =>
         sim.Motions.Any(m => m.SectorIndex == sectorIndex && m.MovesCeiling && !m.Completed);
 
+    static double CenterCeilingHeight(AuthoritySimulation sim, int sectorIndex) =>
+        sim.CeilingOf(sectorIndex);
+
+    static int CeilingMoveDirection(double dest, double current) =>
+        dest > current ? 1 : -1;
+
+    static int CeilingCrushDamage(int crush) => crush != 0 ? 10 : -1;
+
+    static void SetCeilingHeightReturnFixed(ParserContext ctx, double returnVal)
+    {
+        ctx.TReturn.Type = SvtFixed;
+        ctx.TReturn.FixedValue = (long)(returnVal * 65536.0);
+    }
+
+    static int FindFirstTaggedSector(ParserContext ctx, int tag)
+    {
+        foreach (var sectorIndex in SectorsForTag(ctx, tag))
+            return sectorIndex;
+        return -1;
+    }
+
+    static void SetLightLevelOnTaggedSectors(AuthoritySimulation sim, ParserContext ctx, int tag, int level)
+    {
+        foreach (var sectorIndex in SectorsForTag(ctx, tag))
+            sim.Lights[sectorIndex] = (short)Math.Clamp(level, short.MinValue, short.MaxValue);
+    }
+
+    static bool ApplyImmediateCeilingHeight(
+        AuthoritySimulation sim,
+        int sectorIndex,
+        double dest,
+        int crush,
+        ref double returnVal)
+    {
+        if (SectorCeilingActive(sim, sectorIndex))
+            return false;
+
+        var current = CenterCeilingHeight(sim, sectorIndex);
+        var crushDamage = CeilingCrushDamage(crush);
+        if (crush != 0 && CeilingMoveDirection(dest, current) > 0
+            && TryCrushRaisingCeiling(sim, sectorIndex, dest, crushDamage))
+        {
+            returnVal = 0;
+            return true;
+        }
+
+        if (!SectorCeilingActive(sim, sectorIndex))
+            sim.Ceilings[sectorIndex] = Math.Max(sim.Floors[sectorIndex], dest);
+        return true;
+    }
+
     public static void SfCeilingHeight(ParserContext ctx)
     {
         if (!CheckArgs(ctx, 1) || ctx.Simulation == null)
@@ -18,28 +69,19 @@ public static partial class VmFScriptParser
             var crush = ctx.TArgc >= 3 ? ctx.IntValue(ctx.TArgv[2]) : 0;
             var returnVal = 1.0;
             foreach (var sectorIndex in SectorsForTag(ctx, tag))
-            {
-                if (SectorCeilingActive(sim, sectorIndex))
-                    continue;
-                var current = sim.CeilingOf(sectorIndex);
-                var crushDamage = crush != 0 ? 10 : -1;
-                if (crush != 0 && dest > current && TryCrushRaisingCeiling(sim, sectorIndex, dest, crushDamage))
-                    returnVal = 0;
-                else if (!SectorCeilingActive(sim, sectorIndex))
-                    sim.Ceilings[sectorIndex] = Math.Max(sim.Floors[sectorIndex], dest);
-            }
-            ctx.TReturn.Type = SvtFixed;
-            ctx.TReturn.FixedValue = (long)(returnVal * 65536.0);
+                ApplyImmediateCeilingHeight(sim, sectorIndex, dest, crush, ref returnVal);
+            SetCeilingHeightReturnFixed(ctx, returnVal);
             return;
         }
 
-        var sectors = SectorsForTag(ctx, tag).ToList();
-        if (sectors.Count == 0)
+        var firstSector = FindFirstTaggedSector(ctx, tag);
+        if (firstSector < 0)
         {
             ctx.ScriptError($"sector not found with tagnum {tag}\n");
             return;
         }
-        ReturnFixed(ctx, sim.CeilingOf(sectors[0]));
+
+        SetCeilingHeightReturnFixed(ctx, CenterCeilingHeight(sim, firstSector));
     }
 
     public static void SfMoveCeiling(ParserContext ctx)
@@ -60,18 +102,19 @@ public static partial class VmFScriptParser
     {
         if (!CheckArgs(ctx, 1) || ctx.Simulation == null)
             return;
+        var sim = ctx.Simulation;
         var tag = ctx.IntValue(ctx.TArgv[0]);
-        var sectors = SectorsForTag(ctx, tag).ToList();
-        if (sectors.Count == 0)
+        var firstSector = FindFirstTaggedSector(ctx, tag);
+        if (firstSector < 0)
             return;
         if (ctx.TArgc > 1)
         {
             var level = ctx.IntValue(ctx.TArgv[1]);
-            foreach (var sectorIndex in sectors)
-                ctx.Simulation.Lights[sectorIndex] = (short)Math.Clamp(level, short.MinValue, short.MaxValue);
+            SetLightLevelOnTaggedSectors(sim, ctx, tag, level);
         }
+
         ctx.TReturn.Type = SvtInt;
-        ctx.TReturn.IntValue = ctx.Simulation.LightOf(sectors[0]);
+        ctx.TReturn.IntValue = sim.LightOf(firstSector);
     }
 
     public static void SfFloorTexture(ParserContext ctx)
@@ -85,15 +128,18 @@ public static partial class VmFScriptParser
             ctx.ScriptError($"sector not found with tagnum {tag}\n");
             return;
         }
-        var sector = ctx.Simulation.Level.Sectors[sectors[0]];
+        var firstSector = sectors[0];
+        var sector = ctx.Simulation.Level.Sectors[firstSector];
         if (ctx.TArgc > 1)
         {
             var pic = ctx.StringValue(ctx.TArgv[1]);
             foreach (var sectorIndex in sectors)
                 ctx.Simulation.Level.Sectors[sectorIndex].FloorPic = pic;
+            sector = ctx.Simulation.Level.Sectors[firstSector];
         }
+
         ctx.TReturn.Type = SvtString;
-        ctx.TReturn.String = sector.FloorPic;
+        ctx.TReturn.String = sector.FloorPic ?? string.Empty;
     }
 
     static bool TryCrushRaisingCeiling(AuthoritySimulation sim, int sectorIndex, double dest, int crushDamage)
