@@ -12,7 +12,7 @@ public class VmActorPrecalcBonesTests
     [Fact]
     public void RangeBoneApplyEnd_ClampsStartPlusLength()
     {
-        Assert.Equal(7, VmActorPrecalcBones.RangeBoneApplyEnd(10, 10, 5, 4));
+        Assert.Equal(9, VmActorPrecalcBones.RangeBoneApplyEnd(10, 10, 5, 4));
         Assert.Equal(5, VmActorPrecalcBones.RangeBoneApplyEnd(10, 5, 0, 100));
     }
 
