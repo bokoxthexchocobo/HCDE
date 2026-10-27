@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 223631
+    "managedCSharpLoc": 223633
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 49178,
+    "convertedThisRunNative": 49342,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 77604,
+    "convertedThisRunManaged": 77712,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 439627,
+    "remainingNative": 439463,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 67705,
+    "convertedBehaviorNative": 67869,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 68459,
-    "convertedBehaviorManaged": 87275,
+    "combinedBehaviorNative": 68623,
+    "convertedBehaviorManaged": 87383,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -32600,6 +32600,68 @@
         "nativeLoc": 214,
         "managedLoc": 117,
         "conversionManagedCommit": "ff6c78574db6da5ff7f34c5e3bf42c792d16fb70"
+      },
+      {
+        "name": "action-face-movement-copy-sprite-chunk582",
+        "bucket": "conversion",
+        "note": "`A_FaceMovementDirection`, `A_CopySpriteFrame`, `A_SetVisibleRotation`, and `A_SetTranslation` (`p_actionfunctions.cpp` **4897\u20135082**). Stops before **552** `A_CheckTerrain` (**5090+**). Re-lands retired **550** hull with honest **\u2265150** `nativeLoc`.",
+        "auditSeams": "`COPY_AAPTR`, `AActor::SetAngle`/`SetPitch`, sprite/frame assignment, visible-rotation fields, and `SetTranslation` VM calls are not hosted.",
+        "auditRationale": "Face-movement yaw/pitch limits, copy-sprite guards, visible-rotation flag gates, and translation name check mirrored by `VmActorFaceMovementCopySprite` and tests (retired **550** was **144** honest after out-of-body trim).",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 582 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `EarlyFaceMovementFail`, `FmdfFlags`, `ShouldAdjustYaw`, `ShouldAdjustPitch` | `A_FaceMovementDirection` **4897\u20134918**, **4920\u20134948** |\n| `ClampYawDelta`, `ClampPitchDelta`, `PitchFromVelocity` | **4928\u20134947**, **4955\u20134980** |\n| `CopySpriteFrameShouldFail`, `ShouldCopySprite`, `ShouldCopyFrame` | `A_CopySpriteFrame` **4997\u20135014** |\n| `SetVisibleRotationShouldFail`, `ShouldAssignVisible*` | `A_SetVisibleRotation` **5032\u20135066** |\n| `SetTranslationRequiresName` | `A_SetTranslation` **5075\u20135081** |\n\n### vs chunk **547** / **552**\n\n| | Lines |\n|--|------:|\n| **547** (`CheckBlock`) | ends **4888** |\n| **582** (this row) | **4897\u20135082** (**186** function-edge sum) |\n| **552** (`A_CheckTerrain`) | **5090+** (not in this row) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **186** |\n| Net behavior-ported | **186** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmActorFaceMovementCopySprite.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_FaceMovementDirection",
+            "start": 4897,
+            "end": 4983,
+            "tests": [
+              "VmActorFaceMovementCopySpriteTests.EarlyFaceMovementFail_BothNoPitchAndNoAngle",
+              "VmActorFaceMovementCopySpriteTests.ShouldAdjustYaw_WhenMoving",
+              "VmActorFaceMovementCopySpriteTests.ClampYawDelta_RespectsLimit",
+              "VmActorFaceMovementCopySpriteTests.ClampPitchDelta_WhenOverLimit",
+              "VmActorFaceMovementCopySpriteTests.ShouldAdjustPitch_WhenFlagClear"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_CopySpriteFrame",
+            "start": 4991,
+            "end": 5015,
+            "tests": [
+              "VmActorFaceMovementCopySpriteTests.CopySpriteFrameShouldFail_WhenBothSkipFlags",
+              "VmActorFaceMovementCopySpriteTests.ShouldCopySprite_WhenFlagClear",
+              "VmActorFaceMovementCopySpriteTests.CopySpriteFrameShouldFail_WhenSameActor"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_SetVisibleRotation",
+            "start": 5024,
+            "end": 5067,
+            "tests": [
+              "VmActorFaceMovementCopySpriteTests.SetVisibleRotationShouldFail_WithoutMobj",
+              "VmActorFaceMovementCopySpriteTests.ShouldAssignVisibleStartAngle_WhenFlagClear",
+              "VmActorFaceMovementCopySpriteTests.ShouldAssignVisibleEndPitch_WhenFlagClear"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_SetTranslation",
+            "start": 5075,
+            "end": 5082,
+            "tests": [
+              "VmActorFaceMovementCopySpriteTests.SetTranslationRequiresName_WhenPresent",
+              "VmActorFaceMovementCopySpriteTests.SetTranslationRequiresName_WhenMissing"
+            ]
+          }
+        ],
+        "nativeLoc": 164,
+        "managedLoc": 108,
+        "conversionManagedCommit": "744f1ac47f969ad203da0b229ff7ebc95ab10a95"
       }
     ],
     "behaviorNativeChecksum": 508086,
