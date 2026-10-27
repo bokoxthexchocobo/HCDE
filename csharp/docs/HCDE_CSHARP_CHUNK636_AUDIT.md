@@ -40,7 +40,7 @@ Client slots, HCDE authority, live routing, Win32 `neterror` (`i_net.cpp` 4417�
 ## Managed
 
 `VmINetAuthorityLive.cs`, `VmINetWinNetError.cs`, `VmINetInitNetwork.cs`
-Managed LOC (tally): 356.
+Managed LOC (tally): 374.
 Conversion commit: `e619c981316f037b909d2be5f1bb65c5ee859cd6`.
 
 ## Padding review (2026-10-21)
@@ -73,7 +73,7 @@ Conversion commit: `e619c981316f037b909d2be5f1bb65c5ee859cd6`.
 | **Honest** | **371** |
 
 
-**Post-review ratio:** 356/371 managed/native ≈ 96% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 374/371 managed/native ≈ 101% (src file LOC at HEAD; see tally).
 
 ## Tests
 
