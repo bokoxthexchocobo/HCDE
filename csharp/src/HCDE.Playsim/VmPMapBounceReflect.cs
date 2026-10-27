@@ -31,6 +31,10 @@ public static class VmPMapBounceReflect
 
     public static bool MissileSpecialHitBlock(int hit) => hit == 0;
 
+    public static bool SpecialBounceHitPass(int hit) => hit == 1;
+
+    public static bool SpecialBounceHitBlock(int hit) => hit == 0;
+
     public static bool ThrureflectPass(bool reflective, bool thrureflect) => reflective && thrureflect;
 
     public static bool BounceAllOrReflective(bool allActors, bool missileReflective) => allActors || missileReflective;
@@ -63,6 +67,24 @@ public static class VmPMapBounceReflect
     public static bool StateBounceCreature(bool shootable, bool noblood) =>
         shootable && noblood == false;
 
+    public static bool ShouldAssignHitTarget(int flags7) => (flags7 & Mf7HitTarget) != 0;
+
+    public static bool ShouldAssignHitMaster(int flags7) => (flags7 & Mf7HitMaster) != 0;
+
+    public static bool ShouldAssignHitTracer(int flags7) => (flags7 & Mf7HitTracer) != 0;
+
+    public static bool MissileRipReflectEligible(bool missile, bool rip, bool dontrip, bool nobossrip, bool boss, bool reflective) =>
+        missile && (!rip || dontrip || (nobossrip && boss)) && reflective;
+
+    public static bool NonPlayerNonMonster(bool blockingPlayerNull, bool blockingMonster) =>
+        blockingPlayerNull && !blockingMonster;
+
+    public static bool EnterActorBouncePath(bool allActors, bool missileRipReflect, bool nonPlayerNonMonster) =>
+        allActors || missileRipReflect || nonPlayerNonMonster;
+
+    public static int BounceStateLookupCount(bool shootable, bool noblood) =>
+        StateBounceCreature(shootable, noblood) ? 3 : 2;
+
     public readonly record struct BounceActorContext(
         bool Missile,
         int SpecialHit,
@@ -83,6 +105,8 @@ public static class VmPMapBounceReflect
     {
         if (ctx.Missile && MissileSpecialHitPass(ctx.SpecialHit)) return true;
         if (ctx.Missile && MissileSpecialHitBlock(ctx.SpecialHit)) return false;
+        if (ctx.Missile && SpecialBounceHitPass(ctx.SpecialBounce)) return true;
+        if (ctx.Missile && SpecialBounceHitBlock(ctx.SpecialBounce)) return false;
         if (ThrureflectPass(ctx.Reflective, ctx.Thrureflect)) return true;
         return false;
     }
