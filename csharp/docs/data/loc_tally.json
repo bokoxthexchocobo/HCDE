@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 58787,
+  "convertedThisRunNative": 58637,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 85960,
+  "convertedThisRunManaged": 85859,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 430018,
+  "remainingNative": 430168,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 77314,
+  "convertedBehaviorNative": 77164,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 78068,
-  "convertedBehaviorManaged": 95631,
+  "combinedBehaviorNative": 77918,
+  "convertedBehaviorManaged": 95530,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -34365,38 +34365,6 @@
       "nativeLoc": 150,
       "managedLoc": 87,
       "conversionManagedCommit": "c966dcebfcca9e9b490623fd9048ae8814ae5ebc"
-    },
-    {
-      "name": "fscript-heal-missile-map-chunk939",
-      "bucket": "conversion",
-      "note": "`SF_TestLocation` close through `SF_ObjState` argc-2 branch from `fragglescript/t_func.cpp` (**2985\u20133134**). Follows **938** (**\u22642984**); **3135\u20133244** sub-150 deferred.",
-      "auditSeams": "`P_TestMobjLocation`, `P_SpawnMissile`, `SpawnedThings`, `SetState`/`FindState`, and `script_error` remain host seams.",
-      "auditRationale": "Honest **150**-line UNCredited band in **2685\u20133244** corridor; exclusive `VmFScriptParserCombatMap939Slice.cs`.",
-      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 2985 --end 3134` and `--chunk 939 --band` \u2192 UNCredited, exit 0.",
-      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`fragglescript/t_func.cpp`) |\n|---------|-----------------------------------|\n| chunk **939** hull | **2985\u20133134** |\n| `TestLocationReturnInt` | `SF_TestLocation` tail **2980\u20132985** |\n| `HealModeFromArgc` / `OptionalActor` | `SF_HealObj` **2993\u20133020** |\n| `HealSyncsPlayer` | player health sync **3009**, **3015** |\n| `ObjDeadReturn` | `SF_ObjDead` **3029\u20133047** |\n| `SpawnMissileCanRun` | `SF_SpawnMissile` **3055\u20133069** |\n| `BuildMapThingExist` | `SF_MapThingNumExist` **3077\u20133098** |\n| `MapThingsCountReturn` | `SF_MapThings` **3106\u20133112** |\n| `BuildObjState` / `ObjStateNames` | `SF_ObjState` **3121\u20133138** |\n| `ObjStateValid` | state range **3146\u20133150** (seam) |\n| `MapThingIndexInRange` | bounds **3087\u20133088** |\n| invalid heal argc | **3018\u20133019** |\n| corpse flag test | **3043\u20133044** |\n\n### Chunk **939** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**938** |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmFScriptParserCombatMap939Slice.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_HealObj",
-          "start": 2985,
-          "end": 3134,
-          "tests": [
-            "VmFScriptParserCombatMap939SliceTests.HealModeFromArgc_RestoresDefaultWhenSingleArg",
-            "VmFScriptParserCombatMap939SliceTests.ObjDeadReturn_DetectsCorpseFlag",
-            "VmFScriptParserCombatMap939SliceTests.BuildMapThingExist_RejectsOutOfRange",
-            "VmFScriptParserCombatMap939SliceTests.MapThingsCountReturn_UsesSize",
-            "VmFScriptParserCombatMap939SliceTests.BuildObjState_UsesTriggerForUnaryForm",
-            "VmFScriptParserCombatMap939SliceTests.ObjStateValid_RejectsZero",
-            "VmFScriptParserCombatMap939SliceTests.SpawnMissileCanRun_RequiresBoth"
-          ]
-        }
-      ],
-      "nativeLoc": 150,
-      "managedLoc": 101,
-      "conversionManagedCommit": "900a6d963371bcdb29d00963406e412c782a6924"
     }
   ],
   "behaviorNativeChecksum": 508086,
