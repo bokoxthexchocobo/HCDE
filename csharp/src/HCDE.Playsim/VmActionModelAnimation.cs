@@ -51,27 +51,36 @@ public static class VmActionModelAnimation
         return false;
     }
 
-    public static bool AnimationLayerHasPointerFields(bool hasCurAnim, bool hasPrevAnim) =>
-        hasCurAnim || hasPrevAnim;
-
-    public static bool AnimationSequenceTracksLoopFrame(int loopFrame) => loopFrame >= 0;
-
-    public static bool ActorHasPerInstanceAnimationIds(int animationIdCount) => animationIdCount > 0;
-
-    public static bool ActorAnimationIdSlotValid(int animationId0) => animationId0 >= 0;
-
-    public static bool ModelDataModelSlotValid(int modelId0) => modelId0 >= 0;
-
-    public static int ResolveFallbackModelId(int modelDataModelId0, int baseSpriteModelId0)
+    public static bool TryResolveFindFModelModelIndex(
+        bool hasBaseSpriteFramesKey,
+        bool actorHasAnimationIds,
+        int actorAnimId0,
+        int classAnimId0,
+        int modelsCount,
+        bool hasModelDataModels,
+        int modelDataModelId0,
+        int baseSpriteModelId0,
+        out int modelIndex)
     {
-        if (modelDataModelId0 >= 0)
-            return modelDataModelId0;
+        if (!hasBaseSpriteFramesKey)
+        {
+            modelIndex = -1;
+            return false;
+        }
 
-        return baseSpriteModelId0;
+        var animId = ResolvePrimaryAnimId(actorHasAnimationIds, actorAnimId0, classAnimId0);
+        if (animId >= 0 && animId < modelsCount)
+        {
+            modelIndex = animId;
+            return true;
+        }
+
+        if (hasModelDataModels && modelDataModelId0 >= 0 && modelDataModelId0 < modelsCount)
+        {
+            modelIndex = modelDataModelId0;
+            return true;
+        }
+
+        return TryPickBaseSpriteModelIndex(baseSpriteModelId0, modelsCount, out modelIndex);
     }
-
-    public static bool FindFModelMissingFrames(bool hasBaseSpriteKey) => !hasBaseSpriteKey;
-
-    public static bool SelectModelsArrayIndex(int animId, int modelCount) =>
-        animId >= 0 && animId < modelCount;
 }
