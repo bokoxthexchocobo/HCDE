@@ -1,0 +1,29 @@
+[
+  {
+    "name": "p-lnspec-ceiling-movers-chunk901",
+    "bucket": "conversion",
+    "note": "`LS_Ceiling_LowerAndCrush` through `LS_Generic_Ceiling` (`p_lnspec.cpp` **701–913**). Follows **900** (**≤700**); stops before `LS_Generic_Crusher` (**915+**). Trimmed past **900** to complete generic-ceiling function.",
+    "auditSeams": "`EV_DoCeiling`, `EV_CeilingCrushStop`, and `EV_StopCeiling` are not hosted.",
+    "auditRationale": "Ceiling crush-stop gametype gate, move-to-value sign, crush-type slowdown flags, silent crush variants, instant movers, and generalized ceiling target switch via `VmPLnspecCeilingMoversSlice`.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 701 --end 913` and `--chunk 901 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| Lower/crush + crush-stop | **701–729** |\n| Crush-raise / move-to-value / instant | **731–774** |\n| Crush A/dist/silent variants | **776–810** |\n| Raise/lower/to-instant movers | **812–876** |\n| `CeilingStop` / `GenericCeiling` | **878–913** |\n\n### vs **900**\n\n| | Lines |\n|--|------:|\n| **900** | **472–700** |\n| **901** (this row) | **701–913** (**213**) |\n| `LS_Generic_Crusher` | **915+** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **213** |\n| Net behavior-ported | **213** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPLnspecCeilingMoversSlice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Ceiling_LowerAndCrush",
+        "start": 701,
+        "end": 913,
+        "tests": [
+          "VmPLnspecCeilingMoversSliceTests.CeilingCrushStop_HexenDefaultRemoves",
+          "VmPLnspecCeilingMoversSliceTests.CeilingMoveToValueTimes8_NegativeHeight",
+          "VmPLnspecCeilingMoversSliceTests.GenericCeiling_RaiseTargetSelectsHighest",
+          "VmPLnspecCeilingMoversSliceTests.GenericCeiling_CrushFlagSetsTwenty",
+          "VmPLnspecCeilingMoversSliceTests.CeilingCrushAndRaiseDist_UsesDistAsHeight"
+        ]
+      }
+    ]
+  }
+]
