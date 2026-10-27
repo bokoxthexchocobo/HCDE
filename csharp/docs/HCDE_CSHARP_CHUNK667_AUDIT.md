@@ -14,7 +14,7 @@ Whole `P_InterceptVector` and `P_LineOpening` (`p_maputl.cpp` 78–239).
 ## Managed
 
 `VmPMapUtlLineOpening.cs`
-Managed LOC (tally): 144.
+Managed LOC (tally): 153.
 Conversion commit: `f70c39f226eddf9ef262054359996fd64e3b4835`.
 
 ## Padding review (2026-10-21)
@@ -33,7 +33,7 @@ Conversion commit: `f70c39f226eddf9ef262054359996fd64e3b4835`.
 | **Honest** | **152** |
 
 
-**Post-review ratio:** 144/152 managed/native ≈ 95% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 153/152 managed/native ≈ 101% (src file LOC at HEAD; see tally).
 
 ## Tests
 
