@@ -7,20 +7,25 @@ public static class VmINetQueryDecode
 {
     public const byte InvsDisabled = 0;
 
+    public static bool QueryReplyTooShort(int length) => length < 8;
+
+    public static bool QueryHeaderChallengeValid(uint challenge) =>
+        challenge == (uint)NetConstants.MsgChallenge;
+
     public static bool TryReadServerQuerySnapshotNative(
         ReadOnlySpan<byte> data,
         int length,
         ServerQuerySnapshotDecodeTarget snapshot,
         Action<string>? setError)
     {
-        if (length < 8)
+        if (QueryReplyTooShort(length))
         {
             setError?.Invoke("Query reply was too short");
             return false;
         }
 
         var challenge = VmINetPregameService.ReadBe32Native(data);
-        if (challenge != (uint)NetConstants.MsgChallenge)
+        if (!QueryHeaderChallengeValid(challenge))
         {
             setError?.Invoke($"Unexpected query reply header: {challenge}");
             return false;
