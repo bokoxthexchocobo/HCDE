@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 58637,
+  "convertedThisRunNative": 58487,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 85859,
+  "convertedThisRunManaged": 85772,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 430168,
+  "remainingNative": 430318,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 77164,
+  "convertedBehaviorNative": 77014,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 77918,
-  "convertedBehaviorManaged": 95530,
+  "combinedBehaviorNative": 77768,
+  "convertedBehaviorManaged": 95443,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -34333,38 +34333,6 @@
       "nativeLoc": 150,
       "managedLoc": 152,
       "conversionManagedCommit": "3e2cd68e0fabbbfea45abdf8296acbc015b20360"
-    },
-    {
-      "name": "fscript-type-legacy-chunk938",
-      "bucket": "conversion",
-      "note": "`SF_MobjValue` \u2026 `SF_TestLocation` from `fragglescript/t_func.cpp` (**2835\u20132984**). Follows **937** (**\u22642834**); **2985+** deferred toward **3244**.",
-      "auditSeams": "`actorvalue`/`stringvalue`/`fixedvalue`, `Spawn`, `P_RadiusAttack`, `P_TestMobjLocation`, and `SetOrigin` remain host seams.",
-      "auditRationale": "Honest **150**-line UNCredited band in **2685\u20133244** corridor; exclusive `VmFScriptParserTypeLegacy938Slice.cs`.",
-      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 2835 --end 2984` and `--chunk 938 --band` \u2192 UNCredited, exit 0.",
-      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`fragglescript/t_func.cpp`) |\n|---------|-----------------------------------|\n| chunk **938** hull | **2835\u20132984** |\n| `BuildMobjCoerce` / `ReturnTypeMobj` | `SF_MobjValue` **2834\u20132841** |\n| `BuildStringCoerce` / `StringCoerceValue` | `SF_StringValue` **2843\u20132857** |\n| `ReturnTypeInt` | `SF_IntValue` **2859\u20132866** |\n| `ReturnTypeFixed` | `SF_FixedValue` **2868\u20132875** |\n| Legacy section header | **2878\u20132882** |\n| `BuildSpawnExplosion` / `SpawnExplosionZ` | `SF_SpawnExplosion` **2884\u20132911** |\n| `RadiusAttackCanRun` | `SF_RadiusAttack` **2919\u20132936** |\n| `BuildSetObjPosition` | `SF_SetObjPosition` **2944\u20132959** |\n| `TestLocationActor` / `TestLocationReturn` | `SF_TestLocation` **2967\u20132984** |\n| `CoerceRequiresOneArg` | type coercions **2836\u20132871** |\n| spawn death return | **2902\u20132908** |\n| optional Z from floor | **2896\u20132899** |\n\n### Chunk **938** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**937** |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmFScriptParserTypeLegacy938Slice.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_MobjValue",
-          "start": 2835,
-          "end": 2984,
-          "tests": [
-            "VmFScriptParserTypeLegacy938SliceTests.StringCoerceValue_UsesDirectString",
-            "VmFScriptParserTypeLegacy938SliceTests.SpawnExplosionZ_UsesFloorWhenArgMissing",
-            "VmFScriptParserTypeLegacy938SliceTests.BuildSpawnExplosion_ReturnsZeroWhenSpawnFails",
-            "VmFScriptParserTypeLegacy938SliceTests.RadiusAttackCanRun_RequiresBothActors",
-            "VmFScriptParserTypeLegacy938SliceTests.BuildSetObjPosition_DefaultsYAndZ",
-            "VmFScriptParserTypeLegacy938SliceTests.TestLocationActor_FallsBackToTrigger",
-            "VmFScriptParserTypeLegacy938SliceTests.TestLocationReturn_ConvertsBool"
-          ]
-        }
-      ],
-      "nativeLoc": 150,
-      "managedLoc": 87,
-      "conversionManagedCommit": "c966dcebfcca9e9b490623fd9048ae8814ae5ebc"
     }
   ],
   "behaviorNativeChecksum": 508086,
