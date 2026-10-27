@@ -9,6 +9,15 @@ public static class VmINetGuestContactReject
     private const byte HpsConsolePlayer = 8;
     private const byte HpsMapLoad = 9;
 
+    public static bool GuestHostSetupDatagram(GuestContactHostContext ctx) =>
+        ctx.RemoteClient == 0 && ctx.NetBuffer[0] == ctx.NcmdSetup;
+
+    public static bool WithinPlayableClientLimit(int announcedMaxClients, int maxPlayers) =>
+        announcedMaxClients >= 1 && announcedMaxClients <= maxPlayers;
+
+    public static bool ValidHcdeConsoleAssignment(int assigned, int rosterMax, int firstPlayable, int maxPlayers) =>
+        assigned >= firstPlayable && assigned < rosterMax && rosterMax <= maxPlayers;
+
     public static bool HandlePreInProgress(GuestContactHostContext ctx)
     {
         if (ctx.DedicatedJoinMode && ctx.DedicatedLateJoinRetryPendingSend)
@@ -57,7 +66,7 @@ public static class VmINetGuestContactReject
             ctx.Printf?.Invoke($"NetSession:: HCDE service connect negotiated v{ctx.NetBuffer[10]} flags=0x{ctx.NetBuffer[11]:x2}");
         }
         var announcedMaxClients = ctx.NetBuffer[4];
-        if (announcedMaxClients < 1 || announcedMaxClients > ctx.MaxPlayers)
+        if (!WithinPlayableClientLimit(announcedMaxClients, ctx.MaxPlayers))
         {
             ctx.DebugMark?.Invoke($"ignored connect ack: invalid max-clients={announcedMaxClients}");
             return true;
@@ -80,9 +89,7 @@ public static class VmINetGuestContactReject
         while (ctx.GetConnection?.Invoke() is { GotPacket: true } conn)
         {
             var msgSize = ctx.NetBufferLength;
-            if (ctx.RemoteClient != 0)
-                continue;
-            if (ctx.NetBuffer[0] != ctx.NcmdSetup)
+            if (!GuestHostSetupDatagram(ctx))
                 continue;
             var pre = ctx.NetBuffer[1];
             if (pre == ctx.PreFull)
@@ -140,7 +147,7 @@ public static class VmINetGuestContactReject
                     var connectedPlayers = ctx.NetBuffer[ctx.HcdeServiceHeaderSize + 1];
                     var rosterMax = ctx.NetBuffer[ctx.HcdeServiceHeaderSize + 2];
                     var firstPlayable = ctx.GetFirstPlayableClientSlot?.Invoke() ?? 0;
-                    if (assigned < firstPlayable || assigned >= rosterMax || rosterMax > ctx.MaxPlayers)
+                    if (!ValidHcdeConsoleAssignment(assigned, rosterMax, firstPlayable, ctx.MaxPlayers))
                     {
                         ctx.DebugMark?.Invoke($"ignored invalid HCDE console player assignment slot={assigned} max={rosterMax}");
                         break;
@@ -166,7 +173,7 @@ public static class VmINetGuestContactReject
                     if (ctx.CheckHcdePregameService?.Invoke(0, ctx.HcdeServiceHeaderSize + 2, "guest service heartbeat") != true)
                         break;
                     var hbMax = ctx.NetBuffer[ctx.HcdeServiceHeaderSize + 1];
-                    if (hbMax < 1 || hbMax > ctx.MaxPlayers)
+                    if (!WithinPlayableClientLimit(hbMax, ctx.MaxPlayers))
                     {
                         ctx.DebugMark?.Invoke($"ignored HCDE service heartbeat: invalid max-clients={hbMax}");
                         break;
