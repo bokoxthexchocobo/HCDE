@@ -37,6 +37,18 @@ public class VmActorFaceMovementCopySpriteTests
         Assert.True(VmActorFaceMovementCopySprite.ShouldAdjustYaw(default, 1, 0));
 
     [Fact]
+    public void ShouldAdjustPitch_WhenFlagClear() =>
+        Assert.True(VmActorFaceMovementCopySprite.ShouldAdjustPitch(default));
+
+    [Fact]
+    public void ShouldCopySprite_WhenFlagClear() =>
+        Assert.True(VmActorFaceMovementCopySprite.ShouldCopySprite(default));
+
+    [Fact]
+    public void CopySpriteFrameShouldFail_WhenSameActor() =>
+        Assert.True(VmActorFaceMovementCopySprite.CopySpriteFrameShouldFail(true, true, true, default));
+
+    [Fact]
     public void FaceMovementPitch_AdjustsViaClamp()
     {
         var target = VmActorFaceMovementCopySprite.PitchFromVelocity(0, 1, 1);
@@ -61,4 +73,12 @@ public class VmActorFaceMovementCopySpriteTests
     [Fact]
     public void SetTranslationRequiresName_WhenPresent() =>
         Assert.True(VmActorFaceMovementCopySprite.SetTranslationRequiresName(true));
+
+    [Fact]
+    public void SetTranslationRequiresName_WhenMissing() =>
+        Assert.False(VmActorFaceMovementCopySprite.SetTranslationRequiresName(false));
+
+    [Fact]
+    public void ShouldAssignVisibleEndPitch_WhenFlagClear() =>
+        Assert.True(VmActorFaceMovementCopySprite.ShouldAssignVisibleEndPitch(default));
 }

@@ -33,6 +33,8 @@ public static class VmActorFaceMovementCopySprite
     public static bool ShouldAdjustYaw(FmdfFlags flags, double velX, double velY) =>
         (flags & FmdfFlags.NoAngle) == 0 && (velX != 0 || velY != 0);
 
+    public static bool ShouldAdjustPitch(FmdfFlags flags) => (flags & FmdfFlags.NoPitch) == 0;
+
     public static double ClampYawDelta(double current, double target, double angleLimit, double offset)
     {
         if (angleLimit <= 0)
