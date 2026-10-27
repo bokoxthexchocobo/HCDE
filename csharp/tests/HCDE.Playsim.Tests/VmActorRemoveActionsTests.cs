@@ -95,4 +95,12 @@ public class VmActorRemoveActionsTests
         Assert.False(VmActorRemoveActions.ChildHealthAllowsRemove(50, false));
         Assert.True(VmActorRemoveActions.ChildHealthAllowsRemove(50, true));
     }
+
+    [Fact]
+    public void RmvfFlags_MatchNativeRmvbBits()
+    {
+        Assert.True(VmActorRemoveActions.UsesEitherRemoveFilter(VmActorRemoveActions.RmvfFlags.Either));
+        Assert.True(VmActorRemoveActions.AllowsMissileRemove(VmActorRemoveActions.RmvfFlags.Missiles));
+        Assert.False(VmActorRemoveActions.AllowsMonsterRemove(VmActorRemoveActions.RmvfFlags.NoMonsters));
+    }
 }

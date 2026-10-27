@@ -31,11 +31,15 @@ public static class VmActorRemoveActions
     public static bool ShouldRemoveChildInIterator(object? actorMaster, object self, int health, bool removeAll) =>
         IsRemoveChildOfMaster(actorMaster, self) && ChildHealthAllowsRemove(health, removeAll);
 
-    public static bool ShouldRunRemoveChildrenLoop(object? nextActor) => nextActor is not null;
-
-    public static bool ShouldRunRemoveSiblingsInnerLoop(object? nextActor) => nextActor is not null;
-
     public static bool ShouldRunRemoveSiblingsLoop(object? selfMaster) => selfMaster is not null;
+
+    public static bool UsesEitherRemoveFilter(RmvfFlags flags) => (flags & RmvfFlags.Either) != 0;
+
+    public static bool AllowsMiscRemove(RmvfFlags flags) => (flags & RmvfFlags.Misc) != 0;
+
+    public static bool AllowsMonsterRemove(RmvfFlags flags) => (flags & RmvfFlags.NoMonsters) == 0;
+
+    public static bool AllowsMissileRemove(RmvfFlags flags) => (flags & RmvfFlags.Missiles) != 0;
 
     public static bool RemoveSiblingsLoop(
         bool hasMaster,
