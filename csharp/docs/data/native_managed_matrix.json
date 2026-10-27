@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 225302
+    "managedCSharpLoc": 225344
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 52581,
+    "convertedThisRunNative": 52801,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 80080,
+    "convertedThisRunManaged": 80237,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 436224,
+    "remainingNative": 436004,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 71108,
+    "convertedBehaviorNative": 71328,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 71862,
-    "convertedBehaviorManaged": 89751,
+    "combinedBehaviorNative": 72082,
+    "convertedBehaviorManaged": 89908,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -29504,8 +29504,8 @@
           }
         ],
         "nativeLoc": 215,
-        "managedLoc": 284,
-        "conversionManagedCommit": "5eb70108f126410c7261bea91053d590a2f73ce4"
+        "managedLoc": 285,
+        "conversionManagedCommit": "a1829b5936566d5fad426d85c44f3db015c59998"
       },
       {
         "name": "fscript-parser-sf-ctrl-chunk852",
@@ -33095,6 +33095,43 @@
         "nativeLoc": 275,
         "managedLoc": 166,
         "conversionManagedCommit": "a2024e01792e5333889bc01a878a5ade28ddf85d"
+      },
+      {
+        "name": "fscript-parser-sf-script-control-chunk904",
+        "bucket": "conversion",
+        "note": "`FParser::SF_Goto` \u2026 `SF_PlayerInGame` from `fragglescript/t_func.cpp` (**502\u2013721**). Pivot after **903** `p_lnspec` fragmentation; retired **873**/**838** bands re-credited with `ParseInclude`, `C_MidPrint`/`con_midtime`, and `Level->ExitLevel` paths honest in-tree.",
+        "auditSeams": "`Script->ParseInclude`, `C_MidPrint`, `con_midtime`, `S_Sound`, and `Level->ExitLevel` are not hosted; `ParseInclude`/`MidPrint`/sound/exit hooks on `ParserContext` mirror native control flow.",
+        "auditRationale": "First honest \u2265150 UNCredited slice in `t_func.cpp` **502\u20131593** after **903**; whole-function band through `SF_PlayerInGame` (**714**); `SF_PlayerName` deferred at **722**.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 502 --end 721` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_Goto` | yes |\n| `SF_Return` | yes |\n| `SF_Include` | yes |\n| `SF_Input` | yes |\n| `SF_Beep` | yes |\n| `SF_Clock` | yes |\n| `SF_ExitLevel` | yes |\n| `SF_Tip` / `SF_TimedTip` | yes |\n| `SF_PlayerTip` | yes |\n| `SF_Message` / `SF_PlayerMsg` | yes |\n| `SF_PlayerInGame` | yes |\n\n| Managed | Native (`t_func.cpp`) |\n|---------|----------------------|\n| `SfGoto` | **509\u2013524** |\n| `SfReturn` | **532\u2013535** |\n| `SfInclude` | **543\u2013559** |\n| `SfInput` | **567\u2013570** |\n| `SfBeep` | **578\u2013581** |\n| `SfClock` | **589\u2013593** |\n| `SfExitLevel` | **603\u2013606** |\n| `SfTip` | **614\u2013621** |\n| `SfTimedTip` | **633\u2013642** |\n| `SfPlayerTip` | **651\u2013661** |\n| `SfMessage` | **669\u2013676** |\n| `SfPlayerMsg` | **684\u2013694** |\n| `SfPlayerInGame` | **702\u2013714** |\n| (separator) | **502\u2013508** |\n| (separator) | **525\u2013531** |\n| (separator) | **536\u2013542** |\n| (separator) | **560\u2013566** |\n| (separator) | **571\u2013577** |\n| (separator) | **582\u2013588** |\n| (separator) | **594\u2013602** |\n| (separator) | **607\u2013613** |\n| (separator) | **622\u2013632** |\n| (separator) | **643\u2013650** |\n| (separator) | **662\u2013668** |\n| (separator) | **677\u2013683** |\n| (separator) | **695\u2013701** |\n| (separator) | **715\u2013721** |\n\n### Chunk **904** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **220** |\n| **Net headline** | **+220** vs post-**903** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmFScriptParserSfCtrl.cs",
+          "csharp/src/HCDE.Playsim/VmFScriptInitFunctionsReg904.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_Goto",
+            "start": 502,
+            "end": 721,
+            "tests": [
+              "VmFScriptParserSfCtrlTests.SfGoto_JumpsToLabel",
+              "VmFScriptParserSfCtrlTests.SfReturn_ThrowsTerminator",
+              "VmFScriptParserSfCtrlTests.SfInclude_ParsesStringLumpName",
+              "VmFScriptParserSfCtrlTests.SfBeep_StartsChatSound",
+              "VmFScriptParserSfCtrlTests.SfClock_ReturnsCentiseconds",
+              "VmFScriptParserSfCtrlTests.SfExitLevel_MarksExited",
+              "VmFScriptParserSfCtrlTests.SfTip_MidPrintsForLocalView",
+              "VmFScriptParserSfCtrlTests.SfTimedTip_RestoresConMidTime",
+              "VmFScriptParserSfCtrlTests.SfMessage_PrintsHigh",
+              "VmFScriptParserSfCtrlTests.SfPlayerMsg_PrintsHighForPlayer",
+              "VmFScriptParserSfCtrlTests.SfPlayerInGame_ReturnsSlotState"
+            ]
+          }
+        ],
+        "nativeLoc": 220,
+        "managedLoc": 156,
+        "conversionManagedCommit": "a1829b5936566d5fad426d85c44f3db015c59998"
       }
     ],
     "behaviorNativeChecksum": 508086,
