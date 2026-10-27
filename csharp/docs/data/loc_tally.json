@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 58487,
+  "convertedThisRunNative": 58337,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 85772,
+  "convertedThisRunManaged": 85620,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 430318,
+  "remainingNative": 430468,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 77014,
+  "convertedBehaviorNative": 76864,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 77768,
-  "convertedBehaviorManaged": 95443,
+  "combinedBehaviorNative": 77618,
+  "convertedBehaviorManaged": 95291,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -34301,38 +34301,6 @@
       "nativeLoc": 150,
       "managedLoc": 130,
       "conversionManagedCommit": "2b2579b17f1b45d04e95e73806f2d45637f2877c"
-    },
-    {
-      "name": "fscript-movecamera-act-chunk937",
-      "bucket": "conversion",
-      "note": "`SF_SetWeapon` close, `SF_MoveCamera`, `SF_ObjAwaken` \u2026 `SF_MobjValue` open from `fragglescript/t_func.cpp` (**2685\u20132834**). Pivot from **p_lnspec** tail; continues **2685\u20133244** corridor.",
-      "auditSeams": "`ScriptUtil::Exec`, `S_Sound`, `actorvalue`/`floatvalue`, and `CallActivate` remain host seams.",
-      "auditRationale": "Honest **150**-line UNCredited band; exclusive `VmFScriptParserMoveCamera937Slice.cs` (table-slot / prior `SfAct` bodies not matrix-credited).",
-      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 2685 --end 2834` and `--chunk 937 --band` \u2192 UNCredited, exit 0.",
-      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`fragglescript/t_func.cpp`) |\n|---------|-----------------------------------|\n| `SetWeaponRequiresTwoArgs` | `SF_SetWeapon` **2679\u20132683** |\n| `BuildMoveCamera` / `MoveToward` | `SF_MoveCamera` **2694\u20132765** |\n| `StepCameraYaw` / `DeltaAngleDegrees` | angle path **2728\u20132761** |\n| `MoveCameraReturn` | return **2763\u20132764** |\n| `CameraColliderScale` | radius/height **2715\u20132716** |\n| `AwakenActor` | `SF_ObjAwaken` **2777\u20132794** |\n| `AmbientSoundRequiresArgs` | `SF_AmbientSound` **2805\u20132810** |\n| `MarkSecretExit` | `SF_ExitSecret` **2822\u20132825** |\n| `MobjValueRequiresArgs` | `SF_MobjValue` **2834\u20132840** |\n| `MoveCameraRejectInvalidActors` | guard **2700\u20132703** |\n| `MoveFinished` | move complete **2721\u20132726** |\n| chunk **937** hull | **2685\u20132834** |\n\n### Chunk **937** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**936** |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmFScriptParserMoveCamera937Slice.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_MoveCamera",
-          "start": 2685,
-          "end": 2834,
-          "tests": [
-            "VmFScriptParserMoveCamera937SliceTests.MoveToward_ClampsToSpeed",
-            "VmFScriptParserMoveCamera937SliceTests.BuildMoveCamera_RejectsNullTarget",
-            "VmFScriptParserMoveCamera937SliceTests.BuildMoveCamera_ReturnsZeroWhenFinished",
-            "VmFScriptParserMoveCamera937SliceTests.AwakenActor_UsesTriggerWhenNoArgs",
-            "VmFScriptParserMoveCamera937SliceTests.DeltaAngleDegrees_WrapsAcrossZero",
-            "VmFScriptParserMoveCamera937SliceTests.SetWeaponRequiresTwoArgs",
-            "VmFScriptParserMoveCamera937SliceTests.MobjValueRequiresArgs"
-          ]
-        }
-      ],
-      "nativeLoc": 150,
-      "managedLoc": 152,
-      "conversionManagedCommit": "3e2cd68e0fabbbfea45abdf8296acbc015b20360"
     }
   ],
   "behaviorNativeChecksum": 508086,
