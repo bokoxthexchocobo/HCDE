@@ -30,6 +30,23 @@ public class VmPSwitchCheckRangeTests
     }
 
     [Fact]
+    public void NullSide_AllowsSwitch() =>
+        Assert.True(VmPSwitchCheckRange.CheckSwitchRange(
+            new VmPSwitchCheckRange.User(),
+            new VmPSwitchCheckRange.Line { Flags = VmPSwitchCheckRange.MlCheckswitchrange },
+            0,
+            new VmPSwitchCheckRange.CheckContext(),
+            false,
+            side: null));
+
+    [Fact]
+    public void TopSwitchReachableCompat_UsesInclusiveWhenCompat() =>
+        Assert.True(VmPSwitchCheckRange.TopSwitchReachableCompat(
+            new VmPSwitchCheckRange.User { Top = 64 },
+            64,
+            VmPSwitchCheckRange.Compatf2Checkswitchrange));
+
+    [Fact]
     public void RunCheckSwitchRangePipeline_UsesTopSwitchPath()
     {
         var user = new VmPSwitchCheckRange.User { Top = 10, Z = 0 };

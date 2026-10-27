@@ -53,6 +53,34 @@ public static class VmPSwitchCheckRange
     public static bool SwitchRangeChecksDisabled(int flags) =>
         (flags & (Ml3dmidtex | MlCheckswitchrange)) == 0;
 
+    public static bool NullSideAllowsSwitch(object? side) => side == null;
+
+    public static (double X, double Y) TouchPointOnLine(
+        double lineX,
+        double lineY,
+        double lineDx,
+        double lineDy,
+        double intercept,
+        bool polyobjWall) =>
+        polyobjWall
+            ? (lineX + lineDx * (intercept + 0.01), lineY + lineDy * (intercept + 0.01))
+            : (lineX + lineDx * intercept, lineY + lineDy * intercept);
+
+    public static bool TopSwitchReachableCompat(User user, double openTop, int compatFlags2) =>
+        (compatFlags2 & Compatf2Checkswitchrange) != 0
+            ? user.Top >= openTop
+            : user.Top > openTop;
+
+    public static bool BottomSwitchReachableCompat(User user, double openBottom, int compatFlags2) =>
+        (compatFlags2 & Compatf2Checkswitchrange) != 0
+            ? user.Z <= openBottom
+            : user.Z < openBottom;
+
+    public static bool MidtexVerticalReach(User user, double checkTop, double checkBot) =>
+        user.Z < checkTop && user.Top > checkBot;
+
+    public static void RepressActiveButton(ButtonThinker button) => button.Timer = 1;
+
     public static bool OneSidedSwitchReachable(User user, Line line) =>
         user.Top >= line.FloorZ && user.Z <= line.CeilingZ;
 
@@ -90,18 +118,39 @@ public static class VmPSwitchCheckRange
             return OneSidedSwitchReachable(user, line);
         if (line.OpenRange <= 0)
             return OneSidedSwitchReachable(user, line);
-        if (TryTopSwitchPath(user, line, ctx))
-            return true;
-        if (TryBottomSwitchPath(user, line, ctx))
-            return true;
+        if (line.TopIsSwitch)
+        {
+            if (TryTopSwitchPath(user, line, ctx))
+                return true;
+            if (TopSwitchReachableCompat(user, line.OpenTop, user.CompatFlags2))
+                return true;
+        }
+
+        if (line.BottomIsSwitch)
+        {
+            if (TryBottomSwitchPath(user, line, ctx))
+                return true;
+            if (BottomSwitchReachableCompat(user, line.OpenBottom, user.CompatFlags2))
+                return true;
+        }
         if (TryMidtexSwitchPath(flags, line, sideno, user, ctx, pt.x, pt.y))
             return true;
         var compat = (user.CompatFlags2 & Compatf2Checkswitchrange) != 0;
         return FallbackOpenRangeReach(user, line, compat);
     }
 
-    public static bool CheckSwitchRange(User user, Line line, int sideno, CheckContext ctx, bool hasMidTexture) =>
-        RunCheckSwitchRangePipeline(user, line, sideno, ctx, hasMidTexture);
+    public static bool CheckSwitchRange(
+        User user,
+        Line line,
+        int sideno,
+        CheckContext ctx,
+        bool hasMidTexture,
+        object? side = null)
+    {
+        if (NullSideAllowsSwitch(side))
+            return true;
+        return RunCheckSwitchRangePipeline(user, line, sideno, ctx, hasMidTexture);
+    }
 
     public sealed class ButtonThinker
     {
@@ -125,7 +174,7 @@ public static class VmPSwitchCheckRange
         var existing = FindActiveButton(active, side);
         if (existing != null)
         {
-            existing.Timer = 1;
+            RepressActiveButton(existing);
             return false;
         }
 
