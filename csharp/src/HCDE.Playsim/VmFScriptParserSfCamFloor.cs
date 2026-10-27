@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary>Camera, sector sounds, and floor height/move from <c>t_func.cpp</c> (1381–1586).</summary>
+/// <summary>Sector sounds and floor height/move from <c>t_func.cpp</c> (1456–1586); camera in chunk **908** slice.</summary>
 public static partial class VmFScriptParser
 {
     static IEnumerable<int> SectorsForTag(ParserContext ctx, int tag)
@@ -19,50 +19,6 @@ public static partial class VmFScriptParser
     static bool SectorFloorActive(AuthoritySimulation sim, int sectorIndex) =>
         sim.Motions.Any(m => m.SectorIndex == sectorIndex && !m.MovesCeiling && !m.Completed);
 
-    public static void SfSetCamera(ParserContext ctx)
-    {
-        if (!CheckArgs(ctx, 1) || ctx.Simulation == null)
-            return;
-        var cam = AsActor(ctx.ActorValue(ctx.TArgv[0]));
-        if (cam == null)
-        {
-            ctx.ScriptError("invalid location object for camera\n");
-            return;
-        }
-        cam.FraggleScriptSpecialF1 = cam.Angle.ToDegrees();
-        cam.FraggleScriptSpecialF2 = cam.Z.ToDouble();
-
-        var yaw = ctx.TArgc < 2 ? cam.Angle.ToDegrees() : ctx.FloatValue(ctx.TArgv[1]);
-        var floorZ = ctx.Simulation.Level.Sectors[cam.SectorIndex].FloorHeight;
-        var z = ctx.TArgc < 3 ? floorZ + 41 : ctx.FloatValue(ctx.TArgv[2]);
-        cam.Angle = BamAngle.FromDegrees(yaw);
-        cam.Z = Fixed.FromDouble(z);
-        if (ctx.TArgc >= 4)
-            cam.PitchDegrees = Math.Clamp(ctx.FloatValue(ctx.TArgv[3]), -50, 50) * (20.0 / 32.0);
-
-        ctx.Simulation.CameraThingId = (int)cam.Id;
-    }
-
-    public static void SfClearCamera(ParserContext ctx)
-    {
-        if (ctx.Simulation == null)
-            return;
-        var playerMo = ctx.Simulation.Actors.OfType<PlayerPawn>().FirstOrDefault()
-            ?? ctx.Simulation.Actors.FirstOrDefault();
-        if (playerMo == null)
-            return;
-        if (ctx.Simulation.CameraThingId != 0)
-        {
-            var cam = ctx.Simulation.Actors.FirstOrDefault(a => a.Id == (uint)ctx.Simulation.CameraThingId);
-            if (cam != null)
-            {
-                cam.Angle = BamAngle.FromDegrees(cam.FraggleScriptSpecialF1);
-                cam.Z = Fixed.FromDouble(cam.FraggleScriptSpecialF2);
-            }
-        }
-        ctx.Simulation.CameraThingId = (int)playerMo.Id;
-    }
-
     public static void SfStartSound(ParserContext ctx)
     {
         if (!CheckArgs(ctx, 2))
@@ -72,6 +28,20 @@ public static partial class VmFScriptParser
             return;
         var name = ctx.StringValue(ctx.TArgv[1]);
         ActorSoundActions.StartSound(mo, name, channel: 0);
+    }
+
+    public static void SfStartSectorSound(ParserContext ctx)
+    {
+        if (!CheckArgs(ctx, 2) || ctx.Simulation == null)
+            return;
+        var tag = ctx.IntValue(ctx.TArgv[0]);
+        var name = ctx.StringValue(ctx.TArgv[1]);
+        var sim = ctx.Simulation;
+        foreach (var sectorIndex in SectorsForTag(ctx, tag))
+        {
+            var floor = sim.FloorOf(sectorIndex);
+            ActorSoundActions.StartSoundAt(sim, 0, 0, floor, name, channel: 0, volume: 1f, attenuation: 1f);
+        }
     }
 
     public static void SfFloorHeight(ParserContext ctx)

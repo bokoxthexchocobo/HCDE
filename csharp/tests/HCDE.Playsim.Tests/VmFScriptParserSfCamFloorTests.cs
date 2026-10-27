@@ -121,6 +121,21 @@ public class VmFScriptParserSfCamFloorTests
     }
 
     [Fact]
+    public void SfStartSectorSound_TaggedSector_QueuesSound()
+    {
+        var sim = Room(4);
+        var ctx = Ctx(sim, 2, argv =>
+        {
+            argv[0].Type = VmFScriptParser.SvtInt;
+            argv[0].IntValue = 4;
+            argv[1].Type = VmFScriptParser.SvtString;
+            argv[1].String = "world/drip";
+        });
+        VmFScriptParser.SfStartSectorSound(ctx);
+        Assert.Contains(sim.DrainSoundRequests(), r => r.Sound == "world/drip");
+    }
+
+    [Fact]
     public void SfStartSound_OnActor_DoesNotThrow()
     {
         var sim = Room();
