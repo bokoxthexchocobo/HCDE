@@ -1,0 +1,33 @@
+[
+  {
+    "name": "action-viewroll-userfield-teleport-flags-chunk896",
+    "bucket": "conversion",
+    "note": "`SetViewRollNative`, `GetVar`/`GetArrayVar`, `A_SetUserVar*` / `A_SetUserArray*`, and `T_Flags` (`p_actionfunctions.cpp` **3088–3251**). Follows **raise/count** `SetViewPitchNative` (**3086**); stops before **526** `A_Teleport` (**3255+**).",
+    "auditSeams": "`COPY_AAPTR`, `FindSymbol`, `Printf`, `SetValue`, and `AActor::SetViewRoll` are not hosted.",
+    "auditRationale": "Ref-null guard, user scalar/array field validation, setter commit gates, and teleport flag constants mirrored in managed policy; ZScript field lookup bodies are seams.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_actionfunctions.cpp --start 3088 --end 3251` and `--chunk 896 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SetViewRollOnRef` | `SetViewRollNative` **3099–3102** |\n| `IsUserScalarField` | `GetVar` **3127–3133** |\n| `IsUserArrayField` / `ArrayIndexInBounds` | `GetArrayVar` **3176–3188** |\n| `CanCommitUserScalarWrite` / `CanCommitUserArrayWrite` / `UserArrayElementByteOffset` | `A_SetUserVar*` / `A_SetUserArray*` **3144–3222** |\n| `VmActionTeleportNativeFlags` / flag predicates | `T_Flags` **3237–3251** |\n\n### vs **raise/count** / **526**\n\n| | Lines |\n|--|------:|\n| `SetViewPitchNative` (other row) | ends **3086** |\n| **896** (this row) | **3088–3251** (**164**) |\n| **526** (`A_Teleport`) | **3255+** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **164** |\n| Net behavior-ported | **164** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmActionUserFieldAccess.cs",
+      "csharp/src/HCDE.Playsim/VmActionTeleportNativeFlags.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "SetViewRollNative",
+        "start": 3088,
+        "end": 3251,
+        "tests": [
+          "VmActionUserFieldAccessTests.SetViewRollOnRef_RequiresActor",
+          "VmActionUserFieldAccessTests.IsUserScalarField_AcceptsScalar",
+          "VmActionUserFieldAccessTests.UserArrayElementByteOffset_MatchesStride",
+          "VmActionUserFieldAccessTests.CanCommitUserArrayWrite_WhenFieldAndIndexValid",
+          "VmActionTeleportNativeFlagsTests.TelefragFlag_MatchesNativeEnum",
+          "VmActionTeleportNativeFlagsTests.UsesRandomDecide_WhenFlagSet",
+          "VmActionTeleportNativeFlagsTests.OverrideFlag_MatchesNativeEnum",
+          "VmActionTeleportNativeFlagsTests.SensitiveZFlag_MatchesNativeEnum"
+        ]
+      }
+    ]
+  }
+]

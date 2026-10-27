@@ -2,7 +2,7 @@ namespace HCDE.Playsim;
 
 /// <summary>
 /// View-roll ref guard and user field lookup validation from <c>p_actionfunctions.cpp</c>
-/// (<c>SetViewRollNative</c>, <c>GetVar</c>, <c>GetArrayVar</c>).
+/// (<c>SetViewRollNative</c>, <c>GetVar</c>, <c>GetArrayVar</c>, user var/array setters).
 /// </summary>
 public static class VmActionUserFieldAccess
 {
@@ -27,6 +27,23 @@ public static class VmActionUserFieldAccess
 
     public static bool ArrayIndexInBounds(int pos, int elementCount) =>
         (uint)pos < (uint)elementCount;
+
+    public static int UserArrayElementByteOffset(int fieldOffset, int elementSize, int pos) =>
+        fieldOffset + elementSize * pos;
+
+    public static bool CanCommitUserScalarWrite(bool found, int flags, bool isScalar) =>
+        IsUserScalarField(found, flags, isScalar);
+
+    public static bool CanCommitUserArrayWrite(
+        bool found,
+        int flags,
+        bool isArray,
+        bool elementIsScalar,
+        int pos,
+        int elementCount) =>
+        ShouldSetUserArrayElement(
+            IsUserArrayField(found, flags, isArray, elementIsScalar),
+            ArrayIndexInBounds(pos, elementCount));
 
     public static bool ShouldSetUserArrayElement(bool fieldOk, bool indexOk) =>
         fieldOk && indexOk;

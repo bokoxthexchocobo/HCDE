@@ -15,10 +15,6 @@ public class VmActionUserFieldAccessTests
         Assert.True(VmActionUserFieldAccess.IsUserScalarField(true, 0, true));
 
     [Fact]
-    public void ShouldSetUserScalar_WhenFieldValid() =>
-        Assert.True(true);
-
-    [Fact]
     public void IsUserArrayField_RejectsNonArray() =>
         Assert.False(VmActionUserFieldAccess.IsUserArrayField(true, 0, false, true));
 
@@ -29,4 +25,20 @@ public class VmActionUserFieldAccessTests
     [Fact]
     public void ShouldSetUserArrayElement_RequiresIndexOk() =>
         Assert.False(VmActionUserFieldAccess.ShouldSetUserArrayElement(true, false));
+
+    [Fact]
+    public void ShouldSetUserArrayElement_WhenFieldAndIndexOk() =>
+        Assert.True(VmActionUserFieldAccess.ShouldSetUserArrayElement(true, true));
+
+    [Fact]
+    public void UserArrayElementByteOffset_MatchesStride() =>
+        Assert.Equal(20, VmActionUserFieldAccess.UserArrayElementByteOffset(fieldOffset: 8, elementSize: 4, pos: 3));
+
+    [Fact]
+    public void CanCommitUserScalarWrite_WhenLookupValid() =>
+        Assert.True(VmActionUserFieldAccess.CanCommitUserScalarWrite(true, 0, true));
+
+    [Fact]
+    public void CanCommitUserArrayWrite_WhenFieldAndIndexValid() =>
+        Assert.True(VmActionUserFieldAccess.CanCommitUserArrayWrite(true, 0, true, true, pos: 1, elementCount: 4));
 }
