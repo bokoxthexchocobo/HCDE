@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 48824,
+  "convertedThisRunNative": 48806,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 77469,
+  "convertedThisRunManaged": 77401,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 439981,
+  "remainingNative": 439999,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 67351,
+  "convertedBehaviorNative": 67333,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 68105,
-  "convertedBehaviorManaged": 87140,
+  "combinedBehaviorNative": 68087,
+  "convertedBehaviorManaged": 87072,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -32354,6 +32354,89 @@
       "nativeLoc": 170,
       "managedLoc": 166,
       "conversionManagedCommit": "c6d87e1316ed93e6fda44ff5531792ca58a9e7fd"
+    },
+    {
+      "name": "action-do-radius-give-chunk579",
+      "bucket": "conversion",
+      "note": "`RadiusGiveFlags`, `DoRadiusGive` eligibility/range gates, and `A_RadiusGive` validation/loops (`p_actionfunctions.cpp` **3774\u20133985**). Replaces legacy `action-explode-radius-give` row; `VmActionRadiusGiveEligibility` stays on **577** (species/class only).",
+      "auditSeams": "`Spawn`, health amount scaling, `CallTryPickup`, `P_CheckSight`, thinker/blockmap iterators, and `TranslateLineDef` are not hosted.",
+      "auditRationale": "Honest re-land of radius-give policy: flag mask, per-thing pass branches, filter/species/pointer gating, cube/sphere distance checks, and give abort/limit/amount setup.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 579 --band` \u2192 UNCredited, exit 0.",
+      "auditManagedLocJustification": "`VmActionDoRadiusGive.cs` only (calls `VmActionRadiusGiveEligibility` off-manifest; exclusive to chunk **577**).",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RgfMask` | `RadiusGiveFlags` **3774\u20133805** |\n| `TryPassSelf` / `TryPassMissile` / `TryPassItemCorpseOrKilled` / `TryPassLivingActor` | `DoRadiusGive` **3810\u20133853** |\n| `FilterSpeciesGate` | **3859\u20133867** |\n| `PointerRelationGate` / `TargetPass` / `MasterPass` / `TracerPass` | **3869\u20133888** |\n| `RangeCheckHeightOffset` / `OutsideRange` | **3891\u20133912** (`P_CheckSight`/`Spawn` seam) |\n| `RadiusGiveAbortsEarly` / `NormalizeGiveAmount` / `UnlimitedGiveLimit` / `ShouldIterateMissiles` | `A_RadiusGive` **3953\u20133983** (iterator bodies seam) |\n\n### vs legacy `action-explode-radius-give`\n\n| | Lines |\n|--|------:|\n| Legacy row (retired on land) | **3807\u20133985** (thin map test) |\n| **579** (this row) | **3774\u20133985** (seam-trimmed) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **162** |\n| Net behavior-ported | **162** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmActionDoRadiusGive.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "RadiusGiveFlags",
+          "start": 3774,
+          "end": 3805,
+          "tests": [
+            "VmActionDoRadiusGiveTests.TryPassMissile_WhenFlagged"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DoRadiusGive",
+          "start": 3810,
+          "end": 3857,
+          "tests": [
+            "VmActionDoRadiusGiveTests.TryPassSelf_RequiresFlag",
+            "VmActionDoRadiusGiveTests.TryPassLivingActor_PlayerBranch"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DoRadiusGive",
+          "start": 3859,
+          "end": 3867,
+          "tests": [
+            "VmActionDoRadiusGiveTests.FilterSpeciesGate_AllowsSelfDespiteFilter"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DoRadiusGive",
+          "start": 3869,
+          "end": 3888,
+          "tests": [
+            "VmActionDoRadiusGiveTests.PointerRelationGate_BlocksNotargetHit"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DoRadiusGive",
+          "start": 3891,
+          "end": 3912,
+          "tests": [
+            "VmActionDoRadiusGiveTests.OutsideRange_UsesCubeWhenFlagged"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_RadiusGive",
+          "start": 3953,
+          "end": 3962,
+          "tests": [
+            "VmActionDoRadiusGiveTests.RadiusGiveAbortsEarly_WhenDistanceZero",
+            "VmActionDoRadiusGiveTests.NormalizeGiveAmount_DefaultsToOne"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_RadiusGive",
+          "start": 3965,
+          "end": 3983,
+          "tests": [
+            "VmActionDoRadiusGiveTests.ShouldIterateMissiles_WhenFlagged"
+          ]
+        }
+      ],
+      "nativeLoc": 160,
+      "managedLoc": 127,
+      "conversionManagedCommit": "41fc05c3582cf4902b8b4cd8d8af91f7f49e44db"
     }
   ],
   "behaviorNativeChecksum": 508086,
