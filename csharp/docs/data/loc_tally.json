@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 53295,
+  "convertedThisRunNative": 53458,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 80570,
+  "convertedThisRunManaged": 80676,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 435510,
+  "remainingNative": 435347,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 71822,
+  "convertedBehaviorNative": 71985,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 72576,
-  "convertedBehaviorManaged": 90241,
+  "combinedBehaviorNative": 72739,
+  "convertedBehaviorManaged": 90347,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -33181,6 +33181,38 @@
       "nativeLoc": 297,
       "managedLoc": 195,
       "conversionManagedCommit": "337379b6c1236b43462963bfadcaef37850c416c"
+    },
+    {
+      "name": "fscript-parser-sf-mom-trig-chunk907",
+      "bucket": "conversion",
+      "note": "`FParser::SF_ReactionTime` \u2026 `SF_PointToDist` from `fragglescript/t_func.cpp` (**1216\u20131378**). Folds post-**906** separators **1216\u20131223**; stops before `SF_SetCamera` (**1391**).",
+      "auditSeams": "`SetState`, `AcsActorPointer`, and `Actor` velocity/target fields are playsim-hosted; camera natives deferred.",
+      "auditRationale": "Honest **163**-line UNCredited band on exclusive `VmFScriptParserSfMom.cs` after **906** `PushThing` split; function-bounded through `PointToDist`.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 1216 --end 1378` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_ReactionTime` | yes |\n| `SF_MobjTarget` | yes |\n| `SF_MobjMomx` / `Momy` / `Momz` | yes |\n| `SF_PointToAngle` / `SF_PointToDist` | yes |\n\n| Managed | Native (`t_func.cpp`) |\n|---------|----------------------|\n| `SfReactionTime` | **1224\u20131238** |\n| `SfMobjTarget` | **1247\u20131269** |\n| `SfMobjMomx` | **1277\u20131292** |\n| `SfMobjMomy` | **1300\u20131315** |\n| `SfMobjMomz` | **1323\u20131338** |\n| `SfPointToAngle` | **1349\u20131360** |\n| `SfPointToDist` | **1369\u20131378** |\n| (separator) | **1216\u20131223** |\n| (separator) | **1239\u20131246** |\n| (separator) | **1270\u20131276** |\n| (separator) | **1293\u20131299** |\n| (separator) | **1316\u20131322** |\n| (separator) | **1339\u20131346** |\n| (separator) | **1361\u20131368** |\n\n### Chunk **907** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **163** |\n| **Net headline** | **+163** vs post-**906** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmFScriptParserSfMom.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_ReactionTime",
+          "start": 1216,
+          "end": 1378,
+          "tests": [
+            "VmFScriptParserSfMomTests.SfReactionTime_ReadWrite",
+            "VmFScriptParserSfMomTests.SfMobjTarget_SetsTarget",
+            "VmFScriptParserSfMomTests.SfMobjMomx_ReadWrite",
+            "VmFScriptParserSfMomTests.SfMobjMomy_ReadWrite",
+            "VmFScriptParserSfMomTests.SfMobjMomz_ReadWrite",
+            "VmFScriptParserSfMomTests.SfPointToAngle_East",
+            "VmFScriptParserSfMomTests.SfPointToDist_AxisDistance"
+          ]
+        }
+      ],
+      "nativeLoc": 163,
+      "managedLoc": 106,
+      "conversionManagedCommit": "02951d0b6d97b2d9caa514fb2deb11223222dac6"
     }
   ],
   "behaviorNativeChecksum": 508086,
