@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 47199,
+  "convertedThisRunNative": 47515,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 76155,
+  "convertedThisRunManaged": 76616,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 441606,
+  "remainingNative": 441290,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 65726,
+  "convertedBehaviorNative": 66042,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 66480,
-  "convertedBehaviorManaged": 85826,
+  "combinedBehaviorNative": 66796,
+  "convertedBehaviorManaged": 86287,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -31795,6 +31795,91 @@
       "nativeLoc": 245,
       "managedLoc": 428,
       "conversionManagedCommit": "399da7a7facb1dab62d7cf7cbe0662b041f436e5"
+    },
+    {
+      "name": "po-man-core-block-spatial-chunk677",
+      "bucket": "conversion",
+      "note": "Polyobject blockmap link, mobj blocking, floor/ceil refresh, spatial helpers (`po_man.cpp` **1025\u20131384**).",
+      "auditSeams": "Blockmap iteration, `P_IsBlockedByLine`, `P_FindFloorCeil`, poly node pool remain native at seams.",
+      "auditRationale": "Part **2/2** of uncredited `po_man` **704\u20131393** band; hull **1025\u20131384** below **676** BSP credit (**1394+**). Pairs with **679** (no overlap).",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 677 --band \u2192 UNCredited, exit 0.",
+      "auditManagedLocJustification": "VmPoManThrustBlock.cs, VmPoManLinkUpdate.cs, VmPoManSpatial.cs.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `CheckMobjBlocking` | **1025\u20131146** |\n| `LinkPolyobj` | **1154\u20131217** |\n| `RecalcActorFloorCeil` | **1228\u20131248** |\n| `ClosestPoint` | **1259\u20131317** |\n| `PO_Busy` | **1325\u20131331** |\n| `ClearSubsectorLinks` | **1341\u20131375** |\n| `ClearAllSubsectorLinks` | **1377\u20131384** |\n\n### vs chunk **679**\n\n| | Lines |\n|--|------:|\n| **679** (`po-man-core-move-chunk679`) | **715\u20131017** |\n| **677** (this row) | **1025\u20131384** |\n| Gap (comments only, uncredited) | **1018\u20131024** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **316** |\n| Net behavior-ported | **316** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPoManThrustBlock.cs",
+        "csharp/src/HCDE.Playsim/VmPoManLinkUpdate.cs",
+        "csharp/src/HCDE.Playsim/VmPoManSpatial.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "FPolyObj::CheckMobjBlocking",
+          "start": 1025,
+          "end": 1146,
+          "tests": [
+            "VmPoManThrustBlockTests.CheckMobjBlocking_ThrustsSolidActorInRange",
+            "VmPoManThrustBlockTests.CheckMobjBlocking_SkipsDuplicateMobj"
+          ]
+        },
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "FPolyObj::LinkPolyobj",
+          "start": 1154,
+          "end": 1217,
+          "tests": [
+            "VmPoManLinkUpdateTests.LinkPolyobj_AssignsCellsInComputedBox",
+            "VmPoManLinkUpdateTests.LinkPolyobj_SkipsCellsOutsideMap"
+          ]
+        },
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "FPolyObj::RecalcActorFloorCeil",
+          "start": 1228,
+          "end": 1248,
+          "tests": [
+            "VmPoManLinkUpdateTests.RecalcActorFloorCeil_SkipsActorsOutsideBounds"
+          ]
+        },
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "FPolyObj::ClosestPoint",
+          "start": 1259,
+          "end": 1317,
+          "tests": [
+            "VmPoManSpatialTests.ClosestPoint_PicksNearestSegmentPoint"
+          ]
+        },
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "PO_Busy",
+          "start": 1325,
+          "end": 1331,
+          "tests": [
+            "VmPoManSpatialTests.PoBusy_TrueOnlyWhenSpecialDataPresent"
+          ]
+        },
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "FPolyObj::ClearSubsectorLinks",
+          "start": 1341,
+          "end": 1375,
+          "tests": [
+            "VmPoManSpatialTests.ClearSubsectorLinks_UnhooksHeadList"
+          ]
+        },
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "FLevelLocals::ClearAllSubsectorLinks",
+          "start": 1377,
+          "end": 1384,
+          "tests": [
+            "VmPoManSpatialTests.ClearSubsectorLinks_UnhooksHeadList"
+          ]
+        }
+      ],
+      "nativeLoc": 316,
+      "managedLoc": 461,
+      "conversionManagedCommit": "d3c0970e81081f8117b1334c6cf25086566f581d"
     }
   ],
   "behaviorNativeChecksum": 508086,
