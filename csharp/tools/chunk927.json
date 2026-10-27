@@ -1,0 +1,31 @@
+[
+  {
+    "name": "p-acs-runscript-push-lspec-chunk927",
+    "bucket": "conversion",
+    "note": "`PCD_TERMINATE` tail through `PCD_LSPEC5` stack path from `p_acs.cpp` (**7216–7365**). Follows **926** (**≤7215**); `PCD_LSPEC5` pop at **7366** and direct forms deferred.",
+    "auditSeams": "`P_ExecuteSpecial`, `GlobalACSStrings`, `Printf`, and full `RunScript` dispatch remain host seams.",
+    "auditRationale": "Honest **150**-line UNCredited band in **6614–7509** corridor; exclusive `VmPAcsRunscript927Slice.cs`.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 7216 --end 7365` and `--chunk 927 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `PCD_TERMINATE` finish (**7216–7219**) | yes |\n| `PCD_NOP` / `PCD_SUSPEND` (**7221–7226**) | yes (state seam) |\n| `PCD_TAGSTRING` (**7228–7231**) | yes |\n| `PCD_PUSHNUMBER` / `PUSHBYTE`…`PUSH5BYTES` (**7233–7275**) | yes |\n| `PCD_PUSHBYTES` (**7277–7284**) | yes |\n| `PCD_DUP` / `PCD_SWAP` (**7286–7293**) | yes |\n| `PCD_LSPEC1`…`PCD_LSPEC5` (**7295–7365**) | yes (stack/mask) |\n\n| Managed (`VmPAcsRunscript927Slice.cs`) | Native (`p_acs.cpp`) |\n|------------------------------------------|---------------------|\n| `MarkScriptFinished` | **7216–7219** |\n| `TryInternTagStringOnStack` | **7228–7231** |\n| `TryPushNumber` | **7233–7236** |\n| `TryPushInlineBytes` | **7238–7275** |\n| `TryPushCountedBytes` | **7277–7284** |\n| `TryDup` / `TrySwap` | **7286–7293** |\n| `MaskLineSpecialArg` / `TryPopLspecOperands` | **7295–7365** |\n| `ReadEmbeddedLspecNumber` | **7298**, **7312**, etc. |\n| `ResetStackOnMalformedLspec` | **7304–7306**, **7318–7320**, etc. |\n\n### Chunk **927** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**926** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPAcsRunscript927Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "DLevelScript::RunScript",
+        "start": 7216,
+        "end": 7365,
+        "tests": [
+          "VmPAcsRunscript927SliceTests.TryInternTagStringOnStack_ReplacesTopWithPoolId",
+          "VmPAcsRunscript927SliceTests.TryPushNumber_ReadsLittleEndianWord",
+          "VmPAcsRunscript927SliceTests.TryPushCountedBytes_MatchesNativeLoopOrder",
+          "VmPAcsRunscript927SliceTests.TryDup_AndSwap_ManipulateStackTop",
+          "VmPAcsRunscript927SliceTests.TryPopLspecOperands_AppliesMaskAndPops",
+          "VmPAcsRunscript927SliceTests.TryPopLspecOperands_FiveWide_FillsArgs",
+          "VmPAcsRunscript927SliceTests.ResetStackOnMalformedLspec_ClearsSp"
+        ]
+      }
+    ]
+  }
+]
