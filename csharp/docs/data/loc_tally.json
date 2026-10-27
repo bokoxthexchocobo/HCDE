@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 50076,
+  "convertedThisRunNative": 50479,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 78085,
+  "convertedThisRunManaged": 78391,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 438729,
+  "remainingNative": 438326,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 68603,
+  "convertedBehaviorNative": 69006,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 69357,
-  "convertedBehaviorManaged": 87756,
+  "combinedBehaviorNative": 69760,
+  "convertedBehaviorManaged": 88062,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -32737,6 +32737,41 @@
       "nativeLoc": 565,
       "managedLoc": 283,
       "conversionManagedCommit": "92b0205cd33f70af6b563d32a61464dab0a2c0c6"
+    },
+    {
+      "name": "action-set-animation-change-model-chunk585",
+      "bucket": "conversion",
+      "note": "`SetAnimation*` / `SetAnimationFrameRate*` natives, model-flag overrides, `ChangeModelNative`, and `AnimLayerToAnimInfo` (`p_actionfunctions.cpp` **6677\u20137079**). Follows **517** `SetAnimationInternal` (**6676**); stops before **560** `AnimInfoToAnimLayer` (**7080+**).",
+      "auditSingleFunctionOversizeException": true,
+      "auditSeams": "`SetAnimationInternal`, `FindModel`, `LoadSkin`, `EnsureModelData`, `CleanupModelData`, and `CalcBones` are not hosted.",
+      "auditRationale": "Re-lands retired **587** hull: animation DEFINE wrappers, frame-rate internal policy, CMDL change-model routing, and layer\u2192`AnimInfo` conversion (**403** native LOC).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 585 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `VmActionSetAnimationNatives` | `SetAnimationNative`/`UI` **6678\u20136686**, DEFINE `SetAnimation*` **6991\u20137041**, `SetAnimationFrameRate*` **6730\u20136738** |\n| `SetAnimationFrameRateInternalNative` | `SetAnimationFrameRateInternal` **6688\u20136728** |\n| `VmActionChangeModel` | `SetModelFlag`/`ClearModelFlag`/`ResetModelFlags` **6740\u20136795**, `ChangeModelNative` **6804\u20136968**, `A_ChangeModel` **6970\u20136989** |\n| `VmActionAnimLayerConvert` | `AnimLayerToAnimInfo` **7043\u20137078** |\n\n### vs chunk **517** / **560**\n\n| | Lines |\n|--|------:|\n| **517** (`SetAnimationInternal`) | ends **6676** |\n| **585** (this row) | **6677\u20137079** (**403**) |\n| **560** (`AnimInfoToAnimLayer`) | **7080+** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **403** |\n| Net behavior-ported | **403** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmActionSetAnimationNatives.cs",
+        "csharp/src/HCDE.Playsim/VmActionChangeModel.cs",
+        "csharp/src/HCDE.Playsim/VmActionAnimLayerConvert.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "SetAnimationNative",
+          "start": 6677,
+          "end": 7079,
+          "tests": [
+            "VmActionSetAnimationNativesTests.SetAnimationNative_UsesTicFracOne",
+            "VmActionSetAnimationNativesTests.SetAnimationFrameRateInternalNative_RejectsNegativeRate",
+            "VmActionChangeModelTests.ShouldSetOverrideFlags_WhenFlagNonZero",
+            "VmActionChangeModelTests.QueryModelWhenVisible_HideModel",
+            "VmActionChangeModelTests.ShouldResetCurAnimOnAnimationChange_WhenIdDiffers",
+            "VmActionSetAnimationNativesTests.AnimLayerToAnimInfoNative_NoneWhenNoLayer",
+            "VmActionAnimLayerConvertTests.TryBuildPrecalculatedPrev_RequiresTypes"
+          ]
+        }
+      ],
+      "nativeLoc": 403,
+      "managedLoc": 306,
+      "conversionManagedCommit": "64ace32eaab0a1c67451d0101310a7dba99d0f8e"
     }
   ],
   "behaviorNativeChecksum": 508086,
