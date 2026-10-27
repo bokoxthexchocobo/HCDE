@@ -61,6 +61,10 @@ if num == 838:
     import patch_retire_chunk838  # noqa: F401
 
     patch_retire_chunk838.apply(tally)
+if num == 579:
+    import patch_tally_action_radius_give_chunk579 as patch_radius_give_579
+
+    patch_radius_give_579.apply(tally)
 write_loc_tally_json(REPO / "docs/data/loc_tally.json", tally)
 if num in (719, 720, 721):
     import patch_tally_chase_recognition  # noqa: F401

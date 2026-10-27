@@ -490,31 +490,13 @@
     },
     {
       "name": "action-explode-radius-give",
-      "nativeLoc": 178,
-      "managedLoc": 195,
-      "note": "A_Explode, A_RadiusThrust, A_RadiusGive; splash-group radius immunity (p_mobj).",
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "note": "A_Explode, A_RadiusThrust, A_RadiusGive; splash-group radius immunity (p_mobj). Retired (2026-10-27): `DoRadiusGive`/`A_RadiusGive` re-landed as action-do-radius-give-chunk579.",
       "bucket": "conversion",
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "DoRadiusGive",
-          "start": 3807,
-          "end": 3939,
-          "tests": [
-            "ActionExplodeLoadedMapTests"
-          ]
-        },
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "A_RadiusGive",
-          "start": 3941,
-          "end": 3985,
-          "tests": [
-            "ActionExplodeLoadedMapTests"
-          ]
-        }
-      ],
-      "conversionManagedCommit": "4ea50d85e05e72fef9691c7649b34295cc04f0e3"
+      "nativeRanges": [],
+      "conversionManagedCommit": "4ea50d85e05e72fef9691c7649b34295cc04f0e3",
+      "retired": true
     },
     {
       "name": "thing-projectile-175-178",
