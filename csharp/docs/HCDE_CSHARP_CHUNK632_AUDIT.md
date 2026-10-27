@@ -16,7 +16,7 @@ Host session loops, game port, verification decode, guest disconnect (`i_net.cpp
 ## Managed
 
 `VmINetHostGameFinish.cs`
-Managed LOC (tally): 157.
+Managed LOC (tally): 173.
 Conversion commit: `c56ccf0446b0610d8d1855ffedb821ece0c0fd9e`.
 
 ## Padding review (2026-10-21)
@@ -37,7 +37,7 @@ Conversion commit: `c56ccf0446b0610d8d1855ffedb821ece0c0fd9e`.
 | **Honest** | **170** |
 
 
-**Post-review ratio:** 157/170 managed/native ≈ 92% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 173/170 managed/native ≈ 102% (src file LOC at HEAD; see tally).
 
 ## Tests
 
