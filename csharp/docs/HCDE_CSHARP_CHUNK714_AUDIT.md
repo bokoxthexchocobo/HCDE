@@ -13,7 +13,7 @@ Whole `AActor::Serialize` (`p_mobj.cpp` 210–421). `PostSerialize` and `DBehavi
 ## Managed
 
 `VmPMobjActorSerialize.cs`
-Managed LOC (tally): 194.
+Managed LOC (tally): 218.
 Conversion commit: `84f379c45dcb8cfad11958a3ab5c8065cf797214`.
 
 ## Padding review (2026-10-21)
@@ -38,7 +38,7 @@ Conversion commit: `84f379c45dcb8cfad11958a3ab5c8065cf797214`.
 | **Honest** | **212** |
 
 
-**Post-review ratio:** 194/212 managed/native ≈ 92% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 218/212 managed/native ≈ 103% (src file LOC at HEAD; see tally).
 
 ## Tests
 
