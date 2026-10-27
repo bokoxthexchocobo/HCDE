@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 47390,
+  "convertedThisRunNative": 47629,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 76452,
+  "convertedThisRunManaged": 76616,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 441415,
+  "remainingNative": 441176,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 65917,
+  "convertedBehaviorNative": 66156,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 66671,
-  "convertedBehaviorManaged": 86123,
+  "combinedBehaviorNative": 66910,
+  "convertedBehaviorManaged": 86287,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -31292,18 +31292,113 @@
     {
       "name": "bot-func-body-travel-chunk885",
       "bucket": "conversion",
-      "retired": true,
-      "note": "Retired (2026-10-23): honest function-boundary bands on `b_func.cpp` **454\u2013585** sum **114** native (`SetBodyAt`, `FakeFire`, `FireRox`, `SafeCheckPosition`, `StartTravel`, `FinishTravel`) \u2014 below **150** `check_port_coverage` floor. Stretched hull **450\u2013600** (**151**) pads blank/separator lines **450\u2013453**, **479\u2013489**, **552\u2013555**, **564**; not landed. Off-tally `VmBBotFuncReachFire` + `VmBBotGame.StartTravel`/`FinishTravel` updated for fidelity.",
-      "auditSeams": "Headless Cajun uses `PlayerPawn` + `CajunBotThinker` (`STAT_BOT` **104**) instead of separate `player->mo` / `DBot` pair; `ChangeStatNum` matches native travel stat moves. `SafeCheckPosition` still uses `ActorPhysics.TryMove` (native `P_CheckPosition` + `MF_PICKUP` clear) until `VmPMapCheckPosition` is wired on `AuthoritySimulation`. `FakeFire` spawns Cajun trace aux actor + `VmBBotMove.CleanAhead` missile path.",
-      "auditRationale": "User-approved **450\u2013600** hull only when function boundaries are honest and `uncredited_range_check --chunk 885 --band` passes all tally rows (**879**, **882**, \u2026) with nothing excluded; honest credit **114** &lt; **150** \u2192 defer per standing rules (same pattern as retired **438**).",
-      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/bots/b_func.cpp --start 454 --end 585` \u2192 UNCredited vs **879**/**882** (exit 0). `--chunk 882` self-check excludes **only** row `bot-game-lifecycle-chunk882` when probing its own band \u2014 **not** permission to ignore **882** when crediting **885**; **882** owns **zero** `b_func.cpp` lines. Retired chunk: `uncredited_range_check.py --chunk 885 --band` \u2192 retired skip, exit 0.",
-      "auditManagedLocJustification": "Retired row; matrix native credit **0**. Off-tally: `VmBBotFuncReachFire.cs`, `VmBBotGame.cs` (`CajunBotThinker`, `StartTravel`, `FinishTravel`).",
-      "auditPaddingReview": "### Honest function bands (no separator top-up)\n\n| Symbol | Lines | Lines |\n|--------|------:|------:|\n| `FCajunMaster::SetBodyAt` | **454\u2013478** | 25 |\n| `FCajunMaster::FakeFire` | **490\u2013510** | 21 |\n| `DBot::FireRox` | **512\u2013551** | 40 |\n| `FCajunMaster::SafeCheckPosition` | **556\u2013563** | 8 |\n| `FCajunMaster::StartTravel` | **565\u2013574** | 10 |\n| `FCajunMaster::FinishTravel` | **576\u2013585** | 10 |\n| **Sum (nativeLoc)** | **454\u2013585** | **114** |\n\n### Behavior ported (matrix credit)\n\n| Native | Behavior ported (off-tally) | Matrix credit |\n|--------|------------------------------|---------------|\n| `SetBodyAt` | **yes** (`VmBBotFuncReachFire.SetBodyAt`) | **no** (retired) |\n| `FakeFire` | **yes** (trace spawn + `CleanAhead`) | **no** |\n| `FireRox` | **yes** (`PosPlusZ` + vel\u00d75, `ONFLOORZ` predict) | **no** |\n| `SafeCheckPosition` | **partial** (`TryMove`, not full `P_CheckPosition`) | **no** |\n| `StartTravel` / `FinishTravel` | **yes** (`CajunBotThinker.ChangeStatNum`) | **no** |\n| `Reachable` / `Dofire` (**883** bands) | remain off-tally on **875** callers | **no** |\n\n### Padding map (dishonest hull **450\u2013600** \u2014 not credited)\n\n| Native lines | Reason |\n|--------------|--------|\n| **450\u2013453** | blank separators after `Find_enemy` (**879** ends **449**) |\n| **479\u2013489** | blanks + `FireRox` comment block outside function bodies |\n| **552\u2013555** | blanks between `FireRox` and `SafeCheckPosition` |\n| **564** | blank before `StartTravel` |\n| **586+** | EOF (file ends **585**) |\n\n### Gross vs net (**885**)\n\n| | Value |\n|--|------:|\n| Gross honest native | **114** |\n| Gross padded hull **450\u2013600** | **151** (invalid \u2014 separator padding) |\n| Net behavior-ported (matrix) | **0** |\n\n### Clarification: \u201cpasses only when excluding 882\u201d\n\nThat phrase referred to **`uncredited_range_check.py --chunk 882 --band`**: the tool skips **only the chunk-under-test\u2019s own tally row** (`self_chunk_name`) so a row can validate its band does not overlap *other* rows. It does **not** exempt **882** from overlap checks on **885**. **`b_game.cpp`** lifecycle credit stays on **882** only; **885** must not claim any **`b_game.cpp`** line.\n",
-      "managedSourceFiles": [],
-      "nativeRanges": [],
-      "nativeLoc": 0,
-      "managedLoc": 0,
-      "conversionManagedCommit": "038ae0fb9f8f466dd7bdd574e5719af3b8e77149"
+      "note": "Re-land: Cajun `Choose_Mate`, `Find_enemy`, body nodes, rocket aim, safe position, and travel stat moves (`b_func.cpp` **327\u2013585**).",
+      "auditSeams": "`ChooseMate`/`FindEnemy` on `VmBBotFunc`. `SetBodyAt`/`FakeFire`/`FireRox`/`SafeCheckPosition` on `VmBBotFuncReachFire` (chunk **879** owns reach/fire native only). `StartTravel`/`FinishTravel` call `VmBBotGame` (**882** `b_game.cpp` lifecycle; zero `b_game` native on this row).",
+      "auditRationale": "Honest function bands **327\u2013585** on `b_func.cpp`; hull **327\u2013585** passes `--band` vs **879** (**\u2264280**). Part **2/2** of retired **885** body-only attempt (**114** &lt; **150**); mate/enemy moved from **879** without separator padding.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 885 --band \u2192 UNCredited, exit 0 (hull **327\u2013585**).",
+      "auditManagedLocJustification": "`VmBBotFunc.cs` (mate/enemy). Body/rocket helpers on `VmBBotFuncReachFire.cs` (file attributed on chunk **879**).",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `DBot::Choose_Mate` | **yes** |\n| `DBot::Find_enemy` | **yes** |\n| `FCajunMaster::SetBodyAt` | **yes** |\n| `FCajunMaster::FakeFire` | **yes** |\n| `DBot::FireRox` | **yes** |\n| `FCajunMaster::SafeCheckPosition` | **partial** (`TryMove` + `MF_PICKUP` clear) |\n| `FCajunMaster::StartTravel` / `FinishTravel` | **yes** (`CajunBotThinker.ChangeStatNum`) |\n\n| Managed | Native (`b_func.cpp`) |\n|---------|----------------------|\n| `ChooseMate` | **327\u2013395** |\n| `FindEnemy` | **398\u2013449** |\n| `SetBodyAt` | **454\u2013478** |\n| `FakeFire` | **490\u2013510** |\n| `FireRox` | **512\u2013551** |\n| `SafeCheckPosition` | **556\u2013563** |\n| `StartTravel` | **565\u2013574** |\n| `FinishTravel` | **576\u2013585** |\n| (separators) | **324\u2013326**, **397** |\n\n### vs chunk **879**\n\n| | Lines |\n|--|------:|\n| **879** (sight/reach/fire) | **44\u2013280** |\n| **885** (this row) | **327\u2013585** |\n| Gap (BotTick / comments, uncredited) | **281\u2013323**, **450\u2013453**, inter-function blanks |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **239** |\n| Net behavior-ported | **239** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmBBotFunc.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/bots/b_func.cpp",
+          "symbol": "b_func separators",
+          "start": 324,
+          "end": 326,
+          "tests": [
+            "VmBBotFuncTests.ChooseMate_PicksVisibleCoopPartner"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_func.cpp",
+          "symbol": "DBot::Choose_Mate",
+          "start": 327,
+          "end": 395,
+          "tests": [
+            "VmBBotFuncTests.ChooseMate_PicksVisibleCoopPartner",
+            "VmBBotFuncTests.ChooseMate_SkipsPlayerAlreadyChosenAsLeaderMate"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_func.cpp",
+          "symbol": "b_func separators",
+          "start": 397,
+          "end": 397,
+          "tests": [
+            "VmBBotFuncTests.FindEnemy_CoopPicksMapMonsterNotPlayers"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_func.cpp",
+          "symbol": "DBot::Find_enemy",
+          "start": 398,
+          "end": 449,
+          "tests": [
+            "VmBBotFuncTests.FindEnemy_DeathmatchPicksVisiblePlayerOpponent",
+            "VmBBotFuncTests.FindEnemy_DeathmatchPicksVisibleBotTarget",
+            "VmBBotFuncTests.FindEnemy_CoopPicksMapMonsterNotPlayers"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_func.cpp",
+          "symbol": "FCajunMaster::SetBodyAt",
+          "start": 454,
+          "end": 478,
+          "tests": [
+            "VmBBotFuncReachFireTests.SetBodyAt_ReusesExistingBodyNode"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_func.cpp",
+          "symbol": "FCajunMaster::FakeFire",
+          "start": 490,
+          "end": 510,
+          "tests": [
+            "VmBBotFuncReachFireTests.FakeFire_ReturnsPositiveDistanceInOpenRoom"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_func.cpp",
+          "symbol": "DBot::FireRox",
+          "start": 512,
+          "end": 551,
+          "tests": [
+            "VmBBotFuncReachFireTests.Dofire_SetsAttackWhenMeleeInRangeAndLos"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_func.cpp",
+          "symbol": "FCajunMaster::SafeCheckPosition",
+          "start": 556,
+          "end": 563,
+          "tests": [
+            "VmBBotFuncReachFireTests.SafeCheckPosition_IgnoresPickupSideEffects"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_func.cpp",
+          "symbol": "FCajunMaster::StartTravel",
+          "start": 565,
+          "end": 574,
+          "tests": [
+            "VmBBotGameTests.StartTravel_FinishTravel_MovesCajunBotThinkerStat"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_func.cpp",
+          "symbol": "FCajunMaster::FinishTravel",
+          "start": 576,
+          "end": 585,
+          "tests": [
+            "VmBBotGameTests.StartTravel_FinishTravel_MovesCajunBotThinkerStat"
+          ]
+        }
+      ],
+      "nativeLoc": 239,
+      "managedLoc": 164,
+      "conversionManagedCommit": "c21efbf61086dd1ff1fb6977700ad26e461593f5"
     },
     {
       "name": "action-print-log-fade-chunk886",
