@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 54955,
+  "convertedThisRunNative": 55105,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 82204,
+  "convertedThisRunManaged": 82378,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 433850,
+  "remainingNative": 433700,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 73482,
+  "convertedBehaviorNative": 73632,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 74236,
-  "convertedBehaviorManaged": 91875,
+  "combinedBehaviorNative": 74386,
+  "convertedBehaviorManaged": 92049,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -33507,6 +33507,41 @@
       "nativeLoc": 159,
       "managedLoc": 208,
       "conversionManagedCommit": "2b66dc22196cd792b25e2ac65f3d925cc57c3e86"
+    },
+    {
+      "name": "p-acs-runscript-ls-rs-inc-dec-chunk916",
+      "bucket": "conversion",
+      "note": "`DLevelScript::RunScript` `PCD_LSSCRIPTARRAY`\u2026`LSGLOBALARRAY`, full `PCD_RS*`, `PCD_INC*` through `INCGLOBALARRAY`, and `PCD_DECSCRIPTVAR`\u2026`DECGLOBALVAR` from `p_acs.cpp` (**8365\u20138514**). Follows **915** (**\u22648363**); `PCD_DECSCRIPTARRAY` at **8517** deferred.",
+      "auditSeams": "`FBehavior::SetArrayVal` / `GetArrayVal` and full `RunScript` dispatch are not hosted; slice models stack pops and in-place shift/inc/dec only.",
+      "auditRationale": "Honest **150**-line UNCredited band (exact case-edge trim, no LOC top-up); exclusive `VmPAcsVmOpcode916Slice.cs` without modifying **911\u2013915** slice files.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 8365 --end 8514` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native opcode region | Behavior ported |\n|----------------------|-----------------|\n| `PCD_LSSCRIPTARRAY` \u2026 `PCD_LSGLOBALARRAY` (**8365\u20138396**) | yes |\n| `PCD_RSSCRIPTVAR` \u2026 `PCD_RSGLOBALARRAY` (**8398\u20138449**) | yes |\n| `PCD_INCSCRIPTVAR` \u2026 `PCD_INCGLOBALARRAY` (**8452\u20138499**) | yes |\n| `PCD_DECSCRIPTVAR` \u2026 `PCD_DECGLOBALVAR` (**8501\u20138514**) | yes |\n\n| Managed (`VmPAcsVmOpcode916Slice.cs`) | Native (`p_acs.cpp`) |\n|----------------------------------------|---------------------|\n| `LsScriptArray` \u2026 `LsGlobalArray` | **8365\u20138396** |\n| `RsScriptVar` \u2026 `RsGlobalArray` | **8398\u20138449** |\n| `IncScriptVar` \u2026 `IncGlobalArray` | **8452\u20138499** |\n| `DecScriptVar` \u2026 `DecGlobalVar` | **8501\u20138514** |\n| `AcsScriptArrayStore` / `AcsMapArrayStore` | array backing **8368\u20138496** |\n\n### Chunk **916** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**915** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPAcsVmOpcode916Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::RunScript",
+          "start": 8365,
+          "end": 8514,
+          "tests": [
+            "VmPAcsVmOpcode916SliceTests.LsScriptArray_ShiftsCellLeft",
+            "VmPAcsVmOpcode916SliceTests.RsGlobalVar_RightShiftsLocal",
+            "VmPAcsVmOpcode916SliceTests.RsWorldArray_ShiftsElement",
+            "VmPAcsVmOpcode916SliceTests.IncScriptVar_Increments",
+            "VmPAcsVmOpcode916SliceTests.IncMapArray_ResolvesArrayId",
+            "VmPAcsVmOpcode916SliceTests.DecWorldVar_Decrements",
+            "VmPAcsVmOpcode916SliceTests.LsMapArray_ShiftsThroughMapVar",
+            "VmPAcsVmOpcode916SliceTests.RsMapArray_RightShiftsCell",
+            "VmPAcsVmOpcode916SliceTests.IncGlobalArray_IncrementsElement",
+            "VmPAcsVmOpcode916SliceTests.DecGlobalVar_DecrementsSlot"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 174,
+      "conversionManagedCommit": "8248a0fe45aa45afd23f37fe920fb2e8bab398ea"
     }
   ],
   "behaviorNativeChecksum": 508086,
