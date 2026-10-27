@@ -13,7 +13,7 @@ Whole `A_DoChase` (`p_enemy.cpp` 2397–2764). Absorbs run-9 recognition spans a
 ## Managed
 
 `VmPEnemyDoChase.cs`
-Managed LOC (tally): 350.
+Managed LOC (tally): 371.
 Conversion commit: `6adce958896f80c47fd495ab9ce832c34a106db1`.
 
 ## Padding review (2026-10-21)
@@ -31,7 +31,7 @@ Conversion commit: `6adce958896f80c47fd495ab9ce832c34a106db1`.
 | **Honest** | **368** |
 
 
-**Post-review ratio:** 350/368 managed/native ≈ 95% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 371/368 managed/native ≈ 101% (src file LOC at HEAD; see tally).
 
 ## Tests
 
