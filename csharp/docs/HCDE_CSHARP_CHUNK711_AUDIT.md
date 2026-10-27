@@ -14,7 +14,7 @@ Whole `P_CanResurrect` and `P_CheckForResurrection` (`p_enemy.cpp` 2777–2972).
 ## Managed
 
 `VmPEnemyResurrection.cs`
-Managed LOC (tally): 175.
+Managed LOC (tally): 193.
 Conversion commit: `1bc8581f0c3061ab71a50f982671ba8c2f54ffa4`.
 
 ## Padding review (2026-10-21)
@@ -35,7 +35,7 @@ Conversion commit: `1bc8581f0c3061ab71a50f982671ba8c2f54ffa4`.
 | **Honest** | **188** |
 
 
-**Post-review ratio:** 175/188 managed/native ≈ 93% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 193/188 managed/native ≈ 103% (src file LOC at HEAD; see tally).
 
 ## Tests
 
