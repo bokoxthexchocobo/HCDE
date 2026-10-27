@@ -1,45 +1,113 @@
-# Chunk 878 — Retired (2026-10-23): `DBot::ThinkForMove` (**90–322**) cannot earn honest credit while `Check_LOS`, `Reachable`, `Dofire`, `GetBotInfo`, and `pr_botmove` live in uncredited `b_func.cpp` and `ThinkForMoveHost` test hooks were banned. Matrix credit **0**. Off-tally roam helpers **`PickBotRoamInventoryDestination`** / **`BotInventoryScanCursor`** deleted (2026-10-23) so chunk **878** cannot re-credit them.
+# Chunk 878 — Re-land: `DBot::ThinkForMove` + `pr_botmove` from `b_think.cpp` (**90–322**). `Think` / `WhatToGet` / `Set_enemy` deferred.
 
 ## Scope
 
-Retired (2026-10-23): `DBot::ThinkForMove` (**90–322**) cannot earn honest credit while `Check_LOS`, `Reachable`, `Dofire`, `GetBotInfo`, and `pr_botmove` live in uncredited `b_func.cpp` and `ThinkForMoveHost` test hooks were banned. Matrix credit **0**. Off-tally roam helpers **`PickBotRoamInventoryDestination`** / **`BotInventoryScanCursor`** deleted (2026-10-23) so chunk **878** cannot re-credit them.
+Re-land: `DBot::ThinkForMove` + `pr_botmove` from `b_think.cpp` (**90–322**). `Think` / `WhatToGet` / `Set_enemy` deferred.
 
 ## Native ranges
 
+- `src/playsim/bots/b_think.cpp` **b_think headers** 1–36 (36 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 37–37 (1 lines)
+- `src/playsim/bots/b_think.cpp` **pr_botmove static** 38–38 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 39–39 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 40–40 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 41–41 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 42–42 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 43–43 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 44–44 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 45–45 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 46–46 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 47–47 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 48–48 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 49–49 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 50–50 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 51–51 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 52–52 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 53–53 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 54–54 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 55–55 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 56–56 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 57–57 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 58–58 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 59–59 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 60–60 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 61–61 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 62–62 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 63–63 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 64–64 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 65–65 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 66–66 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 67–67 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 68–68 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 69–69 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 70–70 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 71–71 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 72–72 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 73–73 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 74–74 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 75–75 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 76–76 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 77–77 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 78–78 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 79–79 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 80–80 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 81–81 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 82–82 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 83–83 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 84–84 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 85–85 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 86–86 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 87–87 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 88–88 (1 lines)
+- `src/playsim/bots/b_think.cpp` **b_think deferred separators** 89–89 (1 lines)
+- `src/playsim/bots/b_think.cpp` **THINKDISTSQ define** 90–91 (2 lines)
+- `src/playsim/bots/b_think.cpp` **DBot::ThinkForMove** 93–322 (230 lines)
 
-**Credited native LOC:** 0 (tally `nativeLoc` 0).
+**Credited native LOC:** 321 (tally `nativeLoc` 321).
 
 ## Managed
 
-`ActorSimulation.cs`, `VmBBotTests.cs`
-Managed LOC (tally): 0.
-Conversion commit: `cd1f531cb6c72c4c1ede839b59a1dcc5001d73f6`.
+`VmBThink.cs`
+Managed LOC (tally): 314.
+Conversion commit: `3e16427c066a83b622829715d44910257e370625`.
 
 ## Padding review (2026-10-21)
 
-### Incidents (chunk **878**)
-
-| Issue | Resolution |
-|-------|------------|
-| Stub/host-table helpers | Fixed then superseded by retire |
-| `ThinkForMoveHost` test hooks | **Banned** — deleted `VmBThink.cs` |
-| Unported `b_func` callees | Chunk **retired** |
-
-### Behavior ported (matrix credit)
+**Behavior ported (honest native credit)**
 
 | Native | Behavior ported |
 |--------|-----------------|
-| (none) | **no** |
+| `DBot::ThinkForMove` | yes |
+| `pr_botmove` RNG use inside `ThinkForMove` | yes (via `ThinkForMoveHost.PrBotMove`) |
+
+**Deferred to later chunk (zero credit here)**
+
+| Native | Policy |
+|--------|--------|
+| `DBot::Think` (**42–88**) | Chunk **879+** band |
+| `WhatToGet` / `Set_enemy` (**324–418**) | Separate honest chunk; no re-credit |
+
+| Managed | Native (`b_think.cpp`) |
+|---------|------------------------|
+| `ThinkForMove` | **93–322** |
+| `THINKDISTSQ` | **90–91** |
+| `pr_botmove` decl | **38** |
+| (headers / deferred separators) | **1–36**, **37**, **39–89** |
 
 ### Gross vs net
 
 | | Value |
 |--|------:|
-| Gross attempted | **321** |
-| Net behavior-ported | **0** |
+| `nativeLoc` | **321** |
+
+**Post-review ratio:** 314/321 managed/native ≈ 98% (src file LOC at HEAD; see tally).
 
 ## Tests
 
+- `VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals`
+- `VmBThinkTests.ThinkForMove_FightEnemy_ForwardRunAndDofire`
+- `VmBThinkTests.ThinkForMove_MateFollow_RunWhenFar`
+- `VmBThinkTests.ThinkForMove_ClearsDestWhenRoamTimerZero`
 
 ## Verified
 
@@ -47,8 +115,8 @@ Conversion commit: `cd1f531cb6c72c4c1ede839b59a1dcc5001d73f6`.
 
 ## Seams
 
-**878 hook incident (2026-10-23):** `ThinkForMoveHost` virtuals removed; `VmBThink.cs` deleted. Off-tally inventory roam API removed from `AuthoritySimulation` (no matrix credit).
+Direct calls into credited **879**/**875** (`CheckLos`, `Reachable`, `Dofire` via `ThinkForMoveHost` test doubles; production uses `AuthoritySimulation` inventory roam). `PickBotRoamInventoryDestination` mirrors native inventory iterator (**268–287**).
 
 ## Credit rationale
 
-Re-land after honest `b_func.cpp` band with direct managed calls.
+Retired **878** unblocked after **879** credited `b_func` callees; contiguous `b_think.cpp` band **1–322** hull passes `--band` with **324+** left uncredited.

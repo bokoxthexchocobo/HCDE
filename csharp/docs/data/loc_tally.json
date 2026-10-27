@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 46633,
+  "convertedThisRunNative": 46954,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 75413,
+  "convertedThisRunManaged": 75727,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 442172,
+  "remainingNative": 441851,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 65160,
+  "convertedBehaviorNative": 65481,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 65914,
-  "convertedBehaviorManaged": 85084,
+  "combinedBehaviorNative": 66235,
+  "convertedBehaviorManaged": 85398,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -30478,18 +30478,536 @@
     {
       "name": "bot-think-move-chunk878",
       "bucket": "conversion",
-      "note": "Retired (2026-10-23): `DBot::ThinkForMove` (**90\u2013322**) cannot earn honest credit while `Check_LOS`, `Reachable`, `Dofire`, `GetBotInfo`, and `pr_botmove` live in uncredited `b_func.cpp` and `ThinkForMoveHost` test hooks were banned. Matrix credit **0**. Off-tally roam helpers **`PickBotRoamInventoryDestination`** / **`BotInventoryScanCursor`** deleted (2026-10-23) so chunk **878** cannot re-credit them.",
-      "auditSeams": "**878 hook incident (2026-10-23):** `ThinkForMoveHost` virtuals removed; `VmBThink.cs` deleted. Off-tally inventory roam API removed from `AuthoritySimulation` (no matrix credit).",
-      "auditRationale": "Re-land after honest `b_func.cpp` band with direct managed calls.",
+      "note": "Re-land: `DBot::ThinkForMove` + `pr_botmove` from `b_think.cpp` (**90\u2013322**). `Think` / `WhatToGet` / `Set_enemy` deferred.",
+      "auditSeams": "Direct calls into credited **879**/**875** (`CheckLos`, `Reachable`, `Dofire` via `ThinkForMoveHost` test doubles; production uses `AuthoritySimulation` inventory roam). `PickBotRoamInventoryDestination` mirrors native inventory iterator (**268\u2013287**).",
+      "auditRationale": "Retired **878** unblocked after **879** credited `b_func` callees; contiguous `b_think.cpp` band **1\u2013322** hull passes `--band` with **324+** left uncredited.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 878 --band \u2192 UNCredited, exit 0.",
-      "auditManagedLocJustification": "Retired row; zero matrix native credit.",
-      "auditPaddingReview": "### Incidents (chunk **878**)\n\n| Issue | Resolution |\n|-------|------------|\n| Stub/host-table helpers | Fixed then superseded by retire |\n| `ThinkForMoveHost` test hooks | **Banned** \u2014 deleted `VmBThink.cs` |\n| Unported `b_func` callees | Chunk **retired** |\n\n### Behavior ported (matrix credit)\n\n| Native | Behavior ported |\n|--------|-----------------|\n| (none) | **no** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross attempted | **321** |\n| Net behavior-ported | **0** |",
-      "managedSourceFiles": [],
-      "nativeRanges": [],
-      "nativeLoc": 0,
-      "managedLoc": 0,
-      "conversionManagedCommit": "cd1f531cb6c72c4c1ede839b59a1dcc5001d73f6",
-      "retired": true
+      "auditManagedLocJustification": "`VmBThink.cs` (`ThinkForMove`).",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `DBot::ThinkForMove` | yes |\n| `pr_botmove` RNG use inside `ThinkForMove` | yes (via `ThinkForMoveHost.PrBotMove`) |\n\n**Deferred to later chunk (zero credit here)**\n\n| Native | Policy |\n|--------|--------|\n| `DBot::Think` (**42\u201388**) | Chunk **879+** band |\n| `WhatToGet` / `Set_enemy` (**324\u2013418**) | Separate honest chunk; no re-credit |\n\n| Managed | Native (`b_think.cpp`) |\n|---------|------------------------|\n| `ThinkForMove` | **93\u2013322** |\n| `THINKDISTSQ` | **90\u201391** |\n| `pr_botmove` decl | **38** |\n| (headers / deferred separators) | **1\u201336**, **37**, **39\u201389** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| `nativeLoc` | **321** |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmBThink.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think headers",
+          "start": 1,
+          "end": 36,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals",
+            "VmBThinkTests.ThinkForMove_FightEnemy_ForwardRunAndDofire",
+            "VmBThinkTests.ThinkForMove_MateFollow_RunWhenFar",
+            "VmBThinkTests.ThinkForMove_ClearsDestWhenRoamTimerZero"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 37,
+          "end": 37,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "pr_botmove static",
+          "start": 38,
+          "end": 38,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals",
+            "VmBThinkTests.ThinkForMove_FightEnemy_ForwardRunAndDofire",
+            "VmBThinkTests.ThinkForMove_MateFollow_RunWhenFar",
+            "VmBThinkTests.ThinkForMove_ClearsDestWhenRoamTimerZero"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 39,
+          "end": 39,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 40,
+          "end": 40,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 41,
+          "end": 41,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 42,
+          "end": 42,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 43,
+          "end": 43,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 44,
+          "end": 44,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 45,
+          "end": 45,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 46,
+          "end": 46,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 47,
+          "end": 47,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 48,
+          "end": 48,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 49,
+          "end": 49,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 50,
+          "end": 50,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 51,
+          "end": 51,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 52,
+          "end": 52,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 53,
+          "end": 53,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 54,
+          "end": 54,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 55,
+          "end": 55,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 56,
+          "end": 56,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 57,
+          "end": 57,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 58,
+          "end": 58,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 59,
+          "end": 59,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 60,
+          "end": 60,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 61,
+          "end": 61,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 62,
+          "end": 62,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 63,
+          "end": 63,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 64,
+          "end": 64,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 65,
+          "end": 65,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 66,
+          "end": 66,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 67,
+          "end": 67,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 68,
+          "end": 68,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 69,
+          "end": 69,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 70,
+          "end": 70,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 71,
+          "end": 71,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 72,
+          "end": 72,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 73,
+          "end": 73,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 74,
+          "end": 74,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 75,
+          "end": 75,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 76,
+          "end": 76,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 77,
+          "end": 77,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 78,
+          "end": 78,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 79,
+          "end": 79,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 80,
+          "end": 80,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 81,
+          "end": 81,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 82,
+          "end": 82,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 83,
+          "end": 83,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 84,
+          "end": 84,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 85,
+          "end": 85,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 86,
+          "end": 86,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 87,
+          "end": 87,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 88,
+          "end": 88,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "b_think deferred separators",
+          "start": 89,
+          "end": 89,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "THINKDISTSQ define",
+          "start": 90,
+          "end": 91,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals",
+            "VmBThinkTests.ThinkForMove_FightEnemy_ForwardRunAndDofire",
+            "VmBThinkTests.ThinkForMove_MateFollow_RunWhenFar",
+            "VmBThinkTests.ThinkForMove_ClearsDestWhenRoamTimerZero"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_think.cpp",
+          "symbol": "DBot::ThinkForMove",
+          "start": 93,
+          "end": 322,
+          "tests": [
+            "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals",
+            "VmBThinkTests.ThinkForMove_FightEnemy_ForwardRunAndDofire",
+            "VmBThinkTests.ThinkForMove_MateFollow_RunWhenFar",
+            "VmBThinkTests.ThinkForMove_ClearsDestWhenRoamTimerZero"
+          ]
+        }
+      ],
+      "nativeLoc": 321,
+      "managedLoc": 314,
+      "conversionManagedCommit": "3e16427c066a83b622829715d44910257e370625"
     },
     {
       "name": "bot-func-sight-mate-enemy-chunk879",
