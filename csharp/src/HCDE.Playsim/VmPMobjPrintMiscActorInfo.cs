@@ -54,4 +54,23 @@ public static class VmPMobjPrintMiscActorInfo
 
     public static bool LineSpecialUsesName(bool specFound, string name) =>
         specFound && name.Length > 0;
+
+    public static MiscInfoHeader BuildMiscInfoHeader(
+        bool queryPresent,
+        ReadOnlySpan<int> legacyRenderStyles,
+        int renderStyle,
+        bool lineSpecialFound)
+    {
+        var legacyStyle = ScanLegacyRenderStyle(legacyRenderStyles, renderStyle);
+        return new MiscInfoHeader(queryPresent, legacyStyle, renderStyle, lineSpecialFound);
+    }
+
+    public static string FormatSpecialSummary(bool specFound, string specName, ReadOnlySpan<int> args)
+    {
+        if (!specFound)
+            return "None";
+        if (args.Length < 5)
+            return specName;
+        return $"{specName}({args[0]}, {args[1]}, {args[2]}, {args[3]}, {args[4]})";
+    }
 }

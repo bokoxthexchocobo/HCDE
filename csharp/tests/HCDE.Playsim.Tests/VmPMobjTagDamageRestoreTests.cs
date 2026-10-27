@@ -16,7 +16,9 @@ public class VmPMobjTagDamageRestoreTests
 
     [Fact]
     public void Translation_EmptyResets() =>
-        Assert.True(true);
+        Assert.Equal(
+            VmPMobjTagDamageRestore.SetTranslationOutcome.ResetDefault,
+            VmPMobjTagDamageRestore.EvaluateSetTranslation("", 0));
 
     [Fact]
     public void Restore_SpawnFloatNeedsSpace() =>
@@ -42,4 +44,20 @@ public class VmPMobjTagDamageRestoreTests
         Assert.Equal(80, VmPMobjTagDamageRestore.ChooseRestoreZ(
             new VmPMobjTagDamageRestore.RestoreZContext(
                 VmPMobjTagDamageRestore.MfSpawnceiling, 0, 10, 0, 100, 10, 0)));
+
+    [Fact]
+    public void CharacterName_UsesConversationDollar() =>
+        Assert.Equal("Speaker", VmPMobjTagDamageRestore.ResolveGetCharacterName(
+            true, "$ID", _ => "Speaker", () => "tag"));
+
+    [Fact]
+    public void ClearCounters_DecrementsLevelTotals() =>
+        Assert.Equal(0, VmPMobjTagDamageRestore.ApplyClearCountersWithLevel(
+            new VmPMobjTagDamageRestore.CounterFlags(VmPMobjTagDamageRestore.MfCountitem, 0),
+            false, 0,
+            null, () => { }, null).Flags);
+
+    [Fact]
+    public void ApplyDamageFactor_ChainsMobjFactor() =>
+        Assert.Equal(30, VmPMobjTagDamageRestore.ApplyDamageFactorNative(10, 3.0, d => d + 0));
 }

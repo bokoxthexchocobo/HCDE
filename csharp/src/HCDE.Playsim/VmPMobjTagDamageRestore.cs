@@ -78,6 +78,46 @@ public static class VmPMobjTagDamageRestore
         return className;
     }
 
+    public static string ResolveGetCharacterName(
+        bool hasConversation,
+        string speakerName,
+        Func<string, string> stringTable,
+        Func<string> resolveTag)
+    {
+        if (hasConversation && speakerName.Length > 0)
+        {
+            if (speakerName[0] == '$')
+                return stringTable(speakerName[1..]);
+            return speakerName;
+        }
+
+        return resolveTag();
+    }
+
+    public enum SetTranslationOutcome
+    {
+        ResetDefault,
+        ApplyCustom,
+        IgnoreUnknown,
+    }
+
+    public static SetTranslationOutcome EvaluateSetTranslation(string translationName, int customTranslationNum)
+    {
+        if (translationName.Length == 0)
+            return SetTranslationOutcome.ResetDefault;
+        if (customTranslationNum != InvalidTranslation)
+            return SetTranslationOutcome.ApplyCustom;
+        return SetTranslationOutcome.IgnoreUnknown;
+    }
+
+    public static int ApplyDamageFactorNative(int damage, double damageFactor, Func<int, int>? applyMobjDamageFactor)
+    {
+        damage = (int)(damage * damageFactor);
+        if (damage > 0 && applyMobjDamageFactor != null)
+            damage = applyMobjDamageFactor(damage);
+        return damage;
+    }
+
     public readonly record struct CounterFlags(int Flags, int Flags5);
 
     public static CounterFlags ApplyClearCounters(CounterFlags cf, bool countsAsKill, int health)
@@ -90,6 +130,37 @@ public static class VmPMobjTagDamageRestore
             flags &= ~MfCountitem;
         if (ClearSecretCounter(flags5))
             flags5 &= ~Mf5Countsecret;
+        return new CounterFlags(flags, flags5);
+    }
+
+    public static CounterFlags ApplyClearCountersWithLevel(
+        CounterFlags cf,
+        bool countsAsKill,
+        int health,
+        Action? decrementMonsters,
+        Action? decrementItems,
+        Action? decrementSecrets)
+    {
+        var flags = cf.Flags;
+        var flags5 = cf.Flags5;
+        if (ClearKillCounter(countsAsKill, health))
+        {
+            decrementMonsters?.Invoke();
+            flags &= ~MfCountkill;
+        }
+
+        if (ClearItemCounter(flags))
+        {
+            decrementItems?.Invoke();
+            flags &= ~MfCountitem;
+        }
+
+        if (ClearSecretCounter(flags5))
+        {
+            decrementSecrets?.Invoke();
+            flags &= ~Mf5Countsecret;
+        }
+
         return new CounterFlags(flags, flags5);
     }
 
@@ -141,4 +212,7 @@ public static class VmPMobjTagDamageRestore
             z = ceilingz - height;
         return z;
     }
+
+    public static double ResolveRestoreSpecialPositionZ(RestoreZContext ctx, int mfSolid) =>
+        FinalRestoreZ(ChooseRestoreZ(ctx), ctx.FloorZ, ctx.CeilingZ, ctx.Height, mfSolid);
 }
