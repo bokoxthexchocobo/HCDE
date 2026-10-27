@@ -60,6 +60,9 @@ public static class VmActionFadeSpawn
     public static (double xo, double yo) DebrisOffsetFromPr(int prValue) =>
         ((prValue - 128) / 16.0, (prValue - 128) / 16.0);
 
+    public static double DebrisZOffsetFromPr(int prValue, double height, double bobOffset) =>
+        prValue * height / 256.0 + bobOffset;
+
     public static double ClampParticleStartAlpha(double startAlpha) => Math.Clamp(startAlpha, 0.0, 1.0);
 
     public static double ClampPositiveFadeStep(double fadestep) =>
