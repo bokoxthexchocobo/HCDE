@@ -15,7 +15,7 @@ Whole static `Grind`, `DEFINE_ACTION_FUNCTION_NATIVE(AActor, Grind)`, and `AActo
 ## Managed
 
 `VmPMobjGrind.cs`
-Managed LOC (tally): 130.
+Managed LOC (tally): 181.
 Conversion commit: `5ba64b8d5b44a1bdb6a28f6696e51905aedaa7f0`.
 
 ## Padding review (2026-10-21)
@@ -35,7 +35,7 @@ Conversion commit: `5ba64b8d5b44a1bdb6a28f6696e51905aedaa7f0`.
 | **Honest** | **150** |
 
 
-**Post-review ratio:** 130/150 managed/native ≈ 87% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 181/150 managed/native ≈ 121% (src file LOC at HEAD; see tally).
 
 ## Tests
 
