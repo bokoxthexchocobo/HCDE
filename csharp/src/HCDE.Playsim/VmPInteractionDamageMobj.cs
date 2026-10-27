@@ -42,6 +42,15 @@ public static class VmPInteractionDamageMobj
     public const int CfBuddha2 = 1 << 2;
     public const int SecfEndlevel = 1;
 
+    public static bool SpectralDamageBlocked(bool targetSpectral, int flags, bool telefrag, bool inflictorNull, int inflictorFlags4) =>
+        targetSpectral && (flags & DmgForced) == 0 && !telefrag
+        && (inflictorNull || (inflictorFlags4 & Mf4Spectral) == 0);
+
+    public static bool InvulnerableWithoutForce(int flags2, int damageFlags, bool telefrag) =>
+        (flags2 & Mf2Invulnerable) != 0 && !telefrag && (damageFlags & DmgForced) == 0;
+
+    public static bool PierceArmorInflictor(int inflictorFlags5) => (inflictorFlags5 & Mf5Piercearmor) != 0;
+
     public sealed class DamageActor
     {
         public int Health { get; set; }
@@ -146,11 +155,8 @@ public static class VmPInteractionDamageMobj
         var telefrag = rawDamage >= ctx.TelefragThreshold;
         var mod = ctx.Mod;
 
-        if ((target.Flags4 & Mf4Spectral) != 0 && (flags & DmgForced) == 0 && !telefrag)
-        {
-            if (ctx.InflictorNull || (ctx.InflictorFlags4 & Mf4Spectral) == 0)
-                return -1;
-        }
+        if (SpectralDamageBlocked((target.Flags4 & Mf4Spectral) != 0, flags, telefrag, ctx.InflictorNull, ctx.InflictorFlags4))
+            return -1;
 
         if (target.Health <= 0)
         {
@@ -168,7 +174,7 @@ public static class VmPInteractionDamageMobj
         if (ctx.SameTargetSource && (!telefrag || (target.Flags7 & Mf7Laxtelefragdmg) != 0))
             damage = (int)(damage * target.SelfDamageFactor);
 
-        if ((target.Flags2 & Mf2Invulnerable) != 0 && !telefrag && (flags & DmgForced) == 0)
+        if (InvulnerableWithoutForce(target.Flags2, flags, telefrag))
         {
             if (!target.HasPlayer)
             {
@@ -179,7 +185,7 @@ public static class VmPInteractionDamageMobj
                 return 0;
         }
 
-        if (!ctx.InflictorNull && (ctx.InflictorFlags5 & Mf5Piercearmor) != 0)
+        if (!ctx.InflictorNull && PierceArmorInflictor(ctx.InflictorFlags5))
             flags |= DmgNoArmor;
 
         if ((target.Flags & MfStealth) != 0)
