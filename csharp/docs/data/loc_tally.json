@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 56687,
+  "convertedThisRunNative": 56837,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 84200,
+  "convertedThisRunManaged": 84351,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 432118,
+  "remainingNative": 431968,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 75214,
+  "convertedBehaviorNative": 75364,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 75968,
-  "convertedBehaviorManaged": 93871,
+  "combinedBehaviorNative": 76118,
+  "convertedBehaviorManaged": 94022,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -33948,6 +33948,39 @@
       "nativeLoc": 150,
       "managedLoc": 125,
       "conversionManagedCommit": "0c4e071cd13a130f9fcabd5c41ff2e67bc5454e1"
+    },
+    {
+      "name": "p-acs-runscript-head-chunk926",
+      "bucket": "conversion",
+      "note": "`CharArrayParms` tail (**7066\u20137085**), `GetClassForIndex`, and `DLevelScript::RunScript` preamble through first `PCD_NOP`/`PCD_SUSPEND` from `p_acs.cpp` (**7066\u20137215**). Follows **925** (**\u22647065**); `PCD_TAGSTRING` at **7228** deferred.",
+      "auditSeams": "`ACSLocalVariables`, sector tag iterators, `PO_Busy`, `RunningScripts`, `Printf`, and full opcode dispatch remain host seams.",
+      "auditRationale": "Honest **150**-line UNCredited band in **6614\u20137509** corridor; exclusive `VmPAcsRunscript926Slice.cs`.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 7066 --end 7215` and `--chunk 926 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `CharArrayParms` ranged/flat tail (**7066\u20137085**) | yes |\n| `GetClassForIndex` (**7087\u20137090**) | yes (lookup seam) |\n| `RunScript` locals/module ptr (**7092\u20137111**) | yes |\n| Hexen special-arg mask (**7113\u20137114**) | yes |\n| Pre-run wait states (**7117\u20137167**) | yes |\n| Stack/`RunScript` loop head (**7170\u20137208**) | yes |\n| `default`/`PCD_TERMINATE`/`PCD_NOP`/`PCD_SUSPEND` (**7210\u20137226**) | yes |\n\n| Managed (`VmPAcsRunscript926Slice.cs`) | Native (`p_acs.cpp`) |\n|------------------------------------------|---------------------|\n| `TryPopCharArrayParms` | **7066\u20137085** |\n| `LookupActorClassName` | **7087\u20137090** |\n| `ComputeSpecialArgMask` | **7113\u20137114** |\n| `TrySelectModuleLocalArrays` | **7103\u20137111** |\n| `TickPreRunWaitState` | **7117\u20137167** |\n| `ShouldTerminateRunaway` | **7188\u20137192** |\n| `ReadNextPcode` | **7195\u20137206** |\n| `ApplyRunningOpcode` | **7210\u20137226** |\n| `DefaultResultValue` / `RunawayInstructionLimit` | **7100**, **7188** |\n\n### Chunk **926** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**925** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPAcsRunscript926Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::RunScript",
+          "start": 7066,
+          "end": 7215,
+          "tests": [
+            "VmPAcsRunscript926SliceTests.TryPopCharArrayParms_Ranged_RejectsInvalidCapacity",
+            "VmPAcsRunscript926SliceTests.TryPopCharArrayParms_NonRanged_CombinesOffset",
+            "VmPAcsRunscript926SliceTests.ComputeSpecialArgMask_HexenOld_TruncatesToByte",
+            "VmPAcsRunscript926SliceTests.TickPreRunWaitState_DelayedBecomesRunningWhenZero",
+            "VmPAcsRunscript926SliceTests.TickPreRunWaitState_TagWaitReturnsWhileSectorBusy",
+            "VmPAcsRunscript926SliceTests.ReadNextPcode_LittleEnhanced_DecodesEscapedOpcode",
+            "VmPAcsRunscript926SliceTests.ApplyRunningOpcode_SuspendSetsSuspended",
+            "VmPAcsRunscript926SliceTests.ShouldTerminateRunaway_RespectsBusyFlag"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 151,
+      "conversionManagedCommit": "78d4615ff730f4d2d9273739ee20e5b06330d257"
     }
   ],
   "behaviorNativeChecksum": 508086,
