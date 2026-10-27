@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 227354
+    "managedCSharpLoc": 227431
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 57137,
+    "convertedThisRunNative": 57287,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 84551,
+    "convertedThisRunManaged": 84628,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 431668,
+    "remainingNative": 431518,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 75664,
+    "convertedBehaviorNative": 75814,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 76418,
-    "convertedBehaviorManaged": 94222,
+    "combinedBehaviorNative": 76568,
+    "convertedBehaviorManaged": 94299,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -34060,6 +34060,38 @@
         "nativeLoc": 150,
         "managedLoc": 107,
         "conversionManagedCommit": "a203ab98f73167f56ddbdabfe0c0a54635f7e741"
+      },
+      {
+        "name": "p-lnspec-sector-color-scale-chunk929",
+        "bucket": "conversion",
+        "note": "`LS_Sector_SetColor` through `LS_Sector_SetCeilingScale2` (`p_lnspec.cpp` **2419\u20132568**). Follows **928** (**\u22642418**); `LS_Sector_SetRotation` at **2568+** deferred.",
+        "auditSeams": "Sector tag iterators, `PalEntry`, and `sector_t::SetColor`/`SetFade`/offset/scale application remain host seams.",
+        "auditRationale": "Honest **150**-line slice in **2269\u20133129** corridor; exclusive `VmPLnspecScrollSector929Slice.cs`.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 2419 --end 2568` and `--chunk 929 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| `SectorSetColor` | `LS_Sector_SetColor` **2421\u20132432** |\n| `SectorSetFade` | `LS_Sector_SetFade` **2434\u20132444** |\n| `CeilingPanning` / `PanningOffset` | `LS_Sector_SetCeilingPanning` **2446\u20132460** |\n| `FloorPanning` / `BuildFloorPanning` | `LS_Sector_SetFloorPanning` **2462\u20132476** |\n| `BuildCeilingPanning` | `LS_Sector_SetCeilingPanning` invoke seam **2452\u20132458** |\n| `InvertedScalePair` | scale prep **2493\u20132496**, **2516\u20132519** |\n| `SectorSetFloorScale` / `InvertScaleComponent` | `LS_Sector_SetFloorScale` **2478\u20132499** |\n| `SectorSetCeilingScale` | `LS_Sector_SetCeilingScale` **2501\u20132522** |\n| `SectorSetFloorScale2` / `InvertScaleFactor65536` | `LS_Sector_SetFloorScale2` **2524\u20132544** |\n| `SectorSetCeilingScale2` | `LS_Sector_SetCeilingScale2` **2546\u20132566** |\n| `ShouldApplyScale2X` / `ShouldApplyScale2Y` | **2538\u20132541**, **2560\u20132563** |\n| Gravity close seam | **2419** |\n\n### Chunk **929** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**928** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPLnspecScrollSector929Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Sector_SetColor",
+            "start": 2419,
+            "end": 2568,
+            "tests": [
+              "VmPLnspecScrollSector929SliceTests.Panning_CombinesIntAndFrac",
+              "VmPLnspecScrollSector929SliceTests.FloorScale_InvertsNonZero",
+              "VmPLnspecScrollSector929SliceTests.Scale2_Uses65536Factors",
+              "VmPLnspecScrollSector929SliceTests.CeilingScale_MatchesFloorInvert",
+              "VmPLnspecScrollSector929SliceTests.SectorSetColor_CarriesDesaturate",
+              "VmPLnspecScrollSector929SliceTests.ShouldApplyScale2_SkipsZeroFactor",
+              "VmPLnspecScrollSector929SliceTests.BuildFloorPanning_MarksFloorPlane"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 77,
+        "conversionManagedCommit": "b3094610a465cc1103c837c98ac005d4494069c4"
       }
     ],
     "behaviorNativeChecksum": 508086,
