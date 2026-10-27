@@ -31,8 +31,8 @@ FraggleScript tokenizer from `fragglescript/t_parse.cpp` (31–274).
 ## Managed
 
 `VmFScriptParserParse864.cs`
-Managed LOC (tally): 231.
-Conversion commit: `86d49f808bb1f14d3c3762f11eb76eb5315e754a`.
+Managed LOC (tally): 235.
+Conversion commit: `7f6b21cd6679d24d68a15d0dd938a3e30ad0b0cf`.
 
 ## Padding review (2026-10-21)
 
@@ -69,7 +69,7 @@ Conversion commit: `86d49f808bb1f14d3c3762f11eb76eb5315e754a`.
 | **Honest** | **235** |
 
 
-**Post-review ratio:** 231/235 managed/native ≈ 98% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 235/235 managed/native ≈ 100% (src file LOC at HEAD; see tally).
 
 ## Tests
 
