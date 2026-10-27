@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 56236,
+  "convertedThisRunNative": 56387,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 83731,
+  "convertedThisRunManaged": 83905,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 432569,
+  "remainingNative": 432418,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 74763,
+  "convertedBehaviorNative": 74914,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 75517,
-  "convertedBehaviorManaged": 93402,
+  "combinedBehaviorNative": 75668,
+  "convertedBehaviorManaged": 93576,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -33848,6 +33848,41 @@
       "nativeLoc": 166,
       "managedLoc": 229,
       "conversionManagedCommit": "319749a6d5ef6e28bfb83434637795831a6e3b1a"
+    },
+    {
+      "name": "p-acs-callfunc-sector-actor-chunk923",
+      "bucket": "conversion",
+      "note": "`DLevelScript::CallFunction` ACSF cases from `p_acs.cpp` (**6614\u20136764**): `GetMaxInventory` through `SetActorFlag`. Head of uncredited **6614\u20137509** corridor; `SetTranslation` at **6766** deferred.",
+      "auditSeams": "Full `CallFunction` dispatch, `P_SpawnParticle`, `P_Thing_CheckProximity`, `ModActorFlag`, and `CheckInventory` max path remain host seams.",
+      "auditRationale": "Honest **\u2265150** UNCredited head slice after chunk **11** (**\u22646613**); exclusive `VmPAcsCallfunc923Slice.cs`.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 6614 --end 6764` and `--chunk 923 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native ACSF region | Behavior ported |\n|--------------------|-----------------|\n| `ACSF_GetMaxInventory` (**6614\u20136621**) | yes |\n| `ACSF_SetSectorDamage` (**6623\u20136638**) | yes |\n| `ACSF_SetSectorTerrain` (**6640\u20136654**) | yes |\n| `ACSF_SpawnParticle` (**6656\u20136687**) | yes (stack consume) |\n| `ACSF_SetMusicVolume` (**6689\u20136692**) | yes |\n| `ACSF_CheckProximity` (**6694\u20136705**) | yes |\n| `ACSF_CheckActorState` (**6707\u20136718**) | yes |\n| `ACSF_CheckClass` (**6720\u20136725**) | yes |\n| `ACSF_DamageActor` (**6727\u20136735**) | yes |\n| `ACSF_SetActorFlag` (**6737\u20136764**) | yes |\n\n| Managed (`VmPAcsCallfunc923Slice.cs`) | Native (`p_acs.cpp`) |\n|--------------------------------------|---------------------|\n| `TryGetMaxInventory` | **6614\u20136621** |\n| `TrySetSectorDamage` | **6623\u20136638** |\n| `TrySetSectorTerrain` | **6640\u20136654** |\n| `TrySpawnParticle` | **6656\u20136687** |\n| `TrySetMusicVolume` | **6689\u20136692** |\n| `TryCheckProximity` | **6694\u20136705** |\n| `TryCheckActorState` | **6707\u20136718** |\n| `TryCheckClass` | **6720\u20136725** |\n| `TryDamageActor` | **6727\u20136735** |\n| `TrySetActorFlag` | **6737\u20136764** |\n\n### Chunk **923** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **151** |\n| **Net headline** | **+151** vs post-**922** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPAcsCallfunc923Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::CallFunction",
+          "start": 6614,
+          "end": 6764,
+          "tests": [
+            "AcsPlayerInventoryTests.CallFunc_GetMaxInventory_ReadsActivatorClipMax",
+            "SetSectorDamageTests.MapAndScriptRoutesChangeTaggedSectorsAndGameplay",
+            "AcsCallFunctionTests.CallFunc_SetSectorTerrain_ThenGetActorFloorTerrainReadsName",
+            "AcsCallFunctionTests.CallFunc_SpawnParticle_AcceptsArguments",
+            "AcsCallFunctionTests.CallFunc_SetMusicVolume_StoresScale",
+            "AcsCallFunctionTests.CallFunc_CheckProximity_FindsNearbyImp",
+            "AcsCallFunctionTests.CallFunc_CheckActorState_FindsSpawnLabelOnImp",
+            "AcsCallFunctionTests.CallFunc_CheckClass_RecognizesKnownSpawnClass",
+            "AcsCallFunctionTests.CallFunc_DamageActor_ReducesTidTargetHealth",
+            "AcsCallFunctionTests.CallFunc_SetActorFlag_AndCheckFlag_Invulnerable"
+          ]
+        }
+      ],
+      "nativeLoc": 151,
+      "managedLoc": 174,
+      "conversionManagedCommit": "f4df2e62595928cd86f2521883213e5253f99078"
     }
   ],
   "behaviorNativeChecksum": 508086,
