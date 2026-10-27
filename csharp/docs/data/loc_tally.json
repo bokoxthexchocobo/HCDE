@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 46436,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 74448,
+  "convertedThisRunManaged": 74494,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 64963,
   "recognitionBehaviorNative": 754,
   "combinedBehaviorNative": 65717,
-  "convertedBehaviorManaged": 84119,
+  "convertedBehaviorManaged": 84165,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -30134,8 +30134,8 @@
         }
       ],
       "nativeLoc": 154,
-      "managedLoc": 132,
-      "conversionManagedCommit": "d96ee0dd4fbada702df656d960fc6ab77c85492f"
+      "managedLoc": 178,
+      "conversionManagedCommit": "4cf7af6715bc673a0c8f49959f25e7f286831720"
     },
     {
       "name": "fscript-parser-sf-tex-door-chunk870",

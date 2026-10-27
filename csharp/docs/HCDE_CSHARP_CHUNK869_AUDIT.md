@@ -18,8 +18,8 @@
 ## Managed
 
 `VmFScriptParserSfCeilLight.cs`, `VmFScriptInitFunctionsReg869.cs`
-Managed LOC (tally): 132.
-Conversion commit: `3afd19a8d4cdc67f33a9c1af06460d9a7df20e67`.
+Managed LOC (tally): 178.
+Conversion commit: `4cf7af6715bc673a0c8f49959f25e7f286831720`.
 
 ## Padding review (2026-10-21)
 
@@ -59,7 +59,7 @@ Conversion commit: `3afd19a8d4cdc67f33a9c1af06460d9a7df20e67`.
 | **Honest** | **154** |
 
 
-**Post-review ratio:** 132/154 managed/native ≈ 86% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 178/154 managed/native ≈ 116% (src file LOC at HEAD; see tally).
 
 ## Tests
 
