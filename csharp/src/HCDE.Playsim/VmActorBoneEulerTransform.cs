@@ -13,14 +13,8 @@ public static class VmActorBoneEulerTransform
     public static bool MatrixFillEligible(bool outMatrixNonNull, bool getBoneSharedOk) =>
         outMatrixNonNull && getBoneSharedOk;
 
-    public static bool EulerAnglesAvailable(bool getBoneSharedOk) => getBoneSharedOk;
-
     public static bool TransformUsesActorBonePose(bool getBoneSharedOk, bool hasBonePositionFromActor) =>
         getBoneSharedOk && hasBonePositionFromActor;
-
-    public static bool RawMatrixOutputRequested(bool outMatrixNonNull) => outMatrixNonNull;
-
-    public static bool BoneOverrideRequested(bool withOverride) => withOverride;
 
     public static (double X, double Y, double Z) GetBoneEulerAnglesNative(
         bool getBoneSharedOk,
@@ -28,7 +22,7 @@ public static class VmActorBoneEulerTransform
         double eulerX,
         double eulerY,
         double eulerZ) =>
-        EulerAnglesAvailable(getBoneSharedOk) ? (eulerX, eulerY, eulerZ) : ZeroEulerAngles();
+        getBoneSharedOk ? (eulerX, eulerY, eulerZ) : ZeroEulerAngles();
 
     public static (double X, double Y, double Z) GetNamedBoneEulerAnglesNative(
         bool getBoneSharedOk,
