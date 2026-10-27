@@ -12,6 +12,17 @@ public static class VmPMapUtlLineOpening
     public const double LineOpenMin = -3.402823466e38;
     public const double LineOpenMax = 3.402823466e38;
 
+    public static bool LineOpening3dFloorsOnly(int flags) => (flags & FfcfOnly3dfloors) != 0;
+
+    public static bool PortalsEnabledOnLine(int lineFlags, int flags) =>
+        (lineFlags & MlPortalconnect) != 0 && (flags & FfcfNoportals) == 0;
+
+    public static double PortalAdjustedCeiling(bool portal, double z) => portal ? LineOpenMax : z;
+
+    public static double PortalAdjustedFloor(bool portal, double z) => portal ? LineOpenMin : z;
+
+    public static bool OneSidedLineBlocksOpening(bool twoSided) => !twoSided;
+
     public readonly record struct Divline(double X, double Y, double Dx, double Dy);
 
     public sealed class LineOpeningState
@@ -59,20 +70,20 @@ public static class VmPMapUtlLineOpening
         Action? applyXFloors,
         Func<bool>? apply3dMidtex)
     {
-        if ((flags & FfcfOnly3dfloors) == 0)
+        if (!LineOpening3dFloorsOnly(flags))
         {
-            if (!twoSided)
+            if (OneSidedLineBlocksOpening(twoSided))
             {
                 open.Range = 0;
                 return;
             }
 
-            var fc = frontCeilPortal ? LineOpenMax : frontCeilZ;
-            var bc = backCeilPortal ? LineOpenMax : backCeilZ;
-            var ff = frontFloorPortal ? LineOpenMin : frontFloorZ;
-            var bf = backFloorPortal ? LineOpenMin : backFloorZ;
+            var fc = PortalAdjustedCeiling(frontCeilPortal, frontCeilZ);
+            var bc = PortalAdjustedCeiling(backCeilPortal, backCeilZ);
+            var ff = PortalAdjustedFloor(frontFloorPortal, frontFloorZ);
+            var bf = PortalAdjustedFloor(backFloorPortal, backFloorZ);
 
-            if ((lineFlags & MlPortalconnect) != 0 && (flags & FfcfNoportals) == 0)
+            if (PortalsEnabledOnLine(lineFlags, flags))
             {
                 if (frontCeilPortal) fc = LineOpenMax;
                 if (backCeilPortal) bc = LineOpenMax;
