@@ -1,0 +1,32 @@
+[
+  {
+    "name": "sbarinfo-commands-drawstring-dynamic-chunk1078",
+    "bucket": "conversion",
+    "note": "`CommandDrawString` value parse, reset cache, and dynamic `Tick` refresh from `sbarinfo_commands.cpp` (**751–900**); follows **1077** parse flag tail.",
+    "auditSeams": "**1077** owns parse flags through **749–750**; `RealignString`, `SetStringToTag`, and **901+** `LOGTEXT`/default tail outside hull or host.",
+    "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **751–900** (+150); dynamic string sources + TIME format; no Vm* collision with **1077** drawstring parse head.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 751 --end 900` and `--chunk 1078 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `ParseStringValue` keyword dispatch (**761–808**) | yes |\n| Global var/array index bounds (**789–802**) | yes |\n| Constant string path (**810–814**) | yes |\n| `Reset` cache invalidation (**821–826**) | yes |\n| Level/skill/class lump cache refresh (**837–867**) | yes |\n| Global var/array cache refresh (**888–900**) | yes |\n| Level time formatting (**905–907**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **751–755** | **1077** parse terminator seam |\n| **788–793**, **800–805** | host scanner |\n| **755**, **841**, **858**, **892**, **900** | host `RealignString` / lookups |\n| **869–885**, **909–911** | host tag/name copy |\n| **901+** | `GLOBALARRAY` tail / `LOGTEXT` outside hull end |\n\n| Managed (`VmSbarinfoCommandDrawString1078Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|-----------------------------------------------------|----------------------------------|\n| Value keyword + global bounds | **761–814** |\n| Reset cache policy | **819–826** |\n| Tick cache refresh gates | **837–900** |\n| TIME split/format | **905–907** |\n| Band hull (exclusive slice) | **751–900** |\n\n### Chunk **1078** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1077** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoCommandDrawString1078Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo_commands.cpp",
+        "symbol": "CommandDrawString::ParseStringValue / Reset / Tick",
+        "start": 751,
+        "end": 900,
+        "tests": [
+          "VmSbarinfoCommandDrawString1078SliceTests.TryClassifyDrawStringValueKeyword_MapsDynamicSources",
+          "VmSbarinfoCommandDrawString1078SliceTests.IsGlobalVarIndexInRange_MatchesNativeBound",
+          "VmSbarinfoCommandDrawString1078SliceTests.ShouldInvalidateDrawStringCacheOnReset_CoversClassAndSkill",
+          "VmSbarinfoCommandDrawString1078SliceTests.ShouldRefreshLevelBoundDrawString_DetectsLumpChange",
+          "VmSbarinfoCommandDrawString1078SliceTests.FormatDrawStringLevelTime_MatchesNativeSplit",
+          "VmSbarinfoCommandDrawString1078SliceTests.SplitLevelTimeComponents_HandlesHourRollover",
+          "VmSbarinfoCommandDrawString1078SliceTests.ResolveConstantStringValueKind_UsesConstantEnum",
+          "VmSbarinfoCommandDrawString1078SliceTests.ShouldRefreshGlobalVarDrawString_ComparesCachedValue"
+        ]
+      }
+    ]
+  }
+]
