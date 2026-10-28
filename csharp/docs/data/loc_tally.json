@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 75756,
+  "convertedThisRunNative": 75906,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 98771,
+  "convertedThisRunManaged": 98878,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 413116,
+  "remainingNative": 412966,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 94283,
+  "convertedBehaviorNative": 94433,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 94970,
-  "convertedBehaviorManaged": 108442,
+  "combinedBehaviorNative": 95120,
+  "convertedBehaviorManaged": 108549,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -37913,6 +37913,39 @@
       "nativeLoc": 150,
       "managedLoc": 147,
       "conversionManagedCommit": "5f4daf91872d807fcdc0f8ea809034be9d616b3a"
+    },
+    {
+      "name": "g-mapinfo-parse-parser-chunk1054",
+      "bucket": "conversion",
+      "note": "`cluster_info_t::Reset` and `FMapInfoParser` brace/assign/number helpers from `g_mapinfo.cpp` (**451\u2013600**). Follows **1053** (**301\u2013450**).",
+      "auditSeams": "`FScanner` (`CheckString`, `MustGetStringName`, `SetCMode`, `UnGet`, `CheckNumber`, `CheckFloat`) remains host-injected; uncredited `VmMapInfoParserFormat` / **1053** `IsLevelInfoValid` complete **451\u2013452** without re-credit.",
+      "auditRationale": "File-scoped UNCredited **`g_mapinfo.cpp`** **451\u2013600** (+150); excludes **301\u2013450** (**1053**). Hull ends at **`CheckFloat`** (**598**); **600+** `HCDE_MapInfo_CheckOptionalFloatCompat` deferred without padding.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_mapinfo.cpp --start 451 --end 600` and `--chunk 1054 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `isValid` return tail (**451\u2013452**) | excluded \u2014 **1053** `IsLevelInfoValid` |\n| `cluster_info_t::Reset` (**459\u2013471**) | yes |\n| `ParseOpenBrace` (**480\u2013498**) | yes |\n| `ParseCloseBrace` (**505\u2013518**) | yes |\n| `CheckAssign` / assign/comma helpers (**525\u2013560**) | yes |\n| `CheckNumber` / `CheckFloat` (**567\u2013598**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **301\u2013450** | chunk **1053** |\n| **451\u2013452** | `isValid` body \u2014 policy on **1053** slice |\n| **453\u2013458** | comment banners |\n| **600+** | HCDE optional float compat (next band) |\n| **833+** | chunks **1027\u20131036** |\n| `VmMapInfoParserFormat` | uncredited brace helpers \u2014 seam only |\n\n| Managed (`VmMapInfoParseParser1054Slice.cs`) | Native (`g_mapinfo.cpp`) |\n|---------------------------------------------|---------------------------|\n| `ApplyClusterInfoReset` | **459\u2013471** |\n| `ResolveFormatAfterOpenBrace` / `RequiresMustGetOpenBrace` | **480\u2013498** |\n| `TryParseCloseBrace` | **505\u2013518** |\n| `CheckAssign` / assign/comma predicates | **525\u2013560** |\n| `TryCheckNumber` / `TryCheckFloat` | **567\u2013598** |\n| Band hull (exclusive slice) | **451\u2013600** |\n\n### Chunk **1054** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1053** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Gamedata/VmMapInfoParseParser1054Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "cluster_info_t::Reset / FMapInfoParser format helpers",
+          "start": 451,
+          "end": 600,
+          "tests": [
+            "VmMapInfoParseParser1054SliceTests.ApplyClusterInfoReset_ClearsClusterFields",
+            "VmMapInfoParseParser1054SliceTests.ResolveFormatAfterOpenBrace_DetectsNewFromBraceToken",
+            "VmMapInfoParseParser1054SliceTests.ResolveFormatAfterOpenBrace_KeepsOldWhenSet",
+            "VmMapInfoParseParser1054SliceTests.TryParseCloseBrace_OldFormatUngetsAndReturnsTrue",
+            "VmMapInfoParseParser1054SliceTests.TryParseCloseBrace_NewFormatRequiresBraceToken",
+            "VmMapInfoParseParser1054SliceTests.CheckAssign_OnlyNewFormatWithEquals",
+            "VmMapInfoParseParser1054SliceTests.TryCheckNumber_NewFormatNeedsCommaThenNumber",
+            "VmMapInfoParseParser1054SliceTests.TryCheckFloat_OldFormatUsesScannerFloat"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 107,
+      "conversionManagedCommit": "06ca0591c5cd67670ec009caeff7ed4360c5abb0"
     }
   ],
   "behaviorNativeChecksum": 508086,
