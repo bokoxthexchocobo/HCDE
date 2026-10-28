@@ -68,4 +68,28 @@ public static class VmGGameSavePayload1005Slice
 
     public static bool ShouldContinueDemoCommandLoop(int commandId) =>
         !IsDemoUserCommandPayload(commandId);
+
+    public static IReadOnlyList<string> OrderedSaveArchiveLeafNames() =>
+        ["savepic.png", "info.json", "globals.json"];
+
+    public static int ExpectedSaveArchiveEntryCount() =>
+        OrderedSaveArchiveLeafNames().Count;
+
+    public static DemoReadExitReason ResolveDemoReadExitReason(
+        bool demoRecording,
+        bool atOrPastBodyEnd,
+        int commandId)
+    {
+        if (IsDemoUserCommandPayload(commandId))
+            return DemoReadExitReason.UserCommandReady;
+        if (ShouldEndDemoPlaybackAtBodyEnd(demoRecording, atOrPastBodyEnd))
+            return DemoReadExitReason.EndOfBody;
+        return DemoReadExitReason.ContinueLoop;
+    }
+
+    public static bool ShouldDispatchDemoCommandToNet(int commandId) =>
+        commandId != DemoUserCmd
+        && commandId != DemoEmptyUserCmd
+        && commandId != DemoStop
+        && commandId != DemoDropPlayer;
 }

@@ -45,5 +45,9 @@ public class VmGGameSaveFlow1004SliceTests
         Assert.Equal(1, elapsed.Hours);
         Assert.Equal(1, elapsed.Minutes);
         Assert.Equal(1, elapsed.Seconds);
+        Assert.Equal("quick02", VmGGameSaveFlow1004Slice.FormatQuicksaveFileStem(2));
+        Assert.True(VmGGameSaveFlow1004Slice.UsesCurrentSaveVersionConstant(
+            VmGGameSaveFlow1004Slice.CurrentSaveVersion,
+            VmGGameSaveFlow1004Slice.CurrentSaveVersion));
     }
 }
