@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 69137,
+  "convertedThisRunNative": 68987,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 93288,
+  "convertedThisRunManaged": 93212,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 419668,
+  "remainingNative": 419818,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 87664,
+  "convertedBehaviorNative": 87514,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 88418,
-  "convertedBehaviorManaged": 102959,
+  "combinedBehaviorNative": 88268,
+  "convertedBehaviorManaged": 102883,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -36501,34 +36501,6 @@
       "nativeLoc": 150,
       "managedLoc": 89,
       "conversionManagedCommit": "82a342336b3478870278ae5fe6847d8a51ea00c5"
-    },
-    {
-      "name": "g-game-late-tail-chunk1009",
-      "bucket": "conversion",
-      "note": "`G_CheckDemoStatus` continuation, demo record finish, slideshow/autosave, and late `DEFINE_GLOBAL` seam from `g_game.cpp` (**3650\u20133799**); follows chunk **1008** (**3500\u20133649**).",
-      "auditSeams": "`D_AdvanceDemo`, zlib/file writers, intermission host, `G_ScreenShot`, and global registration remain injected.",
-      "auditRationale": "UNCredited **3650\u20133799** CLI band; disjoint from chunks **995\u20131008** and chunk **9** credited segments; **3800\u20133813** deferred sub-150 without padding.",
-      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_game.cpp --start 3650 --end 3799` and `--chunk 1009 --band` \u2192 UNCredited, exit 0.",
-      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Playback cleanup + timing (**3653\u20133665**) | yes |\n| Status bar / player slot reset (**3667\u20133670**) | yes |\n| Single/timing demo end (**3671\u20133693**) | yes |\n| Record compress/save (**3700\u20133742**) | yes |\n| `G_StartSlideshow` selection (**3750\u20133757**) | yes |\n| Script screenshot gate (**3772\u20133775**) | yes |\n| `G_MakeAutoSave` gate (**3781\u20133784**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **3656\u20133659** | cvar/weapon host restore |\n| **3678\u20133680** | `I_FatalError` timing print host |\n| **3704\u20133720** | compress/chunk binary host |\n| **3723\u20133731** | `FileWriter` host |\n| **3751\u20133759** | `RunIntermission` host |\n| **3762\u20133799** | action/global registration host |\n| **3800\u20133813** | deferred EOF tail (zero credit) |\n\n| Managed (`VmGGameLateTail1009Slice.cs`) | Native (`g_game.cpp`) |\n|----------------------------------------|----------------------|\n| Timing / player cleanup predicates | **3653\u20133670** |\n| Demo end policy + FPS estimate | **3671\u20133693** |\n| Compress capacity / save outcome | **3708\u20133741** |\n| Slideshow / screenshot / autosave gates | **3750\u20133784** |\n| Band hull (exclusive slice) | **3650\u20133799** |\n\n### Chunk **1009** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1008** |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmGGameLateTail1009Slice.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/g_game.cpp",
-          "symbol": "G_CheckDemoStatus",
-          "start": 3650,
-          "end": 3799,
-          "tests": [
-            "VmGGameLateTail1009SliceTests.CheckDemoStatusPlayback",
-            "VmGGameLateTail1009SliceTests.DemoRecordingFinish",
-            "VmGGameLateTail1009SliceTests.SlideshowAndAutosave"
-          ]
-        }
-      ],
-      "nativeLoc": 150,
-      "managedLoc": 76,
-      "conversionManagedCommit": "a080b4bd4f11ff7166352c4b2b095b21cee4a1a1"
     }
   ],
   "behaviorNativeChecksum": 508086,
