@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 69587,
+  "convertedThisRunNative": 69737,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 93534,
+  "convertedThisRunManaged": 93727,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 419218,
+  "remainingNative": 419068,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 88114,
+  "convertedBehaviorNative": 88264,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 88868,
-  "convertedBehaviorManaged": 103205,
+  "combinedBehaviorNative": 89018,
+  "convertedBehaviorManaged": 103398,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -36613,6 +36613,34 @@
       "nativeLoc": 150,
       "managedLoc": 86,
       "conversionManagedCommit": "1a1277deecfd8163e871feb408b654ecec42aaf1"
+    },
+    {
+      "name": "g-level-exit-intermission-chunk1013",
+      "bucket": "conversion",
+      "note": "`GetSecretExitMap`, `ExitLevel`, `SecretExitLevel`, and early `CreateIntermission` from `g_level.cpp` (**901\u20131050**); follows deferred **451\u2013582** / chunk **8** gap and prior **1010\u20131012** bands.",
+      "auditSeams": "`ChangeLevel` body, `P_CheckMapData`, `FindClusterInfo`, `F_StartFinale`, inventory lookup, and `FindLevelInfo` remain injected; only level-local exit flags and intermission gates are modeled.",
+      "auditRationale": "UNCredited **901\u20131050**; no `p_saveg` overlap; disjoint from `p_lnspec` exit specials (host `ChangeLevel` only) and chunk **10** `dthinker` SerializeThinkers.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_level.cpp --start 901 --end 1050` and `--chunk 1013 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `ChangeLevel` VM arity (**896\u2013905**, seam **901\u2013905**) | yes |\n| `GetSecretExitMap` (**912\u2013924**) | yes |\n| `ExitLevel` / `SecretExitLevel` (**932\u2013969**) | yes |\n| `CreateIntermission` cheat/endgame/Strife (**977\u20131028**) | yes |\n| Non-DM exit text branch start (**1030\u20131050**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **880\u2013895** | prior `ChangeLevel` coop tail (**452+** band) |\n| **975** | `staticWmInfo` host global |\n| **1009\u20131017**, **1042\u20131050** | `F_StartFinale` host calls (args only where modeled) |\n| **1051+** | cluster enter text / remainder of `CreateIntermission` |\n\n| Managed (`VmGLevelExitIntermission1013Slice.cs`) | Native (`g_level.cpp`) |\n|--------------------------------------------------|----------------------|\n| Secret map resolution | **912\u2013924** |\n| `flags3` exit used + change flags | **932\u2013956** |\n| Endgame / Strife sequence pick | **988\u20131004** |\n| Exit text key selection | **1006\u20131036** |\n| Band hull (exclusive slice) | **901\u20131050** |\n\n### Chunk **1013** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1012** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmGLevelExitIntermission1013Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/g_level.cpp",
+          "symbol": "GetSecretExitMap",
+          "start": 901,
+          "end": 1050,
+          "tests": [
+            "VmGLevelExitIntermission1013SliceTests.SecretExitMapAndNormalExit",
+            "VmGLevelExitIntermission1013SliceTests.EndgameSequenceAndStrifeEnding",
+            "VmGLevelExitIntermission1013SliceTests.IntermissionExitTextKeys"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 193,
+      "conversionManagedCommit": "5ce461a09e1dd2cd6f4ce03817f7d66683d43556"
     }
   ],
   "behaviorNativeChecksum": 508086,
