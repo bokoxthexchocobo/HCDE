@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 78306,
+  "convertedThisRunNative": 78456,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 100608,
+  "convertedThisRunManaged": 100719,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 410566,
+  "remainingNative": 410416,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 96833,
+  "convertedBehaviorNative": 96983,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 97520,
-  "convertedBehaviorManaged": 110279,
+  "combinedBehaviorNative": 97670,
+  "convertedBehaviorManaged": 110390,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -38488,6 +38488,41 @@
       "nativeLoc": 150,
       "managedLoc": 117,
       "conversionManagedCommit": "15f3f472a283fe24f06d5544b8ee4e3d57397170"
+    },
+    {
+      "name": "sbarinfo-drawstring-chunk1071",
+      "bucket": "conversion",
+      "note": "`DSBarInfo::DrawString`, translation helpers, and `AmmoType` from `sbarinfo.cpp` (**1351\u20131500**); follows **1070** `DrawGraphic`.",
+      "auditSeams": "`V_ParseFontColor`, `GetCharFromString`, `DrawChar`, and **1489\u20131504** member declarations remain host; fullscreen rel-center uses **1068**/**1070** at call sites.",
+      "auditRationale": "UNCredited **`sbarinfo.cpp`** **1351\u20131500** (+150); no overlap with **1070** `DrawGraphic` (**1201\u20131348**).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo.cpp --start 1351 --end 1500` and `--chunk 1071 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| DrawString spacing + bold translation (**1352\u20131360**) | yes |\n| HUD scale + string loop space/escape (**1362\u20131387**) | yes (escape gate) |\n| Glyph metrics + monospace alignment (**1390\u20131425**) | yes |\n| Statusbar vs fullscreen char coords (**1427\u20131446**) | yes |\n| Shadow alpha/offset + cursor advance (**1447\u20131467**) | yes |\n| `GetTranslation` / `GetTranslationIndex` (**1471\u20131481**) | yes |\n| `AmmoType` slot select (**1483\u20131487**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1384\u20131386** | host `V_ParseFontColor` |\n| **1429**, **1452\u20131463** | host coord transform + `DrawChar` |\n| **1489\u20131504** | class member fields / closing brace |\n| **1507+** | `DrawAux` outside hull |\n\n| Managed (`VmSbarinfoDrawString1071Slice.cs`) | Native (`sbarinfo.cpp`) |\n|--------------------------------------------------|-------------------------|\n| Spacing/bold/HUD scale helpers | **1352\u20131370** |\n| Space advance + glyph width policy | **1374\u20131394** |\n| Monospace alignment + draw rect | **1402\u20131425** |\n| Fullscreen scale/anchor + shadow | **1434\u20131451** |\n| Cursor advance after glyph | **1464\u20131467** |\n| Translation + ammo type policy | **1471\u20131487** |\n| Band hull (exclusive slice) | **1351\u20131500** |\n\n### Chunk **1071** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1070** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmSbarinfoDrawString1071Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/g_statusbar/sbarinfo.cpp",
+          "symbol": "DSBarInfo::DrawString / GetTranslation",
+          "start": 1351,
+          "end": 1500,
+          "tests": [
+            "VmSbarinfoDrawString1071SliceTests.ResolveBoldTranslationRange_MatchesNativeFallback",
+            "VmSbarinfoDrawString1071SliceTests.AdvanceDrawStringForSpace_UsesSpacingCharacterWhenSet",
+            "VmSbarinfoDrawString1071SliceTests.ApplyMonospaceAlignmentX_CentersWithinSpacingCell",
+            "VmSbarinfoDrawString1071SliceTests.ComputeDrawStringShadowAlpha_UsesHereticShadowFactor",
+            "VmSbarinfoDrawString1071SliceTests.AdvanceDrawStringCursorAfterGlyph_DiffersForMonospace",
+            "VmSbarinfoDrawString1071SliceTests.ShouldUseRavenExtraPlayerTranslation_DetectsRavenMask",
+            "VmSbarinfoDrawString1071SliceTests.ResolveTranslationIndex_GatesOnTranslateFlag",
+            "VmSbarinfoDrawString1071SliceTests.AnchorNegativeFullscreenGlyph_AddsViewSize",
+            "VmSbarinfoDrawString1071SliceTests.IsTextColorEscape_RecognizesNativeEscape",
+            "VmSbarinfoDrawString1071SliceTests.SelectAmmoTypeFieldIndex_MapsSlotOneAndTwo"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 111,
+      "conversionManagedCommit": "5c32afc529531f834d1d4230a14379d96c7fdbc0"
     }
   ],
   "behaviorNativeChecksum": 508086,
