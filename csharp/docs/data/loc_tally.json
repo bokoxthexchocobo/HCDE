@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 59387,
+  "convertedThisRunNative": 59237,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 86295,
+  "convertedThisRunManaged": 86219,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 429418,
+  "remainingNative": 429568,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 77914,
+  "convertedBehaviorNative": 77764,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 78668,
-  "convertedBehaviorManaged": 95966,
+  "combinedBehaviorNative": 78518,
+  "convertedBehaviorManaged": 95890,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -34493,38 +34493,6 @@
       "nativeLoc": 150,
       "managedLoc": 89,
       "conversionManagedCommit": "1c93933203da0c085bdaa9d0ae4325c94778628e"
-    },
-    {
-      "name": "p-acs-cvar-hud-chunk943",
-      "bucket": "conversion",
-      "note": "`ACSF_GetCVarString` through `ACSF_StopSound` from `p_acs.cpp` (**6000\u20136149**). Replaces aborted Thing_Hate **943**; outside deferred **7366\u20137509**.",
-      "auditSeams": "`DoGetCVar`, `SetCVar`, `SetUserCVar`, `P_LineAttack`, `S_PlaySound`, `S_StopSound`, and `HCDE_ResolveACSPlayer` remain host seams.",
-      "auditRationale": "Honest **150**-line UNCredited band; exclusive `VmPAcsCallFuncCvarHud943Slice.cs` (`AcsModCvarService` / `AcsCallFunctionsExtended` are live helpers, not matrix credit for these lines).",
-      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 6000 --end 6149` and `--chunk 943 --band` \u2192 UNCredited, exit 0.",
-      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|----------------------|\n| chunk **943** hull | **6000\u20136149** |\n| `MinArgCountMet` | `MIN_ARG_COUNT` gates **6000+** |\n| `GetUserCVarAbortsWhenPlayerUnresolved` / `SelectGetUserCVarResult` | **6015\u20136017**, **6024\u20136026** |\n| `SetCVarUsesStringOperand` | `SetCVar` vs `SetCVarString` **6005**, **6009** |\n| `UserCVarNumericRead` / `UserCVarStringRead` | **6011\u20136027** |\n| `SetUserCVarRequiresThreeArgs` | **6029\u20136035** |\n| `MapLineAttackFlags` | `FHF_*` \u2192 `LAF_*` **6050\u20136052** |\n| `LineAttackUsesActivator` | tid **6054\u20136056** |\n| `ShouldAssignPuffTid` | puff TID **6057\u20136060**, **6070\u20136073** |\n| `PlaySoundNeedsLookup` | `PlaySound` vs `PlayActorSound` **6086\u20136094** |\n| `ResolvePlaySoundSpot` | tid **6105\u20136108** |\n| `ComposePlayChannel` / `PlaySoundChannelMask` | channel flags **6119\u20136121** |\n| `StopSoundUsesActivator` | **6133\u20136135** |\n| `DefaultStopChannel` | **6131** |\n| `HasValidSoundId` | **6116** |\n\n### Chunk **943** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**942** |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPAcsCallFuncCvarHud943Slice.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_acs.cpp",
-          "symbol": "ACSF_GetCVarString",
-          "start": 6000,
-          "end": 6149,
-          "tests": [
-            "VmPAcsCallFuncCvarHud943SliceTests.MinArgCountMet_RequiresAtLeastN",
-            "VmPAcsCallFuncCvarHud943SliceTests.MapLineAttackFlags_TranslatesFhfBits",
-            "VmPAcsCallFuncCvarHud943SliceTests.LineAttackUsesActivator_WhenTidZero",
-            "VmPAcsCallFuncCvarHud943SliceTests.ComposePlayChannel_AddsLocalAndLoopFlags",
-            "VmPAcsCallFuncCvarHud943SliceTests.ResolvePlaySoundSpot_ReturnsActivatorForTidZero",
-            "VmPAcsCallFuncCvarHud943SliceTests.DefaultStopChannel_FallsBackToBody",
-            "VmPAcsCallFuncCvarHud943SliceTests.SetUserCVarRequiresThreeArgs_MatchesNative"
-          ]
-        }
-      ],
-      "nativeLoc": 150,
-      "managedLoc": 76,
-      "conversionManagedCommit": "64ea0c7e0bfd63a95e221d867900a86290afb818"
     }
   ],
   "behaviorNativeChecksum": 508086,
