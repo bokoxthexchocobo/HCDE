@@ -1,0 +1,30 @@
+[
+  {
+    "name": "p-conversation-nextnode-command-chunk976",
+    "bucket": "conversion",
+    "note": "`HandleReply` `NextNode` tail, reply teardown, `P_ConversationCommand`, `TerminalResponse` head, and `DEFINE_FIELD` exports from `p_conversation.cpp` (**601–750**); follows chunk **975** (**≤600**).",
+    "auditSeams": "`P_StartConversation` re-entry, `S_StopSound`, `I_SetMusicVolume`, `HandleReply`, `ReadInt16`/`ReadInt8`, `Printf`, and `StatusBar`/`DHUDMessage` remain host-injected.",
+    "auditRationale": "UNCredited continuation; chunk **975** stopped at hull **600** before `NextNode` body. No overlap with **604** `d_net.cpp` conversation netcode predicates beyond distinct TU credit.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_conversation.cpp --start 601 --end 750` and `--chunk 976 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `NextNode` index + validity (**602–632**) | yes |\n| reply teardown + console music (**634–649**) | yes |\n| `P_ConversationCommand` (**660–689**) | yes |\n| `TerminalResponse` head (**701–727**) | yes (predicates) |\n| `DEFINE_FIELD` node/reply exports (**729–750**) | yes (export counts) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **599–601**, **652–659**, **691–700**, **728** | comments / separators |\n| **616–617**, **621**, **648**, **668–674** | host calls |\n\n| Managed (`VmPConversationNextNodeCommand976Slice.cs`) | Native (`p_conversation.cpp`) |\n|------------------------------------------------------|--------------------------------|\n| `HasNextNodeTransition` / `ComputeNextDialogueIndex` | **602–608** |\n| `ShouldChainConversationAfterNextNode` | **612–617** |\n| `ShouldStopNpcVoiceDuringIntermission` | **619–621** |\n| `InvalidNextNodeMessageIncludesName` | **627–630** |\n| Teardown + music predicates | **634–649** |\n| `P_ConversationCommand` routing | **660–689** |\n| `TerminalResponse*` predicates | **701–727** |\n| Field export counts | **729–750** |\n| Band hull (exclusive slice) | **601–750** |\n\n### Chunk **976** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**975** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPConversationNextNodeCommand976Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/p_conversation.cpp",
+        "symbol": "P_ConversationCommand",
+        "start": 601,
+        "end": 750,
+        "tests": [
+          "VmPConversationNextNodeCommand976SliceTests.NextNodeTransition_ComputesDialogueIndex",
+          "VmPConversationNextNodeCommand976SliceTests.ShouldChainConversationAfterNextNode_RespectsCloseAndIntermission",
+          "VmPConversationNextNodeCommand976SliceTests.ConversationCommand_RoutesNetcodes",
+          "VmPConversationNextNodeCommand976SliceTests.DemoPlaybackClosesConversationMenu_WhenBothFlags",
+          "VmPConversationNextNodeCommand976SliceTests.TerminalResponse_StringTablePrefix",
+          "VmPConversationNextNodeCommand976SliceTests.FieldExportCounts_MatchNativeBand"
+        ]
+      }
+    ]
+  }
+]
