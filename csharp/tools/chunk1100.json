@@ -18,6 +18,7 @@
         "start": 151,
         "end": 300,
         "tests": [
+          "VmSoundEngineCacheChannel1100SliceTests.RunCacheSound_LoadsSingleWhenNotRandom",
           "VmSoundEngineCacheChannel1100SliceTests.RunUnloadSound_UnloadsWhenValidAndAlwaysClears",
           "VmSoundEngineCacheChannel1100SliceTests.ShouldPersistActiveChannel_ExcludesUiAndTransient",
           "VmSoundEngineCacheChannel1100SliceTests.ListChannelsShouldInclude_SkipsEvicted"
