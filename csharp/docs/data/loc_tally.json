@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 65837,
+  "convertedThisRunNative": 65987,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 90801,
+  "convertedThisRunManaged": 90902,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 422968,
+  "remainingNative": 422818,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 84364,
+  "convertedBehaviorNative": 84514,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 85118,
-  "convertedBehaviorManaged": 100472,
+  "combinedBehaviorNative": 85268,
+  "convertedBehaviorManaged": 100573,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -35913,6 +35913,34 @@
       "nativeLoc": 150,
       "managedLoc": 157,
       "conversionManagedCommit": "080512183a882457640d1182a6f2726ea9ca25e1"
+    },
+    {
+      "name": "p-states-define-install-chunk988",
+      "bucket": "conversion",
+      "note": "`SetStateLabel`, `AddStateLabel`, `GetStateLabelIndex`, `FindState`, `CreateStateLabelList`, and `InstallStates` head from `p_states.cpp` (**451\u2013600**); follows chunk **987** (**301\u2013450**).",
+      "auditSeams": "`FindStateAddress`, `MakeStateNameList`, `M_Malloc`/`M_Free`, `qsort`, and `I_Error` remain host-injected.",
+      "auditRationale": "UNCredited define/install band; disjoint from **985\u2013987**. Does not re-port **987** `WalkStateDefineAddress` / **986** name-list parse.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_states.cpp --start 451 --end 600` and `--chunk 988 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `SetStateLabel` (**459\u2013464**) | yes |\n| `AddStateLabel` index encoding (**472\u2013480**) | yes |\n| `GetStateLabelIndex` (**489\u2013500**) | yes |\n| `FindState` by name walk (**509\u2013526**) | yes |\n| `CreateStateLabelList` prune/materialize gate (**541\u2013569**) | yes (predicates) |\n| `InstallStates` head (**579\u2013600**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **451** | `FindStateAddress` closing brace (**987**) |\n| **466\u2013471**, **502\u2013508**, **528\u2013533**, **572\u2013578**, **601+** | comment banners / next regions |\n| **534\u2013539**, **558\u2013567** | `qsort` / allocator host |\n| **583\u2013584**, **592** | `I_Error` / host default spawn seam |\n| **1\u2013450** | chunks **985\u2013987** |\n\n| Managed (`VmPStatesDefine988Slice.cs`) | Native (`p_states.cpp`) |\n|----------------------------------------|----------------------|\n| `ApplyStateLabelAssignment` | **461\u2013463** |\n| `EncodePendingStateArrayIndex` / `AssignPendingStateIndexLabel` | **474\u2013478** |\n| `TryDecodeStateLabelIndex` | **491\u2013499** |\n| `ResolveStateDefineByNameParts` | **515\u2013525** |\n| `ShouldPruneEmptyStateDefine` / `PruneEmptyStateDefines` / `MaterializeStateLabelListEnabled` | **544\u2013556** |\n| `CanInstallStates` / `SelectSpawnStateForInstall` / `ShouldDestroyExistingStateList` | **581\u2013600** |\n| Band hull (exclusive slice) | **451\u2013600** |\n\n### Chunk **988** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**987** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPStatesDefine988Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/p_states.cpp",
+          "symbol": "FStateDefinitions::InstallStates",
+          "start": 451,
+          "end": 600,
+          "tests": [
+            "VmPStatesDefine988SliceTests.StateLabelAssignmentAndIndexEncoding",
+            "VmPStatesDefine988SliceTests.ResolveAndPruneStateDefines",
+            "VmPStatesDefine988SliceTests.InstallStatesHeadPredicates"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 101,
+      "conversionManagedCommit": "bc7915da00fe023ec1d95aeb35d085c9fe164c41"
     }
   ],
   "behaviorNativeChecksum": 508086,
