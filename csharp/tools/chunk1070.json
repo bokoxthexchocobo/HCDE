@@ -1,0 +1,34 @@
+[
+  {
+    "name": "sbarinfo-drawgraphic-chunk1070",
+    "bucket": "conversion",
+    "note": "`DSBarInfo::DrawGraphic` centering, clipping, overlay, and fullscreen-scale paths from `sbarinfo.cpp` (**1201–1350**); follows **1069** texture null guard.",
+    "auditSeams": "Null texture early-out (**1198–1199**) stays **1069**; `DrawTexture`/`ClearRect`/`StatusbarToRealCoords` and **1351+** `DrawString` body remain host-injected.",
+    "auditRationale": "UNCredited **`sbarinfo.cpp`** **1201–1350** (+150); no overlap with **1069** `ShouldSkipDrawGraphic` (**1198–1199**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo.cpp --start 1201 --end 1350` and `--chunk 1070 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Coordinate load + center offsets (**1201–1211**) | yes |\n| Statusbar clip rect math (**1221–1224**) | yes |\n| Dim/alpha-map draw path flags (**1242–1273**) | yes |\n| Fullscreen relative center + anchors (**1282–1299**) | yes |\n| Fullscreen clip + draw flags (**1302–1345**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1198–1199** | **1069** null guard |\n| **1228–1236**, **1239**, **1244–1272** | host coord transform + draw calls |\n| **1310–1344** | host `ClearRect`/`DrawTexture` |\n| **1350+** | `DrawString` signature/body outside hull behavior |\n\n| Managed (`VmSbarinfoDrawGraphic1070Slice.cs`) | Native (`sbarinfo.cpp`) |\n|--------------------------------------------------|-------------------------|\n| Center offset + pixel offsets | **1204–1214** |\n| Dest size + statusbar clip bounds | **1218–1224** |\n| Overlay/alpha/clear path gates | **1238–1273** |\n| Fullscreen center/anchor/scale | **1282–1299** |\n| Fullscreen clip presence | **1302–1308** |\n| Band hull (exclusive slice) | **1201–1350** |\n\n### Chunk **1070** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1069** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoDrawGraphic1070Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo.cpp",
+        "symbol": "DSBarInfo::DrawGraphic",
+        "start": 1201,
+        "end": 1350,
+        "tests": [
+          "VmSbarinfoDrawGraphic1070SliceTests.UsesCenterOffset_DetectsNativeFlag",
+          "VmSbarinfoDrawGraphic1070SliceTests.ApplyCenteredDrawX_UsesTextureWidthWhenForcedUnset",
+          "VmSbarinfoDrawGraphic1070SliceTests.ApplyPixelOffsets_AddsBlockOffsets",
+          "VmSbarinfoDrawGraphic1070SliceTests.ResolveDestSize_HonorsForcedDimensions",
+          "VmSbarinfoDrawGraphic1070SliceTests.ComputeStatusbarClipLeft_ZeroWhenClipDisabled",
+          "VmSbarinfoDrawGraphic1070SliceTests.ResolveColorOverlay_MatchesDimOverlayConstant",
+          "VmSbarinfoDrawGraphic1070SliceTests.ApplyFullscreenRelativeCenter_DelegatesTo1068Adjust",
+          "VmSbarinfoDrawGraphic1070SliceTests.ResolveFullscreenAnchor_FlipsNegativeNonRelativeX",
+          "VmSbarinfoDrawGraphic1070SliceTests.ScaleFullscreenDrawMetrics_AppliesHudScale",
+          "VmSbarinfoDrawGraphic1070SliceTests.HasAnyFullscreenClipComponent_DetectsPartialClip"
+        ]
+      }
+    ]
+  }
+]
