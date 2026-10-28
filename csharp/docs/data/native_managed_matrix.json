@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 235309
+    "managedCSharpLoc": 235389
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 67787,
+    "convertedThisRunNative": 67937,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 92506,
+    "convertedThisRunManaged": 92586,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 421018,
+    "remainingNative": 420868,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 86314,
+    "convertedBehaviorNative": 86464,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 87068,
-    "convertedBehaviorManaged": 102177,
+    "combinedBehaviorNative": 87218,
+    "convertedBehaviorManaged": 102257,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -36294,6 +36294,34 @@
         "nativeLoc": 150,
         "managedLoc": 158,
         "conversionManagedCommit": "e79a2e692ba033aa642de4682325fd2abdff299e"
+      },
+      {
+        "name": "g-game-session-chunk1001",
+        "bucket": "conversion",
+        "note": "`G_DoPlayerPop`, screenshot queue, load-game action, save WAD validation, and save CVAR filter from `g_game.cpp` (**2449\u20132598**); follows chunk **1000** (**2021\u20132170**). Orphan session managed files not listed.",
+        "auditSeams": "`Printf`, `GStrings`, `M_ScreenShot`, and `arc()` host I/O remain injected.",
+        "auditRationale": "UNCredited **2449\u20132598** CLI band; disjoint from chunks **995\u20131000** and chunk **9** credited segments.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_game.cpp --start 2449 --end 2598` and `--chunk 1001 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `G_DoPlayerPop` spy/status/morph teardown (**2463\u20132491**) | yes |\n| `G_ScreenShot` gate (**2503\u20132508**) | yes |\n| `G_LoadGame` (**2517\u20132521**) | yes |\n| `CheckSingleWad` / `G_CheckSaveGameWads` (**2530\u20132569**) | yes |\n| `C_SerializeCVars` write filter (**2593\u20132598**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2449\u20132447** | prior spawn function close |\n| **2457\u20132460**, **2572\u20132576** | string `Printf` host |\n| **2476\u20132496** | script/destroy host |\n| **2601+** | deserialize branch (next band) |\n| Orphan `VmGGameLoadGame*` / `VmGGamePlayerPop` | not re-credited |\n\n| Managed (`VmGGameSession1001Slice.cs`) | Native (`g_game.cpp`) |\n|----------------------------------------|----------------------|\n| `ShouldRevertSpyCameraToSelf` / morph helpers | **2465\u20132491** |\n| `ShouldQueueScreenshot` | **2503\u20132508** |\n| `TryCreateLoadGameRequest` | **2517\u20132521** |\n| `IsResourceWadLoaded` / WAD merge helpers | **2530\u20132569** |\n| `ShouldSerializeCvarForSave` | **2593\u20132598** |\n| Band hull (exclusive slice) | **2449\u20132598** |\n\n### Chunk **1001** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1000** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmGGameSession1001Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/g_game.cpp",
+            "symbol": "G_DoPlayerPop",
+            "start": 2449,
+            "end": 2598,
+            "tests": [
+              "VmGGameSession1001SliceTests.PlayerPopAndScreenshot",
+              "VmGGameSession1001SliceTests.LoadGameAndWadChecks",
+              "VmGGameSession1001SliceTests.SaveCvarFilter"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 80,
+        "conversionManagedCommit": "403dc0460c5107c415d4a7c4a9751455a3e8c1e5"
       }
     ],
     "behaviorNativeChecksum": 508086,
