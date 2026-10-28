@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 239218
+    "managedCSharpLoc": 239346
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 73037,
+    "convertedThisRunNative": 73187,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 96414,
+    "convertedThisRunManaged": 96542,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 415768,
+    "remainingNative": 415618,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 91564,
+    "convertedBehaviorNative": 91714,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 92318,
-    "convertedBehaviorManaged": 106085,
+    "combinedBehaviorNative": 92468,
+    "convertedBehaviorManaged": 106213,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -37349,6 +37349,40 @@
         "nativeLoc": 150,
         "managedLoc": 141,
         "conversionManagedCommit": "d53f6a134c5e321eb352476a1fde77cd54860a77"
+      },
+      {
+        "name": "g-mapinfo-parse-map-header-episode-chunk1036",
+        "bucket": "conversion",
+        "note": "`ParseMapHeader` tail (`levelnum`, Hexen `$map` music) and `ParseEpisodeInfo` head from `g_mapinfo.cpp` (**2427\u20132576**). Follows chunk **1035** (**2277\u20132426**).",
+        "auditSeams": "`HexenMusic` map, `P_CheckMapData`, `ParseCutscene`, `ParseOpenBrace` / `ParseCloseBrace`, `CheckEndOfFile`, and `AllEpisodes` storage remain host-injected; uncredited `VmMapInfoEpisodeParser` is a parallel helper \u2014 not re-credited.",
+        "auditRationale": "UNCredited **`g_mapinfo.cpp`** **2427\u20132576**; abuts **1035** at title close (**2427\u20132428**) without re-porting title logic; no overlap with **2600\u20133049** or deferred **3050\u20133151**.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_mapinfo.cpp --start 2427 --end 2576` and `--chunk 1036 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Title block close braces (**2427\u20132428**) | seam (structure only) |\n| Default `levelnum` + `id24_levelnum` (**2430\u20132432**) | yes |\n| HexenMusic `$map` default music (**2434\u20132440**) | yes |\n| `return levelinfo` (**2442**) | seam (host) |\n| `ParseEpisodeInfo` map + teaser (**2473\u20132483**) | yes |\n| Episode body keywords (**2489\u20132530**) | yes |\n| Unknown episode property / break (**2532\u20132541**) | yes |\n| `CheckEndOfFile(\"episode\")` (**2543**) | seam (host) |\n| Extended Heretic gate (**2545\u20132549**) | yes |\n| Optional map existence gate (**2551\u20132558**) | yes |\n| Find episode by map (**2562\u20132568**) | yes |\n| Remove branch (**2570\u20132574**) | yes |\n| Add/replace branch head (**2575\u20132576**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1827\u20132426** | chunks **1033\u20131035** (title/tokens \u2014 not re-credited) |\n| **2446\u20132457** | `ParseEpisodeInfo` comment banner |\n| **2577\u20132591** | episode field assign tail outside hull (**2576** ends on `else {`) |\n| **2600\u20133049** | prior credited mapinfo bands |\n| **3050\u20133151** | deferred (**102** lines) |\n| `VmMapInfoEpisodeParser` | uncredited shared catalog \u2014 seam only |\n\n| Managed (`VmMapInfoParseMapHeader1036Slice.cs`) | Native (`g_mapinfo.cpp`) |\n|--------------------------------------------------|---------------------------|\n| `AssignLevelNumFromMapName` | **2430\u20132432** |\n| `TryAssignHexenMapMusic` | **2437\u20132440** |\n| `ApplySharewareTeaserMap` | **2476\u20132482** |\n| `ClassifyEpisodeBodyKeyword` | **2489\u20132530** |\n| `ShouldBreakEpisodeBodyLoop` / `ShouldEmitUnknownEpisodeProperty` | **2532\u20132541** |\n| `ShouldIgnoreExtendedEpisode` | **2545\u20132549** |\n| `ShouldSkipOptionalEpisode` | **2551\u20132558** |\n| `FindEpisodeMapIndex` | **2562\u20132568** |\n| `ShouldRemoveEpisodeEntry` / `ApplyEpisodeRemoveAt` | **2570\u20132574** |\n| `ShouldReserveNewEpisodeSlot` / `MergeEpisodeDraft` | **2575\u20132576** |\n| `NormalizeEpisodeShortcut` / `SynthesizeEpisodeNameFromPic` | **2520\u20132521**, **2511** |\n| Band hull (exclusive slice) | **2427\u20132576** |\n\n### Chunk **1036** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1035** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Gamedata/VmMapInfoParseMapHeader1036Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/g_mapinfo.cpp",
+            "symbol": "ParseMapHeader tail / ParseEpisodeInfo head",
+            "start": 2427,
+            "end": 2576,
+            "tests": [
+              "VmMapInfoParseMapHeader1036SliceTests.AssignLevelNumFromMapName_UsesDefaultLevelNum",
+              "VmMapInfoParseMapHeader1036SliceTests.TryAssignHexenMapMusic_LookupByLevelNum",
+              "VmMapInfoParseMapHeader1036SliceTests.ApplySharewareTeaserMap_OnlyWhenShareware",
+              "VmMapInfoParseMapHeader1036SliceTests.ShouldIgnoreExtendedEpisode_WhenMenuHackMissing",
+              "VmMapInfoParseMapHeader1036SliceTests.ShouldSkipOptionalEpisode_WhenMapMissing",
+              "VmMapInfoParseMapHeader1036SliceTests.FindEpisodeMapIndex_IsCaseInsensitive",
+              "VmMapInfoParseMapHeader1036SliceTests.SynthesizeEpisodeNameFromPic_PrefixesDollar",
+              "VmMapInfoParseMapHeader1036SliceTests.MergeEpisodeDraft_ReplacesExistingMap",
+              "VmMapInfoParseMapHeader1036SliceTests.ClassifyEpisodeBodyKeyword_RecognizesRemove"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 128,
+        "conversionManagedCommit": "818ae0dead4c29e3b9cccb26af0659d231cd252a"
       }
     ],
     "behaviorNativeChecksum": 508086,
