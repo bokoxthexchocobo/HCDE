@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 70787,
+  "convertedThisRunNative": 70937,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 94472,
+  "convertedThisRunManaged": 94591,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 418018,
+  "remainingNative": 417868,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 89314,
+  "convertedBehaviorNative": 89464,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 90068,
-  "convertedBehaviorManaged": 104143,
+  "combinedBehaviorNative": 90218,
+  "convertedBehaviorManaged": 104262,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -36842,6 +36842,39 @@
       "nativeLoc": 150,
       "managedLoc": 97,
       "conversionManagedCommit": "697cbd28c019f931e2e8656246b33e8225766692"
+    },
+    {
+      "name": "p-destructible-line-sector-health-chunk1021",
+      "bucket": "conversion",
+      "note": "`_Line` / `_Sector` GetHealth and SetHealth ZScript actions from `p_destructible.cpp` (**918\u20131067**, hull ends at EOF). **Zero credit:** `FDestructible` DEFINE cluster (**918\u2013982**) on `VmPDestructibleSerializeScript` (retired **691**).",
+      "auditSeams": "`PARAM_*`, `ACTION_RETURN_*`, and `P_SetHealthGroupHealth` host calls remain native.",
+      "auditRationale": "Tally-UNCredited destructible EOF tail; exclusive slice for line/sector health getters/setters deferred in chunk **690** audit seams.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_destructible.cpp --start 918 --end 1067` and `--chunk 1021 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `_Line::GetHealth` group vs line (**987\u2013993**) | yes |\n| `_Line::SetHealth` clamp + group propagate (**996\u20131011**) | yes |\n| `_Sector::GetHealth` floor/ceiling/3D switch (**1014\u20131031**) | yes |\n| `_Sector::SetHealth` part routing + group propagate (**1034\u20131066**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **918\u2013982** | `FDestructible` / check DEFINE rows \u2014 **`VmPDestructibleSerializeScript`** + **`VmPDestructibleVulnerability`** (retired **690**/**691**) |\n| **823\u2013917** | serialize / `FHealthGroup` field exports outside hull |\n\n| Managed (`VmPDestructibleLineSectorHealth1021Slice.cs`) | Native (`p_destructible.cpp`) |\n|--------------------------------------------------------|-------------------------------|\n| `ResolveLineGetHealth` | **987\u2013991** |\n| `ApplyLineSetHealth` | **1001\u20131008** |\n| `ResolveSectorGetHealth` | **1021\u20131030** |\n| `RouteSectorSetHealth` | **1040\u20131065** |\n| Band hull (exclusive slice) | **918\u20131067** |\n\n### Chunk **1021** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1020** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPDestructibleLineSectorHealth1021Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_destructible.cpp",
+          "symbol": "_Line / _Sector GetHealth SetHealth",
+          "start": 918,
+          "end": 1067,
+          "tests": [
+            "VmPDestructibleLineSectorHealth1021SliceTests.ResolveLineGetHealth_PrefersGroupWhenLinked",
+            "VmPDestructibleLineSectorHealth1021SliceTests.ApplyLineSetHealth_ClampsAndFlagsGroup",
+            "VmPDestructibleLineSectorHealth1021SliceTests.ResolveSectorGetHealth_MatchesNativeSwitch",
+            "VmPDestructibleLineSectorHealth1021SliceTests.RouteSectorSetHealth_SelectsGroupPerPart",
+            "VmPDestructibleLineSectorHealth1021SliceTests.ShouldPropagateGroupHealth_WhenGroupNonZero",
+            "VmPDestructibleLineSectorHealth1021SliceTests.BuildLineSetHealthMutation_MatchesNativeGroupPath",
+            "VmPDestructibleLineSectorHealth1021SliceTests.BuildSectorSetHealthMutation_InvalidPartNotHandled",
+            "VmPDestructibleLineSectorHealth1021SliceTests.ExecuteSectorGetHealth_UsesLookupPerPart"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 119,
+      "conversionManagedCommit": "eab97a9ca1a79f67c4ccb8937e6f383ef91cd2dc"
     }
   ],
   "behaviorNativeChecksum": 508086,
