@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 73637,
+  "convertedThisRunNative": 73787,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 96962,
+  "convertedThisRunManaged": 97045,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 415168,
+  "remainingNative": 415018,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 92164,
+  "convertedBehaviorNative": 92314,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 92918,
-  "convertedBehaviorManaged": 106633,
+  "combinedBehaviorNative": 93068,
+  "convertedBehaviorManaged": 106716,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -37469,6 +37469,40 @@
       "nativeLoc": 150,
       "managedLoc": 123,
       "conversionManagedCommit": "35e50b20a6623678c6ea0ff3ac7973a166e61999"
+    },
+    {
+      "name": "info-actor-state-caller-chunk1040",
+      "bucket": "conversion",
+      "note": "`PActorInfo` / `AddActorInfo` and `FState::MatchesCallerType` (+ `CheckCallerType` prologue) from `info.cpp` (**1\u2013150**). Follows **1039** (**894\u20131043**).",
+      "auditSeams": "`TypeTable`, `FindVMFunction`, `ThrowAbortException`, `VMCallAction`, and global `AllActorClasses` remain host-injected; uncredited `VmActorStateRuntime` is not re-credited.",
+      "auditRationale": "File-scoped UNCredited **`info.cpp`** **1\u2013150**; excludes credited **500\u2013799** / **894\u20131043** and deferred **800\u2013893**.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/info.cpp --start 1 --end 150` and `--chunk 1040 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `PActorInfo` layout + value ctor/dtor (**62\u201395**) | yes (policy snapshot) |\n| `AddActorInfo` meta field (**99\u2013104**) | yes |\n| `FState::SetAction` name bind (**107\u2013110**) | seam (host `FindVMFunction`) |\n| `FState::MatchesCallerType` (**113\u2013148**) | yes |\n| `CheckCallerType` prologue (**150\u2013155** hull ends **150**) | seam (signature line only) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1\u201346** | license / includes host |\n| **47\u201354** | globals / forward decls |\n| **151+** | `CheckCallerType` body / `CallAction` outside hull (**150** ends prologue) |\n| **500\u2013799** | chunks **1037\u20131038** |\n| **800\u2013893** | deferred (**94** lines) |\n| **894\u20131043** | chunk **1039** |\n| `VmActorStateRuntime` | uncredited helper \u2014 seam only |\n\n| Managed (`VmInfoActorState1040Slice.cs`) | Native (`info.cpp`) |\n|------------------------------------------|---------------------|\n| `ConstructActorInfoAtOffset` / `DestroyActorInfoAtOffset` | **70\u201395** |\n| `ShouldRegisterActorInfoMetaField` | **99\u2013104** |\n| `ShouldSkipCallerTypeMatch` | **115\u2013118** |\n| `MatchesObjectPointerKind` / `MatchesActorKind` | **122\u2013136** |\n| `MatchesCallerType` | **138\u2013147** |\n| `ShouldAbortCheckCallerOnBadPrototype` | **158\u2013161** (policy; hull **150** seam) |\n| Band hull (exclusive slice) | **1\u2013150** |\n\n### Chunk **1040** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1039** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Gamedata/VmInfoActorState1040Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/info.cpp",
+          "symbol": "PActorInfo / FState caller matching",
+          "start": 1,
+          "end": 150,
+          "tests": [
+            "VmInfoActorState1040SliceTests.MatchesCallerType_AllowsWhenNoImplicitArgs",
+            "VmInfoActorState1040SliceTests.MatchesCallerType_DehackedBypassesKindCheck",
+            "VmInfoActorState1040SliceTests.MatchesCallerType_RequiresKindOfSelf",
+            "VmInfoActorState1040SliceTests.MatchesCallerType_SecondArgChecksStateOwner",
+            "VmInfoActorState1040SliceTests.ShouldAbortCheckCallerOnBadPrototype_WhenNotObjectPointer",
+            "VmInfoActorState1040SliceTests.ConstructActorInfoAtOffset_CopiesDefaultBytes",
+            "VmInfoActorState1040SliceTests.ShouldRegisterActorInfoMetaField_OnlyStarMeta",
+            "VmInfoActorState1040SliceTests.CheckCallerTypePasses_DelegatesToMatches",
+            "VmInfoActorState1040SliceTests.ShouldSkipCallerTypeMatch_WhenImplicitArgsZero"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 83,
+      "conversionManagedCommit": "e8f6b06babf7b53282855b4259d3270a07477e70"
     }
   ],
   "behaviorNativeChecksum": 508086,
