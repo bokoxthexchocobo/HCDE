@@ -1,0 +1,27 @@
+[
+  {
+    "name": "g-game-head-macros-chunk995",
+    "bucket": "conversion",
+    "note": "Movement/spy macros and spy-step helpers from `g_game.cpp` (**1–150**); first UNCredited head band (EOF **3813**).",
+    "auditSeams": "`GameActionName` / `GameStateName` bodies (**153+**), `G_TraceSetGameAction` (**204+**, chunk **9**), and `ChangeSpy` host (**1225+**) remain injected.",
+    "auditRationale": "CLI UNCredited **1–150**; no `VmGGameHead*` slice. Chunk **9** credits **204+** ticker/trace bands only — no overlap on **96–107**.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_game.cpp --start 1 --end 150` and `--chunk 995 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Movement / look macros (**96–99**) | yes |\n| Spy change enum (**103–107**) | yes |\n\n**Managed policy helpers (zero native line credit outside hull)**\n\n| Helper | Derived from |\n|--------|----------------|\n| `AdvanceSpyPlayerIndex` | spy step semantics (**103–107**) |\n| `ApplySlowTurnSpeedBoost` | **98** (`SLOWTURNTICS`) |\n| `ScaleAnalogLookAxis` / `ScaleAnalogYawAxis` | **99** (`ANALOG_LOOK_BASE`) |\n| `ShouldDetectTurboForwardMove` | **97** (`TURBOTHRESHOLD`) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1–95**, **109–148** | includes / forward decls / externs |\n| **149–152** | `GameActionName` head (seam; body **153+**) |\n| **153–201** | name switches outside hull |\n| **204–224** | chunk **9** `G_TraceSetGameState` band |\n\n| Managed (`VmGGameHead995Slice.cs`) | Native (`g_game.cpp`) |\n|-----------------------------------|----------------------|\n| `TurboThreshold` / `SlowTurnTics` / `AnalogLookBase` | **96–99** |\n| `SpyCancel` / `SpyNext` / `SpyPrev` / `ResolveSpyStep` / `AdvanceSpyPlayerIndex` | **103–107** |\n| `ApplySlowTurnSpeedBoost` | **98** |\n| `ScaleAnalogLookAxis` / `ScaleAnalogYawAxis` / `BuildAnalogLookDeltas` | **99** |\n| `ForwardMoveExceedsTurboThreshold` / `ShouldDetectTurboForwardMove` | **97** |\n| Band hull (exclusive slice) | **1–150** |\n\n### Chunk **995** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**994** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmGGameHead995Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "GameActionName",
+        "start": 1,
+        "end": 150,
+        "tests": [
+          "VmGGameHead995SliceTests.SpyStepAndAdvance",
+          "VmGGameHead995SliceTests.AnalogLookAndSlowTurn",
+          "VmGGameHead995SliceTests.TurboForwardMoveGate"
+        ]
+      }
+    ]
+  }
+]
