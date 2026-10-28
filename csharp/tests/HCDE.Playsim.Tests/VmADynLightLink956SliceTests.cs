@@ -58,4 +58,24 @@ public class VmADynLightLink956SliceTests
     {
         Assert.True(VmADynLightLink956Slice.SegmentDistanceWithinRadius(4, 5));
     }
+
+    [Fact]
+    public void IncrementValidCountForLink_MatchesLinkLightBump()
+    {
+        Assert.Equal(3, VmADynLightLink956Slice.IncrementValidCountForLink(2));
+    }
+
+    [Fact]
+    public void ShouldReuseAttachedLightIndex_WhenSlotExists()
+    {
+        Assert.True(VmADynLightLink956Slice.ShouldReuseAttachedLightIndex(1, 3));
+    }
+
+    [Fact]
+    public void BumpValidCountsForLink_IncrementsBothCounters()
+    {
+        var (dl, global) = VmADynLightLink956Slice.BumpValidCountsForLink(4, 9);
+        Assert.Equal(5, dl);
+        Assert.Equal(10, global);
+    }
 }

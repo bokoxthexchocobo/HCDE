@@ -31,6 +31,14 @@ public static class VmADynLightLink956Slice
 
     public static bool UnlinkListIndexInRange(int index, int listSize) => listSize > index;
 
+    public static bool ShouldReuseAttachedLightIndex(int count, int attachedSize) =>
+        count < attachedSize;
+
+    public static int IncrementValidCountForLink(int validCount) => validCount + 1;
+
+    public static (int DlValidCount, int GlobalValidCount) BumpValidCountsForLink(int dlValidCount, int globalValidCount) =>
+        (dlValidCount + 1, globalValidCount + 1);
+
     public static bool ReuseAttachedLightSlot(int count, int attachedCount) =>
         VmADynLightAttach955Slice.HasAttachedLightSlot(count, attachedCount);
 
