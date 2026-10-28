@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 242519
+    "managedCSharpLoc": 242596
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 77106,
+    "convertedThisRunNative": 77256,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 99715,
+    "convertedThisRunManaged": 99792,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 411766,
+    "remainingNative": 411616,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 95633,
+    "convertedBehaviorNative": 95783,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 96320,
-    "convertedBehaviorManaged": 109386,
+    "combinedBehaviorNative": 96470,
+    "convertedBehaviorManaged": 109463,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -38220,6 +38220,41 @@
         "nativeLoc": 150,
         "managedLoc": 86,
         "conversionManagedCommit": "eefd5b5c85fdc4fd98b5ae8ba4ca90a5e6515727"
+      },
+      {
+        "name": "sbarinfo-parser-flow-chunk1063",
+        "bucket": "conversion",
+        "note": "SBarInfo coordinate parsing, flow-control truth/branches, and main-block head from `sbarinfo.cpp` (**151\u2013300**). Pivot after exhausted `v_font` mid bands (**901\u2013957** deferred).",
+        "auditSeams": "`FScanner` token reads, `NextCommand` factory, `V_ParseFontColor`, and draw/tick host calls remain injected; **1\u2013150** class headers outside hull.",
+        "auditRationale": "UNCredited **`sbarinfo.cpp`** **151\u2013300** (+150); zero conversion/recognition overlap; no Vm* line-range collision in repo.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo.cpp --start 151 --end 300` and `--chunk 1063 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Signed coordinate + `center` modifier (**150\u2013163**) | yes |\n| Named translation bracket token (**175\u2013180**) | yes (policy + undefined gate) |\n| Flow truth skip / retick (**219\u2013229**) | yes |\n| Branch negate swap (**232\u2013235**, **286\u2013287**) | yes |\n| Flow block shape (**240\u2013256**) | yes |\n| `not` prefix parse (**274\u2013279**) | yes |\n| Main block initial truth (**300**) | yes |\n| Main block flag keywords + alpha combine (**312\u2013337**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **112\u2013124** | `Offset` enum outside hull |\n| **137\u2013149** | `GetCoordinates` prologue (**&lt;151** seam) |\n| **177\u2013178** | `V_ParseFontColor` host |\n| **192\u2013216**, **242\u2013245** | draw/tick/parse host loops |\n| **301+** | `DrawAux` outside hull |\n\n| Managed (`VmSbarinfoParser1063Slice.cs`) | Native (`sbarinfo.cpp`) |\n|-------------------------------------------|-------------------------|\n| `ResolveSignedCoordinate` / center / fullscreen rel | **150\u2013163** |\n| `BuildNamedTranslationToken` / `IsMissingTranslation` | **175\u2013180** |\n| `ShouldSkipFlowTruthToggle` / `ShouldRetickOnTruthChange` | **224\u2013229** |\n| `ClassifyFlowBlockStart` | **240\u2013256** |\n| `TryParseNotPrefix` / `ShouldSwapFlowBranchesAfterNot` | **274\u2013287** |\n| `MainBlockStartsTrue` | **300** |\n| `ClassifyMainBlockFlag` / `CombineDrawAlpha` | **312\u2013337** |\n| Band hull (exclusive slice) | **151\u2013300** |\n\n### Chunk **1063** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1062** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Client/VmSbarinfoParser1063Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/g_statusbar/sbarinfo.cpp",
+            "symbol": "SBarInfoCommand coordinates / flow control",
+            "start": 151,
+            "end": 300,
+            "tests": [
+              "VmSbarinfoParser1063SliceTests.ResolveSignedCoordinate_HonorsNegativePrefix",
+              "VmSbarinfoParser1063SliceTests.ShouldStoreRelativeCenter_OnlyWhenFullScreen",
+              "VmSbarinfoParser1063SliceTests.BuildNamedTranslationToken_WrapsBracketSyntax",
+              "VmSbarinfoParser1063SliceTests.IsMissingTranslation_UsesUndefinedSentinel",
+              "VmSbarinfoParser1063SliceTests.ShouldSkipFlowTruthToggle_WhenUnchanged",
+              "VmSbarinfoParser1063SliceTests.ClassifyFlowBlockStart_DetectsMissingCommand",
+              "VmSbarinfoParser1063SliceTests.TryParseNotPrefix_RecognizesNot",
+              "VmSbarinfoParser1063SliceTests.ClassifyMainBlockFlag_RecognizesNativeKeywords",
+              "VmSbarinfoParser1063SliceTests.CombineDrawAlpha_MultipliesLikeNativeDraw",
+              "VmSbarinfoParser1063SliceTests.MainBlockStartsTrue_MatchesNativeInit"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 77,
+        "conversionManagedCommit": "9a13bf372369342d4099474c21284316f1434f53"
       }
     ],
     "behaviorNativeChecksum": 508086,
