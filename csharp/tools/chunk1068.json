@@ -1,0 +1,35 @@
+[
+  {
+    "name": "sbarinfo-popup-draw-chunk1068",
+    "bucket": "conversion",
+    "note": "`Popup` tick tail through `DSBarInfo` ctor/`SetReferences`/`_Draw` status-bar HUD pick from `sbarinfo.cpp` (**901–1050**); follows **1067** fade alpha step.",
+    "auditSeams": "Fade alpha increment uses **1067** `AdvanceFadePopupAlpha`; popup offset getters (**927–951**) and host `Images.Init` / player attach remain injected.",
+    "auditRationale": "UNCredited **`sbarinfo.cpp`** **901–1050** (+150); **901–905** fade `moving` tail deferred from **1067**; no duplicate slide Y math (**877–892** on **1067**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo.cpp --start 901 --end 1050` and `--chunk 1068 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Fade `moving` after alpha endpoints (**902–905**) | yes |\n| Default transition pose (**907–918**) | yes |\n| `open` / `close` + scaled alpha (**953–963**, **938–941**) | yes |\n| `adjustRelCenter` (**967–977**) | yes |\n| `DSBarInfo` inventory patch table sizing (**990–1007**) | yes |\n| `SetReferences` ammo normalization (**1022–1037**) | yes |\n| `_Draw` status HUD automap pick (**1046–1050**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **897–900** | **1067** `AdvanceFadePopupAlpha` |\n| **923–926**, **927–951** | trivial getters / offsets |\n| **1015–1018**, **1040** | host player + armor lookup |\n| **1051+** | `_Draw` branches outside hull |\n\n| Managed (`VmSbarinfoPopupDraw1068Slice.cs`) | Native (`sbarinfo.cpp`) |\n|--------------------------------------------------|-------------------------|\n| `ResolveFadePopupMovingAfterAlphaStep` | **902–905** |\n| `ResolveDefaultTransitionPopupPose` | **907–918** |\n| `ApplyPopupOpenCommand` / close / `ScalePopupAlphaForDraw` | **938–963** |\n| `AdjustRelativeCenter*` | **969–976** |\n| `BuildPatchNameTableLayout` / inventory lump table | **990–1007** |\n| `NormalizeReadyWeaponAmmo` / amounts | **1026–1037** |\n| `SelectHudIndexForStatusBarDraw` | **1048–1050** |\n| Band hull (exclusive slice) | **901–1050** |\n\n### Chunk **1068** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1067** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoPopupDraw1068Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo.cpp",
+        "symbol": "Popup / DSBarInfo",
+        "start": 901,
+        "end": 1050,
+        "tests": [
+          "VmSbarinfoPopupDraw1068SliceTests.ResolveFadePopupMovingAfterAlphaStep_StopsAtEndpoints",
+          "VmSbarinfoPopupDraw1068SliceTests.ResolveDefaultTransitionPopupPose_MatchesNativeOpenedClosed",
+          "VmSbarinfoPopupDraw1068SliceTests.ScalePopupAlphaForDraw_MultipliesMax",
+          "VmSbarinfoPopupDraw1068SliceTests.ApplyPopupOpenCommand_ArmsMovement",
+          "VmSbarinfoPopupDraw1068SliceTests.AdjustRelativeCenterX_AppliesHalfWidthWhenRelative",
+          "VmSbarinfoPopupDraw1068SliceTests.BuildPatchNameTableLayout_MatchesNativeOffsets",
+          "VmSbarinfoPopupDraw1068SliceTests.ShouldApplyFadeAlphaStep_OnlyWhenFadeTransitionMoving",
+          "VmSbarinfoPopupDraw1068SliceTests.NormalizeReadyWeaponAmmo_PromotesSecondaryWhenPrimaryMissing",
+          "VmSbarinfoPopupDraw1068SliceTests.SelectHudIndexForStatusBarDraw_SwitchesToAutomap",
+          "VmSbarinfoPopupDraw1068SliceTests.TickFadePopupAlpha_DelegatesTo1067WhenMoving",
+          "VmSbarinfoPopupDraw1068SliceTests.ResolveInventoryAmount_ZeroWhenMissing"
+        ]
+      }
+    ]
+  }
+]
