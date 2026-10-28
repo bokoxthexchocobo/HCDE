@@ -77,7 +77,7 @@ public static class VmPClassActorInfo1037Slice
         new(typeName, DoomEdSpecialDecorateMarker);
 
     public static bool IsDuplicateDecorateDoomEdEntry(DoomEdRegistryEntry? existing) =>
-        existing != null && existing.Special == DoomEdSpecialDecorateMarker;
+        existing is { Special: DoomEdSpecialDecorateMarker };
 
     public static bool HiddenClassRefersToSelf(string registeredType, string definingType) =>
         !registeredType.Equals(definingType, StringComparison.OrdinalIgnoreCase);
