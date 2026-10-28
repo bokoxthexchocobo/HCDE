@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 61637,
+  "convertedThisRunNative": 61787,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 87656,
+  "convertedThisRunManaged": 87765,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 427168,
+  "remainingNative": 427018,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 80164,
+  "convertedBehaviorNative": 80314,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 80918,
-  "convertedBehaviorManaged": 97327,
+  "combinedBehaviorNative": 81068,
+  "convertedBehaviorManaged": 97436,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -35037,6 +35037,41 @@
       "nativeLoc": 150,
       "managedLoc": 83,
       "conversionManagedCommit": "7a0bb499494e34eac6d67879036868ef6f8dbb03"
+    },
+    {
+      "name": "p-3dfloor-light-opening-chunk959",
+      "bucket": "conversion",
+      "note": "`P_RecalculateLights` tail, `P_RecalculateAttachedLights`, `P_GetPlaneLight`, and `P_LineOpening_XFloors` head from `p_3dfloors.cpp` (**601\u2013750**). Retired chunk **781** left this band UNCredited.",
+      "auditSeams": "`UpdateColormap` / `GetBlend` on `F3DFloor`, texture/terrain host lookups, and `FLineOpening` mutation remain injected seams.",
+      "auditRationale": "Honest **150**-line UNCredited band; exclusive `VmP3dFloorsLightOpening959Slice.cs` (no tally credit via **781** / **785** / **699** hulls).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_3dfloors.cpp --start 601 --end 750` and `--chunk 959 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `P_RecalculateLights` loop body (**601\u2013612**) | yes |\n| `P_RecalculateAttachedLights` (**620\u2013629**) | yes |\n| `P_GetPlaneLight` (**637\u2013650**) | yes |\n| `P_LineOpening_XFloors` 3D-floor scan (**672\u2013750**) | yes |\n| `thing` null early out (**661\u2013662**) | seam (host) |\n\n| Managed (`VmP3dFloorsLightOpening959Slice.cs`) | Native (`p_3dfloors.cpp`) |\n|------------------------------------------------|-------------------------|\n| `RefreshLightListEntry` | **601\u2013612** |\n| `RecalculateAttachedSectorLights` | **624\u2013628** |\n| `PlaneHeightAtCenter` / `SelectPlaneLightIndex` | **642\u2013649** |\n| `SectorHas3dFloors` / `Solid3dFloorActive` | **672\u2013698** |\n| `MidpointDistanceDeltas` / ceiling vs floor picks | **703\u2013712**, **714\u2013727** |\n| `ShouldTrackSteppableLowestFloor` | **729\u2013733** |\n| `ShouldRaiseOpeningBottom` / plane flip gates | **737\u2013754** (hull ends **750**) |\n| Band hull (exclusive slice) | **601\u2013750** |\n\n### Chunk **959** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**958** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmP3dFloorsLightOpening959Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_3dfloors.cpp",
+          "symbol": "P_RecalculateLights",
+          "start": 601,
+          "end": 750,
+          "tests": [
+            "VmP3dFloorsLightOpening959SliceTests.RefreshLightListEntry_UsesSourceBlendWhenPresent",
+            "VmP3dFloorsLightOpening959SliceTests.RefreshLightListEntry_FallsBackToSectorColormap",
+            "VmP3dFloorsLightOpening959SliceTests.RecalculateAttachedSectorLights_VisitsAttachedBeforeSelf",
+            "VmP3dFloorsLightOpening959SliceTests.PlaneHeightAtCenter_SubtractsEpsilonOnUnderside",
+            "VmP3dFloorsLightOpening959SliceTests.SelectPlaneLightIndex_PicksTierBelowPlane",
+            "VmP3dFloorsLightOpening959SliceTests.Solid3dFloorActive_RequiresExistsAndSolid",
+            "VmP3dFloorsLightOpening959SliceTests.ShouldPickLowestCeiling_WhenBottomCloserToThingFeet",
+            "VmP3dFloorsLightOpening959SliceTests.FloorCandidateDominatesThing_RespectsRestrictFlag",
+            "VmP3dFloorsLightOpening959SliceTests.ShouldTrackSteppableLowestFloor_WithinMaxStep",
+            "VmP3dFloorsLightOpening959SliceTests.SecPlaneNeedsFlip_WhenCoeffNegative"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 109,
+      "conversionManagedCommit": "28c3d3b6ba9216e4f25b782083e41851f7277589"
     }
   ],
   "behaviorNativeChecksum": 508086,
