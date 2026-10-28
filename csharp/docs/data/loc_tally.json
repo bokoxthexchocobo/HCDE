@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 74706,
+  "convertedThisRunNative": 74856,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 97744,
+  "convertedThisRunManaged": 97854,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 414099,
+  "remainingNative": 413949,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 93233,
+  "convertedBehaviorNative": 93383,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 93987,
-  "convertedBehaviorManaged": 107415,
+  "combinedBehaviorNative": 94137,
+  "convertedBehaviorManaged": 107525,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -37727,6 +37727,39 @@
       "nativeLoc": 169,
       "managedLoc": 115,
       "conversionManagedCommit": "9b74ecdeb9bfa7a6bddf25bd5acd5f6332b10bbd"
+    },
+    {
+      "name": "gskill-info-assign-export-chunk1047",
+      "bucket": "conversion",
+      "note": "`FSkillInfo::operator=`, `GetTextColor`, replacement maps, `DEFINE_FIELD` exports, and native `GetTextColor` action from `g_skill.cpp` (**541\u2013690**).",
+      "auditSeams": "`DEFINE_GLOBAL` / `DEFINE_FIELD` / `DEFINE_ACTION_FUNCTION_NATIVE` macro expansion and `V_ParseFontColor` remain host-injected; uncredited `VmSkillInfoRuntime` / `VmGSkillNativeExportRecognition` are not re-credited.",
+      "auditRationale": "File-scoped UNCredited **`g_skill.cpp`** **541\u2013690** (+150); excludes other credited `g_skill` bands in tally recognition rows only.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_skill.cpp --start 541 --end 690` and `--chunk 1047 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `FSkillInfo::operator=` (**530\u2013569**, hull **541\u2013569**) | yes |\n| `FSkillInfo::GetTextColor` (**578\u2013592**) | yes |\n| `SetReplacement` / `GetReplacement` (**600\u2013615**) | yes |\n| `SetReplacedBy` / `GetReplacedBy` (**623\u2013638**) | yes |\n| `DEFINE_GLOBAL(AllSkills)` (**640**) | yes (export name constant) |\n| `DEFINE_FIELD` list (**643\u2013679**) | yes (field registry) |\n| Native `GetTextColor` thunk (**681\u2013690**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1\u2013540** | prior `g_skill` conversion / parse bands |\n| **691+** | past EOF |\n| `VmSkillInfoRuntime` | uncredited parallel \u2014 seam only |\n| `VmGSkillNativeExportRecognition` | recognition catalog \u2014 seam only |\n\n| Managed (`VmGSkillInfoAssignExport1047Slice.cs`) | Native (`g_skill.cpp`) |\n|---------------------------------------------------|------------------------|\n| `ApplySkillInfoOperatorAssign` | **532\u2013568** (hull **541\u2013569**) |\n| `ResolveSkillInfoTextColor` / format helper | **578\u2013592** |\n| `SetSkillReplacement` / `GetSkillReplacement` | **600\u2013615** |\n| `SetSkillReplacedBy` / `GetSkillReplacedBy` | **623\u2013638** |\n| `AllSkillsGlobalExportName` | **640** |\n| `DefineFieldExportNames` / `IsExportedSkillInfoField` | **643\u2013679** |\n| `InvokeNativeGetTextColorAction` | **681\u2013690** |\n| Band hull (exclusive slice) | **541\u2013690** |\n\n### Chunk **1047** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1046** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Gamedata/VmGSkillInfoAssignExport1047Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "FSkillInfo assign / VM export",
+          "start": 541,
+          "end": 690,
+          "tests": [
+            "VmGSkillInfoAssignExport1047SliceTests.ApplySkillInfoOperatorAssign_CopiesTailFieldsAndMaps",
+            "VmGSkillInfoAssignExport1047SliceTests.ResolveSkillInfoTextColor_EmptyUsesUntranslated",
+            "VmGSkillInfoAssignExport1047SliceTests.ResolveSkillInfoTextColor_LogsUndefined",
+            "VmGSkillInfoAssignExport1047SliceTests.ReplacementMaps_RoundTrip",
+            "VmGSkillInfoAssignExport1047SliceTests.DefineFieldExportNames_IncludesAmmoFactor",
+            "VmGSkillInfoAssignExport1047SliceTests.InvokeNativeGetTextColorAction_MatchesInstanceMethod",
+            "VmGSkillInfoAssignExport1047SliceTests.AllSkillsGlobalExportName_MatchesDefineGlobal",
+            "VmGSkillInfoAssignExport1047SliceTests.FormatUndefinedSkillTextColorMessage_IncludesSkillName"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 110,
+      "conversionManagedCommit": "633ef75dccb5a405b7339b90e466bdc0935ac59d"
     }
   ],
   "behaviorNativeChecksum": 508086,
