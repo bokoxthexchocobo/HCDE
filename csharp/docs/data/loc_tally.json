@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 69287,
+  "convertedThisRunNative": 69437,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 93377,
+  "convertedThisRunManaged": 93448,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 419518,
+  "remainingNative": 419368,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 87814,
+  "convertedBehaviorNative": 87964,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 88568,
-  "convertedBehaviorManaged": 103048,
+  "combinedBehaviorNative": 88718,
+  "convertedBehaviorManaged": 103119,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -36556,6 +36556,34 @@
       ],
       "nativeLoc": 150,
       "managedLoc": 83,
+      "conversionManagedCommit": "4b6b23925f9479b7937ce7462f8f59d918d973e4"
+    },
+    {
+      "name": "g-level-light-defer-chunk1011",
+      "bucket": "conversion",
+      "note": "`getRealLightmode`, cutscene helpers, and `G_DeferedInitNew` from `g_level.cpp` (**151\u2013300**); follows chunk **1010** (**1\u2013150**).",
+      "auditSeams": "`CUSTOM_CVAR` bodies (**153\u2013156** seam with **1010**), VM `CallCreateFunction`, `ScreenJobValidate`, and `CheckWarpTransMap` remain injected.",
+      "auditRationale": "UNCredited **151\u2013300** CLI band; disjoint from chunk **1010** hull except CVAR tail seam lines **151\u2013156** (zero duplicate managed credit).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_level.cpp --start 151 --end 300` and `--chunk 1011 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `getRealLightmode` (**158\u2013171**) | yes |\n| `CallCreateMapFunction` arity (**217\u2013223**) | yes |\n| `CreateCutscene` (**234\u2013249**) | yes |\n| `G_DeferedInitNew` map/skill (**262\u2013268**) | seam (host defer) |\n| `G_DeferedInitNew(FNewGameStartup*)` (**270\u2013297**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **153\u2013156** | `gl_lightmode` CVAR body (credited **1010**) |\n| **173\u2013197** | globals / extern host |\n| **206\u2013209** | `Local_Job_Init` type registration host |\n| **220\u2013225** | VM call host |\n| **245** | `AddGenericVideo` host |\n| **290\u2013295** | `ScreenJobValidate` / delete host |\n| **305+** | `CCMD(map)` (next band) |\n\n| Managed (`VmGLevelLightAndDefer1011Slice.cs`) | Native (`g_level.cpp`) |\n|-----------------------------------------------|----------------------|\n| `ResolveRealLightMode` | **158\u2013171** |\n| `ClassifyCutsceneDefinition` / arity validate | **234\u2013249**, **217\u2013223** |\n| Deferred new-game / intro gates | **270\u2013297** |\n| Band hull (exclusive slice) | **151\u2013300** |\n\n### Chunk **1011** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1010** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmGLevelLightAndDefer1011Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/g_level.cpp",
+          "symbol": "getRealLightmode",
+          "start": 151,
+          "end": 300,
+          "tests": [
+            "VmGLevelLightAndDefer1011SliceTests.RealLightMode",
+            "VmGLevelLightAndDefer1011SliceTests.CutsceneCreation",
+            "VmGLevelLightAndDefer1011SliceTests.DeferredNewGame"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 77,
       "conversionManagedCommit": "4b6b23925f9479b7937ce7462f8f59d918d973e4"
     }
   ],
