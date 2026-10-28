@@ -74,7 +74,4 @@ public static class VmSbarinfoParser1063Slice
 
     public static double CombineDrawAlpha(double blockAlpha, double incomingAlpha) =>
         blockAlpha * incomingAlpha;
-
-    public static bool MainBlockParseHasLeadingComma(bool hasCommaAfterBlockName) =>
-        hasCommaAfterBlockName;
 }
