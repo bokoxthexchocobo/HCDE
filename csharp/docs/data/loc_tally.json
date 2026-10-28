@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 63437,
+  "convertedThisRunNative": 63587,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 89294,
+  "convertedThisRunManaged": 89377,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 425368,
+  "remainingNative": 425218,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 81964,
+  "convertedBehaviorNative": 82114,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 82718,
-  "convertedBehaviorManaged": 98965,
+  "combinedBehaviorNative": 82868,
+  "convertedBehaviorManaged": 99048,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -35435,6 +35435,36 @@
       "nativeLoc": 150,
       "managedLoc": 130,
       "conversionManagedCommit": "22305ed8861874b23f138a1c7b285b13252ff74a"
+    },
+    {
+      "name": "p-acs-clientside-gate-chunk972",
+      "bucket": "conversion",
+      "note": "`GetScriptOwner`, `ShouldIgnoreClientSideScript`, `DLevelScript` field head, and string-builder stack policy from `p_acs.cpp` (**601\u2013750**); follows chunk **971** (**\u2264600**).",
+      "auditSeams": "`CallReturn` ctor, `DLevelScript::RunScript`, and fixed-point inlines **601\u2013624** remain host or off-tally scaffolding; chunk **789** begins at **828** (disjoint).",
+      "auditRationale": "UNCredited band before **789**; matrix credit limited to gates not already in off-tally `VmPAcsIsClientSideScript.cs` (`IsClientSideScript`, simplified `CallReturn`, string-builder helpers).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 601 --end 750` and `--chunk 972 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `GetScriptOwner` (**647\u2013650**) | yes |\n| `ShouldIgnoreClientSideScript` (**652\u2013667**) | yes |\n| `STRINGBUILDER_*` push/pop policy (**740\u2013755**) | yes (predicates only) |\n| `DLevelScript` member/method mirrors (**674\u2013736**, **698\u2013715**) | layout metadata |\n| `EScriptState` ordinals (**681\u2013693**) | yes (const mirrors) |\n\n**Excluded (duplicate / off-tally / prior chunk)**\n\n| Native | Reason |\n|--------|--------|\n| **601\u2013624** fixed-point | chunk **971** / `VmPAcsIsClientSideScript` |\n| **626\u2013645** `CallReturn` | off-tally `CallReturn` record |\n| **669\u2013672** `IsClientSideScript` | off-tally duplicate |\n\n| Managed (`VmPAcsClientsideGate972Slice.cs`) | Native (`p_acs.cpp`) |\n|---------------------------------------------|---------------------|\n| `GetScriptOwner` | **647\u2013650** |\n| `ShouldIgnoreClientSideScript` | **652\u2013667** |\n| `StringBuilderShouldPush` / `StringBuilderPopSucceeded` | **740\u2013755** |\n| `DLevelScriptProtectedFields` / `PublicMethods` | **717\u2013715** |\n| Band hull (exclusive slice) | **601\u2013750** |\n\n### Chunk **972** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**971** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPAcsClientsideGate972Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "GetScriptOwner",
+          "start": 601,
+          "end": 750,
+          "tests": [
+            "VmPAcsClientsideGate972SliceTests.GetScriptOwner_UsesPlayerMoWhenActivatorHasPlayer",
+            "VmPAcsClientsideGate972SliceTests.ShouldIgnoreClientSideScript_SuppressesOtherPlayerScripts",
+            "VmPAcsClientsideGate972SliceTests.ShouldIgnoreClientSideScript_AllowsWorldActivator",
+            "VmPAcsClientsideGate972SliceTests.StringBuilderStackPolicy",
+            "VmPAcsClientsideGate972SliceTests.HudDefaults_AndWaitStates"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 83,
+      "conversionManagedCommit": "2f9b7d5e0f13d01847fef333d722a2ba876f3bb0"
     }
   ],
   "behaviorNativeChecksum": 508086,
