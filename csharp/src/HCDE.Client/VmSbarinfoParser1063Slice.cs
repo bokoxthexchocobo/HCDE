@@ -6,6 +6,14 @@ namespace HCDE.Client;
 /// </summary>
 public static class VmSbarinfoParser1063Slice
 {
+    public enum MainBlockHudFlag
+    {
+        None,
+        ForceScaled,
+        FullScreenOffsets,
+        Unknown
+    }
+
     public enum FlowBlockParseShape
     {
         BracedBlock,
@@ -48,4 +56,25 @@ public static class VmSbarinfoParser1063Slice
     public static bool ShouldSwapFlowBranchesAfterNot(bool negate) => negate;
 
     public static bool MainBlockStartsTrue() => true;
+
+    public const int FlowThenBranchIndex = 1;
+    public const int FlowElseBranchIndex = 0;
+
+    public static MainBlockHudFlag ClassifyMainBlockFlag(string token)
+    {
+        if (token.Equals("forcescaled", StringComparison.OrdinalIgnoreCase))
+            return MainBlockHudFlag.ForceScaled;
+        if (token.Equals("fullscreenoffsets", StringComparison.OrdinalIgnoreCase))
+            return MainBlockHudFlag.FullScreenOffsets;
+        return MainBlockHudFlag.Unknown;
+    }
+
+    public static bool ShouldContinueMainBlockFlagList(bool hasPipeSeparator, bool hasCommaSeparator) =>
+        hasPipeSeparator || hasCommaSeparator;
+
+    public static double CombineDrawAlpha(double blockAlpha, double incomingAlpha) =>
+        blockAlpha * incomingAlpha;
+
+    public static bool MainBlockParseHasLeadingComma(bool hasCommaAfterBlockName) =>
+        hasCommaAfterBlockName;
 }

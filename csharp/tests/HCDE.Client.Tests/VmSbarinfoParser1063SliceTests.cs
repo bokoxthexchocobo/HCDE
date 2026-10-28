@@ -52,6 +52,24 @@ public class VmSbarinfoParser1063SliceTests
     }
 
     [Fact]
+    public void ClassifyMainBlockFlag_RecognizesNativeKeywords()
+    {
+        Assert.Equal(
+            VmSbarinfoParser1063Slice.MainBlockHudFlag.ForceScaled,
+            VmSbarinfoParser1063Slice.ClassifyMainBlockFlag("forcescaled"));
+        Assert.Equal(
+            VmSbarinfoParser1063Slice.MainBlockHudFlag.Unknown,
+            VmSbarinfoParser1063Slice.ClassifyMainBlockFlag("bogus"));
+    }
+
+    [Fact]
+    public void CombineDrawAlpha_MultipliesLikeNativeDraw()
+    {
+        Assert.Equal(0.5, VmSbarinfoParser1063Slice.CombineDrawAlpha(0.5, 1.0));
+        Assert.Equal(0.25, VmSbarinfoParser1063Slice.CombineDrawAlpha(0.5, 0.5));
+    }
+
+    [Fact]
     public void MainBlockStartsTrue_MatchesNativeInit()
     {
         Assert.True(VmSbarinfoParser1063Slice.MainBlockStartsTrue());
