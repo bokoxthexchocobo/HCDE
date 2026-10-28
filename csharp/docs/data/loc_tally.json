@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 79956,
+  "convertedThisRunNative": 80106,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 101767,
+  "convertedThisRunManaged": 101882,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 408916,
+  "remainingNative": 408766,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 98483,
+  "convertedBehaviorNative": 98633,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 99170,
-  "convertedBehaviorManaged": 111438,
+  "combinedBehaviorNative": 99320,
+  "convertedBehaviorManaged": 111553,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -38863,6 +38863,41 @@
       "nativeLoc": 150,
       "managedLoc": 129,
       "conversionManagedCommit": "c8522e346f0058bef08d0d00d5d362696a1d2479"
+    },
+    {
+      "name": "sbarinfo-commands-drawnumber-tick-chunk1082",
+      "bucket": "conversion",
+      "note": "`CommandDrawNumber::Tick` stat dispatch tail and draw-value interpolation from `sbarinfo_commands.cpp` (**1351\u20131500**); follows **1081** through **AMMO1CAPACITY** null-check (**1350**).",
+      "auditSeams": "**1081** owns missing-ammo abort through **1350** `{`; **1080** owns `IntCVarAcceptedType` and level-stat keyword kinds. Host `FindInventory`, `GetDefaultByType`, `GetCVar`, and `VMCall` for poweruptime excluded.",
+      "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **1351\u20131500** (+150); capacity/stat/armorclass/airtime/key/cvar tick values + interpolation toward `drawValue`; hull ends before **whenNotZero** (**1501+**).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 1351 --end 1500` and `--chunk 1082 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| **AMMO1/2CAPACITY** max amount (**1354\u20131364**) | yes |\n| Parameterized **AMMOCAPACITY** default fallback (**1369\u20131372**) | yes |\n| Intermission / score stat dispatch (**1375\u20131398**) | yes |\n| **ARMORCLASS** / **SAVEPERCENT** slot math (**1402\u20131417**) | yes |\n| **GLOBALVAR** / **GLOBALARRAY** reads (**1419\u20131424**) | yes (call-site policy only) |\n| Powerup time seconds conversion (**1434**) | yes |\n| Generic inventory amount (**1439\u20131443**) | yes (delegates **1081**) |\n| **AIRTIME** above/under water (**1448\u20131451**) | yes |\n| **SELECTEDINVENTORY** optional update (**1455\u20131456**) | yes |\n| **KEYS** fold counter (**1465\u20131470**) | yes |\n| **INTCVAR** typed read fallback (**1475\u20131488**) | yes |\n| Draw-value interpolation (**1492\u20131500**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1349\u20131353** | **1081** ammo1 null abort seam |\n| **1368**, **1403**, **1429\u20131433**, **1439**, **1474** | host pawn/inventory/VM/CVar lookup |\n| **1419\u20131423**, **1459\u20131462** | host field reads (wiring only at call site) |\n| **1501+** | **whenNotZero** / translation outside hull |\n\n| Managed (`VmSbarinfoCommandDrawNumber1082Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|------------------------------------------------------|----------------------------------|\n| Capacity + level stat resolution | **1354\u20131398** |\n| Armor class / save percent | **1402\u20131417** |\n| Powerup / air / keys / cvar tick policy | **1434\u20131488** |\n| Interpolation step + snap | **1492\u20131500** |\n| Band hull (exclusive slice) | **1351\u20131500** |\n\n### Chunk **1082** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1081** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmSbarinfoCommandDrawNumber1082Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/g_statusbar/sbarinfo_commands.cpp",
+          "symbol": "CommandDrawNumber::Tick",
+          "start": 1351,
+          "end": 1500,
+          "tests": [
+            "VmSbarinfoCommandDrawNumber1082SliceTests.ResolveParameterizedAmmoCapacityMax_UsesDefaultWhenMissing",
+            "VmSbarinfoCommandDrawNumber1082SliceTests.ResolveDrawNumberPrimaryLevelStat_MapsKillsAndSecrets",
+            "VmSbarinfoCommandDrawNumber1082SliceTests.ComputeDrawNumberArmorClassOrSavePercent_DividesOnlyArmorClass",
+            "VmSbarinfoCommandDrawNumber1082SliceTests.ConvertPowerupEffectTicsToDisplaySeconds_MatchesNativeFormula",
+            "VmSbarinfoCommandDrawNumber1082SliceTests.ResolveDrawNumberAirTimeTickNum_SwitchesOnWaterLevel",
+            "VmSbarinfoCommandDrawNumber1082SliceTests.ResolveSelectedInventoryTickNum_LeavesPriorWhenMissing",
+            "VmSbarinfoCommandDrawNumber1082SliceTests.FoldDrawNumberKeyCount_IncrementsForKeys",
+            "VmSbarinfoCommandDrawNumber1082SliceTests.ResolveDrawNumberIntCVarTickNum_FallsBackToZero",
+            "VmSbarinfoCommandDrawNumber1082SliceTests.StepDrawNumberInterpolationTowardTarget_ClampsStep",
+            "VmSbarinfoCommandDrawNumber1082SliceTests.ResolveDrawNumberDisplayValueAfterTick_SnapsWhenInterpolationDisabled"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 115,
+      "conversionManagedCommit": "9fa9bd9bab9aa7fe25c35a4203809279a00c284f"
     }
   ],
   "behaviorNativeChecksum": 508086,
