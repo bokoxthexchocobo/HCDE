@@ -30,6 +30,7 @@ public class VmPSetupPrecacheLevel980SliceTests
         Assert.Equal(2, VmPSetupPrecacheLevel980Slice.MinimumSectorPortalSlotsForDefaults(0));
         Assert.True(VmPSetupPrecacheLevel980Slice.DefaultSkyPortalUsesSkyFlatOnly(0, portalCount: 2));
         Assert.True(VmPSetupPrecacheLevel980Slice.ShouldReleaseSubsectorPortalCoverage(new object[1]));
+        Assert.True(VmPSetupPrecacheLevel980Slice.ShouldDeletePortalGroupEntry(new object(), portalGroupsNonEmpty: true));
     }
 
     [Fact]

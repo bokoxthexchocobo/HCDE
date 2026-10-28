@@ -14,9 +14,11 @@ public static class VmPSetupPrecacheLevel980Slice
     public static bool ShouldSkipPrecacheLevel(bool demoPlayback, bool dedicatedServer) =>
         demoPlayback || dedicatedServer;
 
-    public static bool ShouldTrackActorClassInHitlist(object? actorClass) => actorClass is not null;
+    public static bool ShouldTrackActorClassInHitlist(object? actorClass, bool iteratorReturnedActor) =>
+        iteratorReturnedActor && actorClass is not null;
 
-    public static bool ShouldTrackResolvedPrecacheClass(object? resolvedClass) => resolvedClass is not null;
+    public static bool ShouldTrackResolvedPrecacheClass(object? resolvedClass, bool lookupSucceeded) =>
+        lookupSucceeded && resolvedClass is not null;
 
     public static bool SideQualifiesForSkyTransferHitflag(
         bool sideIsFirstOnLine,
