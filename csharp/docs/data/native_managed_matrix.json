@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 240433
+    "managedCSharpLoc": 240548
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 74537,
+    "convertedThisRunNative": 74706,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 97629,
+    "convertedThisRunManaged": 97744,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 414268,
+    "remainingNative": 414099,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 93064,
+    "convertedBehaviorNative": 93233,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 93818,
-    "convertedBehaviorManaged": 107300,
+    "combinedBehaviorNative": 93987,
+    "convertedBehaviorManaged": 107415,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -37706,6 +37706,43 @@
         "nativeLoc": 150,
         "managedLoc": 109,
         "conversionManagedCommit": "548a787e0c785272df4f4bff64642cba21b0b4da"
+      },
+      {
+        "name": "statistics-save-parse-chunk1046",
+        "bucket": "conversion",
+        "note": "`ParseStatistics` tail, `ReadStatistics`, save/sort helpers, `GetStatisticsList`, and `StatisticsEntry` from `statistics.cpp` (**151\u2013319**, +169). Completes file credit through EOF **619** with **1045** + **1044\u20131043**.",
+        "auditSeams": "`FScanner`, `FileWriter`, `Printf`, `G_SkillProperty`, `localtime`, and global `EpisodeStatistics` remain host-injected; **1045** owns parse head (**1\u2013150**); uncredited `VmStatisticsTimeFormat` / `VmStatisticsParseHead1045Slice` helpers reused without re-credit.",
+        "auditRationale": "File-scoped UNCredited **`statistics.cpp`** **151\u2013319** (+169); excludes **1\u2013150** (**1045**) and **320\u2013619** (**1044\u20131043**).",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/statistics.cpp --start 151 --end 319` and `--chunk 1046 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Nested level parse tail (**151\u2013158**) | yes |\n| Recoverable parse swallow (**164\u2013166**) | host `catch` seam only |\n| `ReadStatistics` (**176\u2013179**) | yes |\n| `compare_episode_names` / `compare_dates` (**188\u2013213**) | yes |\n| `SaveStatistics` format/sort (**226\u2013270**) | yes (format strings; host I/O seam) |\n| `GetStatisticsList` (**278\u2013291**) | yes |\n| `StatisticsEntry` (**298\u2013318**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1\u2013150** | chunk **1045** |\n| **222\u2013224** | inline time helpers \u2014 `VmStatisticsTimeFormat` seam |\n| **230\u2013235**, **269** | `FileWriter` open/close host |\n| **237**, **242** | host `qsort` calls |\n| **304\u2013305**, **312** | host `time` / skill property |\n| **320\u2013619** | chunks **1044\u20131043** |\n| **320** | comment before `LevelStatEntry` (hull ends **319**) |\n\n| Managed (`VmStatisticsSaveParse1046Slice.cs`) | Native (`statistics.cpp`) |\n|-----------------------------------------------|---------------------------|\n| `BuildNestedLevelStatDraft` | **151\u2013158** |\n| `ShouldReloadEpisodeStatistics` | **176\u2013179** |\n| `CompareEpisodeHeaderNamesNatural` | **188\u2013194** |\n| `ComputeSessionDateSortKey` / compare | **196\u2013213** |\n| Save format helpers | **244\u2013267** |\n| `ShouldEmitSavedSessionRow` | **248** |\n| `FindEpisodeStatisticsIndex` | **278\u2013291** |\n| `BuildStatisticsEntryDraft` / date format | **298\u2013318** |\n| Band hull (exclusive slice) | **151\u2013319** |\n\n### Chunk **1046** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **169** |\n| **Net headline** | **+169** vs post-**1045** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Gamedata/VmStatisticsSaveParse1046Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/statistics.cpp",
+            "symbol": "SaveStatistics / StatisticsEntry",
+            "start": 151,
+            "end": 319,
+            "tests": [
+              "VmStatisticsSaveParse1046SliceTests.BuildNestedLevelStatDraft_ZeroSkill",
+              "VmStatisticsSaveParse1046SliceTests.ComputeSessionDateSortKey_ParsesDdMmYyyy",
+              "VmStatisticsSaveParse1046SliceTests.CompareEpisodeHeaderNamesNatural_CaseInsensitive",
+              "VmStatisticsSaveParse1046SliceTests.ShouldEmitSavedSessionRow_RequiresNonEmptyInfo",
+              "VmStatisticsSaveParse1046SliceTests.FormatSavedSessionRow_MatchesNativeShape",
+              "VmStatisticsSaveParse1046SliceTests.FormatSavedNestedLevelRow_IncludesLevelName",
+              "VmStatisticsSaveParse1046SliceTests.FindEpisodeStatisticsIndex_MatchesSectionCaseInsensitive",
+              "VmStatisticsSaveParse1046SliceTests.FormatStatisticsEntryDate_UsesLocalTimeOrFallback",
+              "VmStatisticsSaveParse1046SliceTests.BuildStatisticsEntryDraft_CapturesFields",
+              "VmStatisticsSaveParse1046SliceTests.FormatSavedEpisodeBlockHeader_AndFooter",
+              "VmStatisticsSaveParse1046SliceTests.ShouldReloadEpisodeStatistics_RequiresPath",
+              "VmStatisticsSaveParse1046SliceTests.FormatUnableToSaveStatisticsMessage_IncludesPath"
+            ]
+          }
+        ],
+        "nativeLoc": 169,
+        "managedLoc": 115,
+        "conversionManagedCommit": "9b74ecdeb9bfa7a6bddf25bd5acd5f6332b10bbd"
       }
     ],
     "behaviorNativeChecksum": 508086,
