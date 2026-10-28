@@ -1,0 +1,31 @@
+[
+  {
+    "name": "a-specialspot-spotlist-chunk1024",
+    "bucket": "conversion",
+    "note": "`FSpotList` add/remove/selection and serialize field bundle from `a_specialspot.cpp` (**1–150**). Primary **1024** target `p_floor.cpp` **1–150** rejected (file absent; `mapthinkers/a_floor.cpp` **1–150** overlaps chunk **917**).",
+    "auditSeams": "`pr_spot`, `IMPLEMENT_CLASS`, `DSpotState` host lookup, and `AActor`/`PClassActor` types remain native.",
+    "auditRationale": "Preflight `--band`: `p_floor.cpp` **1–150** tally-UNCredited by basename only (no source file). Real floor head **`a_floor.cpp` **1–150**** OVERLAP chunk **917**; off-tally `VmAFloor*` duplicates same span. First clean ≥150: **`a_specialspot.cpp` **1–150**** (zero conversion rows, zero recognition overlap, no `VmASpecialSpot*` yet).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/a_specialspot.cpp --start 1 --end 150` and `--chunk 1024 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `FSpotList::Add` (**67–75**) | yes |\n| `FSpotList::Remove` + index fixup (**83–95**) | yes |\n| `FSpotList::GetNextInList` (**103–115**) | yes |\n| `FSpotList::GetSpotWithMinMaxDistance` (**123–142**) | yes |\n| `FSpotList::GetRandomSpot` (**150–159**) | yes (param `onlyfirst` unused in native body) |\n| `Serialize(FSpotList)` field bundle (**168–179**) | yes (index/skip/numcalls) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1–40**, **49–59**, **161–167** | includes / empty ctor / comment banners |\n| **188–150** gap | `DSpotState` methods deferred next band |\n\n| Managed (`VmASpecialSpotSpotList1024Slice.cs`) | Native (`a_specialspot.cpp`) |\n|------------------------------------------------|------------------------------|\n| `TryAddSpot` | **67–75** |\n| `TryRemoveSpot` | **83–95** |\n| `GetNextInList` | **103–115** |\n| `GetSpotWithMinMaxDistance` | **123–142** |\n| `GetRandomSpot` | **150–159** |\n| `CaptureSerializeFields` / `ApplySerializeFields` | **172–176** |\n| Band hull (exclusive slice) | **1–150** |\n\n### Chunk **1024** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1023** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmASpecialSpotSpotList1024Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/a_specialspot.cpp",
+        "symbol": "FSpotList spot registry",
+        "start": 1,
+        "end": 150,
+        "tests": [
+          "VmASpecialSpotSpotList1024SliceTests.TryAddSpot_RejectsDuplicateReference",
+          "VmASpecialSpotSpotList1024SliceTests.TryRemoveSpot_AdjustsIndexWhenRemovingEarlierEntry",
+          "VmASpecialSpotSpotList1024SliceTests.GetNextInList_RoundsRobinAfterSkipCounter",
+          "VmASpecialSpotSpotList1024SliceTests.GetSpotWithMinMaxDistance_SearchesCircularOrder",
+          "VmASpecialSpotSpotList1024SliceTests.GetSpotWithMinMaxDistance_ReturnsNullWhenNoMatch",
+          "VmASpecialSpotSpotList1024SliceTests.GetRandomSpot_OnlyOnceBeforeNumCalls",
+          "VmASpecialSpotSpotList1024SliceTests.SerializeBundle_RoundTripsIndexFields"
+        ]
+      }
+    ]
+  }
+]
