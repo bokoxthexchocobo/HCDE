@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 75006,
+  "convertedThisRunNative": 75156,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 97964,
+  "convertedThisRunManaged": 98122,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 413866,
+  "remainingNative": 413716,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 93533,
+  "convertedBehaviorNative": 93683,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 94220,
-  "convertedBehaviorManaged": 107635,
+  "combinedBehaviorNative": 94370,
+  "convertedBehaviorManaged": 107793,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -37748,6 +37748,38 @@
       "nativeLoc": 150,
       "managedLoc": 110,
       "conversionManagedCommit": "5c718377ad96763d6d9fb3be7058c16eb0544d21"
+    },
+    {
+      "name": "gskill-parse-head-chunk1049",
+      "bucket": "conversion",
+      "note": "Global `AllSkills` / `DefaultSkill` and `FMapInfoParser::ParseSkill` head from `g_skill.cpp` (**1\u2013150**). Continues **1048\u20131047** (**391\u2013690**).",
+      "auditSeams": "`FScanner`, `ParseOpenBrace`, and `TArray` host remain injected; uncredited `VmSkillMapinfoParser` / `VmGSkillGlobals` are not re-credited.",
+      "auditRationale": "File-scoped UNCredited **`g_skill.cpp`** **1\u2013150** (+150); excludes **391\u2013690** (**1048\u20131047**).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_skill.cpp --start 1 --end 150` and `--chunk 1049 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `AllSkills` / `DefaultSkill` globals (**35\u201336**) | yes (constants) |\n| `ParseSkill` factory defaults (**50\u201381**) | yes |\n| Skill name token (**83\u201384**) | yes |\n| Float properties (**90\u2013118**) | yes |\n| Flag properties (**120\u2013150**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1\u201334** | license / includes host |\n| **86\u201388** | `ParseOpenBrace` / scanner loop host |\n| **151+** | remainder of `ParseSkill` (**1049** hull ends **150**) |\n| **391\u2013690** | chunks **1048\u20131047** |\n| `VmSkillMapinfoParser` | uncredited token parser \u2014 seam only |\n| `VmGSkillGlobals` | uncredited list helper \u2014 seam only |\n\n| Managed (`VmGSkillParseHead1049Slice.cs`) | Native (`g_skill.cpp`) |\n|-------------------------------------------|------------------------|\n| `DefaultSkillIndexUnset` | **36** |\n| `ApplyParseSkillFactoryDefaults` | **50\u201381** |\n| `AssignSkillBlockNameFromScanner` | **83\u201384** |\n| `ClassifySkillParseKeyword` | **90\u2013150** keywords |\n| `TryApplySkillParseFloatProperty` | **90\u2013118** |\n| `TryApplySkillParseFlagProperty` | **120\u2013150** |\n| Band hull (exclusive slice) | **1\u2013150** |\n\n### Chunk **1049** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1048** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Gamedata/VmGSkillParseHead1049Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "ParseSkill / AllSkills globals",
+          "start": 1,
+          "end": 150,
+          "tests": [
+            "VmGSkillParseHead1049SliceTests.ApplyParseSkillFactoryDefaults_MatchesNativeBaseline",
+            "VmGSkillParseHead1049SliceTests.ClassifySkillParseKeyword_RecognizesHeadBandKeys",
+            "VmGSkillParseHead1049SliceTests.TryApplySkillParseFloatProperty_SetsFactors",
+            "VmGSkillParseHead1049SliceTests.TryApplySkillParseFlagProperty_SetsFlags",
+            "VmGSkillParseHead1049SliceTests.AssignSkillBlockNameFromScanner_SetsName",
+            "VmGSkillParseHead1049SliceTests.DefaultSkillIndexUnset_MatchesGlobal",
+            "VmGSkillParseHead1049SliceTests.TryApplySkillParseFloatProperty_RejectsFlagKeywords"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 158,
+      "conversionManagedCommit": "83f38af65fb75a775656351cc7ccbb2bbe9187bf"
     }
   ],
   "behaviorNativeChecksum": 508086,
