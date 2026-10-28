@@ -233,9 +233,18 @@ Authoritative matrix for PR #78 (`cursor/native-managed-matrix-3df6`):
 
 Optional cross-check tool from PR #77 consolidation (`HCDE.ConversionInventory`): exploratory inventory across ACS, line specials, VM opcodes, and archives. It writes its own snapshot under `docs/` when run locally; do not treat that output as the PR tally source of truth.
 
+Regenerate after inventory or execution changes:
+
 ```bash
 dotnet run --project csharp/src/HCDE.ConversionInventory -- /path/to/hcde
 ```
+
+Artifacts:
+
+- [`HCDE_NATIVE_MANAGED_MATRIX.md`](HCDE_NATIVE_MANAGED_MATRIX.md) — headline counts and subsystem LOC estimates
+- [`HCDE_NATIVE_MANAGED_MATRIX.json`](HCDE_NATIVE_MANAGED_MATRIX.json) / [`.csv`](HCDE_NATIVE_MANAGED_MATRIX.csv) — machine-readable rows
+
+Snapshot (2026-10-19): **689 executed**, **317 partial**, **113 decoded-only**, **170 absent** rows across ACS opcodes, ACS callfuncs, line specials, ZScript VM opcodes, catalog actor classes, and persistence archives. Estimated native LOC still without managed parity: playsim ~49k, scripting VM ~54k, rendering ~30k, maploader ~8k, gamedata ~23k (see matrix doc).
 
 ## Contributing
 
