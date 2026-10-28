@@ -1,0 +1,27 @@
+[
+  {
+    "name": "p-states-labels-find-chunk986",
+    "bucket": "conversion",
+    "note": "`FStateLabels::Destroy`, `HasSpecialDeathStates`, `MakeStateNameList`, and multi-name `FindState` from `p_states.cpp` (**151–300**); follows chunk **985** (**1–150**).",
+    "auditSeams": "`BinarySearch`, `strtok`, `M_Free`, and `FindStateByString` host glue remain injected.",
+    "auditRationale": "UNCredited continuation of `p_states.cpp`; disjoint hull from **985**. No `VmPStatesLabels*` overlap.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_states.cpp --start 151 --end 300` and `--chunk 986 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `FStateLabels::Destroy` (**151–162**) | yes |\n| `HasSpecialDeathStates` (**173–192**) | yes |\n| `MakeStateNameList` legacy remap + push (**200–243**) | yes |\n| `FindState` multi-name walk (**260–292**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **165–172**, **194–199**, **245–259**, **294–300** | comment banners / `FindStateByString` head (seam) |\n| **207–241** | `strtok` / host string seam |\n| **301+** | `FindStateByString` body outside hull |\n| **1–150** | chunk **985** |\n\n| Managed (`VmPStatesLabels986Slice.cs`) | Native (`p_states.cpp`) |\n|----------------------------------------|----------------------|\n| `DestroyNestedLabelChildren` | **153–160** |\n| `ActorHasSpecialDeathStates` | **177–191** |\n| `TryRemapLegacyStateAlias` / `BuildStateNameParts` | **209–240** |\n| `ExactFindStateMisses` / `FindBestStateForNames` | **265–291** |\n| Band hull (exclusive slice) | **151–300** |\n\n### Chunk **986** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**985** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPStatesLabels986Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/p_states.cpp",
+        "symbol": "FStateLabels::Destroy",
+        "start": 151,
+        "end": 300,
+        "tests": [
+          "VmPStatesLabels986SliceTests.DestroyNestedLabelChildren_TearsDownTrees",
+          "VmPStatesLabels986SliceTests.SpecialDeathStatesAndLegacyAliases",
+          "VmPStatesLabels986SliceTests.FindState_BestMatchAndExact"
+        ]
+      }
+    ]
+  }
+]
