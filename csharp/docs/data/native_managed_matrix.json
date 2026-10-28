@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 243920
+    "managedCSharpLoc": 244019
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 79056,
+    "convertedThisRunNative": 79206,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 101116,
+    "convertedThisRunManaged": 101215,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 409816,
+    "remainingNative": 409666,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 97583,
+    "convertedBehaviorNative": 97733,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 98270,
-    "convertedBehaviorManaged": 110787,
+    "combinedBehaviorNative": 98420,
+    "convertedBehaviorManaged": 110886,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -38681,6 +38681,39 @@
         "nativeLoc": 150,
         "managedLoc": 98,
         "conversionManagedCommit": "b1177f5114e58555ebbee6b6af052646ca11915d"
+      },
+      {
+        "name": "sbarinfo-commands-switchable-parse-tick-chunk1076",
+        "bucket": "conversion",
+        "note": "`CommandDrawSwitchableImage` parse tail (`&&`, conditional images) and `Tick` draw-alt policy from `sbarinfo_commands.cpp` (**451\u2013600**); follows **1075** parse head.",
+        "auditSeams": "**1075** owns compare parse/eval helpers and keyword head (**434\u2013450**); host `LookupKeySpecies`, scanner, and **607+** inventory tick remain outside hull.",
+        "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **451\u2013600** (+150); continues switchable command; zero overlap except **1075**-excluded seams.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 451 --end 600` and `--chunk 1076 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `armortype` parse branch (**451\u2013456**) | yes (gate; compare via **1075**) |\n| Inventory compare parse (**459\u2013467**) | yes (gate) |\n| `&&` parse w/ invuln exclusion (**469\u2013496**) | yes |\n| Conditional image loop bound (**498\u2013503**) | yes |\n| Weapon slot `drawAlt` (**516\u2013531**) | yes |\n| Invulnerability cheat `drawAlt` (**533\u2013538**) | yes |\n| Key slot match + `drawAlt` table (**542\u2013582**) | yes |\n| Armor type match + `drawAlt` (**586\u2013601**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **454\u2013456**, **467**, **483\u2013494** | host scanner / **1075** `GetOperation` |\n| **477**, **449** | host `LookupKeySpecies` |\n| **500\u2013505** | host `newImage` / `CommandDrawImage::Parse` |\n| **519\u2013527**, **546\u2013566** | host inventory/weapon scans |\n| **607+** | inventory `drawAlt` outside hull |\n\n| Managed (`VmSbarinfoCommandDrawSwitchable1076Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|-----------------------------------------------------------|----------------------------------|\n| `&&` + image count policy | **469\u2013503** |\n| Weapon / invuln draw-alt | **516\u2013538** |\n| Key slot match + draw-alt | **551\u2013582** |\n| Armor match + draw-alt | **589\u2013601** |\n| Band hull (exclusive slice) | **451\u2013600** |\n\n### Chunk **1076** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1075** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Client/VmSbarinfoCommandDrawSwitchable1076Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/g_statusbar/sbarinfo_commands.cpp",
+            "symbol": "CommandDrawSwitchableImage::Parse / Tick",
+            "start": 451,
+            "end": 600,
+            "tests": [
+              "VmSbarinfoCommandDrawSwitchable1076SliceTests.ShouldEnableConditionAndParse_BlocksInvulnerability",
+              "VmSbarinfoCommandDrawSwitchable1076SliceTests.CountConditionalImagesToLoad_MatchesNativeLoopBound",
+              "VmSbarinfoCommandDrawSwitchable1076SliceTests.ResolveKeySlotDrawAlt_MatchesDualKeyTable",
+              "VmSbarinfoCommandDrawSwitchable1076SliceTests.ApplyKeySlotNumberMatch_UpdatesExpectedSlots",
+              "VmSbarinfoCommandDrawSwitchable1076SliceTests.ResolveWeaponSlotDrawAlt_TogglesOnOwnedWeapon",
+              "VmSbarinfoCommandDrawSwitchable1076SliceTests.ResolveInvulnerabilityDrawAlt_DetectsGodModeCheats",
+              "VmSbarinfoCommandDrawSwitchable1076SliceTests.EvaluateArmorTypeMatch_Uses1075Compare",
+              "VmSbarinfoCommandDrawSwitchable1076SliceTests.ResolveArmorTypeDrawAlt_MatchesNativePriority"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 99,
+        "conversionManagedCommit": "6ddd631ef96b0cb01ef7213f351b5a4a01029ae1"
       }
     ],
     "behaviorNativeChecksum": 508086,
