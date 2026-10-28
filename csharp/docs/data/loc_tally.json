@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 69737,
+  "convertedThisRunNative": 69887,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 93727,
+  "convertedThisRunManaged": 93849,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 419068,
+  "remainingNative": 418918,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 88264,
+  "convertedBehaviorNative": 88414,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 89018,
-  "convertedBehaviorManaged": 103398,
+  "combinedBehaviorNative": 89168,
+  "convertedBehaviorManaged": 103520,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -36641,6 +36641,34 @@
       "nativeLoc": 150,
       "managedLoc": 193,
       "conversionManagedCommit": "5ce461a09e1dd2cd6f4ce03817f7d66683d43556"
+    },
+    {
+      "name": "g-level-init-ctor-chunk1014",
+      "bucket": "conversion",
+      "note": "`FLevelLocals` ctor/dtor guards, `Init` scalar/info copy, GL prop resolution, and `CalcMapName` from `g_level.cpp` (**1959\u20132108**); follows chunk **1013** and sits after chunk **8** headless-flow credit (**\u22641958**).",
+      "auditSeams": "`P_InitParticles`, `FindLevelInfo`, `TexMan`, `R_ColormapNumForName`, `FindClusterInfo`, `compatflags` callbacks, and `new EventManager` remain injected.",
+      "auditRationale": "UNCredited **1959\u20132108**; disjoint from **1051\u20131958** chunk **8** islands and **1010\u20131013** bands.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_level.cpp --start 1959 --end 2108` and `--chunk 1014 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `FLevelLocals` ctor player wiring (**1965\u20131974**) | yes (index guard) |\n| dtor delete guards (**1976\u20131980**) | yes |\n| `Init` reset + gravity/air (**1987\u20132043**) | yes |\n| Fade table flag (**2015\u20132020**) | yes |\n| Info \u2192 level field copy (**2024\u20132083**) | yes (predicates/scalars) |\n| Init GL bool fallbacks (**2085\u20132087**) | yes (Init path; **1010** owns CVAR callback) |\n| `CalcMapName` (**2095\u20132108**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1957\u20131958** | prior function return (chunk **8** seam) |\n| **2002\u20132013**, **2024**, **2045** | host lookup / texture APIs |\n| **2080\u20132081** | compat callback host |\n| **2109+** | `AirControlChanged` (next band) |\n\n| Managed (`VmGLevelInitCtor1014Slice.cs`) | Native (`g_level.cpp`) |\n|-------------------------------------------|----------------------|\n| Player slot wiring | **1969\u20131972** |\n| Init scalar reset | **1992\u20132000**, **2057\u20132059** |\n| Gravity / air / teamdamage overrides | **2029\u20132041** |\n| Fade + wall light scaling | **2015\u20132020**, **2027\u20132028** |\n| Cluster flags merge | **2045\u20132053** |\n| Init GL props | **2085\u20132087** |\n| `CalcMapName` | **2099\u20132107** |\n| Band hull (exclusive slice) | **1959\u20132108** |\n\n### Chunk **1014** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1013** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmGLevelInitCtor1014Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/g_level.cpp",
+          "symbol": "FLevelLocals::Init",
+          "start": 1959,
+          "end": 2108,
+          "tests": [
+            "VmGLevelInitCtor1014SliceTests.LevelLocalsCtorAndInitReset",
+            "VmGLevelInitCtor1014SliceTests.InitGravityFadeAndCluster",
+            "VmGLevelInitCtor1014SliceTests.InitGlPropsAndCalcMapName"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 122,
+      "conversionManagedCommit": "27e88a9450c7db6d0d267857a725c93b600e2162"
     }
   ],
   "behaviorNativeChecksum": 508086,
