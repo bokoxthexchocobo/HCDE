@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 69137,
+  "convertedThisRunNative": 69287,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 93288,
+  "convertedThisRunManaged": 93377,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 419668,
+  "remainingNative": 419518,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 87664,
+  "convertedBehaviorNative": 87814,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 88418,
-  "convertedBehaviorManaged": 102959,
+  "combinedBehaviorNative": 88568,
+  "convertedBehaviorManaged": 103048,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -36529,6 +36529,34 @@
       "nativeLoc": 150,
       "managedLoc": 76,
       "conversionManagedCommit": "a080b4bd4f11ff7166352c4b2b095b21cee4a1a1"
+    },
+    {
+      "name": "g-level-cvar-hooks-chunk1010",
+      "bucket": "conversion",
+      "note": "Level start globals, save chunk IDs, and GL CUSTOM_CVAR propagation from `g_level.cpp` (**1\u2013150**). Primary `dthinker.cpp` **1\u2013150** deferred: overlaps existing `VmDThinkerCollectionEarly` / sub-150 header-only **1\u201370**.",
+      "auditSeams": "`AllLevels()` iteration, `CUSTOM_CVAR` registration, and `getRealLightmode` (**158+**) remain injected.",
+      "auditRationale": "UNCredited **g_level.cpp 1\u2013150** CLI band; no live tally overlap; pivot off exhausted `g_game` tail and blocked `dthinker` head duplicate.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_level.cpp --start 1 --end 150` and `--chunk 1010 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `startpos` / `laststartpos` globals (**111\u2013112**) | seam (host globals) |\n| Save snapshot chunk IDs (**114\u2013119**) | yes (constants) |\n| `gl_brightfog` CVAR (**124\u2013130**) | yes |\n| `gl_lightadditivesurfaces` (**132\u2013138**) | yes |\n| `gl_notexturefill` (**140\u2013146**) | yes |\n| `gl_maplightmode` clamp (**148\u2013151**) | yes (partial line **151** seam) |\n| `gl_lightmode` clamp (**153\u2013156**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1\u2013110** | includes / extern declarations |\n| **158+** | `getRealLightmode` body (next band) |\n| **121\u2013122** | forward decl host |\n\n| Managed (`VmGLevelCvarHooks1010Slice.cs`) | Native (`g_level.cpp`) |\n|------------------------------------------|----------------------|\n| Chunk ID constants | **114\u2013119** |\n| `ShouldApplyLevelInfoDefault` / propagate helpers | **124\u2013146** |\n| `ClampGlMapLightMode` / `ClampGlLightMode` | **148\u2013156** |\n| Band hull (exclusive slice) | **1\u2013150** |\n\n### Chunk **1010** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1009** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmGLevelCvarHooks1010Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/g_level.cpp",
+          "symbol": "CUSTOM_CVAR(gl_brightfog)",
+          "start": 1,
+          "end": 150,
+          "tests": [
+            "VmGLevelCvarHooks1010SliceTests.SaveChunkIds",
+            "VmGLevelCvarHooks1010SliceTests.GlCvarPropagation",
+            "VmGLevelCvarHooks1010SliceTests.GlLightModeClamps"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 89,
+      "conversionManagedCommit": "f1f5af58efecfcf6e7366d650cc916bead03d316"
     }
   ],
   "behaviorNativeChecksum": 508086,
