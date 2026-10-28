@@ -1,0 +1,31 @@
+[
+  {
+    "name": "fscript-mobj-level-chunk940",
+    "bucket": "conversion",
+    "note": "`SF_LevelNum` tail through `SF_SetColor` sector-tag loop head from `fragglescript/t_func.cpp` (**3545–3694**). Follows **939** (**≤3134**); **3135–3244** sub-150 deferred; avoids **846** trig credit below **3545**.",
+    "auditSeams": "`Level->levelnum`, `actorvalue`/`floatvalue`, `T_GetMobjType`, thinker iteration, `GetReplacement`, `FindFirstSectorFromTag`, `GetSectorTagIterator`, and `SetColor` remain host seams.",
+    "auditRationale": "Honest **150**-line UNCredited band; exclusive `VmFScriptParserMobjLevel940Slice.cs` (live `VmFScriptParserSfLevel` handlers are not matrix credit for these lines).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 3545 --end 3694` and `--chunk 940 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`fragglescript/t_func.cpp`) |\n|---------|-----------------------------------|\n| chunk **940** hull | **3545–3694** |\n| `MobjGeomRequiresOneArg` / `MobjGeomAssignsWhenPresent` / `MobjGeomReturnDouble` | `SF_MobjRadius` **3554–3567**, `SF_MobjHeight` **3577–3590** |\n| `ThingCountCountsMapActorsOnly` / `ThingCountCountsLiving` | `SF_ThingCount` branch **3618–3637** |\n| `ThingCountActorQualifies` | map vs living filters **3624–3635** |\n| `ThingCountShouldRepeatForReplacement` | replacement `goto again` **3638–3647** |\n| `ThingCountRequiresOneArg` / `ThingCountAbortsWithoutClass` | `CheckArgs(1)` / missing type **3608–3611** |\n| `CombineThingCountPasses` | accumulate after replacement pass **3649–3650** |\n| `SetColorRequiresTwoArgs` / `SetColorSectorTagMissing` | `SF_SetColor` **3667–3676** |\n| `SetColorEncodingFromArgc` / `ComposePalEntryRgb` / `SetColorRgbWithClearedAlpha` | color argv **3678–3688** (`color.a = 0`) |\n| `BuildSetColorApply` | tag + color before iterator **3669–3690** |\n| `SectorTagIteratorActive` | `while ((i = itr.Next()) >= 0)` **3693–3694** |\n| `SF_LevelNum` return slot | **3541–3545** (hull) |\n| `CheckArgs(1)` gates | **3558**, **3581**, **3608** |\n\n### Chunk **940** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**939** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmFScriptParserMobjLevel940Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/fragglescript/t_func.cpp",
+        "symbol": "FParser::SF_LevelNum",
+        "start": 3545,
+        "end": 3694,
+        "tests": [
+          "VmFScriptParserMobjLevel940SliceTests.MobjGeomAssignsWhenPresent_RequiresSecondArgAndActor",
+          "VmFScriptParserMobjLevel940SliceTests.ThingCountCountsMapActorsOnly_WhenLivingModeZero",
+          "VmFScriptParserMobjLevel940SliceTests.ThingCountCountsLiving_WhenModeNonZeroAndNotInventory",
+          "VmFScriptParserMobjLevel940SliceTests.ThingCountActorQualifies_LivingBranchIgnoresMapActor",
+          "VmFScriptParserMobjLevel940SliceTests.BuildSetColorApply_RejectsMissingTagSector",
+          "VmFScriptParserMobjLevel940SliceTests.ComposePalEntryRgb_PacksChannels",
+          "VmFScriptParserMobjLevel940SliceTests.SectorTagIteratorActive_MatchesNativeLoopGuard"
+        ]
+      }
+    ]
+  }
+]
