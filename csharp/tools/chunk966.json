@@ -1,0 +1,32 @@
+[
+  {
+    "name": "p-secnodes-portal-render-chunk966",
+    "bucket": "conversion",
+    "note": "`P_DelPortalnode`, `P_AddPortalnode`, `AActor::UpdateRenderSectorList` head, and render-portal clear helpers from `p_secnodes.cpp` (**284–433**). Follows chunk **810** (**≤283**); chunk **881** deferred band split — this row credits **284–433** only.",
+    "auditSeams": "`I_FatalError`, `BoxOnLineSide`, `inRange`, `PointInSector`, portal displacement/plane queries, and playsim tick wiring remain host seams; freelist reuse calls chunk **810** `VmPSecnodes` without re-crediting **42–283**.",
+    "auditRationale": "Honest **150**-line UNCredited band with zero conversion/recognition overlap; exclusive `VmPSecnodesPortalRender966Slice.cs` (does not duplicate chunk **810** secnode list credit).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_secnodes.cpp --start 284 --end 433` and `--chunk 966 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `P_DelPortalnode` (**293–329**) | yes |\n| `P_AddPortalnode` (**338–367**) | yes |\n| `AActor::UpdateRenderSectorList` gates/loops (**375–427**) | yes (pure planning; host runs geometry) |\n| `AActor::ClearRenderSectorList` (**429–433**) | yes |\n| Comment/separator hull (**284–292**, **331–337**, **369–374**, **428**) | layout only |\n\n| Managed (`VmPSecnodesPortalRender966Slice.cs`) | Native (`p_secnodes.cpp`) |\n|-----------------------------------------------|---------------------------|\n| `DelPortalnode` | **293–329** |\n| `AddPortalnode` | **338–367** |\n| `ShouldRefreshRenderLists` / portal scan gates | **378–395** |\n| `CeilingPortalLoopContinues` / `FloorPortalLoopContinues` | **404–425** |\n| `ClearRenderSectorPortalList` | **429–433** |\n| Band hull (exclusive slice) | **284–433** |\n\n### Chunk **966** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**965** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPSecnodesPortalRender966Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_secnodes.cpp",
+        "symbol": "P_DelPortalnode",
+        "start": 284,
+        "end": 433,
+        "tests": [
+          "VmPSecnodesPortalRender966SliceTests.DelPortalnode_UnlinksBothThreadsAndFreesNode",
+          "VmPSecnodesPortalRender966SliceTests.AddPortalnode_PrependsPortalThread",
+          "VmPSecnodesPortalRender966SliceTests.ShouldRefreshRenderLists_RequiresMoveWithoutNosector",
+          "VmPSecnodesPortalRender966SliceTests.ShouldScanBlockForLinePortals_AllGatesRequired",
+          "VmPSecnodesPortalRender966SliceTests.CeilingPortalLoopContinues_MatchesHeightGuards",
+          "VmPSecnodesPortalRender966SliceTests.FloorPortalLoopContinues_MatchesHeightGuards",
+          "VmPSecnodesPortalRender966SliceTests.ClearRenderSectorPortalList_EmptiesTouchingList",
+          "VmPSecnodesPortalRender966SliceTests.RenderBoundingRadius_CapsAt128"
+        ]
+      }
+    ]
+  }
+]
