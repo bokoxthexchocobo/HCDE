@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 81456,
+  "convertedThisRunNative": 81306,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 103122,
+  "convertedThisRunManaged": 103016,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 407416,
+  "remainingNative": 407566,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 99983,
+  "convertedBehaviorNative": 99833,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 100670,
-  "convertedBehaviorManaged": 112793,
+  "combinedBehaviorNative": 100520,
+  "convertedBehaviorManaged": 112687,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -39176,41 +39176,6 @@
       "nativeLoc": 150,
       "managedLoc": 111,
       "conversionManagedCommit": "7d14aac3365b7160ff23b611ac9c0c73747bd717"
-    },
-    {
-      "name": "sbarinfo-commands-drawbar-tick-comparator-chunk1091",
-      "bucket": "conversion",
-      "note": "`CommandDrawBar::Tick` stat tail, fill normalization/interpolation, `ParseComparator`, and `AdditionalData` ctor from `sbarinfo_commands.cpp` (**2701\u20132850**); follows **1090** ammo2 max seam (**2700**).",
-      "auditSeams": "**1090** owns ammo1/ammo2 empty-bar policy (**2684\u20132700**); **1091** starts at parameterized **AMMO** inventory tick (**2702+**). Host `FindInventory`, `VMCall`, and `PClass::FindActor` excluded.",
-      "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **2701\u20132850** (+150); draw bar stat dispatch tail, normalized fill ratio, percentage interpolation pixel step, comparator max-constant path, `AdditionalData` default flags; hull ends at struct open (**2850**).",
-      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 2701 --end 2850` and `--chunk 1091 --band` \u2192 UNCredited, exit 0.",
-      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Parameterized ammo/inventory tick (**2704\u20132711**, **2732\u20132739**) | yes |\n| Frags/level stat pairs (**2714\u20132728**) | yes |\n| Airtime clamp (**2742\u20132744**) | yes |\n| Powerup display tick bump (**2758\u20132759**) | yes |\n| Save percent sum (**2764\u20132778**) | yes |\n| Fill ratio normalize (**2784\u20132789**) | yes |\n| Interpolation gate + pixel step (**2790\u20132796**) | yes |\n| Draw value ease (**2797\u20132805**) | yes |\n| Comparator inventory validation (**2815\u20132818**) | yes |\n| Comparator max constant (**2821\u20132824**) | yes |\n| `AdditionalData` ctor default (**2852\u20132854**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2682\u20132700** | **1090** ammo slot empty rules |\n| **2750\u20132757** | host `VMCall` / `FindFunction` |\n| **2814**, **2818** | host `FindActor` |\n| **2831\u20132847** | `ValueType` enum layout |\n| **2851+** | member field declarations outside hull |\n\n| Managed (`VmSbarinfoCommandDrawBar1091Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|--------------------------------------------------|----------------------------------|\n| Tick tail + interpolation | **2702\u20132805** |\n| ParseComparator + data defaults | **2808\u20132854** |\n| Band hull (exclusive slice) | **2701\u20132850** |\n\n### Chunk **1091** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1090** |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Client/VmSbarinfoCommandDrawBar1091Slice.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/g_statusbar/sbarinfo_commands.cpp",
-          "symbol": "CommandDrawBar::Tick / ParseComparator / AdditionalData",
-          "start": 2701,
-          "end": 2850,
-          "tests": [
-            "VmSbarinfoCommandDrawBar1091SliceTests.ResolveDrawBarInventoryItemTick_MissingItemZeroesValue",
-            "VmSbarinfoCommandDrawBar1091SliceTests.NormalizeDrawBarFillRatio_ClampsToOne",
-            "VmSbarinfoCommandDrawBar1091SliceTests.ApplyDrawBarPowerupEffectDisplayTicks_IncrementsBoth",
-            "VmSbarinfoCommandDrawBar1091SliceTests.ComputeDrawBarSavePercentTick_AddsBasicArmor",
-            "VmSbarinfoCommandDrawBar1091SliceTests.ClampDrawBarAirtimeRemaining_NeverNegative",
-            "VmSbarinfoCommandDrawBar1091SliceTests.StepDrawBarDrawValueInterpolation_SnapsWithinPixelThreshold",
-            "VmSbarinfoCommandDrawBar1091SliceTests.ResolveDrawBarTickDrawValue_SkipsInterpolationWhenDisabled",
-            "VmSbarinfoCommandDrawBar1091SliceTests.ShouldReplaceDrawBarComparatorInventoryClass_WhenNotInventory",
-            "VmSbarinfoCommandDrawBar1091SliceTests.TryApplyDrawBarComparatorMaximumConstant_RequiresExtendedInt",
-            "VmSbarinfoCommandDrawBar1091SliceTests.CreateDrawBarAdditionalDataDefaults_MatchesNativeInit"
-          ]
-        }
-      ],
-      "nativeLoc": 150,
-      "managedLoc": 106,
-      "conversionManagedCommit": "0629b2824fdb1d40d03ad4491f0f4e46cd57ce91"
     }
   ],
   "behaviorNativeChecksum": 508086,
