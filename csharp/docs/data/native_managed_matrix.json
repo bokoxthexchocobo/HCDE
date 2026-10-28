@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 234606
+    "managedCSharpLoc": 234483
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 66887,
+    "convertedThisRunNative": 66737,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 91803,
+    "convertedThisRunManaged": 91680,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 421918,
+    "remainingNative": 422068,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 85414,
+    "convertedBehaviorNative": 85264,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 86168,
-    "convertedBehaviorManaged": 101474,
+    "combinedBehaviorNative": 86018,
+    "convertedBehaviorManaged": 101351,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -36097,34 +36097,6 @@
         "nativeLoc": 150,
         "managedLoc": 164,
         "conversionManagedCommit": "658696fa4fceae1c8aa43297261dd1ee9c5dc6b3"
-      },
-      {
-        "name": "p-saveg-player-restore-chunk994",
-        "bucket": "conversion",
-        "note": "`ReadMultiplePlayers` tail, `CopyPlayer`, and `SpawnExtraPlayers` from `p_saveg.cpp` (**751\u2013900**). **Pivot:** `p_setup.cpp` **751\u2013900** aborted \u2014 file EOF **788** (no hull past EOF).",
-        "auditSeams": "`CopyFrom`, `userinfo_t::TransferFrom`, `R_FindSkin`, `Printf`, `Serialize`, and `SpawnPlayer` host calls remain injected.",
-        "auditRationale": "UNCredited mid-file `p_saveg.cpp`; disjoint from chunk **10** archive band (**276\u2013335**) and retired **887**. No existing `VmPSaveg*` managed slice on **751\u2013900**.",
-        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_saveg.cpp --start 751 --end 900` and `--chunk 994 --band` \u2192 UNCredited, exit 0.",
-        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Name-based temp player assign (**751\u2013768**) | yes |\n| First-unused temp assign (**778\u2013795**) | yes |\n| Unused temp actor destroy (**800\u2013804**) | yes |\n| `CopyPlayer` userinfo/bot/skin (**813\u2013873**) | yes (predicates) |\n| `SpawnExtraPlayers` gate (**882\u2013900**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **756\u2013757**, **784\u2013785** | `Printf` host |\n| **820\u2013827**, **847\u2013853** | `TransferFrom` / `R_FindSkin` host |\n| **829**, **858\u2013859** | `CopyFrom` / `player` pointer host |\n| **897\u2013898** | `SpawnPlayer` host |\n| **901+** | outside hull |\n\n| Managed (`VmPSavegPlayerRestore994Slice.cs`) | Native (`p_saveg.cpp`) |\n|---------------------------------------------|----------------------|\n| `TryAssignNamedTempPlayer` / `TryAssignFirstUnusedTempPlayer` | **751\u2013795** |\n| `ShouldDestroyUnusedTempActor` | **800\u2013804** |\n| `MergeChaseCamCheat` / `ResolveUserinfoRestoreAfterCopy` / bot walk / psprite relink / sticky input | **823\u2013872** |\n| `ShouldSpawnExtraPlayers` / `ShouldSpawnMissingPlayerPawn` | **888\u2013900** |\n| Band hull (exclusive slice) | **751\u2013900** |\n\n### Chunk **994** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**993** |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPSavegPlayerRestore994Slice.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/p_saveg.cpp",
-            "symbol": "FLevelLocals::CopyPlayer",
-            "start": 751,
-            "end": 900,
-            "tests": [
-              "VmPSavegPlayerRestore994SliceTests.ReadMultiplePlayersAssignment",
-              "VmPSavegPlayerRestore994SliceTests.CopyPlayerPredicates",
-              "VmPSavegPlayerRestore994SliceTests.SpawnExtraPlayersGate"
-            ]
-          }
-        ],
-        "nativeLoc": 150,
-        "managedLoc": 123,
-        "conversionManagedCommit": "5e3836f2d69d77cd4e533d8dabe6f1521a3be5cf"
       }
     ],
     "behaviorNativeChecksum": 508086,

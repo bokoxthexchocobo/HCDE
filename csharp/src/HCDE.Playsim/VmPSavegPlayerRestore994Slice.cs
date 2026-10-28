@@ -66,6 +66,8 @@ public static class VmPSavegPlayerRestore994Slice
 
         return UserinfoRestoreKind.HumanPreserveSaveClass;
     }
+
+    public static bool TryMarkMatchingBotInUse(
         IReadOnlyList<string> botNames,
         string savedName,
         int startIndex,
@@ -90,7 +92,7 @@ public static class VmPSavegPlayerRestore994Slice
             botCount++;
     }
 
-    public static bool TryMarkMatchingBotInUse(
+    public static void RelinkPlayerOwnedPsprites<T>(
         T? firstPsprite,
         object player,
         Action<T, object> setOwner,
