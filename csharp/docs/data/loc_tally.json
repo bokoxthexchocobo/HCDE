@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 72287,
+  "convertedThisRunNative": 72437,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 95842,
+  "convertedThisRunManaged": 95942,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 416518,
+  "remainingNative": 416368,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 90814,
+  "convertedBehaviorNative": 90964,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 91568,
-  "convertedBehaviorManaged": 105513,
+  "combinedBehaviorNative": 91718,
+  "convertedBehaviorManaged": 105613,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -37165,6 +37165,40 @@
       "nativeLoc": 150,
       "managedLoc": 128,
       "conversionManagedCommit": "d7a7111c6df63816e3764ab255f19c9bdb8304b8"
+    },
+    {
+      "name": "g-mapinfo-parse-mapinfo-complvl-chunk1031",
+      "bucket": "conversion",
+      "note": "CMPGNINF apply tail and `G_ParseMapInfo` COMPLVL / basemapinfo / lump-scan head from `g_mapinfo.cpp` (**2900\u20133049**). Follows chunk **1030** (**2750\u20132899**). Hull stops before off-tally `VmMapInfoParseMapInfoLoop` (**3067\u20133114**).",
+      "auditSeams": "`FindLevelInfo`, `wadlevelinfos.Reserve`, `fileSystem` lump I/O, `FMapInfoParser::ParseMapInfo`, and `I_FatalError` formatting remain native.",
+      "auditRationale": "UNCredited **`g_mapinfo.cpp`** band **2900\u20133049** with zero conversion/recognition overlap; lump loop body **3050+** and `VmMapInfoParseMapInfoLoop` **3067\u20133114** outside hull.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_mapinfo.cpp --start 2900 --end 3049` and `--chunk 1031 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| CMPGNINF `mapname` assign + limit properties (**2900\u20132917**) | yes (`TryApplyCmpgninfBlockProperty` + `VmCmpgninfParser`) |\n| CMPGNINF block skip + limit write (**2920\u20132940**) | yes |\n| `G_ParseMapInfo` Doom COMPLVL gate (**2961\u20132964**) | yes (predicate) |\n| COMPLVL preset bytes (**2969\u20133006**) | yes (delegate `VmMapInfoComplvlParser.TryParseComplvl`) |\n| Basemapinfo core override fatal (**3016\u20133019**) | yes |\n| `gamedefaults` compat OR merge (**3023\u20133026**) | yes |\n| MAPINFO/ZMAPINFO/UMAPINFO skip head (**3034\u20133051**) | yes (delegate `VmMapInfoLumpPrecedence`) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2750\u20132899** | chunk **1030** |\n| **2923\u20132931** | `FindLevelInfo` / `Reserve` / `Printf` host |\n| **2963\u20132968** | filesystem read host |\n| **3011\u20133021** | `ParseMapInfo` nested parse host |\n| **3032\u20133033** | `FindLumpMulti` host |\n| **3053\u20133066** | EMAPINFO skip tail (**3050+** outside **3049** hull) |\n| **3067\u20133114** | off-tally `VmMapInfoParseMapInfoLoop` \u2014 no duplicate credit |\n| Retired **306**/**308**/**318** | prior sub-150 rows; off-tally Vm helpers only |\n\n| Managed (`VmMapInfoParseMapInfo1031Slice.cs`) | Native (`g_mapinfo.cpp`) |\n|--------------------------------------------------|---------------------------|\n| `TryApplyCmpgninfBlockProperty` | **2902\u20132917** |\n| `ShouldSkipCmpgninfBlock` / `ApplyCmpgninfLimits` / `NeedsSyntheticLevelForCmpgninf` | **2920\u20132940** |\n| `ShouldReadComplvlPresets` / `TryLoadComplvlPresets` | **2961\u20133006** |\n| `MergeComplvlIntoDefaults` | **3023\u20133026** |\n| `ShouldFatalOnBasemapinfoAddonOverride` | **3016\u20133019** |\n| `ShouldSkipNamedMapinfoLump` + probe helpers | **3034\u20133051** |\n| Band hull (exclusive slice) | **2900\u20133049** |\n\n### Chunk **1031** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1030** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Gamedata/VmMapInfoParseMapInfo1031Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "HCDE_ParseCMPGNINF apply / G_ParseMapInfo head",
+          "start": 2900,
+          "end": 3049,
+          "tests": [
+            "VmMapInfoParseMapInfo1031SliceTests.ShouldSkipCmpgninfBlock_WhenMapEmptyOrNoLimits",
+            "VmMapInfoParseMapInfo1031SliceTests.ApplyCmpgninfLimits_WritesPresentLimitsOnly",
+            "VmMapInfoParseMapInfo1031SliceTests.MergeComplvlIntoDefaults_OrMasksPresets",
+            "VmMapInfoParseMapInfo1031SliceTests.TryLoadComplvlPresets_DelegatesToExistingParser",
+            "VmMapInfoParseMapInfo1031SliceTests.ShouldFatalOnBasemapinfoAddonOverride_WhenContainerPositive",
+            "VmMapInfoParseMapInfo1031SliceTests.ShouldSkipNamedMapinfoLump_SkipsMapinfoWhenZmapinfoInWad",
+            "VmMapInfoParseMapInfo1031SliceTests.ShouldProbeZmapinfoWhenClassicMapinfo_OnlyForIndexZero",
+            "VmMapInfoParseMapInfo1031SliceTests.TryApplyCmpgninfBlockProperty_ClampsWaveLimit",
+            "VmMapInfoParseMapInfo1031SliceTests.NeedsSyntheticLevelForCmpgninf_WhenMissing"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 100,
+      "conversionManagedCommit": "d0eef60cb809c26f3fd64b89ff0068a86d6270a8"
     }
   ],
   "behaviorNativeChecksum": 508086,
