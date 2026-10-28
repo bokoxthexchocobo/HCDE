@@ -1,0 +1,32 @@
+[
+  {
+    "name": "g-mapinfo-options-media-chunk1028",
+    "bucket": "conversion",
+    "note": "MAPINFO media/scalar DEFINE options from `g_mapinfo.cpp` (**1191–1340**). Follows chunk **1027** (**833–982**). Skips **1041–1190** (`VmMapInfoParseNextMap`, `VmMapInfoShadowQualityCap`, `VmMapInfoMapOptionsCore`).",
+    "auditSeams": "`DEFINE_MAP_OPTION` macro expansion, `parse.ParseAssign`, `V_GetColor`, `ParseMusic`, and `ParseLumpOrTextureName` remain native/host.",
+    "auditRationale": "First tally-clean **150**-line `g_mapinfo.cpp` hull at **≥1191** with no conversion/recognition overlap and no Vm* line-range collision on the band.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_mapinfo.cpp --start 1191 --end 1340` and `--chunk 1028 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `skymistyscale` clamp (**1194–1198**) | yes |\n| `skybox` speed zero (**1202–1207**) | yes |\n| `titlepatch` hide-author comma (**1227–1234**) | yes |\n| `partime` / `par` (**1238–1249**) | yes |\n| `wavelimit` / `duellimit` / `sucktime` (**1252–1270**) | yes |\n| `mapintermusic` insert (**1285–1294**) | yes |\n| `evenlighting` (**1309–1311**) | yes |\n| `cdtrack` / `cdid` / `warptrans` (**1314–1332**) | yes |\n| `vertwallshade` / `horizwallshade` (**1335–1340**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **754–832** | ParseExit* / `VmMapInfoMapOptionsExitEnvironment` |\n| **833–982** | chunk **1027** |\n| **1008–1027** | `VmMapInfoClusterExitTextRemap` |\n| **1041–1190** | off-tally Vm next/shadow/core bands |\n| **1180–1192** | `skymist` float tail + closing brace (outside hull start **1191**) |\n| **1209–1221**, **1273–1307** | color/lump host calls outside ported predicates |\n| **1341+** | outside hull |\n| Retired **321** `VmMapInfoMapOptionsScalars` | duplicate clamp helpers — not re-listed in audit map rows |\n\n| Managed (`VmMapInfoMapOptionsMedia1028Slice.cs`) | Native (`g_mapinfo.cpp`) |\n|--------------------------------------------------|---------------------------|\n| `ClampSkyMistYScale` | **1194–1198** |\n| `TryApplyOption` (`skybox`, limits, cd*, warp, shades) | **1202–1332** |\n| `ApplyTitlePatchFlags` | **1227–1234** |\n| `StoreMapInterMusic` | **1285–1294** |\n| `ApplyEvenLighting` | **1309–1311** |\n| Band hull (exclusive slice) | **1191–1340** |\n\n### Chunk **1028** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1027** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmMapInfoMapOptionsMedia1028Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "DEFINE_MAP_OPTION media scalars",
+        "start": 1191,
+        "end": 1340,
+        "tests": [
+          "VmMapInfoMapOptionsMedia1028SliceTests.ApplyTitlePatchFlags_SetsHideAuthorOnNewFormatComma",
+          "VmMapInfoMapOptionsMedia1028SliceTests.StoreMapInterMusic_InsertsPair",
+          "VmMapInfoMapOptionsMedia1028SliceTests.TryApplyOption_WaveAndDuelLimitsClamp",
+          "VmMapInfoMapOptionsMedia1028SliceTests.TryApplyOption_WallShadesHalveAndClamp",
+          "VmMapInfoMapOptionsMedia1028SliceTests.TryApplyOption_SkyboxClearsSpeed",
+          "VmMapInfoMapOptionsMedia1028SliceTests.TryApplyOption_SkymistyScaleClamps",
+          "VmMapInfoMapOptionsMedia1028SliceTests.TryParseCdIdHex_ParsesHex",
+          "VmMapInfoMapOptionsMedia1028SliceTests.ApplyEvenLighting_ZerosWallLights"
+        ]
+      }
+    ]
+  }
+]
