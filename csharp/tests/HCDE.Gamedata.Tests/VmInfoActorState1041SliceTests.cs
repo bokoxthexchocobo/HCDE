@@ -61,15 +61,15 @@ public class VmInfoActorState1041SliceTests
     }
 
     [Fact]
-    public void PrepareStateReturnPlan_TracksPointerOnlyForStateReturn()
+    public void PrepareStateReturnTracking_TracksPointerOnlyForStateReturn()
     {
-        var noProto = VmInfoActorState1041Slice.PrepareStateReturnPlan(true, false, 0, 0);
+        var noProto = VmInfoActorState1041Slice.PrepareStateReturnTracking(true, false, 0, 0);
         Assert.False(noProto.TrackStateReturnPointer);
 
-        var intRet = VmInfoActorState1041Slice.PrepareStateReturnPlan(true, true, 1, 2);
+        var intRet = VmInfoActorState1041Slice.PrepareStateReturnTracking(true, true, 1, 2);
         Assert.False(intRet.TrackStateReturnPointer);
 
-        var stateRet = VmInfoActorState1041Slice.PrepareStateReturnPlan(true, true, 1, VmInfoActorState1041Slice.TypeStateReturn);
+        var stateRet = VmInfoActorState1041Slice.PrepareStateReturnTracking(true, true, 1, VmInfoActorState1041Slice.TypeStateReturn);
         Assert.True(stateRet.TrackStateReturnPointer);
     }
 

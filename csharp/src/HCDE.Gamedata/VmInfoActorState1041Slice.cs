@@ -61,25 +61,25 @@ public static class VmInfoActorState1041Slice
     public static string FormatInvalidClassMessage(string selfClass, string actionName, string expectedClass) =>
         $"Invalid class {selfClass} in function call to {actionName}. {expectedClass} expected";
 
-    public readonly record struct StateReturnPlan(
+    public readonly record struct StateReturnTracking(
         bool CallerProvidedStateReturn,
         bool ReturnTypeIsState,
         bool TrackStateReturnPointer);
 
-    public static StateReturnPlan PrepareStateReturnPlan(
+    public static StateReturnTracking PrepareStateReturnTracking(
         bool callerProvidedStateReturn,
         bool hasReturnProto,
         int returnTypesCount,
         int firstReturnTypeTag)
     {
         if (!callerProvidedStateReturn)
-            return new StateReturnPlan(false, false, false);
+            return new StateReturnTracking(false, false, false);
 
         var returnIsState = hasReturnProto
             && returnTypesCount > 0
             && firstReturnTypeTag == TypeStateReturn;
 
-        return new StateReturnPlan(true, returnIsState, returnIsState);
+        return new StateReturnTracking(true, returnIsState, returnIsState);
     }
 
     public static bool ShouldInvokeCallAction(bool hasActionFunc) => hasActionFunc;
