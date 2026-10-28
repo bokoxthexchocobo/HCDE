@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 243180
+    "managedCSharpLoc": 243295
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 78006,
+    "convertedThisRunNative": 78156,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 100376,
+    "convertedThisRunManaged": 100491,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 410866,
+    "remainingNative": 410716,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 96533,
+    "convertedBehaviorNative": 96683,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 97220,
-    "convertedBehaviorManaged": 110047,
+    "combinedBehaviorNative": 97370,
+    "convertedBehaviorManaged": 110162,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -38433,6 +38433,42 @@
         "nativeLoc": 150,
         "managedLoc": 85,
         "conversionManagedCommit": "c989ff5882ab16ffd4aac849856818233ad45b6b"
+      },
+      {
+        "name": "sbarinfo-dsbar-draw-chunk1069",
+        "bucket": "conversion",
+        "note": "`DSBarInfo::_Draw` continuation, popup/inventory draw policy, `_Tick`/`_ShowPop`, `_GetProtrusion`, and `DrawGraphic` prologue from `sbarinfo.cpp` (**1051\u20131200**); follows **1068**.",
+        "auditSeams": "Status-bar automap/normal pick (**1048\u20131054**) uses **1068** `SelectHudIndexForStatusBarDraw`; host `Draw`/`Tick`/`ForceHUDScale` and **1201+** center math remain injected.",
+        "auditRationale": "UNCredited **`sbarinfo.cpp`** **1051\u20131200** (+150); zero duplicate credit on **1068** automap HUD index (**1048\u20131050**).",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo.cpp --start 1051 --end 1200` and `--chunk 1069 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `_Draw` HUD state \u2192 bar index (**1057\u20131064**) | yes |\n| Main HUD draw offsets w/ popup (**1078\u20131081**) | yes |\n| Inventory bar selection/clear tics (**1085\u20131095**) | yes |\n| Active popup \u2192 popup HUD bar (**1102\u20131118**) | yes |\n| `_NewGame` / `_MustDrawLog` (**1127\u20131137**) | yes (sentinel + empty log bar) |\n| `_Tick` pending popup advance (**1142\u20131150**) | yes |\n| `_ShowPop` state machine (**1165\u20131181**) | yes |\n| `_GetProtrusion` scan (**1184\u20131193**) | yes |\n| `DrawGraphic` null guard (**1198\u20131199**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1052\u20131054** | **1068** normal status HUD pick (same branch) |\n| **1065\u20131076**, **1098** | host scale/tick/draw |\n| **1123\u20131125**, **1160\u20131162** | pointer clear host |\n| **1201+** | `DrawGraphic` center math outside hull |\n\n| Managed (`VmSbarinfoDsbarDraw1069Slice.cs`) | Native (`sbarinfo.cpp`) |\n|--------------------------------------------------|-------------------------|\n| `ResolveHudBarIndexForDrawState` | **1057\u20131064** |\n| Popup displacement offsets | **1078\u20131081** |\n| Inventory draw/clear policy | **1085\u20131095** |\n| `MapActivePopupToHudBarIndex` | **1104\u20131110** |\n| `_ShowPop` / tick advance helpers | **1145\u20131181** |\n| `ResolveProtrusionOffset` | **1187\u20131192** |\n| `ShouldSkipDrawGraphic` | **1198\u20131199** |\n| `ShouldUseNativeLogPopup` | **1134\u20131137** |\n| Band hull (exclusive slice) | **1051\u20131200** |\n\n### Chunk **1069** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1068** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Client/VmSbarinfoDsbarDraw1069Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/g_statusbar/sbarinfo.cpp",
+            "symbol": "DSBarInfo::_Draw / DrawGraphic",
+            "start": 1051,
+            "end": 1200,
+            "tests": [
+              "VmSbarinfoDsbarDraw1069SliceTests.ResolveHudBarIndexForDrawState_CoversFullscreenAndOther",
+              "VmSbarinfoDsbarDraw1069SliceTests.ResolveMainHudDrawOffsets_UsesPopupDisplacementWhenNeeded",
+              "VmSbarinfoDsbarDraw1069SliceTests.ShouldDrawInventoryBar_RequiresTicsAndAllowedLevel",
+              "VmSbarinfoDsbarDraw1069SliceTests.MapActivePopupToHudBarIndex_MapsLogKeysStatus",
+              "VmSbarinfoDsbarDraw1069SliceTests.ResolveShowPopupIntent_ClosesWhenPopupActive",
+              "VmSbarinfoDsbarDraw1069SliceTests.CommitImmediatePopupWhenIdle_PromotesPending",
+              "VmSbarinfoDsbarDraw1069SliceTests.ResolveProtrusionOffset_WalksAscendingFactors",
+              "VmSbarinfoDsbarDraw1069SliceTests.ShouldSkipDrawGraphic_WhenTextureMissing",
+              "VmSbarinfoDsbarDraw1069SliceTests.ShouldAdvancePendingPopupAfterClose_WhenClosedAndSettled",
+              "VmSbarinfoDsbarDraw1069SliceTests.ApplyInventoryTicsWhenBarEmpty_ClearsWhenNoCommands",
+              "VmSbarinfoDsbarDraw1069SliceTests.SelectInventoryHudBarIndex_SwitchesForFullscreen"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 115,
+        "conversionManagedCommit": "5e9c6c95cd3820b2c13df2b63b092d76f1957a6a"
       }
     ],
     "behaviorNativeChecksum": 508086,
