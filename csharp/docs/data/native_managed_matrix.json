@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 242991
+    "managedCSharpLoc": 243095
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 77706,
+    "convertedThisRunNative": 77856,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 100187,
+    "convertedThisRunManaged": 100291,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 411166,
+    "remainingNative": 411016,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 96233,
+    "convertedBehaviorNative": 96383,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 96920,
-    "convertedBehaviorManaged": 109858,
+    "combinedBehaviorNative": 97070,
+    "convertedBehaviorManaged": 109962,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -38362,6 +38362,41 @@
         "nativeLoc": 150,
         "managedLoc": 142,
         "conversionManagedCommit": "999931fd9fa768bbf00bc880ce8e264ce24fb5b5"
+      },
+      {
+        "name": "sbarinfo-mugshot-popup-chunk1067",
+        "bucket": "conversion",
+        "note": "`ParseMugShotBlock`, `newImage`, `SBarInfo::Init` defaults, and `Popup` init/tick head from `sbarinfo.cpp` (**751\u2013900**); follows **1066** parse band.",
+        "auditSeams": "Protrusion **751\u2013756** close + `ParseSBarInfo` end are host; popup transition kinds reuse **1066**; `FScanner`, HUD `new`/`delete`, and **901+** fade moving tail remain host-injected.",
+        "auditRationale": "UNCredited **`sbarinfo.cpp`** **751\u2013900** (+150); no duplicate credit for **1066** protrusion parse (**739\u2013750**) or popup transition classify (**685\u2013730**).",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo.cpp --start 751 --end 900` and `--chunk 1067 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `ParseMugShotBlock` frame graphics + delay (**758\u2013783**) | yes |\n| `ResetHuds` slot iteration (**785\u2013789**) | yes (index policy) |\n| `newImage` null/duplicate lookup (**791\u2013805**) | yes |\n| `SBarInfo::Init` field defaults (**818\u2013831**) | yes |\n| `Popup` ctor defaults + `init` (**847\u2013871**) | yes |\n| `Popup::tick` slide/push/fade step (**873\u2013900**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **751\u2013756** | protrusion/`ParseSBarInfo` host close (**1066** loop head **739\u2013750**) |\n| **807\u2013816**, **833\u2013835**, **837\u2013844** | ctor/dtor/HUD alloc host |\n| **901+** | fade `moving` tail outside hull |\n\n| Managed (`VmSbarinfoMugShotPopup1067Slice.cs`) | Native (`sbarinfo.cpp`) |\n|--------------------------------------------------|-------------------------|\n| MugShot graphic/delay/multiframe | **769\u2013780** |\n| `MergeImageIndexAfterLookup` | **793\u2013804** |\n| `CreateNativeInitDefaults` | **820\u2013831** |\n| `ResolvePopupInitState` | **853\u2013871** |\n| Slide/fade tick helpers | **877\u2013900** |\n| Band hull (exclusive slice) | **751\u2013900** |\n\n### Chunk **1067** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1066** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Client/VmSbarinfoMugShotPopup1067Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/g_statusbar/sbarinfo.cpp",
+            "symbol": "ParseMugShotBlock / Popup / Init",
+            "start": 751,
+            "end": 900,
+            "tests": [
+              "VmSbarinfoMugShotPopup1067SliceTests.CreateNativeInitDefaults_MatchesNativeInit",
+              "VmSbarinfoMugShotPopup1067SliceTests.ShouldFailMugShotGraphicLength_EnforcesFiveChars",
+              "VmSbarinfoMugShotPopup1067SliceTests.ResolveMugShotFrameDelay_HonorsNegativePrefix",
+              "VmSbarinfoMugShotPopup1067SliceTests.MergeImageIndexAfterLookup_HandlesNullAndDuplicate",
+              "VmSbarinfoMugShotPopup1067SliceTests.ResolvePopupInitState_FadeStartsTransparent",
+              "VmSbarinfoMugShotPopup1067SliceTests.ComputeSlidePopupYOffset_ClosesWhenOpened",
+              "VmSbarinfoMugShotPopup1067SliceTests.AdvanceFadePopupAlpha_ClampsWhenClosing",
+              "VmSbarinfoMugShotPopup1067SliceTests.ShouldKeepPopupMovingOnSlideAxis_StopsAtEndpoints",
+              "VmSbarinfoMugShotPopup1067SliceTests.ClassifyImagePatch_TreatsNullImageSentinel",
+              "VmSbarinfoMugShotPopup1067SliceTests.ShouldIterateHudResetSlot_CoversNativeHudCount"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 104,
+        "conversionManagedCommit": "ca3f0e0c25da0c77a518fde8b95192880f231bed"
       }
     ],
     "behaviorNativeChecksum": 508086,
