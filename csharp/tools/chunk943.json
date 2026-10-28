@@ -1,0 +1,31 @@
+[
+  {
+    "name": "p-acs-cvar-hud-chunk943",
+    "bucket": "conversion",
+    "note": "`ACSF_GetCVarString` through `ACSF_StopSound` from `p_acs.cpp` (**6000–6149**). Replaces aborted Thing_Hate **943**; outside deferred **7366–7509**.",
+    "auditSeams": "`DoGetCVar`, `SetCVar`, `SetUserCVar`, `P_LineAttack`, `S_PlaySound`, `S_StopSound`, and `HCDE_ResolveACSPlayer` remain host seams.",
+    "auditRationale": "Honest **150**-line UNCredited band; exclusive `VmPAcsCallFuncCvarHud943Slice.cs` (`AcsModCvarService` / `AcsCallFunctionsExtended` are live helpers, not matrix credit for these lines).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 6000 --end 6149` and `--chunk 943 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|----------------------|\n| chunk **943** hull | **6000–6149** |\n| `MinArgCountMet` | `MIN_ARG_COUNT` gates **6000+** |\n| `GetUserCVarAbortsWhenPlayerUnresolved` / `SelectGetUserCVarResult` | **6015–6017**, **6024–6026** |\n| `SetCVarUsesStringOperand` | `SetCVar` vs `SetCVarString` **6005**, **6009** |\n| `UserCVarNumericRead` / `UserCVarStringRead` | **6011–6027** |\n| `SetUserCVarRequiresThreeArgs` | **6029–6035** |\n| `MapLineAttackFlags` | `FHF_*` → `LAF_*` **6050–6052** |\n| `LineAttackUsesActivator` | tid **6054–6056** |\n| `ShouldAssignPuffTid` | puff TID **6057–6060**, **6070–6073** |\n| `PlaySoundNeedsLookup` | `PlaySound` vs `PlayActorSound` **6086–6094** |\n| `ResolvePlaySoundSpot` | tid **6105–6108** |\n| `ComposePlayChannel` / `PlaySoundChannelMask` | channel flags **6119–6121** |\n| `StopSoundUsesActivator` | **6133–6135** |\n| `DefaultStopChannel` | **6131** |\n| `HasValidSoundId` | **6116** |\n\n### Chunk **943** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**942** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPAcsCallFuncCvarHud943Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "ACSF_GetCVarString",
+        "start": 6000,
+        "end": 6149,
+        "tests": [
+          "VmPAcsCallFuncCvarHud943SliceTests.MinArgCountMet_RequiresAtLeastN",
+          "VmPAcsCallFuncCvarHud943SliceTests.MapLineAttackFlags_TranslatesFhfBits",
+          "VmPAcsCallFuncCvarHud943SliceTests.LineAttackUsesActivator_WhenTidZero",
+          "VmPAcsCallFuncCvarHud943SliceTests.ComposePlayChannel_AddsLocalAndLoopFlags",
+          "VmPAcsCallFuncCvarHud943SliceTests.ResolvePlaySoundSpot_ReturnsActivatorForTidZero",
+          "VmPAcsCallFuncCvarHud943SliceTests.DefaultStopChannel_FallsBackToBody",
+          "VmPAcsCallFuncCvarHud943SliceTests.SetUserCVarRequiresThreeArgs_MatchesNative"
+        ]
+      }
+    ]
+  }
+]
