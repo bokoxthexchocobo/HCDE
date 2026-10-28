@@ -55,7 +55,11 @@ public static class VmPConversationHandleReply975Slice
     public static bool ShouldShowQuickNo(bool isConsole, bool quickNoNotEmpty) =>
         isConsole && quickNoNotEmpty;
 
-    public static bool ShouldAttemptInventoryGive(object? giveType) => giveType is not null;
+    public static bool ConsoleWarnsNonInventoryGive(bool isConsole, bool giveIsInventoryDescendant) =>
+        isConsole && !giveIsInventoryDescendant;
+
+    public static bool TakeStuffAfterSuccessfulPickup(bool takeStuff, bool pickupSucceeded) =>
+        takeStuff && pickupSucceeded;
 
     public static bool WeaponAlreadyOwnedBlocksGive(bool giveIsWeapon, bool playerHasWeapon) =>
         giveIsWeapon && playerHasWeapon;
