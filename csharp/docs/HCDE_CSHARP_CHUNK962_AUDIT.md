@@ -1,65 +1,46 @@
-# Chunk 962 — `AActor::SetState` tail, static `DestroyAllInventory`, and `UseInventory` header from `p_mobj.cpp` (**872–1021**).
+# Chunk 962 — Retired (2026-10-28): attempted band **872–1021** overlaps existing managed `VmPMobjSetStateUse.cs` (**856–1095**, chunk **737** retire row). Standing rule: no duplicate credit when managed already ports `SetState` / `DestroyAllInventory` / `UseInventory` head — matrix credit **0**.
 
 ## Scope
 
-`AActor::SetState` tail, static `DestroyAllInventory`, and `UseInventory` header from `p_mobj.cpp` (**872–1021**).
+Retired (2026-10-28): attempted band **872–1021** overlaps existing managed `VmPMobjSetStateUse.cs` (**856–1095**, chunk **737** retire row). Standing rule: no duplicate credit when managed already ports `SetState` / `DestroyAllInventory` / `UseInventory` head — matrix credit **0**.
 
 ## Native ranges
 
-- `src/playsim/p_mobj.cpp` **AActor::SetState** 872–1021 (150 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 150).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPMobjSetStateInventory962Slice.cs`
-Managed LOC (tally): 107.
-Conversion commit: `452edf2f906e0c11fdd13849b8effccb58c2c9a7`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `f50b7bca8a0547578a40004be7805ae4065cbff4`.
 
 ## Padding review (2026-10-21)
 
-**Behavior ported (honest native credit)**
+### Retire reason (**962**)
 
-| Native region | Behavior ported |
-|---------------|-----------------|
-| `SetState` null-state destroy (**872–876**) | yes |
-| Sprite/frame/skin branch (**880–930**) | yes |
-| Action jump / zero-tics loop (**933–953**) | yes |
-| Dynamic light recreate flags (**955–959**) | yes |
-| `AActor::SetState` export (**963–969**) | seam |
-| `DestroyAllInventory` two-stage delete (**978–1005**) | yes |
-| `DestroyAllInventory` export (**1007–1012**) | seam |
-| `UseInventory` comment header (**1014–1021**) | seam (body **1024+**) |
+| Issue | Resolution |
+|-------|------------|
+| `VmPMobjSetStateUse.cs` already ports **856–961**, **978–1005**, **1024+** stubs | Abort matrix credit on **872–1021** |
+| `VmPMobjSetStateInventory962Slice` | Deleted — exclusive helper re-port = double-count |
+| Chunk **737** | Already retired for **738** overlap; managed file remains canonical off-tally port |
 
-| Managed (`VmPMobjSetStateInventory962Slice.cs`) | Native (`p_mobj.cpp`) |
-|------------------------------------------------|---------------------|
-| `StateLoopExhausted` / null-state destroy gates | **865–876** (hull **872+**) |
-| `ResolveSpriteAfterStateChange` / skin rules | **899–929** |
-| `ShouldAbortSetStateAfterAction` / zero-tic loop | **940–953** |
-| `ShouldMarkRecreateLights` / `ApplyRecreateLightsFlags` | **955–958** |
-| `CollectInventoryForDestruction` / `DestroyPendingInventory` | **988–1003** |
-| Band hull (exclusive slice) | **872–1021** |
+### Behavior ported (matrix credit)
 
-### Chunk **962** gross vs net
+| Native | Behavior ported |
+|--------|-----------------|
+| (none) | **no** |
+
+### Gross vs net
 
 | | Value |
 |--|------:|
-| Row `nativeLoc` | **150** |
-| **Net headline** | **+150** vs post-**961** |
+| Gross attempted (invalid land) | **150** |
+| Net behavior-ported (matrix) | **0** |
 
-
-**Post-review ratio:** 107/150 managed/native ≈ 71% (src file LOC at HEAD; see tally).
 
 ## Tests
 
-- `VmPMobjSetStateInventory962SliceTests.StateLoopExhausted_MatchesNativeGuard`
-- `VmPMobjSetStateInventory962SliceTests.ResolveSpriteAfterStateChange_UsesSkinWhenEligible`
-- `VmPMobjSetStateInventory962SliceTests.ResolveSpriteAfterStateChange_KeepsSpriteWhenNoSkinAndSameBodySprite`
-- `VmPMobjSetStateInventory962SliceTests.ShouldMarkRecreateLights_WhenAnyLightAssociationOrStateLight`
-- `VmPMobjSetStateInventory962SliceTests.ApplyRecreateLightsFlags_SetsMf8Bit`
-- `VmPMobjSetStateInventory962SliceTests.CollectInventoryForDestruction_UnlinksChain`
-- `VmPMobjSetStateInventory962SliceTests.DestroyPendingInventory_SkipsEuthanizedItems`
-- `VmPMobjSetStateInventory962SliceTests.ShouldAbortSetStateAfterAction_WhenEuthanizing`
 
 ## Verified
 
@@ -67,8 +48,8 @@ Conversion commit: `452edf2f906e0c11fdd13849b8effccb58c2c9a7`.
 
 ## Seams
 
-`CallAction`, `GetTics`, `FState::StaticGetStateName`, `Destroy`, and VM DEFINE exports remain host seams.
+N/A — row retired before valid exclusive port.
 
 ## Credit rationale
 
-Honest **150**-line UNCredited band; exclusive `VmPMobjSetStateInventory962Slice.cs` (retired **737** row; off-tally `VmPMobjSetStateUse` not credited).
+`VmPMobjSetStateUse.SetState` mirrors `AActor::SetState` loop; `DestroyAllInventory` / `UseInventory` helpers already tested off-tally. `VmPMobjSetStateInventory962Slice` was redundant helper duplication — removed.

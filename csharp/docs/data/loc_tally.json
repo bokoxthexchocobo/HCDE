@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 62237,
+  "convertedThisRunNative": 62087,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 88030,
+  "convertedThisRunManaged": 87923,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 426568,
+  "remainingNative": 426718,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 80764,
+  "convertedBehaviorNative": 80614,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 81518,
-  "convertedBehaviorManaged": 97701,
+  "combinedBehaviorNative": 81368,
+  "convertedBehaviorManaged": 97594,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -35143,35 +35143,18 @@
     {
       "name": "p-mobj-setstate-inventory-chunk962",
       "bucket": "conversion",
-      "note": "`AActor::SetState` tail, static `DestroyAllInventory`, and `UseInventory` header from `p_mobj.cpp` (**872\u20131021**).",
-      "auditSeams": "`CallAction`, `GetTics`, `FState::StaticGetStateName`, `Destroy`, and VM DEFINE exports remain host seams.",
-      "auditRationale": "Honest **150**-line UNCredited band; exclusive `VmPMobjSetStateInventory962Slice.cs` (retired **737** row; off-tally `VmPMobjSetStateUse` not credited).",
+      "note": "Retired (2026-10-28): attempted band **872\u20131021** overlaps existing managed `VmPMobjSetStateUse.cs` (**856\u20131095**, chunk **737** retire row). Standing rule: no duplicate credit when managed already ports `SetState` / `DestroyAllInventory` / `UseInventory` head \u2014 matrix credit **0**.",
+      "auditSeams": "N/A \u2014 row retired before valid exclusive port.",
+      "auditRationale": "`VmPMobjSetStateUse.SetState` mirrors `AActor::SetState` loop; `DestroyAllInventory` / `UseInventory` helpers already tested off-tally. `VmPMobjSetStateInventory962Slice` was redundant helper duplication \u2014 removed.",
       "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 872 --end 1021` and `--chunk 962 --band` \u2192 UNCredited, exit 0.",
-      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `SetState` null-state destroy (**872\u2013876**) | yes |\n| Sprite/frame/skin branch (**880\u2013930**) | yes |\n| Action jump / zero-tics loop (**933\u2013953**) | yes |\n| Dynamic light recreate flags (**955\u2013959**) | yes |\n| `AActor::SetState` export (**963\u2013969**) | seam |\n| `DestroyAllInventory` two-stage delete (**978\u20131005**) | yes |\n| `DestroyAllInventory` export (**1007\u20131012**) | seam |\n| `UseInventory` comment header (**1014\u20131021**) | seam (body **1024+**) |\n\n| Managed (`VmPMobjSetStateInventory962Slice.cs`) | Native (`p_mobj.cpp`) |\n|------------------------------------------------|---------------------|\n| `StateLoopExhausted` / null-state destroy gates | **865\u2013876** (hull **872+**) |\n| `ResolveSpriteAfterStateChange` / skin rules | **899\u2013929** |\n| `ShouldAbortSetStateAfterAction` / zero-tic loop | **940\u2013953** |\n| `ShouldMarkRecreateLights` / `ApplyRecreateLightsFlags` | **955\u2013958** |\n| `CollectInventoryForDestruction` / `DestroyPendingInventory` | **988\u20131003** |\n| Band hull (exclusive slice) | **872\u20131021** |\n\n### Chunk **962** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**961** |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPMobjSetStateInventory962Slice.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "AActor::SetState",
-          "start": 872,
-          "end": 1021,
-          "tests": [
-            "VmPMobjSetStateInventory962SliceTests.StateLoopExhausted_MatchesNativeGuard",
-            "VmPMobjSetStateInventory962SliceTests.ResolveSpriteAfterStateChange_UsesSkinWhenEligible",
-            "VmPMobjSetStateInventory962SliceTests.ResolveSpriteAfterStateChange_KeepsSpriteWhenNoSkinAndSameBodySprite",
-            "VmPMobjSetStateInventory962SliceTests.ShouldMarkRecreateLights_WhenAnyLightAssociationOrStateLight",
-            "VmPMobjSetStateInventory962SliceTests.ApplyRecreateLightsFlags_SetsMf8Bit",
-            "VmPMobjSetStateInventory962SliceTests.CollectInventoryForDestruction_UnlinksChain",
-            "VmPMobjSetStateInventory962SliceTests.DestroyPendingInventory_SkipsEuthanizedItems",
-            "VmPMobjSetStateInventory962SliceTests.ShouldAbortSetStateAfterAction_WhenEuthanizing"
-          ]
-        }
-      ],
-      "nativeLoc": 150,
-      "managedLoc": 107,
-      "conversionManagedCommit": "452edf2f906e0c11fdd13849b8effccb58c2c9a7"
+      "auditPaddingReview": "### Retire reason (**962**)\n\n| Issue | Resolution |\n|-------|------------|\n| `VmPMobjSetStateUse.cs` already ports **856\u2013961**, **978\u20131005**, **1024+** stubs | Abort matrix credit on **872\u20131021** |\n| `VmPMobjSetStateInventory962Slice` | Deleted \u2014 exclusive helper re-port = double-count |\n| Chunk **737** | Already retired for **738** overlap; managed file remains canonical off-tally port |\n\n### Behavior ported (matrix credit)\n\n| Native | Behavior ported |\n|--------|-----------------|\n| (none) | **no** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross attempted (invalid land) | **150** |\n| Net behavior-ported (matrix) | **0** |\n",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "f50b7bca8a0547578a40004be7805ae4065cbff4",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "retired": true
     }
   ],
   "behaviorNativeChecksum": 508086,
