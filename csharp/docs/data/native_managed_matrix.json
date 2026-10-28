@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 245126
+    "managedCSharpLoc": 245252
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 80556,
+    "convertedThisRunNative": 80706,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 102322,
+    "convertedThisRunManaged": 102448,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 408316,
+    "remainingNative": 408166,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 99083,
+    "convertedBehaviorNative": 99233,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 99770,
-    "convertedBehaviorManaged": 111993,
+    "combinedBehaviorNative": 99920,
+    "convertedBehaviorManaged": 112119,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -39019,6 +39019,39 @@
         "nativeLoc": 150,
         "managedLoc": 116,
         "conversionManagedCommit": "34b2a11025e630ac84ebbe1e7f2fd1cdbcbec429"
+      },
+      {
+        "name": "sbarinfo-commands-aspect-shader-invbar-chunk1086",
+        "bucket": "conversion",
+        "note": "`CommandAspectRatio::FindRatio`, default `ratioMap`, `CommandDrawShader`, and inventory bar ctor from `sbarinfo_commands.cpp` (**1951\u20132100**); follows **1085** enum seam (**1950**).",
+        "auditSeams": "**1085** owns aspect string parse/self-map/tick equality predicate; **1086** owns nearest-aspect find + static remap table. Host `ActiveRatio`, `TexMan`, `VMCall` PrevInv/NextInv, and **Draw** body (**2101+**) excluded.",
+        "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **1951\u20132100** (+150); FindRatio nearest match, ratioMap initializer, draw-shader parse gates, inventory bar ctor defaults; hull ends at **Draw** `{` (**2100**).",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 1951 --end 2100` and `--chunk 1086 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Nearest-aspect scan (**1964\u20131987**) | yes |\n| Default `ratioMap[]` initializer (**1990**) | yes |\n| DrawShader dimension validation (**2010\u20132016**) | yes |\n| Shader direction keywords (**2019\u20132022**) | yes |\n| Optional `reverse` flag (**2024\u20132031**) | yes |\n| Shader texture slot index (**2004**) | yes |\n| Inventory bar ctor defaults (**2057\u20132062**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1941\u20131950** | **1085** parse/tick seam |\n| **1951\u20131957**, **2040\u20132050** | member/layout + shader texture host lookup |\n| **2033\u20132038**, **2065\u20132097** | host coordinates / inventory VM |\n| **2099\u20132100** | **Draw** entry outside behavior hull |\n| **2101+** | inventory **Draw** loop outside hull |\n\n| Managed (`VmSbarinfoCommandAspectRatio1086Slice.cs` + nested types) | Native (`sbarinfo_commands.cpp`) |\n|----------------------------------------------------------------------|----------------------------------|\n| FindRatio + ratioMap | **1960\u20131990** |\n| DrawShader parse policy | **2008\u20132031** |\n| Inventory bar ctor | **2057\u20132062** |\n| Band hull (exclusive slice) | **1951\u20132100** |\n\n### Chunk **1086** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1085** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Client/VmSbarinfoCommandAspectRatio1086Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/g_statusbar/sbarinfo_commands.cpp",
+            "symbol": "CommandAspectRatio::FindRatio / CommandDrawShader / CommandDrawInventoryBar",
+            "start": 1951,
+            "end": 2100,
+            "tests": [
+              "VmSbarinfoCommandAspectRatio1086SliceTests.SelectNearestAspectRatioKind_Picks169ForWideScreen",
+              "VmSbarinfoCommandAspectRatio1086SliceTests.CreateDefaultAspectRatioRemapTable_Maps1710To1610",
+              "VmSbarinfoCommandAspectRatio1086SliceTests.ResolveAspectRatioTickTruthFromNearestFind_UsesRemapTable",
+              "VmSbarinfoCommandAspectRatio1086SliceTests.ValidateDrawShaderDimensions_RejectsZeroWidth",
+              "VmSbarinfoCommandAspectRatio1086SliceTests.ClassifyDrawShaderDirectionKeyword_MapsVertical",
+              "VmSbarinfoCommandAspectRatio1086SliceTests.ResolveDrawShaderTextureSlotIndex_EncodesVerticalReverse",
+              "VmSbarinfoCommandAspectRatio1086SliceTests.ApplyDrawShaderReverseKeyword_EnablesReverseAndComma",
+              "VmSbarinfoCommandAspectRatio1086SliceTests.CreateDrawInventoryBarCtorDefaults_MatchesNativeInit"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 126,
+        "conversionManagedCommit": "e53b10e7e59c8b70e8b1ba485f0c998298e238ce"
       }
     ],
     "behaviorNativeChecksum": 508086,
