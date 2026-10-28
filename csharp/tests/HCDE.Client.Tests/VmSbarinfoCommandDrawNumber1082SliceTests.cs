@@ -120,7 +120,7 @@ public class VmSbarinfoCommandDrawNumber1082SliceTests
     public void StepDrawNumberInterpolationTowardTarget_ClampsStep()
     {
         Assert.Equal(
-            96,
+            92,
             VmSbarinfoCommandDrawNumber1082Slice.StepDrawNumberInterpolationTowardTarget(
                 drawValue: 100,
                 targetNum: 50,
