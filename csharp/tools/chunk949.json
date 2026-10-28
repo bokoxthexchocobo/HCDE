@@ -1,0 +1,33 @@
+[
+  {
+    "name": "p-acs-runscript-strcpy-epilogue-chunk949",
+    "bucket": "conversion",
+    "note": "`DLevelScript::RunScript` `STRCPYTO*CHRANGE` tail, `PCD_CONSOLECOMMAND*`, divide/modulus epilogue, and `P_GetScriptGoing` head from `p_acs.cpp` (**10650–10799**). Follows **948** (**≤10049**); does not hull **10050–10199** (credited).",
+    "auditSeams": "`localarrays->Set`, `CopyStringToArray`, `ACS_WorldArrays`/`ACS_GlobalArrays`, `ACS_RunConsoleCommandString`, and `Create<DLevelScript>` remain host seams.",
+    "auditRationale": "Honest **150**-line UNCredited band with zero tally overlap; exclusive `VmPAcsRunscriptStrcpyEpilogue949Slice.cs` (`AcsVm` / **925** console helpers are not matrix credit for this hull).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 10650 --end 10799` and `--chunk 949 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `STRCPYTO*CHRANGE` lookup/copy loop tail (**10650–10723**) | yes |\n| `PCD_CONSOLECOMMAND` / `DIRECT` (**10726–10734**) | yes |\n| `RunScript` divide/modulus + `PleaseRemove` (**10738–10776**) | yes |\n| `RunScript` return + `P_GetScriptGoing` head (**10777–10799**) | yes |\n\n| Managed (`VmPAcsRunscriptStrcpyEpilogue949Slice.cs`) | Native (`p_acs.cpp`) |\n|------------------------------------------------------|---------------------|\n| `StrCpyDestinationIndex` / `StrCpyRangeArgsInvalid` | **10649–10647** |\n| `StrCpyCompletesWhenLookupEmpty` / `AdvanceStringOffset` | **10651–10668** |\n| `StrCpySuccessWhenOnlyTerminatorRemains` / opcode predicates | **10670–10720** |\n| `ApplyStrCpyRangeStackPop` | **10722–10723** |\n| `ConsoleCommand*` stack/PC helpers | **10726–10734** |\n| `ShouldRestoreSavedBehavior` / `StateAfter*` | **10740–10766** |\n| `ShouldUnlinkRunningScript` / `RunScriptEndsWithEmptyStack` | **10767–10780** |\n| `ShouldIgnoreClientSideScriptStart` / `ResumeSuspendedRunningScript` | **10792–10805** |\n\n### Chunk **949** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**948** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPAcsRunscriptStrcpyEpilogue949Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "DLevelScript::RunScript",
+        "start": 10650,
+        "end": 10799,
+        "tests": [
+          "VmPAcsRunscriptStrcpyEpilogue949SliceTests.StrCpyDestinationIndex_AddsOffset",
+          "VmPAcsRunscriptStrcpyEpilogue949SliceTests.StrCpyRangeArgsInvalid_WhenSourceOffsetNegative",
+          "VmPAcsRunscriptStrcpyEpilogue949SliceTests.MapCharRangeArrayWritable_RequiresPositiveIdAndMapVar",
+          "VmPAcsRunscriptStrcpyEpilogue949SliceTests.IsStrCpyToScriptCharRange_MatchesOpcode",
+          "VmPAcsRunscriptStrcpyEpilogue949SliceTests.ApplyConsoleCommandStackPop_DropsThreeSlots",
+          "VmPAcsRunscriptStrcpyEpilogue949SliceTests.ShouldRestoreSavedBehavior_OnDivideByZero",
+          "VmPAcsRunscriptStrcpyEpilogue949SliceTests.ResumeSuspendedRunningScript_WhenSuspended",
+          "VmPAcsRunscriptStrcpyEpilogue949SliceTests.SkipNewScriptWhenAlreadyRunning_WithoutAlwaysFlag",
+          "VmPAcsRunscriptStrcpyEpilogue949SliceTests.AdvanceStringOffset_ClampsPastEnd"
+        ]
+      }
+    ]
+  }
+]
