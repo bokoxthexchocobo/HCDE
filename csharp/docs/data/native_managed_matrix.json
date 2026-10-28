@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 232955
+    "managedCSharpLoc": 233032
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 64937,
+    "convertedThisRunNative": 65087,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 90152,
+    "convertedThisRunManaged": 90229,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 423868,
+    "remainingNative": 423718,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 83464,
+    "convertedBehaviorNative": 83614,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 84218,
-    "convertedBehaviorManaged": 99823,
+    "combinedBehaviorNative": 84368,
+    "convertedBehaviorManaged": 99900,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -35760,6 +35760,35 @@
         "nativeLoc": 150,
         "managedLoc": 78,
         "conversionManagedCommit": "1db6bd8c120c92c0780664e4633ad3291e9d7841"
+      },
+      {
+        "name": "p-setup-level-spawn-chunk982",
+        "bucket": "conversion",
+        "note": "`P_SetupLevel` audio/map load, player spawn passes, end-monster counter policy, and precache gate from `p_setup.cpp` (**451\u2013600**); follows chunk **981** (**301\u2013450**).",
+        "auditSeams": "`S_Start`, `P_OpenMapData`, `MapLoader`, spawn helpers, `T_PreprocessScripts`, and `PrecacheLevel` remain host-injected.",
+        "auditRationale": "UNCredited `P_SetupLevel` mid-body; disjoint from **979\u2013981**. Line **453** viewz reset is native in this hull (not in **981** `301\u2013450`).",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_setup.cpp --start 451 --end 600` and `--chunk 982 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Console viewz + music gate (**452\u2013464**) | yes |\n| Map open + new game (**472\u2013492**) | yes (predicates) |\n| Deathmatch / random / new-game spawns (**509\u2013544**) | yes |\n| Unfriendly DM relocation (**549\u2013564**) | yes |\n| End-level monster uncount (**571\u2013585**) | yes |\n| Precache gate (**599\u2013602**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **456\u2013470**, **482\u2013496**, **588\u2013597** | host calls |\n| **498\u2013507**, **605+** | comments / next function |\n\n| Managed (`VmPSetupLevel982Slice.cs`) | Native (`p_setup.cpp`) |\n|----------------------------------------|----------------------|\n| `ConsolePlayerResetsViewHeight` / `ShouldStartHubMusic` | **452\u2013464** |\n| `MapOpenSucceeded` / `ShouldFireNewGameEvent` | **472\u2013492** |\n| `DeathmatchSpawnPassActive` / `RandomPlayerStartPassActive` / `NewGameSpawnFillNeeded` | **509\u2013544** |\n| `SelectSpawnWeaponFlags` | **529**, **541** |\n| `UnfriendlyDeathmatchRelocationEnabled` / `ShouldDestroyPreviousSpawn` | **549\u2013564** |\n| `ShouldClearEndLevelMonsterCounters` | **571\u2013585** |\n| `ShouldRunPrecachePass` / `TryClearMobBeforeSpawn` / `DeathmatchAnnounceFollowsPrecache` | **515\u2013517**, **599\u2013605** |\n| Band hull (exclusive slice) | **451\u2013600** |\n\n### Chunk **982** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**981** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPSetupLevel982Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/p_setup.cpp",
+            "symbol": "P_SetupLevel",
+            "start": 451,
+            "end": 600,
+            "tests": [
+              "VmPSetupLevel982SliceTests.SetupLevel_AudioAndMapGates",
+              "VmPSetupLevel982SliceTests.PlayerSpawnPasses",
+              "VmPSetupLevel982SliceTests.DeathmatchRelocationAndEndMonsters",
+              "VmPSetupLevel982SliceTests.PrecachePassAndMobClear"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 77,
+        "conversionManagedCommit": "4e4730bbed2c00735ef7b289d022c120e315e0dd"
       }
     ],
     "behaviorNativeChecksum": 508086,
