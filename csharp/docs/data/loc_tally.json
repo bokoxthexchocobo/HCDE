@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 79656,
+  "convertedThisRunNative": 79806,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 101512,
+  "convertedThisRunManaged": 101638,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 409216,
+  "remainingNative": 409066,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 98183,
+  "convertedBehaviorNative": 98333,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 98870,
-  "convertedBehaviorManaged": 111183,
+  "combinedBehaviorNative": 99020,
+  "convertedBehaviorManaged": 111309,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -38797,6 +38797,37 @@
       "nativeLoc": 150,
       "managedLoc": 105,
       "conversionManagedCommit": "1b6ab4b3dee8d781f5a9c17ddb054fba0313eaba"
+    },
+    {
+      "name": "sbarinfo-commands-drawnumber-parse-chunk1080",
+      "bucket": "conversion",
+      "note": "`CommandDrawNumber::Parse` value keywords and validation from `sbarinfo_commands.cpp` (**1051\u20131200**); follows **1079** through **`armor` (**1050**).",
+      "auditSeams": "**1079** owns draw-number head (**1021\u20131050**); **1078** owns `NUM_GLOBALVARS` bound (**64**). Host `PClass::FindActor` / `FindCVar` excluded.",
+      "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **1051\u20131200** (+150); extended stat/ammo/global/cvar parse policy; no overlap with **1079** hull except seam **1050**/**1051**.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 1051 --end 1200` and `--chunk 1080 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Stat/ammo keyword dispatch (**1052\u20131119**) | yes |\n| Parameterized `ammo` / `ammocapacity` gates (**1062\u20131092**) | yes |\n| Intermission counters + `keys` (**1094\u20131119**) | yes |\n| Draw-number `globalvar` / `globalarray` bounds (**1120\u20131142**) | yes |\n| `poweruptime` class gate (**1144\u20131158**) | yes |\n| `intcvar` type acceptance (**1160\u20131189**) | yes |\n| Generic inventory validation (**1192\u20131199**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1048\u20131050** | **1079** keyword head seam |\n| **1069\u20131074**, **1085\u20131090** | host class lookup |\n| **1125\u20131140**, **1169\u20131187** | host scanner / `FindCVar` |\n| **1201+** | trailing `,` / flag parse outside hull |\n\n| Managed (`VmSbarinfoCommandDrawNumber1080Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|------------------------------------------------------|----------------------------------|\n| Value keyword classification | **1052\u20131190** |\n| Parameterized token gates | **1066\u20131068**, **1149\u20131150** |\n| Ammo/powerup/inventory fallback predicates | **1070\u20131074**, **1152\u20131156**, **1195\u20131198** |\n| Global index + int cvar policy | **1126\u20131127**, **1175\u20131182** |\n| Band hull (exclusive slice) | **1051\u20131200** |\n\n### Chunk **1080** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1079** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmSbarinfoCommandDrawNumber1080Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/g_statusbar/sbarinfo_commands.cpp",
+          "symbol": "CommandDrawNumber::Parse",
+          "start": 1051,
+          "end": 1200,
+          "tests": [
+            "VmSbarinfoCommandDrawNumber1080SliceTests.TryClassifyDrawNumberValueKeyword_MapsStatCounters",
+            "VmSbarinfoCommandDrawNumber1080SliceTests.ShouldRequireClassNameToken_WhenNotParenthesizedOrMissingString",
+            "VmSbarinfoCommandDrawNumber1080SliceTests.ShouldUseDefaultAmmoClassFallback_DetectsInvalidAmmoType",
+            "VmSbarinfoCommandDrawNumber1080SliceTests.IsDrawNumberGlobalIndexInRange_DelegatesTo1078",
+            "VmSbarinfoCommandDrawNumber1080SliceTests.ResolveDrawNumberIntCVarAcceptance_AllowsBoolAndInt",
+            "VmSbarinfoCommandDrawNumber1080SliceTests.ShouldValidateInventoryItemClass_OnlyForInventoryKind"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 126,
+      "conversionManagedCommit": "61cb4f9d50a5d0825701b08afd76f8eed44ee3aa"
     }
   ],
   "behaviorNativeChecksum": 508086,
