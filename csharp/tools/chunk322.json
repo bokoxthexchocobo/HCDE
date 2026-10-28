@@ -1,0 +1,16 @@
+[
+  {
+    "name": "g-mapinfo-options-pics-chunk322",
+    "bucket": "conversion",
+    "managedLoc": 17,
+    "note": "MAPINFO inter/exit/enter picture assigns (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **18** < **150**.",
+    "auditSeams": "",
+    "auditRationale": "Credits string assignment for inter/exit/enter pics \u2014 not anim/specialaction tails.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (322)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **18** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **18** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 322 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

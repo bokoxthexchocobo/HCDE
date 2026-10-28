@@ -1,0 +1,46 @@
+namespace HCDE.Playsim.Tests;
+
+public class VmAcsBehaviorInitArraysTests
+{
+    [Fact]
+    public void BindMapVarDefaultsNative_PointsAtStore()
+    {
+        var bindings = new int[3];
+        VmAcsBehaviorInitArrays.BindMapVarDefaultsNative(3, (i, storeIndex) => bindings[i] = storeIndex);
+        Assert.Equal([0, 1, 2], bindings);
+    }
+
+    [Fact]
+    public void InitArrayFromChunkNative_CapsByArraySize()
+    {
+        var elems = new int[3];
+        var written = VmAcsBehaviorInitArrays.InitArrayFromChunkNative(3, 5, elems, [1, 2, 3, 4, 5]);
+        Assert.Equal(3, written);
+        Assert.Equal([1, 2, 3], elems);
+    }
+
+    [Fact]
+    public void TotalArrayCountNative_AddsImportTotal() =>
+        Assert.Equal(7, VmAcsBehaviorInitArrays.TotalArrayCountNative(5, 2));
+
+    [Fact]
+    public void LoadLibraryTokenNative_ParsesNullTerminatedToken()
+    {
+        var next = 0;
+        var start = VmAcsBehaviorInitArrays.LoadLibraryTokenNative("acs\0next", 0, out next);
+        Assert.Equal(0, start);
+        Assert.Equal(4, next);
+    }
+
+    [Fact]
+    public void TryResolveLibraryLumpNative_NegativeWhenMissing() =>
+        Assert.Equal(-1, VmAcsBehaviorInitArrays.TryResolveLibraryLumpNative(-1));
+
+    [Fact]
+    public void ApplyAtagElementNative_AppliesFunctionPtrTag()
+    {
+        var elem = 0;
+        VmAcsBehaviorInitArrays.ApplyAtagElementNative(ref elem, tag: 2, libraryId: 4, _ => null, _ => 0);
+        Assert.Equal(4, elem);
+    }
+}

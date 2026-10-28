@@ -1,0 +1,31 @@
+[
+  {
+    "name": "v-font-luminosity-chunk1061",
+    "bucket": "conversion",
+    "note": "`CreateLuminosityTranslationRanges`, `V_ApplyLuminosityTranslation`, and `CalcDefaultTranslation` head from `v_font.cpp` (**601–750**); follows chunk **1060** (**451–600**).",
+    "auditSeams": "`ImageArena.Alloc`, `FFont::RecordAllTextureColors`, `GetLuminosity`, `GPalette.BaseColors`, and BGRA pixel writes remain host-injected; hull ends inside `CalcDefaultTranslation` gap-fill loop (**750**).",
+    "auditRationale": "UNCredited **`v_font.cpp`** **601–750** (+150); hardware luminosity translation continuation; no Vm* line collision; disjoint from **1060** `V_FindFontColor` band.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/common/fonts/v_font.cpp --start 601 --end 750` and `--chunk 1061 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Remap palette offset + identity fill (**613–617**) | yes |\n| Skip untranslated table (**618–619**) | yes |\n| Range lookup + RGB interpolate (**622–638**) | yes |\n| Parm advance predicate (**641–645**) | yes |\n| `V_ApplyLuminosityTranslation` guard + lum index (**661–673**) | yes |\n| Below-min / above-max scaling (**676–687**) | yes |\n| Default translation lum map (**716–722**) | yes |\n| Gap interpolation weight (**747–758**, hull **747–750**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **604** | `ImageArena` host alloc |\n| **605–612**, **647–648** | comment / loop scaffolding host |\n| **668–691** | pixel write loop host |\n| **705–712** | `RecordAllTextureColors` / `memset` host |\n| **725–746** | gap scan control host |\n| **751+** | remainder of `CalcDefaultTranslation` outside hull |\n\n| Managed (`VmVFontLuminosity1061Slice.cs`) | Native (`v_font.cpp`) |\n|------------------------------------------|----------------------|\n| `ComputeRemapPaletteOffset` / `ShouldBuildLuminosityRemap` | **613–619** |\n| `ContainsLuminance` / `InterpolateTranslationColor` | **622–638** |\n| `ShouldAdvanceTranslationParm` | **641–645** |\n| `ShouldSkipLuminosityApply` / `ComputeLuminanceRemapIndex` | **661–673** |\n| `ScaleRgbBelowMin` / `ScaleRgbAboveMax` | **676–687** |\n| `ShouldMapDefaultTranslationLum` / `DefaultTranslationRemapIndex` | **716–722** |\n| `InterpolateDefaultRemapGap` | **747–758** |\n| Band hull (exclusive slice) | **601–750** |\n\n### Chunk **1061** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1060** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmVFontLuminosity1061Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/fonts/v_font.cpp",
+        "symbol": "CreateLuminosityTranslationRanges / V_ApplyLuminosityTranslation",
+        "start": 601,
+        "end": 750,
+        "tests": [
+          "VmVFontLuminosity1061SliceTests.ShouldBuildLuminosityRemap_SkipsUntranslatedTable",
+          "VmVFontLuminosity1061SliceTests.InterpolateTranslationColor_MatchesNativeLinearBlend",
+          "VmVFontLuminosity1061SliceTests.ShouldAdvanceTranslationParm_WhenRangesGap",
+          "VmVFontLuminosity1061SliceTests.ComputeLuminanceRemapIndex_ClampsToByte",
+          "VmVFontLuminosity1061SliceTests.ScaleRgbBelowMin_ScalesWhenAboveZeroMin",
+          "VmVFontLuminosity1061SliceTests.ShouldSkipLuminosityApply_WhenRangeTooLarge",
+          "VmVFontLuminosity1061SliceTests.InterpolateDefaultRemapGap_BlendsBetweenAnchors"
+        ]
+      }
+    ]
+  }
+]

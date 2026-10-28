@@ -1,0 +1,32 @@
+[
+  {
+    "name": "g-mapinfo-cluster-parse-chunk1027",
+    "bucket": "conversion",
+    "note": "`ParseMusic`, `ParseCutscene`, and `ParseCluster` property head from `g_mapinfo.cpp` (**833–982**). **Pivot:** `p_sight.cpp` **1–150** and playsim mid-file windows remain Vm-blocked; band avoids ParseExit* **754–832** (`VmMapInfoMapOptionsExitEnvironment` merge duplicate) and Hexen exit remap **1008+** (`VmMapInfoClusterExitTextRemap`).",
+    "auditSeams": "`FScanner`, `FindWadClusterInfo`, `GStrings`, `fileSystem`, and `CheckEndOfFile` remain native; `ParseLookupName` multiline body stays on `VmMapInfoParseLookupName` (**676–735**).",
+    "auditRationale": "First tally-clean **150**-line `g_mapinfo.cpp` hull after wide scan with no conversion/recognition overlap and no Vm* line-range collision on **833–982**.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_mapinfo.cpp --start 833 --end 982` and `--chunk 1027 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `ParseMusic` colon/trailing order (**839–855**) | yes |\n| `ParseCutscene` keyword dispatch (**863–879**) | yes |\n| `ParseCluster` reset + property switch head (**888–982**) | yes (name/entertext/exittext/music/flat/pic/hub/flags/cd*/cutscenes) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **754–832** | ParseExit* merge policy already off-tally in `VmMapInfoMapOptionsExitEnvironment` |\n| **676–735** | `VmMapInfoParseLookupName` |\n| **833–838**, **880–887**, **983+** | comment banners / outside hull |\n| **1008–1027** | outside hull; `VmMapInfoClusterExitTextRemap` |\n\n| Managed (`VmMapInfoClusterParse1027Slice.cs`) | Native (`g_mapinfo.cpp`) |\n|------------------------------------------------|---------------------------|\n| `ParseMusicToken` | **839–855** |\n| `ApplyCutsceneKeyword` | **863–879** |\n| `CreateFreshCluster` / `ApplyClusterProperty` / `TryApplyDefaultClusterStringLabel` | **888–982** |\n| `TryParseCdIdHex` | **971–975** |\n| Band hull (exclusive slice) | **833–982** |\n\n### Chunk **1027** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1026** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmMapInfoClusterParse1027Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "ParseCluster head",
+        "start": 833,
+        "end": 982,
+        "tests": [
+          "VmMapInfoClusterParse1027SliceTests.ParseMusicToken_SplitsColonOrder",
+          "VmMapInfoClusterParse1027SliceTests.ParseMusicToken_UsesTrailingNumberWhenNoColon",
+          "VmMapInfoClusterParse1027SliceTests.TryParseCdIdHex_ParsesHexString",
+          "VmMapInfoClusterParse1027SliceTests.ApplyCutsceneKeyword_DeleteClearsVideo",
+          "VmMapInfoClusterParse1027SliceTests.TryApplyDefaultClusterStringLabel_MatchesEnterDefault",
+          "VmMapInfoClusterParse1027SliceTests.ApplyClusterProperty_SetsHubAndAllowIntermissionFlags",
+          "VmMapInfoClusterParse1027SliceTests.ApplyClusterProperty_PicSetsFinalePicFlag",
+          "VmMapInfoClusterParse1027SliceTests.CreateFreshCluster_StartsEmpty"
+        ]
+      }
+    ]
+  }
+]

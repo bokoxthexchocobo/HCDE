@@ -1,0 +1,30 @@
+[
+  {
+    "name": "fscript-parser-sf-math-query-chunk910",
+    "bucket": "conversion",
+    "note": "`FParser::SF_Max` … `SF_IsPlayerObj` from `fragglescript/t_func.cpp` (**2240–2393**). Stops before `SF_PlayerKeys` (**2394**, chunk **844** inventory band).",
+    "auditSeams": "`FsFixValue` mirrors native `fixedvalue`; skill/mode from `AuthoritySimulation`; `IsPlayerObj` uses `PlayerPawn` / `PlayerNum`. Inventory ACS forwards deferred at **2394+**.",
+    "auditRationale": "Honest **154**-line UNCredited slice after **909**; off-tally `VmFScriptParserSfMath.cs` credited without overlapping **844**.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 2240 --end 2393` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_Max` / `SF_Min` / `SF_Abs` | yes |\n| `SF_Gameskill` / `SF_Gamemode` | yes |\n| `SF_IsPlayerObj` | yes |\n\n| Managed | Native (`t_func.cpp`) |\n|---------|----------------------|\n| `SfMax` | **2248–2258** |\n| `SfMin` | **2267–2277** |\n| `SfAbs` | **2286–2296** |\n| `SfGameskill` | **2308–2312** |\n| `SfGamemode` | **2320–2333** |\n| `SfIsPlayerObj` | **2345–2360** |\n| (separator) | **2240–2247** |\n| (separator) | **2259–2266** |\n| (separator) | **2278–2285** |\n| (separator) | **2297–2307** |\n| (separator) | **2314–2319** |\n| (separator) | **2335–2344** |\n| (inventory header) | **2361–2393** |\n\n### Chunk **910** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **154** |\n| **Net headline** | **+154** vs post-**909** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmFScriptParserSfMath.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/fragglescript/t_func.cpp",
+        "symbol": "FParser::SF_Max",
+        "start": 2240,
+        "end": 2393,
+        "tests": [
+          "VmFScriptParserSfMathTests.SfMax_PicksLargerFixed",
+          "VmFScriptParserSfMathTests.SfMin_PicksSmallerFixed",
+          "VmFScriptParserSfMathTests.SfAbs_NegatesNegative",
+          "VmFScriptParserSfMathTests.SfGameskill_ReturnsSkillPlusOne",
+          "VmFScriptParserSfMathTests.SfGamemode_DeathmatchIsTwo",
+          "VmFScriptParserSfMathTests.SfIsPlayerObj_TriggerPlayer"
+        ]
+      }
+    ]
+  }
+]

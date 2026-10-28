@@ -1,0 +1,15 @@
+[
+  {
+    "name": "p-lnspec-ceiling-plat-block-chunk432",
+    "bucket": "conversion",
+    "note": "Ceiling raise-by-texture, generic ceiling/crusher, plat movers, generic lift (legacy plat row migration) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
+    "auditSeams": "`EV_DoCeiling`, `EV_DoPlat`, and `EV_StopPlat` thinkers are not hosted.",
+    "auditRationale": "Credits generic ceiling target switches, Doom/Hexen crusher modes, plat stop remove policy, raise-and-stay gametype defaults, and generic lift dispatch from `p_lnspec.cpp` (bands migrated off `line-specials-plat-generic-elevator`).",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (432)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **194** |\n| **Out-of-body removed** | **194** |\n| **Honest** | **0** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 432 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

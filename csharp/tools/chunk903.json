@@ -1,0 +1,29 @@
+[
+  {
+    "name": "p-lnspec-thrust-thing-lifecycle-chunk903",
+    "bucket": "conversion",
+    "note": "`ThrustThingHelper` through `LS_Thing_Deactivate` (`p_lnspec.cpp` **1205–1479**). Follows **902** (**≤1203**); stops before `LS_Thing_Remove` (**1481+**). Wider than **1204–1450** to finish deactivate function.",
+    "auditSeams": "`Thrust`, `P_GiveBody`, `P_DamageMobj`, `CallActivate`/`CallDeactivate`, and actor iterators are not hosted.",
+    "auditRationale": "BYTEANGLE thrust clamp, Hexen backside reject, Z-thrust set/add, thing special/TID writes, damage/heal branches, THINGSPEC toggle, and activate/deactivate iterator prefetch via `VmPLnspecThrustThingLifecycleSlice`.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 1205 --end 1479` and `--chunk 903 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| `ThrustThingHelper` / `ThrustThing` | **1205–1237** |\n| `ThrustThingZ` | **1239–1271** |\n| `ThingSetSpecial` / `ThingChangeTid` | **1273–1328** |\n| `DamageThing` / `HealThing` | **1331–1395** |\n| `ToggleActivationType` | **1399–1419** |\n| `ThingActivate` / `ThingDeactivate` | **1421–1479** |\n\n### vs **902**\n\n| | Lines |\n|--|------:|\n| **902** | **915–1203** |\n| **903** (this row) | **1205–1479** (**275**) |\n| `LS_Thing_Remove` | **1481+** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **275** |\n| Net behavior-ported | **275** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPLnspecThrustThingLifecycleSlice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "ThrustThingHelper",
+        "start": 1205,
+        "end": 1479,
+        "tests": [
+          "VmPLnspecThrustThingLifecycleSliceTests.ThrustThingHelper_ClampsVelocity",
+          "VmPLnspecThrustThingLifecycleSliceTests.ThrustThing_HexenBacksideRejectsActivator",
+          "VmPLnspecThrustThingLifecycleSliceTests.ToggleActivationType_SwitchClearsActivate",
+          "VmPLnspecThrustThingLifecycleSliceTests.DamageThing_ZeroUsesTelefrag",
+          "VmPLnspecThrustThingLifecycleSliceTests.ApplyHealCap_RespectsMax"
+        ]
+      }
+    ]
+  }
+]

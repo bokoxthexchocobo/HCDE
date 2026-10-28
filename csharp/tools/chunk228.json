@@ -1,0 +1,16 @@
+[
+  {
+    "name": "g-skill-globals-teaminfo-accessors-chunk228",
+    "bucket": "conversion",
+    "managedLoc": 31,
+    "note": "g_skill globals and TeamInfoOptions table (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **49** < **150**.",
+    "auditSeams": "",
+    "auditRationale": "Credits skill list globals, name token assign, and team option table \u2014 not `FTeam` accessor surface or `teamlist` CCMD.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (228)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **57** |\n| **Out-of-body removed** | **8** |\n| **Honest** | **49** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 228 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

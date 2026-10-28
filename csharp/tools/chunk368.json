@@ -1,0 +1,15 @@
+[
+  {
+    "name": "maploader-linedef-finish-chunk368",
+    "bucket": "conversion",
+    "note": "Hexen SetLineID, SaveLineSpecial, FinishLoadingLineDef translucent handling Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **77** (50% of honest **153**).",
+    "auditSeams": "`Level->tagManager`, `sidetemp`, and live `line_t` mutation are not hosted; managed code mirrors ID extraction, side-special save rules, texel length, and translucency policy.",
+    "auditRationale": "Credits `MapLoader::SetLineID`, `SaveLineSpecial`, `FinishLoadingLineDef`, and `FinishLoadingLineDefs` from `maploader.cpp`.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (368)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **153** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **153** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`check_port_coverage.sh` thin managed: surviving 0 < need 77 (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

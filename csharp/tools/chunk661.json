@@ -1,0 +1,30 @@
+[
+  {
+    "name": "p-destructible-geometry-radius-chunk661",
+    "bucket": "conversion",
+    "note": "Whole `P_GeometryRadiusAttack` (`p_destructible.cpp` 442\u2013688).",
+    "auditSeams": "`PGRA_InsertIfCloser`, `FBlockLinesIterator`, and `P_TraceLine` remain native.",
+    "auditRationale": "Fresh playsim TU; sector/ffloor/line damage grouping hosted.",
+    "auditManagedLocJustification": "Phased source-sector, 3D-floor, nearby-line, and damage-group apply pipelines mirror `P_GeometryRadiusAttack` without hosting block iterators or trace.",
+    "auditPaddingReview": "| Managed | Native (`p_destructible.cpp`) |\n|---------|-------------------------------|\n| `RunGeometryRadiusAttackPipeline` / `GeometryRadiusAttack` | `P_GeometryRadiusAttack` **442\u2013688** |\n| `RunSourceSectorCeilingInsert` / `RunSourceSectorFloorInsert` / `ProjectToPlane` | source sector **458\u2013476** |\n| `RunSourceFfloorsPipeline` / `ComputeFfSpot` / `FfloorEligible` | source ffloors **478\u2013512** |\n| `RunNearbyLinesPipeline` / `LineHasInteractiveGeometry` / `ComputeScaledLineDamage` | line scan **522\u2013590** (simplified) |\n| `RunDamageGroupsApplyPipeline` / `ComputeGroupFalloffDamage` | group apply **646\u2013687** (hooked) |\n| `ResolveCeilingGroupId` / `ResolveFloorGroupId` / `ResolveFfGroupId` | group id masks **463\u2013492** |\n| `ClosestPointOnLine` | `PGRA_ClosestPointOnLine2D` |\n\n### Out-of-body uncredit (661)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **247** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **247** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPDestructibleGeometryRadiusAttack.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_destructible.cpp",
+        "symbol": "P_GeometryRadiusAttack",
+        "start": 442,
+        "end": 688,
+        "tests": [
+          "VmPDestructibleGeometryRadiusAttackTests.GeometryRadiusAttack_InsertsCeilingGroup",
+          "VmPDestructibleGeometryRadiusAttackTests.GeometryRadiusAttack_SkipsNullSpot",
+          "VmPDestructibleGeometryRadiusAttackTests.GeometryRadiusAttack_InsertsFloorGroup",
+          "VmPDestructibleGeometryRadiusAttackTests.ComputeGroupFalloffDamage_ZeroBeyondRadius",
+          "VmPDestructibleGeometryRadiusAttackTests.FfloorEligible_RejectsInvertedGeometry"
+        ]
+      }
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 661 --band` after out-of-body trim."
+  }
+]

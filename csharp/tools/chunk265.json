@@ -1,0 +1,14 @@
+[
+  {
+    "name": "dehacked-patchthing-numeric-chunk265",
+    "bucket": "conversion",
+    "managedLoc": 157,
+    "note": "PatchThing setup and numeric property dispatch. Retired (2026-10-24): `--band` hull overlaps existing credit (d-dehacked-patchthing-loop-primary-chunk520 src/gamedata/d_dehacked.cpp 1400-1550).",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (265)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **151** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **151** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 265 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

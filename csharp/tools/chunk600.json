@@ -1,0 +1,9 @@
+[
+  {
+    "name": "zcc-vm-function-call-emit-chunk600",
+    "bucket": "conversion",
+    "note": "Merged into zcc-vm-function-call-resolve-emit-chunk599 (retired).",
+    "retired": true,
+    "nativeRanges": []
+  }
+]

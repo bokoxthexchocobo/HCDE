@@ -1,0 +1,15 @@
+[
+  {
+    "name": "fscript-prepro-chunk857",
+    "bucket": "conversion",
+    "note": "FraggleScript preprocessor from `fragglescript/t_prepro.cpp` (59\u2013425). Retired (2026-10-23): out-of-body credit removed; honest **146** < **150**.",
+    "auditSeams": "`ParseInclude` calls host `RunIncludedScript` after lump IO; `DryRunScript` uses in-band `PreproDryRunParser` (`GetTokens` subset faithful to `t_parse.cpp` for section typing only).",
+    "auditRationale": "First credit for `{}` sections, comment blanking, label harvest, dry-run section types, and include lumps before `t_parse.cpp` main loop chunks.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 857 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `DFsSection::Serialize` | yes (field bundle) |\n| `SectionStart` / `SectionEnd` / `SectionLoop` | yes |\n| `ClearSections` | yes |\n| `NewSection` / `FindSectionStart` / `FindSectionEnd` | yes |\n| `ProcessFindChar` | yes |\n| `DryRunScript` | yes |\n| `Preprocess` | yes |\n| `ParseInclude` | yes |\n\n| Managed | Native (`t_prepro.cpp`) |\n|---------|-------------------------|\n| `SectionStart` | **81\u201384** |\n| `SectionEnd` | **92\u201395** |\n| `SectionLoop` | **103\u2013106** |\n| `ClearSections` | **114\u2013127** |\n| `NewSection` | **135\u2013145** |\n| `FindSectionStart` | **153\u2013167** |\n| `FindSectionEnd` | **176\u2013197** |\n| `ProcessFindChar` | **213\u2013303** |\n| `DryRunScript` | **328\u2013374** |\n| `Preprocess` | **382\u2013387** |\n| `ParseInclude` | **401\u2013425** |\n| `DFsSection::Serialize` | **65\u201373** |\n| (separators) | **59\u201364**, **75\u201380**, **87\u201391**, **98\u2013102**, **108\u2013113**, **129\u2013134**, **147\u2013152**, **169\u2013175**, **199\u2013212**, **305\u2013327**, **376\u2013381**, **389\u2013400** |\n\n### Chunk **857** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` (gross **59\u2013425**) | **367** |\n| **Net headline** | **+367** vs post-**852** (expected at land sync) |\n\n### Out-of-body uncredit (857)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **354** |\n| **Out-of-body removed** | **208** |\n| **Honest** | **146** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

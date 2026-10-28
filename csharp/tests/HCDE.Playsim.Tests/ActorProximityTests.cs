@@ -13,7 +13,7 @@ public class ActorProximityTests
     public void GeometryUsesStrictHorizontalAndVerticalBodyGap(int x, int z, int flags, bool expected)
     {
         var sim = Room(); var target = sim.AddBot(x, 0, 3001); target.Z = Fixed.FromInt(z);
-        Assert.Equal(expected, ActorProximity.Check(sim.Players.Single(), "DoomImp", 100, flags: flags));
+        Assert.Equal(expected, VmPThingsRaiseRemoveWarpProximity.Check(sim.Players.Single(), "DoomImp", 100, flags: flags));
     }
 
     [Theory]
@@ -26,20 +26,20 @@ public class ActorProximityTests
     public void CountModesHandleZeroExactAndLessOrEqual(int required, int flags, bool expected)
     {
         var sim = Room(); sim.AddBot(20, 0, 3001);
-        Assert.Equal(expected, ActorProximity.Check(sim.Players.Single(), "DoomImp", 100, required, flags));
+        Assert.Equal(expected, VmPThingsRaiseRemoveWarpProximity.Check(sim.Players.Single(), "DoomImp", 100, required, flags));
     }
 
     [Fact]
     public void DeathFlagsAndRemovedActorsControlCounting()
     {
         var sim = Room(); var target = sim.AddBot(20, 0, 3001); var player = sim.Players.Single();
-        Assert.False(ActorProximity.Check(player, "DoomImp", 100, flags: 16));
+        Assert.False(VmPThingsRaiseRemoveWarpProximity.Check(player, "DoomImp", 100, flags: 16));
         target.Health = 0;
         target.Killed = true;
-        Assert.False(ActorProximity.Check(player, "DoomImp", 100));
-        Assert.True(ActorProximity.Check(player, "DoomImp", 100, flags: 8));
-        Assert.True(ActorProximity.Check(player, "DoomImp", 100, flags: 16));
-        target.Destroy(); Assert.False(ActorProximity.Check(player, "DoomImp", 100, flags: 8));
+        Assert.False(VmPThingsRaiseRemoveWarpProximity.Check(player, "DoomImp", 100));
+        Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(player, "DoomImp", 100, flags: 8));
+        Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(player, "DoomImp", 100, flags: 16));
+        target.Destroy(); Assert.False(VmPThingsRaiseRemoveWarpProximity.Check(player, "DoomImp", 100, flags: 8));
     }
 
     [Fact]
@@ -47,24 +47,24 @@ public class ActorProximityTests
     {
         var sim = Room(); var caller = sim.AddBot(200, 0, 3004); var reference = sim.AddBot(0, 0, 3001);
         caller.Brain!.SetSpecialTarget(reference);
-        Assert.False(ActorProximity.Check(caller, "DoomImp", 100, pointerSelector: 2));
+        Assert.False(VmPThingsRaiseRemoveWarpProximity.Check(caller, "DoomImp", 100, pointerSelector: 2));
         sim.AddBot(20, 0, 3001);
         caller.States.Configure(caller, [new(-1, 0), new(5, 0,
             StateAction: self => ActorJumpActions.CheckProximity(self, 2, "DoomImp", 100, pointerSelector: 2)), new(-1, 2)], 0);
         caller.States.Enter(caller, 1); Assert.Equal(2, caller.States.Current);
-        Assert.False(ActorProximity.Check(caller, "DoomImp", 100, pointerSelector: 1));
+        Assert.False(VmPThingsRaiseRemoveWarpProximity.Check(caller, "DoomImp", 100, pointerSelector: 1));
     }
 
     [Fact]
     public void SightFlagChecksOcclusionAndGeneralTargetAssignment()
     {
         var sim = Room(blocked: true); sim.AddBot(80, 0, 3001); var player = sim.Players.Single();
-        Assert.True(ActorProximity.Check(player, "DoomImp", 100));
-        Assert.False(ActorProximity.Check(player, "DoomImp", 100, flags: 4096));
-        Assert.True(ActorProximity.Check(player, "DoomImp", 100, flags: 64));
+        Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(player, "DoomImp", 100));
+        Assert.False(VmPThingsRaiseRemoveWarpProximity.Check(player, "DoomImp", 100, flags: 4096));
+        Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(player, "DoomImp", 100, flags: 64));
         Assert.Equal(sim.Actors.Single(a => a.ClassDoomEdNum == 3001).Id, player.TargetId);
-        Assert.False(ActorProximity.Check(player, "Unknown", 100, count: 0));
-        Assert.False(ActorProximity.Check(player, "DoomImp", 0, count: 0));
+        Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(player, "Unknown", 100, count: 0));
+        Assert.False(VmPThingsRaiseRemoveWarpProximity.Check(player, "DoomImp", 0, count: 0));
     }
 
     [Theory]

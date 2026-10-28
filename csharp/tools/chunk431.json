@@ -1,0 +1,15 @@
+[
+  {
+    "name": "p-lnspec-doors-pillars-chunk431",
+    "bucket": "conversion",
+    "note": "Non-overlapping door, waggle, ceiling instant, and Thing_Destroy bands Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
+    "auditSeams": "`EV_DoDoor`, `EV_StartWaggle`, `EV_DoCeiling`, and destroy iterators are not hosted.",
+    "auditRationale": "Credits door open/raise/animated paths, floor/ceiling waggle args, ceiling instant movers, and destroy sector/TID branches from `p_lnspec.cpp` (bands not in legacy line-specials rows).",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (431)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **150** |\n| **Honest** | **0** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 431 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

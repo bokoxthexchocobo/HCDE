@@ -1,0 +1,16 @@
+[
+  {
+    "name": "g-mapinfo-options-late-chunk323",
+    "bucket": "conversion",
+    "managedLoc": 95,
+    "note": "MAPINFO specialaction precache redirect snd f1 options Retired (2026-10-23): out-of-body credit removed; honest **125** < **150**.",
+    "auditSeams": "`P_FindLineSpecial`, `S_FindSound`, and `ParseLumpOrTextureName` are stubbed via delegates; comma-list scanners are modeled as token enumerables.",
+    "auditRationale": "Credits the MAPINFO tail from `specialaction` argument resolution (1421+) through `f1` lump assignment: unknown special rejection, up to five numeric args, precache sound/class/texture/eventhandler comma lists, redirect/cvar_redirect pair parsing, and string/lump option setters exercised by the tests above. Lines 1410\u20131420 remain on chunk 322 (`exitanim`/`enteranim` and `specialaction` header).",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (323)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **140** |\n| **Out-of-body removed** | **15** |\n| **Honest** | **125** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 323 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

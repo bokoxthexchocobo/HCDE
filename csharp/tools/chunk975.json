@@ -1,0 +1,32 @@
+[
+  {
+    "name": "p-conversation-handle-reply-chunk975",
+    "bucket": "conversion",
+    "note": "`HandleReply` reply lookup, item-check failure, inventory give/take, log/terminal hooks from `p_conversation.cpp` (**451–600**); follows chunk **974** (**≤450**).",
+    "auditSeams": "`Spawn`, `CallTryPickup`, `P_ExecuteSpecial`, `G_StartSlideshow`, `TerminalResponse`, `ClearConversationStuff`, and `NextNode` continuation (**602+**) remain host-injected.",
+    "auditRationale": "UNCredited `HandleReply` band; reuses chunk **973** item-check semantics in tests only—no second matrix row on **151–300**. `NextNode` body deferred past hull **600**.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_conversation.cpp --start 451 --end 600` and `--chunk 975 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `HandleReply` abort + reply walk (**470–478**) | yes |\n| default reply teardown (**480–487**) | yes |\n| item-check failure + QuickNo (**490–506**) | yes |\n| give/take policy (**513–576**) | yes (predicates) |\n| quest log + terminal (**578–597**) | yes |\n\n**Excluded (zero credit / deferred)**\n\n| Native | Reason |\n|--------|--------|\n| **451–460** | `P_ResumeConversation` tail / comment banner |\n| **509–510**, **528–545**, **558–562** | host calls (animation, spawn, special) |\n| **599–600**, **602+** | `NextNode` comment + body (next band) |\n\n| Managed (`VmPConversationHandleReply975Slice.cs`) | Native (`p_conversation.cpp`) |\n|---------------------------------------------------|--------------------------------|\n| `HandleReplyShouldAbort` / `AdvanceToReplyChild` | **470–478** |\n| `IsDefaultReplyPath` / angle + in-conversation clear | **480–487** |\n| `ReplyItemCheckPasses` / `ShouldShowQuickNo` | **490–506** |\n| `WeaponAlreadyOwnedBlocksGive` / `FlameThrowerDialogAmmoGive` | **518–535** |\n| `CombineTakeStuffWithSpecial` / `SelectTerminalReplyText` | **558–576** |\n| `ResolveLogString` / `ShouldTerminalReply` | **578–597** |\n| Band hull (exclusive slice) | **451–600** |\n\n### Chunk **975** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**974** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPConversationHandleReply975Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/p_conversation.cpp",
+        "symbol": "HandleReply",
+        "start": 451,
+        "end": 600,
+        "tests": [
+          "VmPConversationHandleReply975SliceTests.HandleReplyShouldAbort_InvalidNodeOrNpc",
+          "VmPConversationHandleReply975SliceTests.AdvanceToReplyChild_WalksLinkedReplies",
+          "VmPConversationHandleReply975SliceTests.ReplyItemCheckPasses_AllRequiredPresent",
+          "VmPConversationHandleReply975SliceTests.WeaponAlreadyOwnedBlocksGive_WhenDuplicateWeapon",
+          "VmPConversationHandleReply975SliceTests.CombineTakeStuffWithSpecial_OrSemantics",
+          "VmPConversationHandleReply975SliceTests.SelectTerminalReplyText_PicksHaveEnoughWhenTakeFails",
+          "VmPConversationHandleReply975SliceTests.ResolveLogString_ExpandsDollarPrefix",
+          "VmPConversationHandleReply975SliceTests.ShouldTerminalReply_RequiresConsoleAndText"
+        ]
+      }
+    ]
+  }
+]

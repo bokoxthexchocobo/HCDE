@@ -1,0 +1,15 @@
+[
+  {
+    "name": "d-main-debug-ccmds-chunk396",
+    "bucket": "conversion",
+    "note": "debug_restart, cleanup warn, window title, fs_dir, type, cmdline files Retired (2026-10-24): `--band` hull overlaps existing credit (d-main-gameinfo-scan-chunk399 src/d_main.cpp 2311-2435).",
+    "auditSeams": "`Args`, `fileSystem`, and `I_SetWindowTitle` are not hosted.",
+    "auditRationale": "Credits `D_Cleanup` netgame warning, `debug_restart`, `I_UpdateWindowTitle`, `CCMD(fs_dir)`, `CCMD(type)`, `D_MultiExec`, and `GetCmdLineFiles` from `d_main.cpp`.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (396)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **157** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **157** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 396 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

@@ -1,0 +1,36 @@
+[
+  {
+    "name": "fscript-parser-sf-script-control-chunk904",
+    "bucket": "conversion",
+    "note": "`FParser::SF_Goto` … `SF_PlayerInGame` from `fragglescript/t_func.cpp` (**502–721**). Pivot after **903** `p_lnspec` fragmentation; retired **873**/**838** bands re-credited with `ParseInclude`, `C_MidPrint`/`con_midtime`, and `Level->ExitLevel` paths honest in-tree.",
+    "auditSeams": "`Script->ParseInclude`, `C_MidPrint`, `con_midtime`, `S_Sound`, and `Level->ExitLevel` are not hosted; `ParseInclude`/`MidPrint`/sound/exit hooks on `ParserContext` mirror native control flow.",
+    "auditRationale": "First honest ≥150 UNCredited slice in `t_func.cpp` **502–1593** after **903**; whole-function band through `SF_PlayerInGame` (**714**); `SF_PlayerName` deferred at **722**.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 502 --end 721` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_Goto` | yes |\n| `SF_Return` | yes |\n| `SF_Include` | yes |\n| `SF_Input` | yes |\n| `SF_Beep` | yes |\n| `SF_Clock` | yes |\n| `SF_ExitLevel` | yes |\n| `SF_Tip` / `SF_TimedTip` | yes |\n| `SF_PlayerTip` | yes |\n| `SF_Message` / `SF_PlayerMsg` | yes |\n| `SF_PlayerInGame` | yes |\n\n| Managed | Native (`t_func.cpp`) |\n|---------|----------------------|\n| `SfGoto` | **509–524** |\n| `SfReturn` | **532–535** |\n| `SfInclude` | **543–559** |\n| `SfInput` | **567–570** |\n| `SfBeep` | **578–581** |\n| `SfClock` | **589–593** |\n| `SfExitLevel` | **603–606** |\n| `SfTip` | **614–621** |\n| `SfTimedTip` | **633–642** |\n| `SfPlayerTip` | **651–661** |\n| `SfMessage` | **669–676** |\n| `SfPlayerMsg` | **684–694** |\n| `SfPlayerInGame` | **702–714** |\n| (separator) | **502–508** |\n| (separator) | **525–531** |\n| (separator) | **536–542** |\n| (separator) | **560–566** |\n| (separator) | **571–577** |\n| (separator) | **582–588** |\n| (separator) | **594–602** |\n| (separator) | **607–613** |\n| (separator) | **622–632** |\n| (separator) | **643–650** |\n| (separator) | **662–668** |\n| (separator) | **677–683** |\n| (separator) | **695–701** |\n| (separator) | **715–721** |\n\n### Chunk **904** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **220** |\n| **Net headline** | **+220** vs post-**903** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmFScriptParserSfCtrl.cs",
+      "csharp/src/HCDE.Playsim/VmFScriptInitFunctionsReg904.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/fragglescript/t_func.cpp",
+        "symbol": "FParser::SF_Goto",
+        "start": 502,
+        "end": 721,
+        "tests": [
+          "VmFScriptParserSfCtrlTests.SfGoto_JumpsToLabel",
+          "VmFScriptParserSfCtrlTests.SfReturn_ThrowsTerminator",
+          "VmFScriptParserSfCtrlTests.SfInclude_ParsesStringLumpName",
+          "VmFScriptParserSfCtrlTests.SfBeep_StartsChatSound",
+          "VmFScriptParserSfCtrlTests.SfClock_ReturnsCentiseconds",
+          "VmFScriptParserSfCtrlTests.SfExitLevel_MarksExited",
+          "VmFScriptParserSfCtrlTests.SfTip_MidPrintsForLocalView",
+          "VmFScriptParserSfCtrlTests.SfTimedTip_RestoresConMidTime",
+          "VmFScriptParserSfCtrlTests.SfMessage_PrintsHigh",
+          "VmFScriptParserSfCtrlTests.SfPlayerMsg_PrintsHighForPlayer",
+          "VmFScriptParserSfCtrlTests.SfPlayerInGame_ReturnsSlotState"
+        ]
+      }
+    ]
+  }
+]

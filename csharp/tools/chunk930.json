@@ -1,0 +1,32 @@
+[
+  {
+    "name": "p-lnspec-rotation-align-texture-chunk930",
+    "bucket": "conversion",
+    "note": "`LS_Sector_SetRotation` through `LS_Line_SetTextureScale` (`p_lnspec.cpp` **2569–2718**). Follows **929** (**≤2568**); `LS_Line_SetBlocking` at **2721** deferred.",
+    "auditSeams": "Sector/line iterators, `DAngle::fromDeg`, `AlignFlat`, and `side_t` texture mutation remain host seams.",
+    "auditRationale": "Honest **150**-line slice in **2269–3129** corridor; exclusive `VmPLnspecRotationAlign930Slice.cs`.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 2569 --end 2718` and `--chunk 930 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| `SectorSetRotation` | `LS_Sector_SetRotation` **2568–2582** |\n| `LineAlignFlatPlane` / `CombineLineAlignResults` | `LS_Line_AlignCeiling` / `LS_Line_AlignFloor` **2584–2610** |\n| `LineTextureReject` / `TextureNoChange` | `LS_Line_SetTextureOffset` guards **2615–2620** |\n| `TextureArgFrom65536` / `BuildTextureOffset` | offset set/add **2616–2664** |\n| `TextureOffsetIsSetMode` / `TextureAffects*` | flag decode **2630–2660** |\n| `ShouldApplyTextureAxis` | `NO_CHANGE` checks **2633–2659** |\n| `BuildTextureScale` / `UsesMultiplyScaleMode` | `LS_Line_SetTextureScale` **2667–2718** |\n| `CountAffectedTextureParts` | part mask **2635–2637**, **2689–2697** |\n| `AlignCeilingFromSideArg` / `AlignFloorFromSideArg` | `!!arg1` **2593**, **2607** |\n| `BuildLineAlignCeiling` / `BuildLineAlignFloor` | align invoke **2589–2608** |\n| `ForEachAffectedTexturePart` / `TextureAxisApplyMask` | per-part loops **2635–2713** |\n\n### Chunk **930** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**929** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPLnspecRotationAlign930Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Sector_SetRotation",
+        "start": 2569,
+        "end": 2718,
+        "tests": [
+          "VmPLnspecRotationAlign930SliceTests.SectorRotation_PacksFloorAndCeilingAngles",
+          "VmPLnspecRotationAlign930SliceTests.LineAlign_CeilingUsesTopPlane",
+          "VmPLnspecRotationAlign930SliceTests.TextureOffset_RejectsInvalidSide",
+          "VmPLnspecRotationAlign930SliceTests.TextureScale_Uses65536Factors",
+          "VmPLnspecRotationAlign930SliceTests.BuildTextureOffset_DetectsAddMode",
+          "VmPLnspecRotationAlign930SliceTests.CombineLineAlignResults_OrAccumulates",
+          "VmPLnspecRotationAlign930SliceTests.CountAffectedTextureParts_CountsFlagBits",
+          "VmPLnspecRotationAlign930SliceTests.TextureAxisApplyMask_SkipsNoChangeRaw"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,33 @@
+[
+  {
+    "name": "info-pclass-get-replacement-chunk1038",
+    "bucket": "conversion",
+    "note": "`GetReplacement` / `GetReplacee` chains and `SetDamageFactor` / `SetPainChance` head from `info.cpp` (**650–799**). Follows chunk **1037** (**500–649**).",
+    "auditSeams": "`Level->localEventManager`, `PClass::FindActor` / `FindClass`, `ActorInfo()` field mutation, `Printf`, and recursive native calls remain host-injected; uncredited `VmActorClassRegistry.SetDamageFactor` / `SetPainChance` are seams only.",
+    "auditRationale": "UNCredited **`info.cpp`** **650–799** abutting **1037** at skill-failure clear (**649**); no overlap with credited **500–649** row (exclusive hull). Identity one-liner `ShouldSkipReplacementWhenLevelNull` omitted (reaudit padding policy).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/info.cpp --start 650 --end 799` and `--chunk 1038 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Skill failure clear tail (**650–651**) | yes |\n| ZScript `CheckReplacement` final return (**654–662**) | yes |\n| Early return when no replacement (**663–666**) | yes |\n| Temp NULL + skill then DECORATE chain (**667–684**) | yes |\n| Decorate client-side finalize (**684–690**) | yes |\n| `GetReplacee` skill `GetReplacedBy` validate (**703–732**) | yes |\n| ZScript `CheckReplacee` (**735–744**) | yes |\n| Replacee chain + client-side gate (**745–765**) | yes |\n| `SetDamageFactor` update/push (**774–785**) | yes |\n| `SetPainChance` update head (**793–799**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **500–649** | chunk **1037** |\n| **652–653**, **692–697** | closing braces / comment banners |\n| **767–773**, **787–792** | comment banners |\n| **800+** | `SetPainChance` push tail outside hull (**799** ends update branch) |\n| `VmActorClassRegistry` | uncredited helper — seam only |\n| `VmPClassActorInfo1037Slice.VerifyClientSideReplacement` | shared predicate — seam, no duplicate lines |\n\n| Managed (`VmPClassActorInfo1038Slice.cs`) | Native (`info.cpp`) |\n|---------------------------------------------|---------------------|\n| `ClearSkillReplacementNamesAfterFailure` | **650–651** |\n| `ResolveEventHandlerReplacement` | **658–661** |\n| `ShouldReturnSelfWithoutReplacement` | **663–666** |\n| `ResolveSkillThenDecorateReplacement` | **675–681** |\n| `FinalizeReplacementClientSide` | **684–690** |\n| `EvaluateSkillReplacedBy` / `ApplySkillReplacedByFailureClear` | **705–731** |\n| `ResolveEventHandlerReplacee` | **740–743** |\n| `ResolveReplaceeChain` | **753–757** |\n| `TryUpdateDamageFactor` / `AddDamageFactor` | **776–784** |\n| `TryUpdatePainChance` / `ClampPainChance` / `ShouldPushPainChance` | **795–799** |\n| Band hull (exclusive slice) | **650–799** |\n\n### Chunk **1038** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1037** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmPClassActorInfo1038Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/info.cpp",
+        "symbol": "GetReplacement / GetReplacee / damage+pain setters",
+        "start": 650,
+        "end": 799,
+        "tests": [
+          "VmPClassActorInfo1038SliceTests.ResolveEventHandlerReplacement_ReturnsSelfWhenMismatch",
+          "VmPClassActorInfo1038SliceTests.ShouldReturnSelfWithoutReplacement_WhenBothMissing",
+          "VmPClassActorInfo1038SliceTests.ResolveSkillThenDecorateReplacement_PrefersSkillName",
+          "VmPClassActorInfo1038SliceTests.EvaluateSkillReplacedBy_FailsWhenClassMissing",
+          "VmPClassActorInfo1038SliceTests.TryUpdateDamageFactor_UpdatesExisting",
+          "VmPClassActorInfo1038SliceTests.TryUpdatePainChance_ClampsTo256",
+          "VmPClassActorInfo1038SliceTests.ShouldPushPainChance_RejectsNegative",
+          "VmPClassActorInfo1038SliceTests.FinalizeReplacementClientSide_RejectsMismatch",
+          "VmPClassActorInfo1038SliceTests.ClearSkillReplacementNamesAfterFailure_ClearsFlags"
+        ]
+      }
+    ]
+  }
+]

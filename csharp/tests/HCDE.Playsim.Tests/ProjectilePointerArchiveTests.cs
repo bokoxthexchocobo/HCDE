@@ -159,7 +159,7 @@ public class ProjectilePointerArchiveTests
     {
         var sim = Room(); var owner = sim.AddBot(20, 0, 3001);
         var missile = sim.SpawnProjectile(sim.Players.Single(), ProjectileKind.Plasma);
-        Assert.True(ActorProximity.Check(missile, "DoomImp", 100, flags: 64));
+        Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(missile, "DoomImp", 100, flags: 64));
         Assert.Same(owner, missile.Owner);
     }
 

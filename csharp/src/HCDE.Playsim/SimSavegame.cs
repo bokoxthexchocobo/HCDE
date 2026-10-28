@@ -327,6 +327,7 @@ public sealed class SimSaveState
     public bool IncludesBotIdentities { get; internal set; }
     public uint? NextActorId { get; internal set; }
     public SimInvasionState? Invasion { get; internal set; }
+    public SimAcsState? Acs { get; internal set; }
     public HCDE.Gamedata.FallingDamageStyle ForcedFallingDamage { get; internal set; }
     public double? AirControlOverride { get; internal set; }
     public double? GibFactor { get; internal set; }
@@ -615,6 +616,7 @@ public static class SimSavegame
         SimBotProfileArchive.Validate(state);
         SimActorDamageHistoryArchive.Validate(state);
         SimInvasionArchive.Validate(state);
+        SimAcsArchive.Validate(state);
         SimDroppedPickupArchive.Validate(state);
         SimMapPickupArchive.Validate(state);
         SimMapDecorationArchive.Validate(state);
@@ -851,7 +853,7 @@ public static class SimSavegame
             archive = SimSpawnFloatArchive.Write(state, archive);
             archive = SimFloatSpawnRandomArchive.Write(state, archive);
             archive = SimWeaponRefiringArchive.Write(state, SimVerticalWeaponSpreadArchive.Write(state, SimGunShotRandomArchive.Write(state, SimFireSg2RandomArchive.Write(state, SimPuffGetsOwnerArchive.Write(state, SimBfgSprayRandomArchive.Write(state, SimBfgSelfDamageRandomArchive.Write(state, SimRemappedDecorationArchive.Write(state, SimPainChanceOverrideArchive.Write(state, archive)))))))));
-            return SimPlayerInputArchive.Write(state, SimSectorTerrainArchive.Write(state, archive));
+            return SimAcsArchive.Write(state, SimPlayerInputArchive.Write(state, SimSectorTerrainArchive.Write(state, archive)));
         }
         return buffer;
     }
@@ -1201,6 +1203,7 @@ public static class SimSavegame
         if (version == 229) return SimGibHealthArchive.TryRead(bytes, out state, out error);
         if (version == 228) return SimGibFactorArchive.TryRead(bytes, out state, out error);
         if (version == 363) return SimWeaponRefiringArchive.TryRead(bytes, out state, out error);
+        if (version == 366) return SimAcsArchive.TryRead(bytes, out state, out error);
         if (version == 365) return SimPlayerInputArchive.TryRead(bytes, out state, out error);
         if (version == 364) return SimSectorTerrainArchive.TryRead(bytes, out state, out error);
         if (version == 362) return SimVerticalWeaponSpreadArchive.TryRead(bytes, out state, out error);

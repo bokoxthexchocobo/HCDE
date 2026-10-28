@@ -1,0 +1,13 @@
+[
+  {
+    "name": "action-kill-family-chunk544",
+    "bucket": "conversion",
+    "note": "Merged into chunk543.",
+    "auditSeams": "`P_DamageMobj`, `P_ExplodeMissile`, `COPY_AAPTR`, and thinker iteration are not hosted.",
+    "auditRationale": "Credits native bands mirrored by `VmActorDoKill` and named tests \u2014 not full `DEFINE_ACTION_FUNCTION` bodies.",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AddFoilFlags` | see native citation in chunk note |\n| `DamageSiblingsSameMaster` | see native citation in chunk note |\n| `KillSiblingsLoop` | see native citation in chunk note |\n| `MissileKillAllowed` | see native citation in chunk note |\n| `PassesClassGate` | see native citation in chunk note |\n| `PassesKillFilter` | see native citation in chunk note |\n| `PassesSpeciesGate` | see native citation in chunk note |\n| `PlanDoKill` | see native citation in chunk note |\n| `ShouldDamageMobj` | see native citation in chunk note |\n| `ShouldExplodeMissile` | see native citation in chunk note |",
+    "retired": true
+  }
+]

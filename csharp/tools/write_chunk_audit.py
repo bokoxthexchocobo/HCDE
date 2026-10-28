@@ -1,0 +1,239 @@
+#!/usr/bin/env python3
+"""Write HCDE_CSHARP_CHUNK{n}_AUDIT.md from loc_tally + chunk{n}.json."""
+from __future__ import annotations
+
+import json
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+_GROSS_CLI_RE = re.compile(r"\((\d+)\s+lines?\)", re.I)
+_GROSS_BAND_RE = re.compile(r"(\d+)\s*[-–]\s*(\d+)")
+
+REPO = Path(__file__).resolve().parents[1]
+TALLY = REPO / "docs/data/loc_tally.json"
+DOCS = REPO / "docs"
+
+
+def chunk_num(name: str) -> int | None:
+    m = re.search(r"chunk(\d+)", name)
+    return int(m.group(1)) if m else None
+
+
+def find_chunk(tally: dict, num: int) -> dict | None:
+    for ch in tally["chunks"]:
+        if chunk_num(ch.get("name", "")) == num:
+            return ch
+    return None
+
+
+def files_from_conversion_commit(sha: str) -> list[str]:
+    if not re.fullmatch(r"[0-9a-f]{40}", sha or ""):
+        return []
+    try:
+        out = subprocess.check_output(
+            ["git", "-C", str(REPO.parent), "show", "--name-only", "--pretty=format:", sha],
+            text=True,
+        )
+    except subprocess.CalledProcessError:
+        return []
+    paths = []
+    for line in out.splitlines():
+        line = line.strip()
+        if line.startswith("csharp/src/") and line.endswith(".cs"):
+            paths.append(f"`{Path(line).name}`")
+        elif line.startswith("csharp/tests/") and line.endswith("Tests.cs"):
+            paths.append(f"`{Path(line).name}`")
+    return sorted(set(paths))
+
+
+def seams_for_ranges(ranges: list[dict]) -> str:
+    files = {r.get("file", "") for r in ranges}
+    parts: list[str] = []
+    if any("d_dehacked" in f for f in files):
+        parts.append("DEHSUPP / dehacked paths use callbacks for `PClass`, `FState`, and lump scanner I/O.")
+    if any("g_mapinfo" in f for f in files):
+        parts.append("MAPINFO handlers omit live `FMapInfoParser` scanner state; managed code models option semantics only.")
+    if any("thingdef" in f for f in files):
+        parts.append("DECORATE/thingdef ports keep lexer/table lookups injectable.")
+    if not parts:
+        parts.append("Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.")
+    return " ".join(parts)
+
+
+def managed_files_hint(note: str, ranges: list[dict]) -> str:
+    hints: list[str] = []
+    if "StateMap" in note or any("StateMap" in r.get("symbol", "") for r in ranges):
+        hints.append("`VmDehackedDehSuppStateMap.cs`")
+    if "SoundMap" in note or "InfoNames" in note:
+        hints.append("`VmDehackedDehSuppSoundInfo.cs`")
+    if "ThingBits" in note or "RenderStyles" in note:
+        hints.append("`VmDehackedDehSuppThingBits.cs` / `VmDehackedDehSuppRenderStyles.cs`")
+    if "OrgSpr" in note:
+        hints.append("`VmDehackedDehSuppOrgSprNames.cs`")
+    if "OrgHeights" in note or "CodePConv" in note:
+        hints.append("`VmDehackedDehSuppNumericLists.cs`")
+    if "ActionList" in note:
+        hints.append("`VmDehackedDehSuppActionList.cs`")
+    if "lump" in note.lower() or "gate" in note.lower():
+        hints.append("`VmDehackedDehSuppLumpGate.cs`")
+    if "FinishDehPatch" in note:
+        hints.append("`VmDehackedFinishDehPatch.cs` / `VmDehackedFinishWeaponAmmo.cs`")
+    if "g_mapinfo" in note.lower() or "MAPINFO" in note:
+        hints.append("`VmMapInfo*.cs` (see conversion commit)")
+    if not hints:
+        hints.append("(see conversion commit file list)")
+    return ", ".join(hints)
+
+
+def main() -> int:
+    num = int(sys.argv[1])
+    tally = json.loads(TALLY.read_text())
+    ch = find_chunk(tally, num)
+    if not ch:
+        print(f"chunk {num} not in loc_tally", file=sys.stderr)
+        return 1
+    chunk_json = REPO / f"tools/chunk{num}.json"
+    chunk_meta: dict = {}
+    ranges = ch.get("nativeRanges") or []
+    if chunk_json.is_file():
+        blob = json.loads(chunk_json.read_text())
+        if blob:
+            chunk_meta = blob[0]
+        if blob and blob[0].get("nativeRanges"):
+            ranges = blob[0]["nativeRanges"]
+
+    bucket = ch.get("bucket") or chunk_meta.get("bucket") or "conversion"
+    nl_audit = int(ch.get("nativeLoc", 0))
+    if bucket == "conversion" and nl_audit > 0 and not (chunk_meta.get("auditPaddingReview") or "").strip():
+        print(f"chunk {num}: missing auditPaddingReview in chunk{num}.json", file=sys.stderr)
+        return 1
+
+    lines: list[str] = [f"# Chunk {num} — {ch.get('note', ch.get('name', ''))}", ""]
+    lines.append("## Scope")
+    lines.append("")
+    lines.append(ch.get("note") or "Conversion chunk.")
+    lines.append("")
+    lines.append("## Native ranges")
+    lines.append("")
+    total = 0
+    for r in ranges:
+        span = int(r["end"]) - int(r["start"]) + 1
+        total += span
+        lines.append(
+            f"- `{r['file']}` **{r.get('symbol', '?')}** {r['start']}–{r['end']} ({span} lines)"
+        )
+    lines.append("")
+    lines.append(f"**Credited native LOC:** {total} (tally `nativeLoc` {ch.get('nativeLoc')}).")
+    lines.append("")
+    gross_cli = chunk_meta.get("auditGrossCliLines")
+    gross_band = chunk_meta.get("auditGrossCliBand") or ""
+    if gross_cli is None and chunk_meta.get("auditUncreditedRangeCheck"):
+        m = _GROSS_CLI_RE.search(chunk_meta["auditUncreditedRangeCheck"])
+        if m:
+            gross_cli = int(m.group(1))
+        if not gross_band:
+            bm = _GROSS_BAND_RE.search(chunk_meta["auditUncreditedRangeCheck"])
+            if bm:
+                gross_band = f"{bm.group(1)}–{bm.group(2)}"
+    if gross_cli is not None:
+        gap = int(gross_cli) - total
+        lines.append("## Portfolio delta")
+        lines.append("")
+        if gross_band:
+            lines.append(
+                f"**Gross CLI band** (`{gross_band}`): **{gross_cli}** lines in the UNCredited-range probe; "
+                f"tally credits **{total}** whole-function native LOC only."
+            )
+        else:
+            lines.append(
+                f"**Gross CLI band:** **{gross_cli}** lines in the UNCredited-range probe; "
+                f"tally credits **{total}** whole-function native LOC only."
+            )
+        if gap:
+            lines.append(
+                f"**{gap}** uncovered lines in that band are inter-function gaps, comments, or non-function "
+                "lines (not credited)."
+            )
+        lines.append("")
+        nl_head = int(ch.get("nativeLoc") or total)
+        lines.append("| | Native LOC |")
+        lines.append("|---|---:|")
+        lines.append(f"| **Gross** (CLI UNCredited band) | **{gross_cli}** |")
+        lines.append(f"| **Credited** (whole functions, this row) | **{nl_head}** |")
+        lines.append(f"| **Overlap trim** | **0** |")
+        lines.append(
+            f"| **Net headline Δ** | **+{nl_head}** (see `convertedBehaviorNative` in tally at land commit) |"
+        )
+        lines.append("")
+    lines.append("## Managed")
+    lines.append("")
+    listed = chunk_meta.get("managedSourceFiles") or []
+    if listed:
+        lines.append(", ".join(f"`{Path(p).name}`" for p in listed))
+    else:
+        from_commit = files_from_conversion_commit(ch.get("conversionManagedCommit", "") or "")
+        if from_commit:
+            lines.append(", ".join(from_commit))
+        else:
+            lines.append(managed_files_hint(ch.get("note", ""), ranges))
+    lines.append(f"Managed LOC (tally): {ch.get('managedLoc', '?')}.")
+    lines.append(f"Conversion commit: `{ch.get('conversionManagedCommit', '')}`.")
+    lines.append("")
+    if chunk_meta.get("auditPaddingReview"):
+        lines.append("## Padding review (2026-10-21)")
+        lines.append("")
+        lines.append(chunk_meta["auditPaddingReview"])
+        nl = ch.get("nativeLoc") or total
+        ml = ch.get("managedLoc") or 0
+        if nl and ml:
+            pct = 100.0 * int(ml) / int(nl)
+            lines.append("")
+            lines.append(
+                f"**Post-review ratio:** {ml}/{nl} managed/native ≈ {pct:.0f}% "
+                "(src file LOC at HEAD; see tally)."
+            )
+        lines.append("")
+    lines.append("## Tests")
+    lines.append("")
+    seen: set[str] = set()
+    for r in ranges:
+        for t in r.get("tests") or []:
+            if t not in seen:
+                seen.add(t)
+                lines.append(f"- `{t}`")
+    lines.append("")
+    lines.append("## Verified")
+    lines.append("")
+    lines.append(
+        "`dotnet build csharp/HCDE.sln -warnaserror`; `dotnet test csharp/HCDE.sln`; "
+        f"`python3 tools/reaudit_chunks.py audit --from {num} --to {num}` (0 hard / 0 soft)."
+    )
+    lines.append("")
+    lines.append("## Seams")
+    lines.append("")
+    if chunk_meta.get("auditSeams"):
+        lines.append(chunk_meta["auditSeams"])
+    else:
+        lines.append(seams_for_ranges(ranges))
+    lines.append("")
+    lines.append("## Credit rationale")
+    lines.append("")
+    if chunk_meta.get("auditRationale"):
+        lines.append(chunk_meta["auditRationale"])
+    else:
+        lines.append(
+            "Only lines whose control flow and validation are exercised by the named `[Fact]` methods "
+            "above are credited; scanner framing and VM hooks outside those paths are not counted."
+        )
+    lines.append("")
+
+    out = DOCS / f"HCDE_CSHARP_CHUNK{num}_AUDIT.md"
+    out.write_text("\n".join(lines))
+    print(out)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

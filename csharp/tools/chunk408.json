@@ -1,0 +1,15 @@
+[
+  {
+    "name": "a-lights-thinkers-chunk408",
+    "bucket": "conversion",
+    "note": "DFireFlicker, DFlicker construct, DLightFlash, DStrobe thinkers Retired (2026-10-23): out-of-body credit removed; honest **121** < **150**.",
+    "auditSeams": "`sector_t`, `pr_*` RNG, and thinker allocation are not hosted.",
+    "auditRationale": "Credits `DFireFlicker`, `DFlicker`, `DLightFlash`, and `DStrobe` logic from `a_lights.cpp` (bands avoid recognition-only `DFlicker::Tick`).",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (408)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **167** |\n| **Out-of-body removed** | **46** |\n| **Honest** | **121** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 408 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

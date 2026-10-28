@@ -22,4 +22,14 @@ internal sealed class AcsGlobalStrings
 
     public string GetByIndex(int index) =>
         index >= 0 && index < _entries.Count ? _entries[index] : string.Empty;
+
+    internal IReadOnlyList<string> Snapshot() => _entries.ToArray();
+
+    internal void ReplaceFrom(IReadOnlyList<string> entries)
+    {
+        _entries.Clear();
+        _indices.Clear();
+        foreach (var entry in entries)
+            Add(entry ?? string.Empty);
+    }
 }

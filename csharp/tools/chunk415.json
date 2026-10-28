@@ -1,0 +1,15 @@
+[
+  {
+    "name": "lights-ev-strife-reborn-chunk415",
+    "bucket": "conversion",
+    "note": "EV strobe/light-on/glow, Strife teaser voices, DoomButtons table Retired (2026-10-23): out-of-body credit removed; honest **122** < **150**.",
+    "auditSeams": "Sector iterators, filesystem namespaces, and bind registration are not hosted.",
+    "auditRationale": "Credits `EV_StartLightStrobing`, `EV_LightTurnOn`, `EV_StartLightGlowing`, `FindStrifeTeaserVoices`, and the `DoomButtons` table from `a_lights.cpp` and `d_main.cpp`.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (415)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **157** |\n| **Out-of-body removed** | **35** |\n| **Honest** | **122** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 415 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

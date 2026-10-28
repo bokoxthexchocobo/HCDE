@@ -1,0 +1,34 @@
+[
+  {
+    "name": "sbarinfo-commands-invbar-spacing-keybar-chunk1088",
+    "bucket": "conversion",
+    "note": "`CommandDrawInventoryBar` spacing tail + counter tick layout and `CommandDrawKeyBar` draw/parse head from `sbarinfo_commands.cpp` (**2251–2400**); follows **1087** spacing fallback (**2250**).",
+    "auditSeams": "**1087** owns null-box spacing **32** and parse/draw layout; **1088** completes live box spacing and counter slot math. Host `new CommandDrawNumber`, `DrawGraphic`, and inventory chain walks excluded.",
+    "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **2251–2400** (+150); GetCounterSpacing dimension branch, counter array layout flags, key bar ctor defaults + draw stride/row wrap; hull ends at key bar `number` parse (**2400**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 2251 --end 2400` and `--chunk 1088 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Live box width/height spacing (**2256–2264**) | yes (delegates **1087**) |\n| Counter slot coordinates (**2280–2281**) | yes |\n| Counter draw-number init (**2285–2287**) | yes |\n| Counter shadow copy (**2288–2290**) | yes |\n| Counter tick delegation loop (**2294–2295**) | yes (predicate) |\n| Key bar ctor defaults (**2335–2338**) | yes |\n| Key icon eligibility scan (**2351–2356**) | yes |\n| Key draw offset gate (**2357**) | yes |\n| Auto row width / slot stride (**2363–2377**) | yes |\n| Row wrap + `reverseRows` (**2382–2389**) | yes |\n| Key bar orientation parse head (**2403–2407**) | yes |\n| Key bar `number` token (**2400–2401**) | yes (constant default context) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2248–2250** | **1087** null-box fallback seam |\n| **2274–2278**, **2295** | host `new` / `Tick` delegate |\n| **2297–2328** | inventory bar member layout |\n| **2341–2362**, **2393–2396** | host `DrawGraphic` / inventory walk |\n| **2401+** | parse flag loop outside hull |\n\n| Managed (`VmSbarinfoCommandDrawInventoryBar1088Slice.cs`, `VmSbarinfoCommandDrawKeyBar1088Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|------------------------------------------------------------------------------------------------|----------------------------------|\n| Spacing + counter layout | **2252–2291** |\n| Key bar draw/parse head | **2335–2400** |\n| Band hull (exclusive slice) | **2251–2400** |\n\n### Chunk **1088** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1087** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoCommandDrawInventoryBar1088Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo_commands.cpp",
+        "symbol": "CommandDrawInventoryBar::GetCounterSpacing / Tick / CommandDrawKeyBar",
+        "start": 2251,
+        "end": 2400,
+        "tests": [
+          "VmSbarinfoCommandDrawInventoryBar1088SliceTests.ComputeLiveInventoryBarCounterSpacing_UsesWidthWhenHorizontal",
+          "VmSbarinfoCommandDrawInventoryBar1088SliceTests.ResolveInventoryBarCounterSlotCoordinates_AdvancesVerticalSlots",
+          "VmSbarinfoCommandDrawInventoryBar1088SliceTests.ResolveInventoryBarCounterDrawNumberInit_MatchesNativeCounterFields",
+          "VmSbarinfoCommandDrawInventoryBar1088SliceTests.CreateDrawKeyBarCtorDefaults_MatchesNativeInit",
+          "VmSbarinfoCommandDrawInventoryBar1088SliceTests.IsKeyBarInventoryItemDrawable_RequiresValidKeyIcon",
+          "VmSbarinfoCommandDrawInventoryBar1088SliceTests.AdvanceKeyBarSlotOffset_ReversesStrideWhenRequested",
+          "VmSbarinfoCommandDrawInventoryBar1088SliceTests.ShouldWrapKeyBarRow_DetectsRowBoundary",
+          "VmSbarinfoCommandDrawInventoryBar1088SliceTests.AdvanceKeyBarRowOffset_SubtractsWhenReverseRows",
+          "VmSbarinfoCommandDrawInventoryBar1088SliceTests.ResolveKeyBarAutoSlotStride_AddsTwoPixelPadding",
+          "VmSbarinfoCommandDrawInventoryBar1088SliceTests.ClassifyKeyBarOrientationKeyword_MapsVertical"
+        ]
+      }
+    ]
+  }
+]

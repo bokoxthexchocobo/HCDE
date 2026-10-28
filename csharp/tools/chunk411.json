@@ -1,0 +1,15 @@
+[
+  {
+    "name": "g-game-cutscene-dmspawn-chunk411",
+    "bucket": "conversion",
+    "note": "G_FullConsole, cutscene tick/advance, CheckSpot and DM start pick Retired (2026-10-24): `--band` hull overlaps existing credit (g-game-headless-ticker-chunk9 src/g_game.cpp 1479-1505).",
+    "auditSeams": "`ScreenJobRunner` VM, `P_CheckPosition`, and live player structs are not hosted.",
+    "auditRationale": "Credits `G_FullConsole`, cutscene progression helpers, `G_SpawnPlayer` title tail, and deathmatch start selection from `g_game.cpp`.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (411)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **190** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **190** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 411 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "name": "a-keys-check-chunk238",
+    "bucket": "conversion",
+    "managedLoc": 95,
+    "note": "OneKey/Keygroup/Lock check from LOCKDEFS. Retired (2026-10-23): out-of-body credit removed; honest **62** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (238)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **107** |\n| **Out-of-body removed** | **45** |\n| **Honest** | **62** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 238 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

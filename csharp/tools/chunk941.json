@@ -1,0 +1,31 @@
+[
+  {
+    "name": "fscript-shot-line-chunk941",
+    "bucket": "conversion",
+    "note": "`SF_SetColor` loop tail through `SaveCurrentScript` from `fragglescript/t_func.cpp` (**3695–3844**). Follows **940** (**≤3694**); **3135–3244** and other deferred tails untouched.",
+    "auditSeams": "`SetColor`, `Spawn`, `S_Sound`, `P_CheckMissileSpawn`, thinker iteration, `TranslateLineDef`, `P_ExecuteSpecial`, and `Create<DRunningScript>` remain host seams.",
+    "auditRationale": "Honest **150**-line UNCredited band; exclusive `VmFScriptParserShotLine941Slice.cs` (live `VmFScriptParserSfGzd` handlers are not matrix credit for these lines).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 3695 --end 3844` and `--chunk 941 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`fragglescript/t_func.cpp`) |\n|---------|-----------------------------------|\n| chunk **941** hull | **3695–3844** |\n| `SetColorLoopAppliesToSector` | `SF_SetColor` loop **3693–3696** |\n| `ResolveSpawnShot2Source` / `SpawnShot2UsesOptionalZ` | `SF_SpawnShot2` **3717–3724** |\n| `SpawnShot2AbortsWithoutSource` | early return **3726** |\n| `SpawnShot2ClearsMissileOnFailedSpawn` / `SpawnShot2ReturnMobj` | `P_CheckMissileSpawn` / return **3739–3741** |\n| `BuildSpawnShot2Invoke` | `SF_SpawnShot2` setup **3717–3728** |\n| `KillInSectorShouldMassacre` | `SF_KillInSector` **3761–3763** |\n| `SetLineTriggerTagFromArgc` | optional tag **3784** |\n| `MergeSetLineTriggerFlags` | line flag merge **3794–3795** |\n| `SetLineTriggerIteratorActive` | line id iterator **3786** |\n| `FillRunLineSpecialArgs` / `RunLineSpecialFillArg` | `RunLineSpecial` **3813–3818** |\n| `RunLineSpecialRequiresMinArgs` | `CheckArgs(spec->min_args)` **3811** |\n| `BuildSaveCurrentScript` | `SaveCurrentScript` **3830–3841** |\n| `SpawnShot2RequiresTwoArgs` | `CheckArgs(2)` **3717** |\n| `KillInSectorRequiresOneArg` | `CheckArgs(1)` **3755** |\n| `SetLineTriggerRequiresTwoArgs` | `CheckArgs(2)` **3780** |\n\n### Chunk **941** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**940** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmFScriptParserShotLine941Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/fragglescript/t_func.cpp",
+        "symbol": "FParser::SF_SetColor",
+        "start": 3695,
+        "end": 3844,
+        "tests": [
+          "VmFScriptParserShotLine941SliceTests.ResolveSpawnShot2Source_UsesTriggerWhenSecondArgNegativeInt",
+          "VmFScriptParserShotLine941SliceTests.SpawnShot2ClearsMissileOnFailedSpawn_WhenCheckFails",
+          "VmFScriptParserShotLine941SliceTests.KillInSectorShouldMassacre_RequiresMonsterAndTag",
+          "VmFScriptParserShotLine941SliceTests.SetLineTriggerTagFromArgc_DefaultsZero",
+          "VmFScriptParserShotLine941SliceTests.MergeSetLineTriggerFlags_PreservesActivationBits",
+          "VmFScriptParserShotLine941SliceTests.FillRunLineSpecialArgs_PadsMissingWithZero",
+          "VmFScriptParserShotLine941SliceTests.BuildSaveCurrentScript_ReturnsNullWithoutThinker"
+        ]
+      }
+    ]
+  }
+]

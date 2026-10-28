@@ -1,0 +1,16 @@
+[
+  {
+    "name": "g-mapinfo-options-media-env-chunk321",
+    "bucket": "conversion",
+    "managedLoc": 54,
+    "note": "MAPINFO scalar/environment option clamps (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **23** < **150**.",
+    "auditSeams": "",
+    "auditRationale": "Credits skymist/skymistyscale/wavelimit/music and environment scalars exercised by map-option tests \u2014 not full DEFINE blocks through sucktime.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (321)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **23** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **23** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 321 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

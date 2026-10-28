@@ -1,0 +1,14 @@
+[
+  {
+    "name": "statistics-save-chunk242",
+    "bucket": "conversion",
+    "managedLoc": 55,
+    "note": "SaveStatistics and time format helpers. Retired (2026-10-23): out-of-body credit removed; honest **136** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (242)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **139** |\n| **Out-of-body removed** | **3** |\n| **Honest** | **136** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 242 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

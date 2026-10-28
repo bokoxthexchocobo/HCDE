@@ -1,0 +1,31 @@
+[
+  {
+    "name": "fscript-movecamera-act-chunk937",
+    "bucket": "conversion",
+    "note": "`SF_SetWeapon` close, `SF_MoveCamera`, `SF_ObjAwaken` … `SF_MobjValue` open from `fragglescript/t_func.cpp` (**2685–2834**). Pivot from **p_lnspec** tail; continues **2685–3244** corridor.",
+    "auditSeams": "`ScriptUtil::Exec`, `S_Sound`, `actorvalue`/`floatvalue`, and `CallActivate` remain host seams.",
+    "auditRationale": "Honest **150**-line UNCredited band; exclusive `VmFScriptParserMoveCamera937Slice.cs` (table-slot / prior `SfAct` bodies not matrix-credited).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 2685 --end 2834` and `--chunk 937 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`fragglescript/t_func.cpp`) |\n|---------|-----------------------------------|\n| `SetWeaponRequiresTwoArgs` | `SF_SetWeapon` **2679–2683** |\n| `BuildMoveCamera` / `MoveToward` | `SF_MoveCamera` **2694–2765** |\n| `StepCameraYaw` / `DeltaAngleDegrees` | angle path **2728–2761** |\n| `MoveCameraReturn` | return **2763–2764** |\n| `CameraColliderScale` | radius/height **2715–2716** |\n| `AwakenActor` | `SF_ObjAwaken` **2777–2794** |\n| `AmbientSoundRequiresArgs` | `SF_AmbientSound` **2805–2810** |\n| `MarkSecretExit` | `SF_ExitSecret` **2822–2825** |\n| `MobjValueRequiresArgs` | `SF_MobjValue` **2834–2840** |\n| `MoveCameraRejectInvalidActors` | guard **2700–2703** |\n| `MoveFinished` | move complete **2721–2726** |\n| chunk **937** hull | **2685–2834** |\n\n### Chunk **937** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**936** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmFScriptParserMoveCamera937Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/fragglescript/t_func.cpp",
+        "symbol": "FParser::SF_MoveCamera",
+        "start": 2685,
+        "end": 2834,
+        "tests": [
+          "VmFScriptParserMoveCamera937SliceTests.MoveToward_ClampsToSpeed",
+          "VmFScriptParserMoveCamera937SliceTests.BuildMoveCamera_RejectsNullTarget",
+          "VmFScriptParserMoveCamera937SliceTests.BuildMoveCamera_ReturnsZeroWhenFinished",
+          "VmFScriptParserMoveCamera937SliceTests.AwakenActor_UsesTriggerWhenNoArgs",
+          "VmFScriptParserMoveCamera937SliceTests.DeltaAngleDegrees_WrapsAcrossZero",
+          "VmFScriptParserMoveCamera937SliceTests.SetWeaponRequiresTwoArgs",
+          "VmFScriptParserMoveCamera937SliceTests.MobjValueRequiresArgs"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,33 @@
+[
+  {
+    "name": "g-mapinfo-map-flag-handlers-chunk1033",
+    "bucket": "conversion",
+    "note": "`MapFlagHandlers[]` continuation and `ParseMapDefinition` flag-dispatch head from `g_mapinfo.cpp` (**1977–2126**). Follows chunk **1032** (**1827–1976**).",
+    "auditSeams": "`sc.MatchString`, `ParseAssign`, `ParseOpenBrace`, and native `MapFlagHandlers[]` storage remain host-injected; compat catalog tail delegates to off-tally `VmMapInfoFlagHandlersCompat`.",
+    "auditRationale": "UNCredited **`g_mapinfo.cpp`** **1977–2126** with zero conversion overlap; excludes off-tally compat line band **2055–2106** from managed port map (no duplicate credit).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_mapinfo.cpp --start 1977 --end 2126` and `--chunk 1033 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Freelook / jump toggles (**1976–1979**) | yes |\n| Falling-damage `MITYPE_SCFLAGS` variants (**1980–1984**) | yes |\n| Infighting / teamplay `SCFLAGS2` (**2007–2014**) | yes |\n| Shadow map on/off pair (**2035–2036**) | yes |\n| `compat_passover` / `passover` (**2045–2046**) | yes |\n| Handler table terminator (**2105–2106**) | yes |\n| `ParseMapDefinition` match + `MITYPE_EATNEXT` switch head (**2121–2126**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1827–1976** | chunk **1032** |\n| **2055–2106** | off-tally `VmMapInfoFlagHandlersCompat` (Vm* line-range collision) |\n| **2044**, **2069** | `MITYPE_IGNORE` legacy rows (policy only; no extra credit) |\n| **2107–2120** | comment banners / function prologue host |\n| **2127+** | outside hull (**2126** ends at `switch`) |\n| **3050–3151** | deferred tail (**102** lines) |\n| Retired **329** / catalog `VmMapInfoFlagHandlers` | off-tally duplicate keywords — seam tests only |\n\n| Managed (`VmMapInfoMapFlagHandlers1033Slice.cs`) | Native (`g_mapinfo.cpp`) |\n|--------------------------------------------------|---------------------------|\n| `ApplyFreelookScFlags` / `ApplyJumpToggle` | **1976–1979** |\n| Falling-damage helpers | **1980–1984** |\n| Infighting / teamplay helpers | **2007–2014** |\n| Shadow map toggles | **2035–2036** |\n| `ApplyCompatPassover` | **2045–2046** |\n| `IsHandlersTableTerminator` | **2105–2106** |\n| `ShouldDispatchFlagHandler` / `RequiresEatNextAssignment` / `ShouldIgnoreLegacyCompatRow` | **2123–2126**, **2044**, **2069** |\n| Band hull (exclusive slice) | **1977–2126** |\n\n### Chunk **1033** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1032** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmMapInfoMapFlagHandlers1033Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "MapFlagHandlers table / ParseMapDefinition head",
+        "start": 1977,
+        "end": 2126,
+        "tests": [
+          "VmMapInfoMapFlagHandlers1033SliceTests.ApplyFreelookScFlags_TogglesMutually",
+          "VmMapInfoMapFlagHandlers1033SliceTests.ApplyFallingDamageModes_ExclusiveHxAndZd",
+          "VmMapInfoMapFlagHandlers1033SliceTests.ApplyInfightingNormal_ClearsBothBits",
+          "VmMapInfoMapFlagHandlers1033SliceTests.ApplyTeamplayOn_SetsOnMask",
+          "VmMapInfoMapFlagHandlers1033SliceTests.ApplyShadowMapToggle_FlipNoShadowBit",
+          "VmMapInfoMapFlagHandlers1033SliceTests.ShouldDispatchFlagHandler_RequiresNonNegativeIndex",
+          "VmMapInfoMapFlagHandlers1033SliceTests.TryResolveCompatHandlerSeam_DelegatesOffTallyCatalog",
+          "VmMapInfoMapFlagHandlers1033SliceTests.RequiresEatNextAssignment_OnlyForEatNextType",
+          "VmMapInfoMapFlagHandlers1033SliceTests.ShouldIgnoreLegacyCompatRow_ForNobotnodesAndCorpseGibs"
+        ]
+      }
+    ]
+  }
+]

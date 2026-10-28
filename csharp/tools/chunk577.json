@@ -1,0 +1,122 @@
+[
+  {
+    "name": "action-weave-wolf-warp-chunk577",
+    "bucket": "conversion",
+    "note": "`A_Weave`, `A_LineEffect`, `A_WolfAttack` ballistics, and `A_Warp` setup/success (`p_actionfunctions.cpp` **3484–3762**). Disjoint from retired **576** hull (no **3255–3422** teleport overlap).",
+    "auditSeams": "`BobSin`, `P_TryMove`, `UnlinkFromWorld`, `SetXY`, `LinkToWorld`, `TranslateLineDef`, `P_ExecuteSpecial`, `P_CheckSight`, `A_FaceTarget`, `A_WolfAttack_ShadowHandling`, puff/damage/spawn/sound, `COPY_AAPTR`, `SingleActorFromTID`, and `P_Thing_Warp` are not hosted.",
+    "auditRationale": "Weave index/mask/advance and interaction branch; linedone gating; Wolf dodge/hitchance/damage math; warp inventory return priming and success pointer/chain flags; species/class filter predicates from retired **576** split.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 577 --band` → UNCredited, exit 0.",
+    "auditManagedLocJustification": "`VmActionWeave`, `VmActionLineEffect`, `VmActionWolfAttackBallistics`, `VmActionWarp`, `VmActionWarpSuccess`, `VmActionRadiusGiveEligibility` (species/class only).",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `WeaveIndexXY` / `WeaveIndexZ` / `ShouldWeaveXY` / `ShouldWeaveZ` / `AdvanceWeaveIndex` / `UseTryMoveWhenInteractive` | `A_Weave` **3491–3516**, **3518–3524** (`BobSin`/`P_TryMove` seam) |\n| `SkipWhenLinedone` / `HasLineSpecial` / `MarkLinedoneWhenNonRepeating` / `LineEffectCanRun` / `ApplyLinedoneFlag` | `A_LineEffect` **3558–3567** (`P_ExecuteSpecial` seam) |\n| `WolfAttackAbortsWithoutTarget` / `WolfAttackAbortsWithoutSight` | `A_WolfAttack` **3597–3602** |\n| `TargetCanDodge` / `ChebyshevDistance` / `BlockDistance` / hitchance / damage helpers | `A_WolfAttack` **3607–3666** (hit/damage/spawn seam) |\n| `PrimeDualReturnCount` / `ShouldPrimeChainSuccessFalse` / `ShouldClearStatePointer` / `UseTidLookup` / `WarpFailsWithoutReference` | `A_Warp` **3707–3730** |\n| `ShouldSetSuccessStatePointer` / `ShouldSetChainSuccess` | `A_Warp` **3732–3747** |\n| `SpeciesPasses` / `ClassPasses` | `DoCheckSpecies` / `DoCheckClass` **3751–3762** |\n\n### vs retired **576**\n\n| | Lines |\n|--|------:|\n| **576** hull (retired, overlap) | **1989–2211**, **3255–3422**, … |\n| **577** (this row) | **3484–3762** (disjoint) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **172** |\n| Net behavior-ported | **172** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmActionWeave.cs",
+      "csharp/src/HCDE.Playsim/VmActionLineEffect.cs",
+      "csharp/src/HCDE.Playsim/VmActionWolfAttackBallistics.cs",
+      "csharp/src/HCDE.Playsim/VmActionWarp.cs",
+      "csharp/src/HCDE.Playsim/VmActionWarpSuccess.cs",
+      "csharp/src/HCDE.Playsim/VmActionRadiusGiveEligibility.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_Weave",
+        "start": 3491,
+        "end": 3516,
+        "tests": [
+          "VmActionWeaveTests.WeaveIndexXY_MasksToSixBits",
+          "VmActionWeaveTests.ShouldWeaveXY_WhenDistAndSpeedNonZero",
+          "VmActionWeaveTests.UseTryMoveWhenInteractive_WithoutNointeraction"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_Weave",
+        "start": 3518,
+        "end": 3524,
+        "tests": [
+          "VmActionWeaveTests.AdvanceWeaveIndex_WrapsAt64"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_Weave",
+        "start": 3527,
+        "end": 3536,
+        "tests": [
+          "VmActionWeaveTests.ShouldWeaveXY_WhenDistAndSpeedNonZero"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_LineEffect",
+        "start": 3558,
+        "end": 3567,
+        "tests": [
+          "VmActionLineEffectTests.LineEffectCanRun_WhenNotLinedone",
+          "VmActionLineEffectTests.ApplyLinedoneFlag_SetsBit"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_WolfAttack",
+        "start": 3597,
+        "end": 3602,
+        "tests": [
+          "VmActionLineEffectTests.WolfAttackAbortsWithoutTarget",
+          "VmActionLineEffectTests.WolfAttackAbortsWithoutSight"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_WolfAttack",
+        "start": 3607,
+        "end": 3666,
+        "tests": [
+          "VmActionWolfAttackBallisticsTests.HitchanceFromSpeed_Uses256WhenSlow",
+          "VmActionWolfAttackBallisticsTests.AdjustHitchanceForDistance_SubtractsDodgePenalty",
+          "VmActionWolfAttackBallisticsTests.DamageFromFlags_UsesRandomWhenAllowed",
+          "VmActionWolfAttackBallisticsTests.ShouldSpawnBlood_FalseWhenNoBlood"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_Warp",
+        "start": 3707,
+        "end": 3730,
+        "tests": [
+          "VmActionWarpTests.PrimeDualReturnCount_WhenMultipleReturns",
+          "VmActionWarpTests.UseTidLookup_WhenFlagged",
+          "VmActionWarpTests.WarpFailsWithoutReference"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_Warp",
+        "start": 3732,
+        "end": 3747,
+        "tests": [
+          "VmActionWarpSuccessTests.ShouldSetSuccessStatePointer_WhenWarpOk",
+          "VmActionWarpSuccessTests.ShouldSetChainSuccess_WhenNoStateJump"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DoCheckSpecies",
+        "start": 3751,
+        "end": 3756,
+        "tests": [
+          "VmActionRadiusGiveEligibilityTests.SpeciesPasses_WhenNoFilter"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DoCheckClass",
+        "start": 3758,
+        "end": 3762,
+        "tests": [
+          "VmActionRadiusGiveEligibilityTests.ClassPasses_WhenFilterNull"
+        ]
+      }
+    ]
+  }
+]

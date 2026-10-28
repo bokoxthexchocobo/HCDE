@@ -1,0 +1,13 @@
+[
+  {
+    "name": "sv-master-heartbeat-startup-chunk645",
+    "bucket": "conversion",
+    "note": "Merged into sv-master-nms1-lifecycle-chunk644 (coverage shrink pass).",
+    "auditSeams": "`sendto`, `Args->CheckParm`, and `Printf` are host callbacks.",
+    "auditRationale": "Whole `WriteLong` through `SV_ResolveStartupAdvertising`.",
+    "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `WriteLongNative` / `WriteShortNative` | 674\u2013686 |\n| `SendHeartbeatNative` / `BuildLegacyHeartbeatPacketNative` | 688\u2013708 |\n| `MasterListContainsNative` | 710\u2013732 |\n| `MasterMatchesPrefixNative` | 734\u2013747 |\n| `UpdateMasterServersInternalNative` | 749\u2013765 |\n| `UnregisterMasterServersInternalNative` | 767\u2013771 |\n| `IsMissingStartupMasterValueNative` | 782\u2013788 |\n| `AddStartupMastersNative` | 790\u2013812 |\n| `ResolveStartupAdvertisingNative` | 814\u2013835 |",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

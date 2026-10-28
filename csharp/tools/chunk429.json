@@ -1,0 +1,15 @@
+[
+  {
+    "name": "p-lnspec-exit-teleport-chunk429",
+    "bucket": "conversion",
+    "note": "Exit, teleport variants, line teleport, thrust XY/Z, poly stop sound (expanded bands) Retired (2026-10-23): out-of-body credit removed; honest **9** < **150**.",
+    "auditSeams": "`EV_Teleport`, `EV_SilentLineTeleport`, `SN_StopSequence`, and live `AActor` velocity are not hosted.",
+    "auditRationale": "Credits exit-good checks, teleport flag/orientation policy, silent line teleport, thrust clamping, and Z-thrust set/add modes from `p_lnspec.cpp`.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (429)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **212** |\n| **Out-of-body removed** | **203** |\n| **Honest** | **9** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 429 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

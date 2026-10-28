@@ -1,0 +1,35 @@
+[
+  {
+    "name": "sbarinfo-commands-inventory-alpha-if-chunk1095",
+    "bucket": "conversion",
+    "note": "`CommandInInventory`, `CommandAlpha`, `CommandIfHealth`, `CommandIfInvulnerable`, and `CommandIfWaterLevel` hull head from `sbarinfo_commands.cpp` (**3301–3450**); follows **1094** weapon-ammo tail (**3300**).",
+    "auditSeams": "**1094** owns draw-gem percent/interpolation/wiggle and weapon-ammo OR/AND/dual-truth helpers; **1095** credits inventory flow, alpha block parse/draw layout, health threshold compare, invulnerable cheat flags, and water-level class hull (**3449–3450**). Host `FindInventory`, `SetTruth`, and `SBarInfoCommandFlowControl::Parse` excluded.",
+    "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **3301–3450** (+150); in-inventory parse/tick, alpha float + draw delegation, if-health percent parse/tick, if-invulnerable tick, if-water-level class head through line **3450**.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 3301 --end 3450` and `--chunk 1095 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| **InInventory** ctor defaults (**3307–3311**) | yes |\n| Inventory class validation (**3321–3324**) | yes |\n| Optional amount after comma (**3327–3330**) | yes |\n| `||` / `&&` second item (**3333–3346**) | yes |\n| Amount threshold nullify (**3354–3355**) | yes |\n| Dual/single item truth (**3357–3365**) | yes |\n| **CommandAlpha** draw layout (**3384–3387**) | yes |\n| Alpha float parse + flow skip (**3392–3397**) | yes |\n| **IfHealth** ctor + parse (**3406–3415**) | yes |\n| Health compare tick (**3421–3423**) | yes |\n| **IfInvulnerable** tick (**3443**) | yes |\n| **IfWaterLevel** class hull (**3449–3450**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **3276–3300** | **1094** weapon-ammo truth helpers |\n| **3151–3196** | **1094** draw-gem tick |\n| **3353**, **3419**, **3441** | host negatable base `Tick` |\n| **3451+** | water-level ctor body / parse outside hull |\n| **3301–3302** | closing brace / separator only |\n\n| Managed (`VmSbarinfoCommandInInventory1095Slice.cs` et al.) | Native (`sbarinfo_commands.cpp`) |\n|----------------------------------------------------------------|----------------------------------|\n| Flow commands band | **3304–3450** |\n| Band hull (exclusive slice) | **3301–3450** |\n\n### Chunk **1095** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1094** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoCommandInInventory1095Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo_commands.cpp",
+        "symbol": "CommandInInventory / CommandAlpha / CommandIfHealth / CommandIfInvulnerable / CommandIfWaterLevel",
+        "start": 3301,
+        "end": 3450,
+        "tests": [
+          "VmSbarinfoCommandInInventory1095SliceTests.ShouldReplaceInInventoryItemClass_WhenNotInventoryKind",
+          "VmSbarinfoCommandInInventory1095SliceTests.ResolveInInventorySecondItemListContinuation_AndRequiresBoth",
+          "VmSbarinfoCommandInInventory1095SliceTests.ShouldNullifyInInventorySlotForInsufficientAmount",
+          "VmSbarinfoCommandInInventory1095SliceTests.ResolveInInventoryDualConfiguredItemFlowTruth_OrEitherSlot",
+          "VmSbarinfoCommandInInventory1095SliceTests.ResolveCommandAlphaMainBlockDrawInvocation_PassesBlockAlpha",
+          "VmSbarinfoCommandInInventory1095SliceTests.ResolveCommandAlphaParseAlphaToken_DelegatesFlowControl",
+          "VmSbarinfoCommandInInventory1095SliceTests.ResolveIfHealthPlayerHealthForCompare_UsesPercentScale",
+          "VmSbarinfoCommandInInventory1095SliceTests.ResolveIfHealthFlowTruth_ComparesThreshold",
+          "VmSbarinfoCommandInInventory1095SliceTests.ResolveIfInvulnerableFlowTruth_GodmodeCheat",
+          "VmSbarinfoCommandInInventory1095SliceTests.CreateCommandIfWaterLevelHullHeadDefaults_MarksNegatableFlow",
+          "VmSbarinfoCommandInInventory1095SliceTests.ResolveInInventoryAmountAfterOptionalComma_ParsesWhenComma"
+        ]
+      }
+    ]
+  }
+]

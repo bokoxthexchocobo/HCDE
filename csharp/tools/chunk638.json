@@ -1,0 +1,10 @@
+[
+  {
+    "name": "i-protocol-checked-chunk638",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Retired: checked stream credit merged into chunk637 (`i_protocol.cpp` 32–389). Former 175–389 overlapped 637 on `AdvanceStream` lines 167–171.",
+    "auditPaddingReview": "| Managed | Native (`i_protocol.cpp`) |\n|---------|-------------------|\n| _(retired)_ | merged into `i-protocol-stream-chunk637` |",
+    "nativeRanges": []
+  }
+]

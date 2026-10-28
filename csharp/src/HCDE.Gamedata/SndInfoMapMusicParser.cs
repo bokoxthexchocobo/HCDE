@@ -21,6 +21,13 @@ public sealed record SndInfoData(IReadOnlyDictionary<int, string> MapMusic, IRea
     public IReadOnlyDictionary<string, SndInfoSoundSettings> Settings { get; init; } = new Dictionary<string, SndInfoSoundSettings>(StringComparer.OrdinalIgnoreCase);
     public IReadOnlyDictionary<string, IReadOnlyList<string>> RandomGroups { get; init; } = new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase);
     public IReadOnlyDictionary<string, string> Aliases { get; init; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    public IReadOnlyList<SndInfoAmbientSound> Ambients { get; init; } = Array.Empty<SndInfoAmbientSound>();
+    public IReadOnlyList<SndInfoMusicVolume> MusicVolumes { get; init; } = Array.Empty<SndInfoMusicVolume>();
+    public IReadOnlyList<SndInfoMusicAlias> MusicAliases { get; init; } = Array.Empty<SndInfoMusicAlias>();
+    public IReadOnlyList<SndInfoModPlayer> ModPlayers { get; init; } = Array.Empty<SndInfoModPlayer>();
+    public IReadOnlyList<SndInfoMidiDevice> MidiDevices { get; init; } = Array.Empty<SndInfoMidiDevice>();
+    public IReadOnlyList<SndInfoRumbleDef> RumbleDefs { get; init; } = Array.Empty<SndInfoRumbleDef>();
+    public IReadOnlyList<SndInfoRumbleMap> RumbleMaps { get; init; } = Array.Empty<SndInfoRumbleMap>();
 }
 
 /// <summary>Reads SNDINFO map music and logical sound mappings; unsupported directives fail explicitly.</summary>
@@ -35,7 +42,8 @@ public static class SndInfoMapMusicParser
         return success;
     }
 
-    public static bool TryParseData(string text, out SndInfoData data, out string? error, SndInfoData? previous = null)
+    public static bool TryParseData(string text, out SndInfoData data, out string? error, SndInfoData? previous = null,
+        ISndInfoGameFilter? games = null)
     {
         var result = previous is null ? new Dictionary<int, string>() : new Dictionary<int, string>(previous.MapMusic);
         var sounds = previous is null ? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -65,9 +73,78 @@ public static class SndInfoMapMusicParser
             tokens.Add(token);
         }
         if (position != text.Length) { error = "Invalid SNDINFO token or unterminated comment/string."; return false; }
+        if (games is not null)
+            tokens = VmSndInfoPreprocessor.FilterGameBlocks(tokens, games);
+        var ambients = previous?.Ambients.ToList() ?? new List<SndInfoAmbientSound>();
+        var musicVolumes = previous?.MusicVolumes.ToList() ?? new List<SndInfoMusicVolume>();
+        var musicAliases = previous?.MusicAliases.ToList() ?? new List<SndInfoMusicAlias>();
+        var modPlayers = previous?.ModPlayers.ToList() ?? new List<SndInfoModPlayer>();
+        var midiDevices = previous?.MidiDevices.ToList() ?? new List<SndInfoMidiDevice>();
+        var rumbleDefs = previous?.RumbleDefs.ToList() ?? new List<SndInfoRumbleDef>();
+        var rumbleMaps = previous?.RumbleMaps.ToList() ?? new List<SndInfoRumbleMap>();
         bool? assignments = null;
         for (var index = 0; index < tokens.Count;)
         {
+            if (tokens[index].Equals("$musicvolume", StringComparison.OrdinalIgnoreCase))
+            {
+                index++;
+                var extErrors = new List<string>();
+                if (!VmSndInfoExtendedDirectives.TryParseMusicVolume(tokens, ref index, musicVolumes, extErrors))
+                { error = extErrors[0]; return false; }
+                continue;
+            }
+            if (tokens[index].Equals("$musicalias", StringComparison.OrdinalIgnoreCase))
+            {
+                index++;
+                var extErrors = new List<string>();
+                if (!VmSndInfoExtendedDirectives.TryParseMusicAlias(tokens, ref index, musicAliases, extErrors))
+                { error = extErrors[0]; return false; }
+                continue;
+            }
+            if (tokens[index].Equals("$modplayer", StringComparison.OrdinalIgnoreCase))
+            {
+                index++;
+                var extErrors = new List<string>();
+                if (!VmSndInfoExtendedDirectives.TryParseModPlayer(tokens, ref index, modPlayers, extErrors))
+                { error = extErrors[0]; return false; }
+                continue;
+            }
+            if (tokens[index].Equals("$mididevice", StringComparison.OrdinalIgnoreCase))
+            {
+                index++;
+                var extErrors = new List<string>();
+                if (!VmSndInfoExtendedDirectives.TryParseMidiDevice(tokens, ref index, midiDevices, extErrors))
+                { error = extErrors[0]; return false; }
+                continue;
+            }
+            if (tokens[index].Equals("$rumbledef", StringComparison.OrdinalIgnoreCase))
+            {
+                index++;
+                var extErrors = new List<string>();
+                if (!VmSndInfoExtendedDirectives.TryParseRumbleDef(tokens, ref index, rumbleDefs, extErrors))
+                { error = extErrors[0]; return false; }
+                continue;
+            }
+            if (tokens[index].Equals("$rumble", StringComparison.OrdinalIgnoreCase))
+            {
+                index++;
+                var extErrors = new List<string>();
+                if (!VmSndInfoExtendedDirectives.TryParseRumbleMap(tokens, ref index, rumbleMaps, extErrors))
+                { error = extErrors[0]; return false; }
+                continue;
+            }
+            if (tokens[index].Equals("$ambient", StringComparison.OrdinalIgnoreCase))
+            {
+                index++;
+                var ambientErrors = new List<string>();
+                if (!VmSndInfoAmbientParser.TryParse(tokens, ref index, ambients, ambientErrors))
+                {
+                    error = ambientErrors.Count > 0 ? ambientErrors[0] : "Invalid SNDINFO ambient.";
+                    return false;
+                }
+
+                continue;
+            }
             if (tokens[index].Equals("$registered", StringComparison.OrdinalIgnoreCase)
                 || tokens[index].Equals("$edfoverride", StringComparison.OrdinalIgnoreCase))
             {
@@ -361,7 +438,24 @@ public static class SndInfoMapMusicParser
             if (number != 0) result[number] = resource;
             index += 3;
         }
-        data = new(result, sounds) { PlayerReservedSlots = reserves.ToArray(), PlayerCompatibilityTargets = compatibility, PlayerSounds = playerSounds.ToArray(), Aliases = aliases, RandomGroups = groups, Settings = settings, CurrentPitchMask = currentPitchMask, GlobalRolloff = globalRolloff };
+        data = new(result, sounds)
+        {
+            PlayerReservedSlots = reserves.ToArray(),
+            PlayerCompatibilityTargets = compatibility,
+            PlayerSounds = playerSounds.ToArray(),
+            Aliases = aliases,
+            RandomGroups = groups,
+            Settings = settings,
+            CurrentPitchMask = currentPitchMask,
+            GlobalRolloff = globalRolloff,
+            Ambients = ambients.ToArray(),
+            MusicVolumes = musicVolumes.ToArray(),
+            MusicAliases = musicAliases.ToArray(),
+            ModPlayers = modPlayers.ToArray(),
+            MidiDevices = midiDevices.ToArray(),
+            RumbleDefs = rumbleDefs.ToArray(),
+            RumbleMaps = rumbleMaps.ToArray(),
+        };
         return true;
     }
 

@@ -1,7 +1,7 @@
 namespace HCDE.Net.Core;
 
 /// <summary>
-/// Subset of <c>EDemoCommand</c> from <c>d_protocol.h</c> used by live netcode.
+/// Subset of <c>EDemoCommand</c> from <c>d_protocol.h</c> used by live netcode (allow-lists mirror <c>d_net.cpp</c> 3512–3640).
 /// </summary>
 public enum DemoCommand : byte
 {

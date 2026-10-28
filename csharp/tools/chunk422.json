@@ -1,0 +1,15 @@
+[
+  {
+    "name": "p-lnspec-line-camera-chunk422",
+    "bucket": "conversion",
+    "note": "Automap line flags, camera change, thing move, quake/puzzle Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
+    "auditSeams": "Line iterators, `R_ClearPastViewer`, inventory scan, and `P_StartQuake` are not hosted.",
+    "auditRationale": "Credits automap flag shifts, camera revert cheat policy, `EV_Thing_Move` fog arg, and puzzle-item scan gates from `p_lnspec.cpp`.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (422)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **150** |\n| **Honest** | **0** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 422 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

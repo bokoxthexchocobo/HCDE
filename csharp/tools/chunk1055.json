@@ -1,0 +1,32 @@
+[
+  {
+    "name": "g-mapinfo-parse-mid-chunk1055",
+    "bucket": "conversion",
+    "note": "Optional float compat, `SkipToNext`, EOF guard, `ParseLookupName`, and lump token from `g_mapinfo.cpp` (**601–750**). Follows **1054** (**451–600**).",
+    "auditSeams": "`FScanner`, `Printf`, `ScriptError`, `ParseComma`, and `ParseExitText` (**754+**) remain host-injected; uncredited `VmMapInfoOptionalFloatCompat` / `VmMapInfoParseLookupName` are not re-credited.",
+    "auditRationale": "File-scoped UNCredited **`g_mapinfo.cpp`** **601–750** (+150); excludes **451–600** (**1054**). Hull stops before **`ParseExitText`** (**754+** denylist adjacency); **ParseLumpOrTextureName** (**742–746**) inside band.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_mapinfo.cpp --start 601 --end 750` and `--chunk 1055 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `HCDE_MapInfo_CheckOptionalFloatCompat` (**600–634**) | yes |\n| `SkipToNext` (**642–652**) | yes |\n| `CheckEndOfFile` (**661–667**) | yes |\n| `ParseLookupName` (**676–735**) | yes |\n| `ParseLumpOrTextureName` (**742–746**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **451–600** | chunk **1054** |\n| **636–641**, **669–675**, **737–741**, **748–753** | comment banners |\n| **754+** | `ParseExitText` / ParseExit* denylist corridor |\n| **833+** | chunks **1027–1036** |\n| `VmMapInfoOptionalFloatCompat` / `VmMapInfoParseLookupName` | uncredited helpers — seam only |\n\n| Managed (`VmMapInfoParseMid1055Slice.cs`) | Native (`g_mapinfo.cpp`) |\n|-------------------------------------------|---------------------------|\n| `TryResolveOptionalFloatCompat` / warning gate | **600–634** |\n| `CountSkipToNextTokens` | **642–652** |\n| `ShouldScriptErrorUnexpectedEof` | **661–667** |\n| lookup / multiline / trailing-comma compat | **676–735** |\n| `AssignMustGetString` | **742–746** |\n| Band hull (exclusive slice) | **601–750** |\n\n### Chunk **1055** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1054** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmMapInfoParseMid1055Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "HCDE_MapInfo_CheckOptionalFloatCompat / ParseLookupName",
+        "start": 601,
+        "end": 750,
+        "tests": [
+          "VmMapInfoParseMid1055SliceTests.TryResolveOptionalFloatCompat_AcceptsLegacyNumber",
+          "VmMapInfoParseMid1055SliceTests.CountSkipToNextTokens_CountsCommaSeparatedValues",
+          "VmMapInfoParseMid1055SliceTests.ShouldScriptErrorUnexpectedEof_OnlyNewFormatAtEnd",
+          "VmMapInfoParseMid1055SliceTests.TryParseDollarLookupPrefix_StripsSigil",
+          "VmMapInfoParseMid1055SliceTests.TrimTrailingNewlineFromMultiline_RemovesFinalNewline",
+          "VmMapInfoParseMid1055SliceTests.ShouldStopMultilineOnTrailingCommaCompat_DetectsCloseBraceAfterComma",
+          "VmMapInfoParseMid1055SliceTests.TokenIsLookupKeyword_IsCaseInsensitive",
+          "VmMapInfoParseMid1055SliceTests.AssignMustGetString_CoalescesNull"
+        ]
+      }
+    ]
+  }
+]

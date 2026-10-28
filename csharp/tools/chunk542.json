@@ -1,0 +1,13 @@
+[
+  {
+    "name": "d-net-legacy-event-payload-chunk542",
+    "bucket": "conversion",
+    "note": "Merged into d-net-docmd-chat-chunk601 (sub-150 depad merge).",
+    "auditSeams": "`HCDEAppendFieldBytes`, `HCDEAppendLegacyStringFromCanonical`, `HCDEAppendByte`, and `HCDEAppendLegacyCVarChange` I/O are injected; `DEM_ADDSLOT` continuation in `.inl` files is not hosted.",
+    "auditRationale": "Retired: legacy payload native credit moved to live chunk653 (`HCDEAppendLegacyRunArgs` / `HCDEAppendLegacyEventPayload`).",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `HCDEAppendLegacyRunArgs` **4111\u20134136** and `HCDEAppendLegacyEventPayload` switch **4144\u20134299** (`d_net.cpp`). `VmActorDoDamage`/`VmActorDoKill` playsim bands are tested but not padding-listed. Excluded `.inl` tail and live buffer append.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|----------------------|\n| `TryPlanLegacyRunArgs` / `MaskRunArgCount` / `UsesNamedRunArgs` | **4111\u20134136** |\n| `RunArgPayloadBytes` / `UsesRunArgs` | **4256\u20134269** |\n| `IsZeroPayloadEvent` | **4144\u20134161** |\n| `SetInvTrailingBytes` | **4162\u20134171** |\n| `GiveTakeCheatTrailingBytes` | **4173\u20134177** |\n| `NetEventTrailingBytes` | **4184\u20134187** |\n| `Summon2TrailingBytes` | **4199\u20134204** |\n| `ChangeMap2LeadingBytes` / `WarpCheatFieldBytes` | **4211\u20134230** |\n| `ConvReplyFieldBytes` | **4232\u20134254** |\n| `UsesLegacyCVarChange` | **4256\u20134269** |\n| `SetSlotNeedsPnumPrefix` / `SetSlotLeadingFieldBytes` / `TryReadSetSlotHeader` | **4275\u20134299** |\n| *(playsim test seam, no padding helpers)* | `A_SetTics` **3999\u20134012**, `DoDamage` **4047\u20134079**, `KILS` **4246\u20134255**, `DoKill` **4257\u20134286** (`p_actionfunctions.cpp`) |\n",
+    "retired": true
+  }
+]

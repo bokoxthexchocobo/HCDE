@@ -1,0 +1,13 @@
+[
+  {
+    "name": "p-mobj-hash-missile-chunk464",
+    "bucket": "conversion",
+    "note": "Merged into chunk458.",
+    "auditSeams": "`Level->TIDHash`, `VMCall`, and `S_Sound` are not hosted.",
+    "auditRationale": "Credits TID hash maintenance, unique TID search, missile damage roll, and howl action from `p_mobj.cpp` (3481+ band after recognition).",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `CeilingClamp` | see native citation in chunk note |\n| `CheckPositionDestroy` | see native citation in chunk note |\n| `ClearDormantSpawnflag` | see native citation in chunk note |\n| `DamageValNonNegative` | see native citation in chunk note |\n| `DefaultInfoCeiling` | see native citation in chunk note |\n| `DefaultInfoFloat` | see native citation in chunk note |\n| `DoubleFloorClamp` | see native citation in chunk note |\n| `FloorZClamp` | see native citation in chunk note |\n| `GenPositiveTid` | see native citation in chunk note |\n| `LimitZeroMeansMax` | see native citation in chunk note |\n| `LinearSearch` | see native citation in chunk note |\n| `LinearTidLoop` | see native citation in chunk note |\n| `MaskRollDamage` | see native citation in chunk note |\n| `MaskZeroMultiply` | see native citation in chunk note |\n| `PositionBlocked` | see native citation in chunk note |\n| `PrevZPreserve` | see native citation in chunk note |\n| `RandomBatch` | see native citation in chunk note |\n| `RandomSearch` | see native citation in chunk note |\n| `RandomTidBatch` | see native citation in chunk note |\n| `RecursiveFindFive` | see native citation in chunk note |\n| `SpawnCeilingZ` | see native citation in chunk note |\n| `SpawnFloatZ` | see native citation in chunk note |\n| `TeleportFogBoth` | see native citation in chunk note |\n| `TidHashIndex` | see native citation in chunk note |\n| `TidNonZeroCandidate` | see native citation in chunk note |\n| `TidZeroSkipsHash` | see native citation in chunk note |\n| `UniqueTidFound` | see native citation in chunk note |\n| `VmCallFailed` | see native citation in chunk note |",
+    "retired": true
+  }
+]

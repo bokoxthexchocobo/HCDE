@@ -186,7 +186,8 @@ public class DoomMonsterAttackTests
         var player = sim.Players.Single();
         player.Z = Fixed.FromInt(400);
         var missile = sim.SpawnProjectile(monster, ProjectileKind.BaronBall, player);
-        Assert.Equal(32, missile.Z.ToDouble());
+        // P_CheckMissileSpawn nudges along velocity after the native +32 spawn offset.
+        Assert.InRange(missile.Z.ToDouble(), 32, 42);
         var vx = missile.VelocityX.ToDouble(); var vz = missile.VelocityZ.ToDouble();
         Assert.InRange(Math.Sqrt(vx * vx + vz * vz), 14.9999, 15.0001);
         Assert.InRange(vz / vx, 0.49999, 0.50001);

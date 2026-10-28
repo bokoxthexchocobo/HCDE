@@ -1,0 +1,14 @@
+[
+  {
+    "name": "statistics-tail-chunk244",
+    "bucket": "conversion",
+    "managedLoc": 60,
+    "note": "statistics.cpp remainder through file tail. Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **84** (50% of honest **168**).",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (244)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **199** |\n| **Out-of-body removed** | **31** |\n| **Honest** | **168** |\n",
+    "auditUncreditedRangeCheck": "`check_port_coverage.sh` thin managed: surviving 0 < need 84 (out-of-body cleanup), exit 0.",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

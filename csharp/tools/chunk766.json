@@ -1,0 +1,11 @@
+[
+  {
+    "name": "p-psprite-check-weapon-buttons-chunk766",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Retired: merged into chunk765 (`p-psprite-bob-buttons-find-chunk765`).",
+    "auditPaddingReview": "Retired — credits live in chunk765.",
+    "managedSourceFiles": [],
+    "nativeRanges": []
+  }
+]

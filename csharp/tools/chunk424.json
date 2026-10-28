@@ -1,0 +1,15 @@
+[
+  {
+    "name": "p-lnspec-env-portal-chunk424",
+    "bucket": "conversion",
+    "note": "Autosave/skill, noise/communicator, portal, fog, glow, health Retired (2026-10-23): out-of-body credit removed; honest **21** < **150**.",
+    "auditSeams": "Network autosave, `P_NoiseAlert`, portal changes, and health groups are not hosted.",
+    "auditRationale": "Credits autosave gate, noise TID wiring, communicator side check, portal args, fog/glow/health policy from `p_lnspec.cpp` (non-overlapping bands).",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (424)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **218** |\n| **Out-of-body removed** | **197** |\n| **Honest** | **21** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 424 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

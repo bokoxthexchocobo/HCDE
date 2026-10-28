@@ -1,0 +1,15 @@
+[
+  {
+    "name": "p-mobj-model-serialize-chunk752",
+    "bucket": "conversion",
+    "note": "Whole model archive serialize helpers (`p_mobj.cpp` 1749\u20131918); excludes `DActorModelData` / `DViewPosition` class methods. Retired (2026-10-23): out-of-body credit removed; honest **149** < **150**.",
+    "auditSeams": "`FSerializer`, `Models[]`, `FindModel`, and nested `arc` IO are injected via `IModelArchiveFieldSink` in uncredited `ModelArchiveFieldSink.cs` / `ModelArchiveContext`.",
+    "auditRationale": "Re-ports retired chunk736 band with faithful whole-function serialize helpers only (1920+ deferred until full class archive ports).",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "**Fidelity review (2026-10-22):** Credits eight free functions **1749\u20131918** only. Excludes `DActorModelData::Serialize` **1920\u20131934**, `DActorModelData::OnDestroy` **1936\u20131943**, and `DViewPosition::Serialize` **1945\u20131950** (require `Super::Serialize` and collection types).\n\n| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SerializeModelId` | `SerializeModelID` 1749\u20131772 |\n| `SerializeBoneOverrideComponent` | `SerializeBoneOverrideComponent` (template) 1774\u20131786 |\n| `SerializeBoneOverride` | `Serialize(BoneOverride)` 1788\u20131796 |\n| `SerializeTrs` / `IModelArchiveFieldSink.ArcVector3` | `Serialize(TRS)` 1798\u20131806 |\n| `SerializeModelOverride` | `Serialize(ModelOverride)` 1808\u20131815 |\n| `SerializeAnimModelOverride` | `Serialize(AnimModelOverride)` 1817\u20131830 |\n| `SerializeModelAnim` | `Serialize(ModelAnim)` 1832\u20131845 |\n| `ShouldClearLegacyInterp` | legacy read branch 1852\u20131855 |\n| `ReadModelAnimFrameType` | read `type` dispatch 1858\u20131883 |\n| `SerializeModelAnimFrame` | `Serialize(ModelAnimFrame)` 1847\u20131918 |\n| `WriteModelAnimFrameTypeToken` | write `type` branch 1888\u20131914 |\n| `ModelAnimFrameInterpFields` | `ModelAnimFrameInterp` read/write 1866\u20131870, 1897\u20131899 |\n\n### Out-of-body uncredit (752)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **163** |\n| **Out-of-body removed** | **14** |\n| **Honest** | **149** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 752 --band` \u2192 retired skip (out-of-body cleanup), exit 0."
+  }
+]

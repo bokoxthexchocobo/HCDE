@@ -1,0 +1,28 @@
+[
+  {
+    "name": "p-setup-clearlevel-setup-chunk981",
+    "bucket": "conversion",
+    "note": "`ClearLevelData` continuation, `P_FreeLevelData`, and `P_SetupLevel` head from `p_setup.cpp` (**301–450**); follows chunk **980** (**151–300**).",
+    "auditSeams": "`ClearVelocities`, `SN_StopAllSequences`, container `.Clear()`, `delete`, `Behaviors.UnloadModules`, and sound init remain host-injected.",
+    "auditRationale": "UNCredited mid-file `p_setup.cpp`; disjoint from **979**/**980** hulls. Counter lines **302–307** are native in this band (not in **980** `151–300` hull). Reaudit hygiene: no identity `ShouldRecordShaderStartTime`.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_setup.cpp --start 301 --end 450` and `--chunk 981 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| UDMF key clears (**311–314**) | yes |\n| Strife dialogue drain (**318–326**) | yes |\n| Subsector BSP teardown (**328–331**) | yes |\n| Polyblock chain delete (**365–375**) | yes |\n| Automap / spatial accel teardown (**381–389**) | yes |\n| Network sector baselines (**391–393**) | yes |\n| `P_FreeLevelData` (**404–411**) | yes |\n| `P_SetupLevel` head (**423–450**) | yes (predicates) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **302–309**, **316**, **332–363**, **377–380** | host calls / bulk clears |\n| **398–421** | comment banners |\n| **291–300** | credited on **980** |\n\n| Managed (`VmPSetupClearLevel981Slice.cs`) | Native (`p_setup.cpp`) |\n|-------------------------------------------|----------------------|\n| `UdmfKeySlotInRange` | **311–314** |\n| `TryPopStrifeDialogue` / `ShouldDrainStrifeDialogueQueue` | **318–326** |\n| `ShouldDeleteSubsectorBsp` | **328–331** |\n| `DeletePolyblockChain` / `ShouldDeletePolyblockLink` | **365–375** |\n| `ShouldDestroyAutomap` / `ShouldDeleteSpatialAccelerators` | **381–389** |\n| `ShouldClearNetworkSectorBaselines` | **391–393** |\n| `ShouldIterateFreeLevelData` | **404–411** |\n| `SetupLevelResetsScoreCounts` / `SetupLevelClearsPlayerMobReference` | **435–447** |\n| `MaptypeAwaitingMapinfoClassification` / `SelectInitialViewHeight` | **432–450** |\n| Band hull (exclusive slice) | **301–450** |\n\n### Chunk **981** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**980** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPSetupClearLevel981Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/p_setup.cpp",
+        "symbol": "ClearLevelData",
+        "start": 301,
+        "end": 450,
+        "tests": [
+          "VmPSetupClearLevel981SliceTests.UdmfKeysAndDialogueDrain",
+          "VmPSetupClearLevel981SliceTests.PolyblockChainDeletion",
+          "VmPSetupClearLevel981SliceTests.ClearLevelDataTailPredicates",
+          "VmPSetupClearLevel981SliceTests.FreeLevelDataAndSetupHead"
+        ]
+      }
+    ]
+  }
+]

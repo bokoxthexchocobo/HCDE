@@ -1,0 +1,31 @@
+[
+  {
+    "name": "p-acs-drop-gameplay-chunk944",
+    "bucket": "conversion",
+    "note": "`ACSF_DropItem` through start of `ACSF_ChangeActorPitch` from `p_acs.cpp` (**6300–6449**). Follows chunk **943** (**6150–6299**); outside deferred **7366–7509**.",
+    "auditSeams": "`P_DropItem`, `DropInventory`, `CheckActorFlag`, `P_StartQuakeXYZ`, line iterators, `PClass::FindActor`, and `SetActorAngle`/`SetActorPitch` remain host seams.",
+    "auditRationale": "Honest **150**-line UNCredited band with zero tally overlap; exclusive `VmPAcsCallFuncDropGameplay944Slice.cs` (`AcsCallFunctions` handlers are not matrix credit).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 6300 --end 6449` and `--chunk 944 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|----------------------|\n| chunk **944** hull | **6300–6449** |\n| `DropItemAmountOrDefault` / `DropItemChanceOrDefault` | `ACSF_DropItem` **6304–6305** |\n| `DropItemUsesActivatorTid` / `ActivatorRequiredForDrop` | **6310–6316** |\n| `DropItemClassFound` / `IncrementDropCount` | **6308–6328** |\n| `DropInventoryTypeResolved` | `ACSF_DropInventory` **6340–6366** |\n| `CheckFlagActorPresent` | `ACSF_CheckFlag` **6374–6378** |\n| `ResolveQuakeEx*` optional args | `ACSF_QuakeEx` **6385–6396** |\n| `SetLineActivationRepeatOrDefault` / repeat flags | `ACSF_SetLineActivation` **6404–6409** |\n| `GetLineActivationWhenFound` | `ACSF_GetLineActivation` **6417–6418** |\n| `PowerupClassIsActorType` / `PowerupInventoryPresent` | `ACSF_GetActorPowerupTics` **6425–6438** |\n| `ChangeActorAngleInterpolate` | `ACSF_ChangeActorAngle` **6445** |\n| `ChangeActorPitchInterpolate` / `MinArgCountMet` | `ACSF_ChangeActorPitch` **6448–6449** |\n\n### Chunk **944** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**943** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPAcsCallFuncDropGameplay944Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "ACSF_DropItem",
+        "start": 6300,
+        "end": 6449,
+        "tests": [
+          "VmPAcsCallFuncDropGameplay944SliceTests.DropItemAmount_DefaultsToNegativeOne",
+          "VmPAcsCallFuncDropGameplay944SliceTests.DropItemChance_DefaultsToTwoFiftySix",
+          "VmPAcsCallFuncDropGameplay944SliceTests.QuakeExDamageMultiplier_DefaultsToOne",
+          "VmPAcsCallFuncDropGameplay944SliceTests.QuakeExHighFrequency_DefaultsToHalf",
+          "VmPAcsCallFuncDropGameplay944SliceTests.SetLineActivationRepeat_DefaultsToNegativeOne",
+          "VmPAcsCallFuncDropGameplay944SliceTests.GetLineActivation_ReturnsZeroWhenLineMissing",
+          "VmPAcsCallFuncDropGameplay944SliceTests.ChangeActorAngleInterpolate_FalseWhenArgMissing"
+        ]
+      }
+    ]
+  }
+]

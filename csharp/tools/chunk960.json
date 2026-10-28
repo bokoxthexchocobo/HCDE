@@ -1,0 +1,33 @@
+[
+  {
+    "name": "p-mobj-file-head-chunk960",
+    "bucket": "conversion",
+    "note": "Water sink macros, `sv_gravity` CUSTOM_CVAR, client CVAR defaults, and `AActor` GC pointer registration head from `p_mobj.cpp` (**1–150**).",
+    "auditSeams": "Includes, `FRandom` stream objects, `IMPLEMENT_CLASS`, and `PlayerLandedOnThing` prototype remain host seams.",
+    "auditRationale": "Honest **150**-line UNCredited band with zero tally overlap; exclusive `VmPMobjFileHead960Slice.cs` (before serialize **210+** and tick **728**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 1 --end 150` and `--chunk 960 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `WATER_*` / `Z_UNDERFLOW` macros (**78–82**) | yes |\n| `CUSTOM_CVAR sv_gravity` NaN/INF guard + level loop (**122–132**) | yes |\n| `cl_*` archive defaults (**134–137**) | yes (default policy) |\n| `IMPLEMENT_POINTER` through `LastLookActor` (**145–150**) | yes (field registry) |\n| Static `FRandom` / `IMPLEMENT_CLASS` (**97–142**) | seam |\n\n| Managed (`VmPMobjFileHead960Slice.cs`) | Native (`p_mobj.cpp`) |\n|----------------------------------------|---------------------|\n| Water sink / jump constants | **78–82** |\n| `IsNonFiniteGravity` / `SanitizeSvGravity` / `ApplySvGravityToAllLevels` | **125–131** |\n| Client cvar default helpers | **134–137** |\n| `RegistersAActorGcPointer` / registration order | **145–150** |\n| Band hull (exclusive slice) | **1–150** |\n\n### Chunk **960** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**959** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjFileHead960Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "CUSTOM_CVAR",
+        "start": 1,
+        "end": 150,
+        "tests": [
+          "VmPMobjFileHead960SliceTests.SanitizeSvGravity_ReplacesNaNWithDefault",
+          "VmPMobjFileHead960SliceTests.SanitizeSvGravity_PreservesFiniteValue",
+          "VmPMobjFileHead960SliceTests.ApplySvGravityToAllLevels_UpdatesEachLevel",
+          "VmPMobjFileHead960SliceTests.AdvanceWaterSink_UsesSmallFactorWhenRequested",
+          "VmPMobjFileHead960SliceTests.WaterJumpVelocity_ScalesMultiplier",
+          "VmPMobjFileHead960SliceTests.RegistersAActorGcPointer_MatchesImplementPointerBand",
+          "VmPMobjFileHead960SliceTests.GcPointerRegistrationOrder_MatchesNativeSequence",
+          "VmPMobjFileHead960SliceTests.ResolveSvGravityCvar_SanitizesAndApplies",
+          "VmPMobjFileHead960SliceTests.ClampsBelowZUnderflow_DetectsUnderflowConstant"
+        ]
+      }
+    ]
+  }
+]

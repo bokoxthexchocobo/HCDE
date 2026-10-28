@@ -1,0 +1,15 @@
+[
+  {
+    "name": "d-main-render-dmflags-chunk373",
+    "bucket": "conversion",
+    "note": "D_ToggleHud, D_Render, dmflags/dmflags2, compatmode presets Retired (2026-10-24): `--band` hull overlaps existing credit (d-main-doomloop-page-chunk392 src/d_main.cpp 614-617).",
+    "auditSeams": "Network writes, `AM_Stop`, and renderer interpolation are not hosted; managed code mirrors gating predicates only.",
+    "auditRationale": "Credits `D_ToggleHud`, `D_Render`, `CUSTOM_CVAR(dmflags)`, `CUSTOM_CVAR(dmflags2)`, and `CUSTOM_CVAR(compatmode)` presets from `d_main.cpp`.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (373)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **156** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **156** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 373 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

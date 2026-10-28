@@ -1,0 +1,33 @@
+[
+  {
+    "name": "p-acs-runscript-actor-sector-chunk948",
+    "bucket": "conversion",
+    "note": "`DLevelScript::RunScript` `PCD_CANCELFADE` tail through `PCD_STARTTRANSLATION` from `p_acs.cpp` (**9900–10049**). Follows **947** (**≤9899**); avoids **8850–8999** credited corridor.",
+    "auditSeams": "`P_MoveThing`, sector plane queries, `DPlaneWatcher`, `FRemapTable`, and linedef texture offsets remain host seams.",
+    "auditRationale": "Honest **150**-line UNCredited band with zero tally overlap; exclusive `VmPAcsVmOpcode948Slice.cs` (`AcsVm` handlers are not matrix credit).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 9900 --end 10049` and `--chunk 948 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native opcode region | Behavior ported |\n|----------------------|-----------------|\n| `PCD_CANCELFADE` tail (**9900–9902**) | yes |\n| `PCD_PLAYMOVIE` (**9904–9905**) | yes |\n| `PCD_SETACTORPOSITION` (**9908–9916**) | yes |\n| `PCD_GETACTORX/Y/Z` (**9919–9936**) | yes |\n| `PCD_GETACTORFLOORZ/CEILINGZ` / angle / pitch (**9939–9964**) | yes |\n| `PCD_GETLINEROWOFFSET` (**9967–9975**) | yes |\n| `PCD_GETSECTORFLOORZ/CEILINGZ` (**9978–10009**) | yes |\n| `PCD_GETSECTORLIGHTLEVEL` (**10012–10022**) | yes |\n| `PCD_SETFLOORTRIGGER` / `SETCEILINGTRIGGER` (**10025–10036**) | yes |\n| `PCD_STARTTRANSLATION` head (**10039–10049**) | yes |\n\n| Managed (`VmPAcsVmOpcode948Slice.cs`) | Native (`p_acs.cpp`) |\n|----------------------------------------|---------------------|\n| `ResolvePlayMovieStackValue` | **9904–9905** |\n| `SetActorPosition*` / `AcsToDouble` | **9908–9916** |\n| `ResolveActorAcsScalar` / `ResolveActorZWithBob` / `SelectActorAxisAcs` | **9919–9964** |\n| `LineRowOffsetWhenActivationMissing` | **9967–9975** |\n| `SectorTagIndex` / `SelectSectorPlaneHeight` | **9978–10009** |\n| `ResolveSectorLightLevel` | **10012–10022** |\n| `IsCeilingPlaneWatcher` / `ApplyPlaneWatcherStackPop` | **10025–10036** |\n| `TranslationIndexInRange` / `TranslationTableSlot` | **10039–10049** |\n\n### Chunk **948** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**947** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPAcsVmOpcode948Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "DLevelScript::RunScript",
+        "start": 9900,
+        "end": 10049,
+        "tests": [
+          "VmPAcsVmOpcode948SliceTests.ResolvePlayMovieStackValue_ForcesNegativeOne",
+          "VmPAcsVmOpcode948SliceTests.SetActorPositionInterpolate_NonZeroIsTrue",
+          "VmPAcsVmOpcode948SliceTests.ResolveActorZWithBob_IncludesBobOffset",
+          "VmPAcsVmOpcode948SliceTests.SelectActorAxisAcs_UsesYForGetActorY",
+          "VmPAcsVmOpcode948SliceTests.SectorHeightUsesPointInSector_WhenTagZero",
+          "VmPAcsVmOpcode948SliceTests.ResolveSectorLightLevel_ReturnsNegativeOneWhenMissing",
+          "VmPAcsVmOpcode948SliceTests.IsCeilingPlaneWatcher_ForSetCeilingTrigger",
+          "VmPAcsVmOpcode948SliceTests.TranslationTableSlot_IsZeroBased",
+          "VmPAcsVmOpcode948SliceTests.ApplyPlaneWatcherStackPop_DropsEightSlots"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "name": "g-mapinfo-flag-apply-chunk279",
+    "bucket": "conversion",
+    "managedLoc": 56,
+    "note": "ParseMapDefinition flag handler switch Retired (2026-10-24): `--band` hull overlaps existing credit (g-mapinfo-option-dispatch-chunk280 src/gamedata/g_mapinfo.cpp 2123-2125).",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (279)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **150** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 279 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

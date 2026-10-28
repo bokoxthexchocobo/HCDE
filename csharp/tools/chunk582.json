@@ -1,0 +1,61 @@
+[
+  {
+    "name": "action-face-movement-copy-sprite-chunk582",
+    "bucket": "conversion",
+    "note": "`A_FaceMovementDirection`, `A_CopySpriteFrame`, `A_SetVisibleRotation`, and `A_SetTranslation` (`p_actionfunctions.cpp` **4897–5082**). Stops before **552** `A_CheckTerrain` (**5090+**). Re-lands retired **550** hull with honest **≥150** `nativeLoc`.",
+    "auditSeams": "`COPY_AAPTR`, `AActor::SetAngle`/`SetPitch`, sprite/frame assignment, visible-rotation fields, and `SetTranslation` VM calls are not hosted.",
+    "auditRationale": "Face-movement yaw/pitch limits, copy-sprite guards, visible-rotation flag gates, and translation name check mirrored by `VmActorFaceMovementCopySprite` and tests (retired **550** was **144** honest after out-of-body trim).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 582 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `EarlyFaceMovementFail`, `FmdfFlags`, `ShouldAdjustYaw`, `ShouldAdjustPitch` | `A_FaceMovementDirection` **4897–4918**, **4920–4948** |\n| `ClampYawDelta`, `ClampPitchDelta`, `PitchFromVelocity` | **4928–4947**, **4955–4980** |\n| `CopySpriteFrameShouldFail`, `ShouldCopySprite`, `ShouldCopyFrame` | `A_CopySpriteFrame` **4997–5014** |\n| `SetVisibleRotationShouldFail`, `ShouldAssignVisible*` | `A_SetVisibleRotation` **5032–5066** |\n| `SetTranslationRequiresName` | `A_SetTranslation` **5075–5081** |\n\n### vs chunk **547** / **552**\n\n| | Lines |\n|--|------:|\n| **547** (`CheckBlock`) | ends **4888** |\n| **582** (this row) | **4897–5082** (**186** function-edge sum) |\n| **552** (`A_CheckTerrain`) | **5090+** (not in this row) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **186** |\n| Net behavior-ported | **186** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmActorFaceMovementCopySprite.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_FaceMovementDirection",
+        "start": 4897,
+        "end": 4983,
+        "tests": [
+          "VmActorFaceMovementCopySpriteTests.EarlyFaceMovementFail_BothNoPitchAndNoAngle",
+          "VmActorFaceMovementCopySpriteTests.ShouldAdjustYaw_WhenMoving",
+          "VmActorFaceMovementCopySpriteTests.ClampYawDelta_RespectsLimit",
+          "VmActorFaceMovementCopySpriteTests.ClampPitchDelta_WhenOverLimit",
+          "VmActorFaceMovementCopySpriteTests.ShouldAdjustPitch_WhenFlagClear"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_CopySpriteFrame",
+        "start": 4991,
+        "end": 5015,
+        "tests": [
+          "VmActorFaceMovementCopySpriteTests.CopySpriteFrameShouldFail_WhenBothSkipFlags",
+          "VmActorFaceMovementCopySpriteTests.ShouldCopySprite_WhenFlagClear",
+          "VmActorFaceMovementCopySpriteTests.CopySpriteFrameShouldFail_WhenSameActor"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_SetVisibleRotation",
+        "start": 5024,
+        "end": 5067,
+        "tests": [
+          "VmActorFaceMovementCopySpriteTests.SetVisibleRotationShouldFail_WithoutMobj",
+          "VmActorFaceMovementCopySpriteTests.ShouldAssignVisibleStartAngle_WhenFlagClear",
+          "VmActorFaceMovementCopySpriteTests.ShouldAssignVisibleEndPitch_WhenFlagClear"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_SetTranslation",
+        "start": 5075,
+        "end": 5082,
+        "tests": [
+          "VmActorFaceMovementCopySpriteTests.SetTranslationRequiresName_WhenPresent",
+          "VmActorFaceMovementCopySpriteTests.SetTranslationRequiresName_WhenMissing"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "p-pspr-header-buttons-chunk813",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "RETIRED: credited non-function header/DEFINE bands only; see HCDE_CSHARP_CHUNK813_AUDIT.md.",
+    "nativeRanges": [],
+    "managedSourceFiles": []
+  }
+]

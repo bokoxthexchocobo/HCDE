@@ -1,0 +1,15 @@
+[
+  {
+    "name": "p-things-raise-remove-warp-proximity-chunk760",
+    "bucket": "conversion",
+    "note": "`P_RemoveThing`, raise/can-raise, velocity, `P_Thing_CheckProximity`, `P_Thing_Warp`, `DEFINE Warp` (`p_things.cpp` 422\u2013535, 566\u2013811, 818\u2013835; excludes `P_Thing_CheckInputNum` 536\u2013565). Retired (2026-10-24): `--band` hull overlaps existing credit (p-acs-player-input-fade-to-chunk50 src/playsim/p_things.cpp 536-565).",
+    "auditSeams": "`P_CheckPosition`, `P_CanResurrect`, `Revive`, `COPY_AAPTR` / class-name resolution, `P_CheckSight`, thinker iteration, `P_TestMobjLocation`, `P_TryMove`, and portal displacements are injected.",
+    "auditRationale": "Faithful VM ports for thing lifecycle, `P_Thing_CheckProximity` (replaces retired `ActorProximity.cs` \u2014 one code path via `VmPThingsRaiseRemoveWarpProximity.Check`), and warp control flow.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "**Trim (2026-10-22):** removed non-native classname catalog pre-filter and XML summaries; shared raise dimension helpers; dropped unused flag constants.\n\n| Managed | Native (`p_things.cpp`) |\n|---------|----------------------|\n| `P_RemoveThing` | **422\u2013435** |\n| `P_Thing_Raise` / `ApplyRaiseDimensions` | **437\u2013483** |\n| `P_Thing_CanRaise` | **485\u2013517** |\n| `P_Thing_SetVelocity` | **519\u2013534** |\n| `P_Thing_CheckProximity` / `ProximityInRange` | **566\u2013690** |\n| `P_Thing_Warp` | **692\u2013811** |\n| `WarpAction` | `DEFINE_ACTION_FUNCTION(AActor, Warp)` **819\u2013835** |\n\n### Out-of-body uncredit (760)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **372** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **372** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 760 --band` \u2192 retired skip (OVERLAP), exit 0."
+  }
+]

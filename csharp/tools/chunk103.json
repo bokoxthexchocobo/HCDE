@@ -1,0 +1,14 @@
+[
+  {
+    "name": "file-zip-chunk103",
+    "bucket": "conversion",
+    "managedLoc": 88,
+    "note": "EOCD scan, multipart rejection, compression/encryption entry filters (not central-directory parse; SharpCompress decodes). Retired (2026-10-23): out-of-body credit removed; honest **80** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (103)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **93** |\n| **Out-of-body removed** | **13** |\n| **Honest** | **80** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 103 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

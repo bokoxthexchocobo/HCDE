@@ -1,0 +1,28 @@
+[
+  {
+    "name": "p-setup-level-spawn-chunk982",
+    "bucket": "conversion",
+    "note": "`P_SetupLevel` audio/map load, player spawn passes, end-monster counter policy, and precache gate from `p_setup.cpp` (**451–600**); follows chunk **981** (**301–450**).",
+    "auditSeams": "`S_Start`, `P_OpenMapData`, `MapLoader`, spawn helpers, `T_PreprocessScripts`, and `PrecacheLevel` remain host-injected.",
+    "auditRationale": "UNCredited `P_SetupLevel` mid-body; disjoint from **979–981**. Line **453** viewz reset is native in this hull (not in **981** `301–450`).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_setup.cpp --start 451 --end 600` and `--chunk 982 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Console viewz + music gate (**452–464**) | yes |\n| Map open + new game (**472–492**) | yes (predicates) |\n| Deathmatch / random / new-game spawns (**509–544**) | yes |\n| Unfriendly DM relocation (**549–564**) | yes |\n| End-level monster uncount (**571–585**) | yes |\n| Precache gate (**599–602**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **456–470**, **482–496**, **588–597** | host calls |\n| **498–507**, **605+** | comments / next function |\n\n| Managed (`VmPSetupLevel982Slice.cs`) | Native (`p_setup.cpp`) |\n|----------------------------------------|----------------------|\n| `ConsolePlayerResetsViewHeight` / `ShouldStartHubMusic` | **452–464** |\n| `MapOpenSucceeded` / `ShouldFireNewGameEvent` | **472–492** |\n| `DeathmatchSpawnPassActive` / `RandomPlayerStartPassActive` / `NewGameSpawnFillNeeded` | **509–544** |\n| `SelectSpawnWeaponFlags` | **529**, **541** |\n| `UnfriendlyDeathmatchRelocationEnabled` / `ShouldDestroyPreviousSpawn` | **549–564** |\n| `ShouldClearEndLevelMonsterCounters` | **571–585** |\n| `ShouldRunPrecachePass` / `TryClearMobBeforeSpawn` / `DeathmatchAnnounceFollowsPrecache` | **515–517**, **599–605** |\n| Band hull (exclusive slice) | **451–600** |\n\n### Chunk **982** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**981** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPSetupLevel982Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/p_setup.cpp",
+        "symbol": "P_SetupLevel",
+        "start": 451,
+        "end": 600,
+        "tests": [
+          "VmPSetupLevel982SliceTests.SetupLevel_AudioAndMapGates",
+          "VmPSetupLevel982SliceTests.PlayerSpawnPasses",
+          "VmPSetupLevel982SliceTests.DeathmatchRelocationAndEndMonsters",
+          "VmPSetupLevel982SliceTests.PrecachePassAndMobClear"
+        ]
+      }
+    ]
+  }
+]

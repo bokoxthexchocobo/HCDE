@@ -135,6 +135,15 @@ public static class PickupCatalog
     internal static WeaponKind PickupWeapon(int doomEdNum) =>
         TryDescribe(doomEdNum, out var gift) && gift.Kind == GiftKind.Weapon ? gift.Weapon : 0;
 
+    /// <summary>Native <c>PClass::FindActor</c> + <c>IsDescendantOf(NAME_Weapon)</c> for BOTSUPP weapon lines.</summary>
+    public static bool TryWeaponPickupClassName(string className, out int editorNumber)
+    {
+        editorNumber = 0;
+        if (!PickupClassNames.TryGetValue(className.Trim(), out editorNumber))
+            return false;
+        return PickupWeapon(editorNumber) != 0;
+    }
+
     /// <summary>Native Doom bonus and sphere defaults carry INVENTORY.ALWAYSPICKUP.</summary>
     internal static bool AlwaysPickup(int doomEdNum, bool strifeHealth = false) =>
         !(strifeHealth && doomEdNum == Megasphere) && doomEdNum is HealthBonus or ArmorBonus or Soulsphere or Megasphere or Berserk or RadSuit;

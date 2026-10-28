@@ -246,9 +246,12 @@ public enum VmOp
     AddPointerR = 237,
     AddPointerK = 238,
     SubPointer = 239,
-    EqaR = 240,
-    EqaK = 241,
-    NullCheck = 242,
+    AddARr = 240,
+    AddARk = 241,
+    SubA = 242,
+    EqaR = 243,
+    EqaK = 244,
+    NullCheck = 245,
 }
 
 /// <summary>Native FLOP selectors from vmintern.h.</summary>

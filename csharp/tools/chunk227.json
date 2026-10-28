@@ -1,0 +1,14 @@
+[
+  {
+    "name": "g-skill-runtime-chunk227",
+    "bucket": "conversion",
+    "managedLoc": 195,
+    "note": "G_SkillProperty, G_SkillName, G_VerifySkill, FSkillInfo copy/replacements/text color. Retired (2026-10-23): `uncredited_range_check --band` OVERLAP with **231** teaminfo gaps; port stays off-tally.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (227)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **227** |\n| **Out-of-body removed** | **28** |\n| **Honest** | **199** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 227 --band` → retired skip (OVERLAP chunk 231), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

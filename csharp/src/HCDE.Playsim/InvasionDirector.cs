@@ -52,6 +52,14 @@ public sealed class InvasionDirector
         19705 => Spawned,
         19706 => Cleared,
         19707 => ActiveMonsters,
+        19708 => 0,
+        19709 => SpawnSpotCount,
+        19710 => SpawnSpotCount,
+        19711 => Spawned,
+        19712 => 0,
+        19713 => SpawnSpotCount == 0 ? 1 : 0,
+        19714 => SpawnSpotCount == 0 ? 1 : 0,
+        19715 => 0,
         _ => null,
     };
     public int ClassicState => !Enabled ? 0 : Phase switch

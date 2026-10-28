@@ -1,0 +1,34 @@
+[
+  {
+    "name": "sbarinfo-commands-drawgem-tick-weaponammo-chunk1094",
+    "bucket": "conversion",
+    "note": "`CommandDrawGem` parse/tick tail and `CommandWeaponAmmo` head from `sbarinfo_commands.cpp` (**3151–3300**); follows **1093** signed padding seam (**3150**).",
+    "auditSeams": "**1093** owns draw-gem parse flags, signed padding, ctor, wiggle offset, and chain horizontal offset; **1094** credits chain size, script interpolation override, tick percent/interpolation/wiggle, and weapon-ammo flow head. Host `GetCoordinates`, `pr_chainwiggle`, and `PClass::FindClass` excluded.",
+    "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **3151–3300** (+150); draw-gem chain size validation, health/armor script interpolation, goal percent + reverse, tick ease, chain wiggle bit, weapon-ammo ctor/parse/tick through dual-type truth (**3300** hull).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 3151 --end 3300` and `--chunk 1094 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Chain size token +1 (**3153–3155**) | yes |\n| Script interpolation override (**3160–3163**) | yes |\n| `Reset` draw value (**3167**) | yes |\n| Goal stat + percent cap (**3171–3180**) | yes |\n| Reverse goal percent (**3182**) | yes |\n| Tick interpolation ease (**3184–3192**) | yes |\n| Chain wiggle bit (**3194–3195**) | yes |\n| **WeaponAmmo** ctor defaults (**3225–3228**) | yes |\n| Ammo class validation (**3238–3241**) | yes |\n| `||` / `&&` second ammo (**3244–3255**) | yes |\n| Dual-type truth (**3276–3284**) | yes |\n| Single-type truth (**3286–3292**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **3116–3150** | **1093** parse flags + signed padding |\n| **3108–3110** | **1093** chain offset math |\n| **3157–3158** | host `GetCoordinates` |\n| **3197–3216** | member field layout |\n| **3264–3275** | host `ReadyWeapon` / `AmmoType` lookup scaffolding |\n| **3301+** | **CommandInInventory** outside hull |\n\n| Managed (`VmSbarinfoCommandDrawGem1094Slice.cs`, `VmSbarinfoCommandWeaponAmmo1094Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|------------------------------------------------------------------------------------------------|----------------------------------|\n| DrawGem parse/tick tail | **3151–3196** |\n| WeaponAmmo flow head | **3221–3300** |\n| Band hull (exclusive slice) | **3151–3300** |\n\n### Chunk **1094** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1093** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoCommandDrawGem1094Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo_commands.cpp",
+        "symbol": "CommandDrawGem / CommandWeaponAmmo",
+        "start": 3151,
+        "end": 3300,
+        "tests": [
+          "VmSbarinfoCommandDrawGem1094SliceTests.ValidateDrawGemChainSizeFromToken_AddsOne",
+          "VmSbarinfoCommandDrawGem1094SliceTests.ResolveDrawGemInterpolationSpeedForScript_ArmorUsesScriptSpeed",
+          "VmSbarinfoCommandDrawGem1094SliceTests.ApplyDrawGemReverseGoalPercent_FlipsWhenReverse",
+          "VmSbarinfoCommandDrawGem1094SliceTests.StepDrawGemDrawValueTowardGoal_ClampsStep",
+          "VmSbarinfoCommandDrawGem1094SliceTests.ResolveDrawGemChainWiggleBit_RequiresOddLevelTime",
+          "VmSbarinfoCommandDrawGem1094SliceTests.ShouldReplaceWeaponAmmoClass_WhenNotAmmo",
+          "VmSbarinfoCommandDrawGem1094SliceTests.ResolveWeaponAmmoSecondAmmoSeparator_OrUsesDisjunction",
+          "VmSbarinfoCommandDrawGem1094SliceTests.ResolveWeaponAmmoDualTypeFlowTruth_AndRequiresBoth",
+          "VmSbarinfoCommandDrawGem1094SliceTests.ResolveWeaponAmmoSingleConfiguredTypeTruth_MatchesSecondary",
+          "VmSbarinfoCommandDrawGem1094SliceTests.ComputeDrawGemGoalPercent_ClampsAt100"
+        ]
+      }
+    ]
+  }
+]

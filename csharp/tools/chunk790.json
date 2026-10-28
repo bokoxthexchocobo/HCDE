@@ -1,0 +1,12 @@
+[
+  {
+    "name": "p-acs-string-pool-gc-chunk790",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Retired: GC/insert band merged into chunk789 (whole functions only).",
+    "auditRationale": "Superseded by p-acs-stack-string-pool-chunk789.",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "Retired; see chunk789."
+  }
+]

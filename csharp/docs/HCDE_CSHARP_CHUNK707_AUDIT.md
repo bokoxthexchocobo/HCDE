@@ -1,0 +1,68 @@
+# Chunk 707 — Whole look cluster (`p_enemy.cpp` 1489–1777). Supersedes chunk503.
+
+## Scope
+
+Whole look cluster (`p_enemy.cpp` 1489–1777). Supersedes chunk503.
+
+## Native ranges
+
+- `src/playsim/p_enemy.cpp` **P_LookForMonsters** 1489–1531 (43 lines)
+- `src/playsim/p_enemy.cpp` **LookForTIDInBlock** 1543–1594 (52 lines)
+- `src/playsim/p_enemy.cpp` **P_LookForTID** 1604–1703 (100 lines)
+- `src/playsim/p_enemy.cpp` **LookForEnemiesInBlock** 1714–1727 (14 lines)
+- `src/playsim/p_enemy.cpp` **P_LookForEnemies** 1737–1777 (41 lines)
+
+**Credited native LOC:** 250 (tally `nativeLoc` 250).
+
+## Managed
+
+`VmPEnemyLookTargets.cs`
+Managed LOC (tally): 254.
+Conversion commit: `3ab6f49a93a01e786961e3e328782b26acb962c2`.
+
+## Padding review (2026-10-21)
+
+**Superseded chunk numbers:** 503.
+
+| Managed | Native (`p_enemy.cpp`) |
+|---------|----------------------|
+| `LookForMonsters` | `P_LookForMonsters` 1489–1531 |
+| `LookForTidInBlock` | `LookForTIDInBlock` 1543–1594 |
+| `LookForTid` | `P_LookForTID` 1604–1703 |
+| `LookForEnemiesInBlock` | `LookForEnemiesInBlock` 1714–1727 |
+| `LookForEnemies` | `P_LookForEnemies` 1737–1777 |
+
+### Out-of-body uncredit (707)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **250** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **250** |
+
+
+**Post-review ratio:** 254/250 managed/native ≈ 102% (src file LOC at HEAD; see tally).
+
+## Tests
+
+- `VmPEnemyLookTargetsTests.LookForMonsters_WholeFunctionFindsTarget`
+- `VmPEnemyLookTargetsTests.LookMonsters_SkipsOutOfRange`
+- `VmPEnemyLookTargetsTests.TidBlock_MatchesDirectTid`
+- `VmPEnemyLookTargetsTests.LookTid_FallbackGoal`
+- `VmPEnemyLookTargetsTests.LookTid_BudgetExhausted`
+- `VmPEnemyLookTargetsTests.LookTid_ClearsStaleLastLookActor`
+- `VmPEnemyLookTargetsTests.LookTid_LastEnemySkipsFriend`
+- `VmPEnemyLookTargetsTests.LookForEnemiesInBlock_FindsValidLink`
+- `VmPEnemyLookTargetsTests.LookForEnemies_UsesBlockSearchHit`
+
+## Verified
+
+`dotnet build csharp/HCDE.sln -warnaserror`; `dotnet test csharp/HCDE.sln`; `python3 tools/reaudit_chunks.py audit --from 707 --to 707` (0 hard / 0 soft).
+
+## Seams
+
+`P_CheckSight`, `P_BlockmapSearch`, `P_IsVisible`, `GetActorIterator`, and `ValidEnemyInBlock` are injected.
+
+## Credit rationale
+
+Monster/TID/enemy look targets as whole functions.

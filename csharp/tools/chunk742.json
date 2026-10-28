@@ -1,0 +1,15 @@
+[
+  {
+    "name": "p-mobj-localview-touch-chunk742",
+    "bucket": "conversion",
+    "note": "Local view, render visibility, conversation anim, touch VM gate, and massacre cheat (`p_mobj.cpp` 1321\u20131542, 1715\u20131741). Retired (2026-10-24): `--band` hull overlaps existing credit (p-mobj-grind-chunk734 src/playsim/p_mobj.cpp 1554-1685).",
+    "auditSeams": "`Level->GetConsolePlayer`, angle math, `FindState`/`SetState`, `VMCall`, and `P_DamageMobj` are injected.",
+    "auditRationale": "Whole actor methods; merged `AActor::Massacre` (uncredited, same TU) instead of crediting `DEFINE_ACTION_FUNCTION(AActor, CheckLocalView)` as a 150-LOC floor top-up.",
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `CheckLocalView` | `AActor::CheckLocalView` 1321\u20131342 |\n| `DisableLocalRendering` | `AActor::DisableLocalRendering` 1351\u20131355 |\n| `ShouldRenderLocally` | `AActor::ShouldRenderLocally` 1372\u20131375 |\n| `IsInsideVisibleAngles` | `AActor::IsInsideVisibleAngles` 1397\u20131450 |\n| `IsVisibleToPlayer` | `AActor::IsVisibleToPlayer` 1462\u20131495 |\n| `ConversationAnimation` | `AActor::ConversationAnimation` 1508\u20131524 |\n| `CallTouch` | `AActor::CallTouch` 1535\u20131542 |\n| `Massacre` | `AActor::Massacre` 1715\u20131741 |\n\n### Out-of-body uncredit (742)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **171** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **171** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 742 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

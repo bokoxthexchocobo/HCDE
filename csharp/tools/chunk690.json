@@ -1,0 +1,15 @@
+[
+  {
+    "name": "p-destructible-geometry-combat-chunk690",
+    "bucket": "conversion",
+    "note": "Whole `P_GeometryLineAttack`, `P_ProjectileHitLinedef`, `P_ProjectileHitPlane`, `P_CheckLinedefVulnerable`, and `P_CheckSectorVulnerable` (`p_destructible.cpp` 303\u2013376, 697\u2013821). Retired (2026-10-24): `--band` hull overlaps existing credit (p-destructible-geometry-radius-chunk661 src/playsim/p_destructible.cpp 442-688).",
+    "auditSeams": "`PGRA_*` helpers and `P_GeometryRadiusAttack` remain native; missile damage amount from `AActor::GetMissileDamage` stubbed via context.",
+    "auditRationale": "Hitscan and projectile destructible geometry after health-group chunk 689.",
+    "auditPaddingReview": "| Managed | Native (`p_destructible.cpp`) |\n|---------|-------------------------------|\n| `VmPDestructibleGeometryLineAttack` | `P_GeometryLineAttack` 303\u2013376 |\n| `VmPDestructibleProjectileHits` | `P_ProjectileHitLinedef` 697\u2013747; `P_ProjectileHitPlane` 750\u2013784 |\n| `VmPDestructibleVulnerability` | `P_CheckLinedefVulnerable` 795\u2013803; `P_CheckSectorVulnerable` 812\u2013821 |\n\n### Out-of-body uncredit (690)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **179** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **179** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 690 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

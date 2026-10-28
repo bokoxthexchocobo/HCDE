@@ -1,0 +1,27 @@
+[
+  {
+    "name": "g-level-snapshot-persist-chunk1015",
+    "bucket": "conversion",
+    "note": "`AirControlChanged`, `G_WriteSnapshots`, `G_WriteVisited`, `G_ReadSnapshots`, and `G_ReadVisited` head from `g_level.cpp` (**2109–2258**); follows chunk **1014** (**1959–2108**).",
+    "auditSeams": "`TArray` push, `FSerializer`/`FResourceFile`, `FindLevelInfo`, `G_ClearSnapshots`, and `UpdatePlayerClass` remain injected.",
+    "auditRationale": "UNCredited **2109–2258**; disjoint from chunk **8** headless-flow and **1014** Init/`CalcMapName`.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_level.cpp --start 2109 --end 2258` and `--chunk 1015 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `AirControlChanged` (**2115–2125**) | yes |\n| `G_WriteSnapshots` (**2133–2155**) | yes |\n| `G_WriteVisited` (**2162–2195**) | yes |\n| `G_ReadSnapshots` (**2202–2234**) | yes |\n| `G_ReadVisited` head (**2241–2258**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2109–2114** | comment seam after **1014** `CalcMapName` |\n| **2164–2174**, **2243–2253** | serializer host calls |\n| **2207**, **2220**, **2230** | resource read host |\n| **2259+** | `G_ReadVisited` playerclass body (**1016** follow-on) |\n\n| Managed (`VmGLevelSnapshotPersist1015Slice.cs`) | Native (`g_level.cpp`) |\n|------------------------------------------------|----------------------|\n| Air friction linear branch | **2117–2124** |\n| Snapshot filename rules | **2140–2153**, **2212–2230** |\n| Visited / random class gates | **2169–2180** |\n| Player class key/index gates | **2185–2191** |\n| Band hull (exclusive slice) | **2109–2258** |\n\n### Chunk **1015** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1014** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmGLevelSnapshotPersist1015Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_level.cpp",
+        "symbol": "G_WriteSnapshots",
+        "start": 2109,
+        "end": 2258,
+        "tests": [
+          "VmGLevelSnapshotPersist1015SliceTests.AirControlFriction",
+          "VmGLevelSnapshotPersist1015SliceTests.SnapshotWritePaths",
+          "VmGLevelSnapshotPersist1015SliceTests.VisitedAndPlayerClassPersistence"
+        ]
+      }
+    ]
+  }
+]

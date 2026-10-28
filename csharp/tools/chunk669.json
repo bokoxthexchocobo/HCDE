@@ -1,0 +1,15 @@
+[
+  {
+    "name": "p-sight-line-policy-chunk669",
+    "bucket": "conversion",
+    "note": "Whole `SightCheck::init`, `P_SightOpening`, `LineBlocksSight`, `P_SightCheckLine`, `P_SightBlockLinesIterator`, `P_ResetSightCounters` (`p_sight.cpp` 126\u2013145, 156\u2013199, 388\u2013523, 962\u2013974). Retired (2026-10-24): `--band` hull overlaps existing credit (p-sight-ptr-traverse-chunk663 src/playsim/p_sight.cpp 210-384).",
+    "auditSeams": "Blockmap storage, polyobject lines, `P_MakeDivline`, and `P_PointOnDivlineSide` remain native.",
+    "auditRationale": "Sight line gating after PTR/path chunks 663\u2013665.",
+    "auditPaddingReview": "| Managed | Native (`p_sight.cpp`) |\n|---------|----------------------|\n| `InitSightCheck` | `SightCheck::init` 126\u2013145 |\n| `SightOpening` | `P_SightOpening` 156\u2013199 |\n| `LineBlocksSight` | `LineBlocksSight` 388\u2013422 |\n| `SightCheckLine` | `P_SightCheckLine` 432\u2013466 |\n| `SightBlockLinesIterator` | `P_SightBlockLinesIterator` 476\u2013523 |\n| `ResetSightCounters` | `P_ResetSightCounters` 962\u2013974 |\n\n### Out-of-body uncredit (669)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **195** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **195** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 669 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

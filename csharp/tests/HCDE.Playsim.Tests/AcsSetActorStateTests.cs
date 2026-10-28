@@ -30,7 +30,7 @@ public class AcsSetActorStateTests
     {
         var sim = Room(); var actor = sim.Actors.First();
         actor.States.Enter(actor, actor.GenericCrushState);
-        Run(sim, [3, 7, 3, 0, 3, 0, 3, 0, 336, 5, 112, 1], "Spawn.Unknown", actor);
+        Run(sim, [3, 7, 3, 0, 3, 0, 3, 0, AcsPcodeWire.SetActorState, 5, 112, 1], "Spawn.Unknown", actor);
         Assert.Equal(1, sim.LightOf(0));
         Assert.Equal(actor.SpawnState, actor.States.Current);
     }
@@ -43,7 +43,7 @@ public class AcsSetActorStateTests
     public void ActivatorStateSelectionReturnsSuccess(string name, int expected)
     {
         var sim = Room(); var actor = sim.Actors.First();
-        Run(sim, [3, 7, 3, 0, 3, 0, 3, 1, 336, 5, 112, 1], name, actor);
+        Run(sim, [3, 7, 3, 0, 3, 0, 3, 1, AcsPcodeWire.SetActorState, 5, 112, 1], name, actor);
         Assert.Equal(expected, sim.LightOf(0));
         if (name == "Null") { Assert.Equal(actor.NullState, actor.States.Current); sim.Tick(); Assert.True(actor.Destroyed); }
         if (name == "GenericCrush") Assert.Equal(actor.GenericCrushState, actor.States.Current);
@@ -52,7 +52,7 @@ public class AcsSetActorStateTests
     [Fact]
     public void TaggedSelectionCountsAllMatchingActors()
     {
-        var sim = Room(); Run(sim, [3, 7, 3, 9, 3, 0, 3, 1, 336, 5, 112, 1], "GenericCrush", null);
+        var sim = Room(); Run(sim, [3, 7, 3, 9, 3, 0, 3, 1, AcsPcodeWire.SetActorState, 5, 112, 1], "GenericCrush", null);
         Assert.Equal(2, sim.LightOf(0));
         Assert.All(sim.Actors, actor => Assert.Equal(actor.GenericCrushState, actor.States.Current));
     }
@@ -60,14 +60,14 @@ public class AcsSetActorStateTests
     [Fact]
     public void MissingActivatorReturnsZero()
     {
-        var sim = Room(); Run(sim, [3, 7, 3, 0, 3, 0, 3, 1, 336, 5, 112, 1], "Null", null);
+        var sim = Room(); Run(sim, [3, 7, 3, 0, 3, 0, 3, 1, AcsPcodeWire.SetActorState, 5, 112, 1], "Null", null);
         Assert.Equal(0, sim.LightOf(0));
     }
 
     [Fact]
     public void MissingArgumentsStopScriptBeforeFollowingAction()
     {
-        var sim = Room(); Run(sim, [336, 3, 7, 3, 1, 112, 1], "Null", sim.Actors.First());
+        var sim = Room(); Run(sim, [AcsPcodeWire.SetActorState, 3, 7, 3, 1, 112, 1], "Null", sim.Actors.First());
         Assert.Equal(128, sim.LightOf(0));
     }
 

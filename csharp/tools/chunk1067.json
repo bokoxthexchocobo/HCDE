@@ -1,0 +1,34 @@
+[
+  {
+    "name": "sbarinfo-mugshot-popup-chunk1067",
+    "bucket": "conversion",
+    "note": "`ParseMugShotBlock`, `newImage`, `SBarInfo::Init` defaults, and `Popup` init/tick head from `sbarinfo.cpp` (**751–900**); follows **1066** parse band.",
+    "auditSeams": "Protrusion **751–756** close + `ParseSBarInfo` end are host; popup transition kinds reuse **1066**; `FScanner`, HUD `new`/`delete`, and **901+** fade moving tail remain host-injected.",
+    "auditRationale": "UNCredited **`sbarinfo.cpp`** **751–900** (+150); no duplicate credit for **1066** protrusion parse (**739–750**) or popup transition classify (**685–730**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo.cpp --start 751 --end 900` and `--chunk 1067 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `ParseMugShotBlock` frame graphics + delay (**758–783**) | yes |\n| `ResetHuds` slot iteration (**785–789**) | yes (index policy) |\n| `newImage` null/duplicate lookup (**791–805**) | yes |\n| `SBarInfo::Init` field defaults (**818–831**) | yes |\n| `Popup` ctor defaults + `init` (**847–871**) | yes |\n| `Popup::tick` slide/push/fade step (**873–900**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **751–756** | protrusion/`ParseSBarInfo` host close (**1066** loop head **739–750**) |\n| **807–816**, **833–835**, **837–844** | ctor/dtor/HUD alloc host |\n| **901+** | fade `moving` tail outside hull |\n\n| Managed (`VmSbarinfoMugShotPopup1067Slice.cs`) | Native (`sbarinfo.cpp`) |\n|--------------------------------------------------|-------------------------|\n| MugShot graphic/delay/multiframe | **769–780** |\n| `MergeImageIndexAfterLookup` | **793–804** |\n| `CreateNativeInitDefaults` | **820–831** |\n| `ResolvePopupInitState` | **853–871** |\n| Slide/fade tick helpers | **877–900** |\n| Band hull (exclusive slice) | **751–900** |\n\n### Chunk **1067** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1066** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoMugShotPopup1067Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo.cpp",
+        "symbol": "ParseMugShotBlock / Popup / Init",
+        "start": 751,
+        "end": 900,
+        "tests": [
+          "VmSbarinfoMugShotPopup1067SliceTests.CreateNativeInitDefaults_MatchesNativeInit",
+          "VmSbarinfoMugShotPopup1067SliceTests.ShouldFailMugShotGraphicLength_EnforcesFiveChars",
+          "VmSbarinfoMugShotPopup1067SliceTests.ResolveMugShotFrameDelay_HonorsNegativePrefix",
+          "VmSbarinfoMugShotPopup1067SliceTests.MergeImageIndexAfterLookup_HandlesNullAndDuplicate",
+          "VmSbarinfoMugShotPopup1067SliceTests.ResolvePopupInitState_FadeStartsTransparent",
+          "VmSbarinfoMugShotPopup1067SliceTests.ComputeSlidePopupYOffset_ClosesWhenOpened",
+          "VmSbarinfoMugShotPopup1067SliceTests.AdvanceFadePopupAlpha_ClampsWhenClosing",
+          "VmSbarinfoMugShotPopup1067SliceTests.ShouldKeepPopupMovingOnSlideAxis_StopsAtEndpoints",
+          "VmSbarinfoMugShotPopup1067SliceTests.ClassifyImagePatch_TreatsNullImageSentinel",
+          "VmSbarinfoMugShotPopup1067SliceTests.ShouldIterateHudResetSlot_CoversNativeHudCount"
+        ]
+      }
+    ]
+  }
+]

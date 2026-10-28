@@ -1,0 +1,15 @@
+[
+  {
+    "name": "po-man-poly-thinker-init-chunk678",
+    "bucket": "conversion",
+    "note": "Whole `DPolyAction` / move-door thinker serialize+construct, `FPolyObj` ctor, `GetMirror`, `RotatePt`, poly thinker ticks, `EV_MovePolyTo`, and `FPolyMirrorIterator` (`po_man.cpp` 147\u2013280, 290\u2013313, 376\u2013397, 453\u2013474, 482\u2013519, 715\u2013730, 738\u2013741, 918\u2013927, 1781\u20131793, 1805\u20131842). Supersedes unbacked `po-man-thinker-moveto-chunk674`. Retired (2026-10-24): `--band` hull overlaps existing credit (po-man-poly-door-chunk671 src/playsim/po_man.cpp 527-625).",
+    "auditSeams": "`RotatePolyobj`, `MovePolyobj`, thinker spawn, sound, and interpolation objects remain native.",
+    "auditRationale": "Thinker lifecycle and tick bands aligned to ported managed helpers after shrinking chunk 674.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `PolyActionSerialize` / `PolyActionConstruct` / `PolyActionOnDestroy` / `PolyActionStop` / `PolyActionSetInterpolation` / `PolyActionStopInterpolation` | `DPolyAction::Serialize` 147\u2013154; `Construct` 156\u2013162; `OnDestroy` 164\u2013173; `Stop` 175\u2013179; `SetInterpolation` 181\u2013184; `StopInterpolation` 186\u2013193 |\n| `RotatePolyConstruct` | `DRotatePoly::Construct` 203\u2013206 |\n| `MovePolySerialize` / `MovePolyConstruct` | `DMovePoly::Serialize` 216\u2013221; `Construct` 223\u2013228 |\n| `MovePolyToSerialize` / `MovePolyToConstruct` | `DMovePolyTo::Serialize` 239\u2013244; `Construct` 246\u2013250 |\n| `PolyDoorSerialize` / `PolyDoorConstruct` | `DPolyDoor::Serialize` 260\u2013269; `Construct` 271\u2013280 |\n| `FPolyObjConstruct` / `FPolyObjGetMirror` | `FPolyObj::FPolyObj` 715\u2013730; `GetMirror` 738\u2013741 |\n| `RotatePt` | `RotatePt` 918\u2013927 |\n| `RotatePolyTick` | `DRotatePoly::Tick` 290\u2013313 |\n| `MovePolyTick` | `DMovePoly::Tick` 376\u2013397 |\n| `MovePolyToTick` | `DMovePolyTo::Tick` 453\u2013474 |\n| `EvMovePolyTo` | `EV_MovePolyTo` 482\u2013519 |\n| `VmPoManMirrorChain.Enumerate` | `FPolyMirrorIterator::FPolyMirrorIterator` 1781\u20131793; `FPolyMirrorIterator::NextMirror` 1805\u20131842 |\n\n### Out-of-body uncredit (678)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **276** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **276** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 678 --band` \u2192 retired skip (OVERLAP), exit 0."
+  }
+]

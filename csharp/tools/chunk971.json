@@ -1,0 +1,28 @@
+[
+  {
+    "name": "p-acs-head-constants-chunk971",
+    "bucket": "conversion",
+    "note": "P-code enum tail **369–384**, `PCODE_COMMAND_COUNT`, ACS script constant enums, HUD/LineAttack macros, and `ACSToDouble`/`ACSToFloat` head from `p_acs.cpp` (**451–600**); follows chunk **970** (**≤450**).",
+    "auditSeams": "`FRandom pr_acs` / `CallReturn` and remainder of fixed-point inlines after **600** remain host-only; chunk **789** string pool (**945+**) is disjoint.",
+    "auditRationale": "UNCredited band after **970** with zero conversion overlap; **789** islands at **828–901** and **945–1291** do not intersect **451–600**.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 451 --end 600` and `--chunk 971 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| PCD tail **369–384** + `PCODE_COMMAND_COUNT` (**451–468**) | yes |\n| LINE/SIDE/TEXTURE/GAME/CLASS/SKILL/BLOCK enums (**472–509**) | yes |\n| LEVELINFO / PLAYERINFO enums (**510–534**) | yes |\n| `STACK_SIZE`, HUDMSG, FHF, SDF, ARMORINFO, PICKAF (**539–589**) | yes |\n| `ACSToDouble` / `ACSToFloat` (**596–604** partial in band) | yes (scale **65536**) |\n| `FRandom` decls (**536–537**) | layout only |\n\n| Managed (`VmPAcsHeadConstants971Slice.cs`) | Native (`p_acs.cpp`) |\n|-------------------------------------------|---------------------|\n| `Pcd*` tail / `PcodeCommandCount` / `ValidPcodeOpcode` | **451–468** |\n| Script constant ints | **472–534** |\n| Macro mirrors | **539–589** |\n| `AcsToDouble` / `AcsToFloat` / `DoubleToAcs` | **596–608** policy |\n| Band hull (exclusive slice) | **451–600** |\n\n### Chunk **971** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**970** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPAcsHeadConstants971Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "PCODE_COMMAND_COUNT",
+        "start": 451,
+        "end": 600,
+        "tests": [
+          "VmPAcsHeadConstants971SliceTests.PcodeCommandCount_MatchesNativeEnum",
+          "VmPAcsHeadConstants971SliceTests.EnumTail_IncludesTranslationRange5",
+          "VmPAcsHeadConstants971SliceTests.AcsFixedPointConversions",
+          "VmPAcsHeadConstants971SliceTests.HudmsgLayerMask_MatchesNativeShift"
+        ]
+      }
+    ]
+  }
+]

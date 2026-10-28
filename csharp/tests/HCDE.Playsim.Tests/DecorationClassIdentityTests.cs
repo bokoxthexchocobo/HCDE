@@ -76,7 +76,7 @@ public class DecorationClassIdentityTests
             Assert.True(AcsCallFunctions.TryInvoke(world, stack, new() { Value = decoration }, [], globals,
                 AcsCallFunctions.GetActorClass, 1, out var result));
             Assert.Equal(name, globals.Get(result)); Assert.Empty(stack);
-            Assert.Equal(1, ActorProximity.CountProximity(world.Players.Single(), name.ToLowerInvariant(), 256, flags: 4));
+            Assert.Equal(1, VmPThingsRaiseRemoveWarpProximity.CountProximity(world.Players.Single(), name.ToLowerInvariant(), 256, flags: 4));
             ActorRemovalActions.Remove(decoration, flags: 8 | 16, classFilter: name); Assert.False(decoration.Destroyed);
             ActorRemovalActions.Remove(decoration, flags: 8, classFilter: name); Assert.True(decoration.Destroyed);
         }

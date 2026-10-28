@@ -1,0 +1,15 @@
+[
+  {
+    "name": "d-main-init-wad-chunk430",
+    "bucket": "conversion",
+    "note": "FileSystemPrintf, D_InitGame RNG/exec/WAD mount header Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **82** (50% of honest **163**).",
+    "auditSeams": "`fileSystem.InitMultipleFiles`, `GameConfig`, and `I_FatalError` are not hosted.",
+    "auditRationale": "Credits FS printf routing, dedicated-server framebuffer skip, RNG seed selection, exec list chaining, and lump filter blanket setup from `d_main.cpp`.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (430)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **163** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **163** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`check_port_coverage.sh` thin managed: surviving 0 < need 82 (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

@@ -47,7 +47,7 @@ public class ActorProximityCountTests
     {
         var sim = Room(); var player = sim.Players.Single(); var target = sim.AddBot(20, 0, 3001);
         var legacy = SimSavegame.Write(sim);
-        Assert.True(ActorProximity.Check(player, "DoomImp", 100, flags: 64));
+        Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(player, "DoomImp", 100, flags: 64));
         Assert.Same(target, AcsActorPointer.Resolve(sim, player, AcsActorPointer.Target));
         player.MasterId = target.Id;
         ActorPointerActions.TransferPointer(player, recipientSelector: AcsActorPointer.Master,
@@ -69,7 +69,7 @@ public class ActorProximityCountTests
     public void GeneralTargetRearrangementUsesOriginalPointers()
     {
         var sim = Room(); var player = sim.Players.Single(); var target = sim.AddBot(20, 0, 3001);
-        Assert.True(ActorProximity.Check(player, "DoomImp", 100, flags: 64));
+        Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(player, "DoomImp", 100, flags: 64));
         ActorPointerActions.RearrangePointers(player, AcsActorPointer.Null,
             AcsActorPointer.Target, AcsActorPointer.Target);
         Assert.Null(player.TargetId); Assert.Equal(target.Id, player.MasterId);
@@ -90,7 +90,7 @@ public class ActorProximityCountTests
         var far = sim.AddBot(70, 0, 3001);
         var near = sim.AddBot(10, 0, 3001);
         Actor subject = onPointer ? caller : projectile;
-        Assert.Equal(2, ActorProximity.CountProximity(subject, "DoomImp", 100,
+        Assert.Equal(2, VmPThingsRaiseRemoveWarpProximity.CountProximity(subject, "DoomImp", 100,
             flags: 128 | 256 | preference | (onPointer ? 2048 : 0), pointerSelector: onPointer ? 4 : 0));
         var expected = preference == 1024 ? near : far;
         Assert.Equal(expected.Id, projectile.TracerTargetId);
@@ -109,7 +109,7 @@ public class ActorProximityCountTests
         var sim = Room();
         var caller = sim.Players.Single();
         var target = sim.AddBot(20, 0, 3001);
-        Assert.True(ActorProximity.Check(caller, "DoomImp", 100, flags: 128 | 256));
+        Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(caller, "DoomImp", 100, flags: 128 | 256));
         Assert.Equal(target.Id, caller.MasterId);
         Assert.Same(target, AcsActorPointer.Resolve(sim, caller, AcsActorPointer.Tracer));
         var bytes = SimSavegame.Write(sim);
@@ -134,7 +134,7 @@ public class ActorProximityCountTests
         var far = sim.AddBot(70, 0, 3001);
         var near = sim.AddBot(10, 0, 3001);
         var flags = 128 | preference | (onPointer ? 2048 : 0);
-        Assert.True(ActorProximity.Check(caller, "DoomImp", 100, count: 0, flags: flags, pointerSelector: 4));
+        Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(caller, "DoomImp", 100, count: 0, flags: flags, pointerSelector: 4));
         var expected = preference == 1024 ? near : far;
         Assert.Equal(expected.Id, onPointer ? reference.MasterId : caller.MasterId);
         if (onPointer) Assert.Equal(reference.Id, caller.MasterId);
@@ -147,9 +147,9 @@ public class ActorProximityCountTests
         var sim = Room();
         var caller = sim.Players.Single();
         var imp = sim.AddBot(20, 0, 3001);
-        Assert.Equal(1, ActorProximity.CountProximity(caller, "DoomImp", 100, flags: 128));
+        Assert.Equal(1, VmPThingsRaiseRemoveWarpProximity.CountProximity(caller, "DoomImp", 100, flags: 128));
         Assert.Equal(imp.Id, caller.MasterId);
-        Assert.False(ActorProximity.Check(caller, "DoomImp", 1, flags: 128));
+        Assert.False(VmPThingsRaiseRemoveWarpProximity.Check(caller, "DoomImp", 1, flags: 128));
         Assert.Equal(imp.Id, caller.MasterId);
     }
 
@@ -160,7 +160,7 @@ public class ActorProximityCountTests
     public void CountingReturnsEveryMatchRegardlessOfCountComparisonFlags(int flags)
     {
         var sim = Room(); sim.AddBot(10, 0, 3001); sim.AddBot(20, 0, 3001); sim.AddBot(30, 0, 3001);
-        Assert.Equal(3, ActorProximity.CountProximity(sim.Players.Single(), "DoomImp", 100, flags));
+        Assert.Equal(3, VmPThingsRaiseRemoveWarpProximity.CountProximity(sim.Players.Single(), "DoomImp", 100, flags));
     }
 
     [Fact]
@@ -168,9 +168,9 @@ public class ActorProximityCountTests
     {
         var sim = Room(); var caller = sim.AddBot(200, 0); var reference = sim.AddBot(0, 0, 3001);
         caller.Brain!.SetSpecialTarget(reference); var other = sim.AddBot(20, 0, 3001); other.Killed = true;
-        Assert.Equal(0, ActorProximity.CountProximity(caller, "DoomImp", 100, pointerSelector: 2));
-        Assert.Equal(1, ActorProximity.CountProximity(caller, "DoomImp", 100, flags: 8, pointerSelector: 2));
-        Assert.Equal(0, ActorProximity.CountProximity(caller, "DoomImp", 100, flags: 8, pointerSelector: 1));
+        Assert.Equal(0, VmPThingsRaiseRemoveWarpProximity.CountProximity(caller, "DoomImp", 100, pointerSelector: 2));
+        Assert.Equal(1, VmPThingsRaiseRemoveWarpProximity.CountProximity(caller, "DoomImp", 100, flags: 8, pointerSelector: 2));
+        Assert.Equal(0, VmPThingsRaiseRemoveWarpProximity.CountProximity(caller, "DoomImp", 100, flags: 8, pointerSelector: 1));
     }
 
     [Theory]

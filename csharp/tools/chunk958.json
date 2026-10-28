@@ -1,0 +1,36 @@
+[
+  {
+    "name": "a-dynlight-spawn-attach-chunk958",
+    "bucket": "conversion",
+    "note": "`GetLight`, actor `AttachLight`, and `ActivateLight` from `a_dynlight.cpp` (**1–150**). File head before chunk **823** tick band (**196+**).",
+    "auditSeams": "`DynLightArena`, placement `new`, `memset`, `AngleVar`/`IntVar` bindings, and `DEFINE_ACTION_FUNCTION_NATIVE` remain host seams.",
+    "auditRationale": "Honest **150**-line UNCredited band with zero tally overlap; exclusive `VmADynLightSpawn958Slice.cs` (does not re-credit **823** `Activate`/`Tick` bodies).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/a_dynlight.cpp --start 1 --end 150` and `--chunk 958 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Static arena / free list (**36–38**) | seam (host alloc) |\n| `GetLight` (**49–70**) | yes |\n| `AttachLight` actor (**81–120**) | yes |\n| `ADynamicLight::AttachLight` export (**122–127**) | seam (VM export) |\n| `ActivateLight` (**135–138**) | yes |\n| `ADynamicLight::ActivateLight` export (**140–145**) | seam (VM export) |\n\n| Managed (`VmADynLightSpawn958Slice.cs`) | Native (`a_dynlight.cpp`) |\n|----------------------------------------|-------------------------|\n| `ShouldPopLightFromFreeList` / `ShouldAllocateLightFromArena` | **52–56** |\n| `LinkNewLightHasSuccessor` / list defaults | **60–67** |\n| `InitialOffMapPosition` / `DefaultShadowmapIndex` constants | **64–69** |\n| `AbortActorLightAttach` / UDMF resolvers / `ClearRecreateLightsFlag` | **83–119** |\n| `NormalizeSpawnAngleDegrees` / `AttachedLightStartsInactive` | **93–97** |\n| `SpawnLightVisibleToPlayerDefault` / `ShouldLinkPreviousLight` | **62–63**, **98** |\n| `LightTypeFromSpawnInt` / `LightDefIntensityFromSpawn` | **88**, **99** |\n| `DefaultCyclerIncrement` | **59** |\n| `ActivateAllAttachedLights` | **137** |\n| Band hull (exclusive slice) | **1–150** |\n\n### Chunk **958** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**957** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmADynLightSpawn958Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/a_dynlight.cpp",
+        "symbol": "GetLight",
+        "start": 1,
+        "end": 150,
+        "tests": [
+          "VmADynLightSpawn958SliceTests.ShouldPopLightFromFreeList_WhenCountPositive",
+          "VmADynLightSpawn958SliceTests.ResolveUdmfSoftShadowRadius_OnlyWhenNonNegative",
+          "VmADynLightSpawn958SliceTests.ClearRecreateLightsFlag_ClearsMf8Bit",
+          "VmADynLightSpawn958SliceTests.NormalizeSpawnAngleDegrees_WrapsNegative",
+          "VmADynLightSpawn958SliceTests.InitialOffMapPosition_UsesInvalidX",
+          "VmADynLightSpawn958SliceTests.AbortActorLightAttach_WhenEuthanizing",
+          "VmADynLightSpawn958SliceTests.ActivateAllAttachedLights_SkipsNullEntries",
+          "VmADynLightSpawn958SliceTests.ArenaAllocationSize_ScalesByPoolCapacity",
+          "VmADynLightSpawn958SliceTests.LinkNewLightHasSuccessor_WhenNextPresent",
+          "VmADynLightSpawn958SliceTests.ResolveUdmfLinearity_OnlyWhenNonNegative",
+          "VmADynLightSpawn958SliceTests.LightTypeFromSpawnInt_TruncatesToByte",
+          "VmADynLightSpawn958SliceTests.ShouldLinkPreviousLight_WhenNextPresent"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,33 @@
+[
+  {
+    "name": "a-dynlight-link-collect-chunk956",
+    "bucket": "conversion",
+    "note": "`CollectWithinRadius` portal tail, `LinkLight`, `UnlinkLight`, `AttachLight`, and `SetDynamicLights` head from `a_dynlight.cpp` (**601–750**). Adjacent to chunk **955** (**751–900**); chunk **823** tick band unchanged.",
+    "auditSeams": "`AddLightNode`, `GetLight`, `PointInRenderSubsector`, light list `Remove`, and `ApplyProperties` remain host seams.",
+    "auditRationale": "Honest **150**-line UNCredited band with zero tally overlap; exclusive `VmADynLightLink956Slice.cs` (reuses **955** association/euthanize predicates only by reference, no duplicate tally rows).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/a_dynlight.cpp --start 601 --end 750` and `--chunk 956 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `CollectWithinRadius` portal ceiling/floor (**601–630**) | yes |\n| `shadowmapped` assignment (**632**) | yes |\n| `LinkLight` (**641–654**) | yes |\n| `UnlinkLight` (**662–691**) | yes |\n| `AttachLight` (**699–718**) | yes |\n| `SetDynamicLights` head (**726–750**) | yes |\n\n| Managed (`VmADynLightLink956Slice.cs`) | Native (`a_dynlight.cpp`) |\n|----------------------------------------|-------------------------|\n| `PortalSightOpen` / `CeilingPortalAffectsLight` / `FloorPortalAffectsLight` | **601–620** |\n| `ShouldCollectPortalSection` | **609–627** |\n| `ShadowMappedAfterCollection` | **632** |\n| `ShouldLinkDynamicLight` / `LinkLightRadiusSquared` | **644–651** |\n| `UnlinkSkipsNullSide` / `UnlinkListIndexInRange` | **668–684** |\n| `ReuseAttachedLightSlot` / `AbortAttachLightWhenEuthanizing` | **701–715** |\n| `ShouldAbortSetDynamicLights` / association/state-light gates | **731–750** |\n| `DistToSegClampParameter` / `LightInFrontOfSeg` / segment radius | **489–545**, **572–597** (predicates cited in band context) |\n| Band hull (exclusive slice) | **601–750** |\n\n### Chunk **956** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**955** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmADynLightLink956Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/a_dynlight.cpp",
+        "symbol": "FDynamicLight::CollectWithinRadius",
+        "start": 601,
+        "end": 750,
+        "tests": [
+          "VmADynLightLink956SliceTests.CeilingPortalAffectsLight_WhenPlaneBelowTopOfRadius",
+          "VmADynLightLink956SliceTests.FloorPortalAffectsLight_WhenPlaneAboveBottomOfRadius",
+          "VmADynLightLink956SliceTests.ShadowMappedAfterCollection_RequiresBackHitAndShadowmapAllowed",
+          "VmADynLightLink956SliceTests.LinkLightRadiusSquared_DoublesAsSquare",
+          "VmADynLightLink956SliceTests.DistToSegClampParameter_ClampsToSegment",
+          "VmADynLightLink956SliceTests.LightInFrontOfSeg_UsesCrossProductSign",
+          "VmADynLightLink956SliceTests.AssociationTriggersAttach_DelegatesTo955Slice",
+          "VmADynLightLink956SliceTests.ShouldAbortSetDynamicLights_WhenStateMissing",
+          "VmADynLightLink956SliceTests.SegmentDistanceWithinRadius_ComparesSquaredDistance"
+        ]
+      }
+    ]
+  }
+]

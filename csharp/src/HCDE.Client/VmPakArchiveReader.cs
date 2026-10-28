@@ -3,8 +3,12 @@ using System.Text;
 
 namespace HCDE.Client;
 
-internal static class VmPakArchiveReader
+public static class VmPakArchiveReader
 {
+    /// <summary>Native <c>CheckPak</c> PACK signature probe.</summary>
+    public static bool IsPakArchive(ReadOnlySpan<byte> data) =>
+        data.Length >= 12 && data.StartsWith("PACK"u8);
+
     public static IReadOnlyList<(string Name, byte[] Data)> Read(byte[] data)
     {
         if (data.Length < 12 || !data.AsSpan().StartsWith("PACK"u8)) throw new InvalidDataException("Invalid PAK header.");

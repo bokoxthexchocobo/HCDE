@@ -1,0 +1,11 @@
+[
+  {
+    "name": "dthinker-client-side-chunk764",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Retired: merged into chunk763 (`dthinker-list-client-chunk763`).",
+    "auditPaddingReview": "Retired — credits live in chunk763.",
+    "managedSourceFiles": [],
+    "nativeRanges": []
+  }
+]

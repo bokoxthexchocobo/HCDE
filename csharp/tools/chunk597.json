@@ -1,0 +1,9 @@
+[
+  {
+    "name": "d-net-tryruntics-stall-chunk597",
+    "bucket": "conversion",
+    "note": "Retired: stall guards merged into d-net-tryruntics-scheduler-chunk596 (native bands only; no ratio deepen)",
+    "retired": true,
+    "nativeRanges": []
+  }
+]

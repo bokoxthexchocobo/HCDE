@@ -1,0 +1,27 @@
+[
+  {
+    "name": "p-states-parser-goto-chunk990",
+    "bucket": "conversion",
+    "note": "`ResolveGotoLabel` tail, `FixStatePointers`, `ResolveGotoLabels`, and `SetGotoLabel` from `p_states.cpp` (**751–900**); follows chunk **989** (**601–750**).",
+    "auditSeams": "`ValidateActor`, `PClass::FindClass`, `FindState`, `FindStateByString`, `FState::StaticFindStateOwner`, `FxAlloc.Strdup`, `I_Error`, and `Printf` host calls remain injected.",
+    "auditRationale": "UNCredited continuation of `p_states.cpp` parser band; disjoint from **985–989**. Does not re-port **989** class-scope head (**743–754**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_states.cpp --start 751 --end 900` and `--chunk 990 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `ResolveGotoLabel` Super/class validation (**751–776**) | yes (predicates) |\n| `ResolveGotoLabel` offset + lookup (**778–826**) | yes |\n| `FixStatePointers` (**836–851**) | yes |\n| `ResolveGotoLabels` (**861–872**) | yes |\n| `SetGotoLabel` (**883–905**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **751–754** | `Super` / `::` scope head (**989**) |\n| **757–762**, **808–824** | `I_Error` / `Printf` host |\n| **828–834**, **853–859**, **875–881**, **907+** | comment banners / outside hull |\n| **1–750** | chunks **985–989** |\n\n| Managed (`VmPStatesParser990Slice.cs`) | Native (`p_states.cpp`) |\n|----------------------------------------|----------------------|\n| `ClassifyGotoScopeResolution` | **751–776** |\n| `TrySplitGotoLabelOffset` / `ResolveGotoLabelInActorType` / `TryApplyOwnedStateOffset` | **778–819** |\n| `FixIndexedStatePointersInTree` | **836–851** |\n| `ResolvePendingGotoLabelsInTree` | **861–872** |\n| `TrySetGotoLabelOnParserSession` | **883–905** |\n| Band hull (exclusive slice) | **751–900** |\n\n### Chunk **990** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**989** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPStatesParser990Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/p_states.cpp",
+        "symbol": "FStateDefinitions::ResolveGotoLabel",
+        "start": 751,
+        "end": 900,
+        "tests": [
+          "VmPStatesParser990SliceTests.ResolveGotoLabelTail",
+          "VmPStatesParser990SliceTests.FixAndResolveGotoTree",
+          "VmPStatesParser990SliceTests.SetGotoLabelSession"
+        ]
+      }
+    ]
+  }
+]

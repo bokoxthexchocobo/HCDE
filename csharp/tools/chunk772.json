@@ -1,0 +1,11 @@
+[
+  {
+    "name": "p-psprite-serialize-safeflash-chunk772",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Retired: merged into chunk770 (`p-psprite-overlay-lifecycle-chunk770`).",
+    "auditPaddingReview": "Retired — credits live in chunk770.",
+    "managedSourceFiles": [],
+    "nativeRanges": []
+  }
+]

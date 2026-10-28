@@ -1,0 +1,32 @@
+[
+  {
+    "name": "gskill-parse-mid-chunk1050",
+    "bucket": "conversion",
+    "note": "`FMapInfoParser::ParseSkill` continuation from `g_skill.cpp` (**151–300**). Follows **1049** (**1–150**).",
+    "auditSeams": "`FScanner`, `ParseAssign`, `strbin1`, and `ParseCloseBrace` remain host-injected; uncredited `VmSkillMapinfoParser` / **1047** replacement helpers used as seams only.",
+    "auditRationale": "File-scoped UNCredited **`g_skill.cpp`** **151–300** (+150); excludes **1–150** (**1049**) and **391–690** (**1048–1047**). Hull ends at **NoInfighting** (**300**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_skill.cpp --start 151 --end 300` and `--chunk 1050 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `respawntime` / `respawnlimit` (**152–163**) | yes |\n| `Aggressiveness` / `SpawnFilter` (**164–186**) | yes |\n| spawn / reaction flags (**187–198**) | yes |\n| `ACSReturn` / `ReplaceActor` (**199–216**) | yes |\n| menu / pic / confirm / key / color (**217–268**) | yes |\n| health / armor factors (**269–296**) | yes |\n| `NoInfighting` (**297–300**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1–150** | chunk **1049** |\n| **151** | closing brace from prior property |\n| **301+** | `TotalInfighting`, finalize, push (**301–390** deferred) |\n| **391–690** | chunks **1048–1047** |\n| `VmSkillMapinfoParser` | uncredited token parser — seam only |\n\n| Managed (`VmGSkillParseMid1050Slice.cs`) | Native (`g_skill.cpp`) |\n|----------------------------------------|------------------------|\n| `ConvertRespawnTimeSecondsToTics` / limit | **152–163** |\n| `ConvertAggressivenessInput` / spawn filter helpers | **164–186** |\n| `TryApplySkillParseMidFlag` spawn/reaction flags | **187–198**, **281–300** |\n| `TryApplySkillParseMidProperty` ACS/replace/menu | **199–268** |\n| health/armor float properties | **269–296** |\n| Band hull (exclusive slice) | **151–300** |\n\n### Chunk **1050** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1049** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmGSkillParseMid1050Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "ParseSkill continuation",
+        "start": 151,
+        "end": 300,
+        "tests": [
+          "VmGSkillParseMid1050SliceTests.ConvertRespawnTimeSecondsToTics_UsesTicRate",
+          "VmGSkillParseMid1050SliceTests.ConvertAggressivenessInput_InvertsClamped",
+          "VmGSkillParseMid1050SliceTests.ApplySpawnFilterWord_AddsDifficultyBits",
+          "VmGSkillParseMid1050SliceTests.ApplyReplaceActorPair_RegistersBothMaps",
+          "VmGSkillParseMid1050SliceTests.TryApplySkillParseMidProperty_SetsAcsReturnFlag",
+          "VmGSkillParseMid1050SliceTests.FormatSkillTextColorToken_WrapsBrackets",
+          "VmGSkillParseMid1050SliceTests.TryApplySkillParseMidFlag_NoInfighting",
+          "VmGSkillParseMid1050SliceTests.ClassifySkillParseMidKeyword_ReplaceActor"
+        ]
+      }
+    ]
+  }
+]

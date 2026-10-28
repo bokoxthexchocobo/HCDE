@@ -1,0 +1,13 @@
+[
+  {
+    "name": "action-model-animation-lookup-chunk586",
+    "bucket": "conversion",
+    "note": "Merged into acs-behavior-var-serialize-chunk591 (sub-150 depad merge).",
+    "auditSeams": "`BaseSpriteModelFrames`, `Models`, `FModel`, `AActor` model data, and `IMPLEMENT_CLASS` / serializer bodies are not hosted.",
+    "auditRationale": "Retired shrink merge: native `FindFModel` / SAF bands (6355\u20136505) are **uncredited** in loc_tally until a live chunk re-lands them.",
+    "auditPaddingReview": "**Fidelity review:** `6362\u20136471` is credited as native inventory only (`IMPLEMENT_CLASS` / `DEFINE_FIELD` seams); managed code mirrors `FindFModel` and SAF bits, not ZScript registration.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `Saf*` / `SkipSameAnimation` | `ESetAnimationFlags` 6355\u20136360 |\n| (seams) | `DAnimationFrame` \u2026 `DAnimationLayer` 6362\u20136471 |\n| `HasBaseSpriteModelFrames` / `UseModelDefForSpriteFrames` / `ResolvePrimaryAnimId` / `TryPickModelIndex` | `FindFModel` 6473\u20136505 |",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

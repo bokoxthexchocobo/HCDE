@@ -1,0 +1,15 @@
+[
+  {
+    "name": "actor-action-corpse-chunk876",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Retired (2026-10-23): uncredited separator/header/comment ranges removed per policy; honest whole-function credit **115** (< **150** floor). Prior tally **169** included banned separator/banner credit. Matrix credit **0**; `VmAAction.cs` remains off-tally.",
+    "auditSeams": "`P_DropItem` / `PClass::FindActor` supplied at unblock sites; corpse list is host-owned `IList<Actor>`.",
+    "auditRationale": "Separator/header padding (chunk **876** pattern cited in invalid **893** top-up) must not count toward `nativeLoc`. After uncredit, band is below floor → retire.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/a_action.cpp --start 37 --end 169` → UNCredited after retire. `uncredited_range_check.py --chunk 876 --band` → retired skip, exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "### Incident — separator/header credit (corrected)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Before** (tally, incl. headers **1–36**, separators, comment blocks) | **169** |\n| **After uncredit** (only `HCDE_QueueCorpse`, `A_Unblock`, `A_QueueCorpse`, `A_DeQueueCorpse`) | **115** |\n| **After retire** (matrix) | **0** |\n\n### Removed from credit (never behavior-ported)\n\n| Native lines | Reason |\n|--------------|--------|\n| **1–36** | headers / includes |\n| **80–86**, **137**, **144–145**, **156–157** | separators |\n| **138–143** | comment banner |\n\n### Behavior ported (matrix credit)\n\n| Native | Behavior ported (off-tally) |\n|--------|------------------------------|\n| `HCDE_QueueCorpse` / `A_Unblock` / `A_QueueCorpse` / `A_DeQueueCorpse` | yes in `VmAAction.cs` |\n| Matrix credit | **no** (retired) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross (invalid tally) | **169** |\n| Honest functions only | **115** |\n| Net behavior-ported (matrix) | **0** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": []
+  }
+]

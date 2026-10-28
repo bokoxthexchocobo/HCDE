@@ -1,0 +1,13 @@
+[
+  {
+    "name": "p-user-player-think-cluster-chunk511",
+    "bucket": "conversion",
+    "note": "Merged into chunk510.",
+    "auditSeams": "`P_PlayerMove`, `P_UseLines`, `VMCall`, `P_BobWeapon`, and `NetworkEntityManager` are not hosted.",
+    "auditRationale": "Credits music/environment/use hooks, safe-position tracking, angle-offset/subtitle/bob/presentation gates, and velocity bookkeeping from `p_user.cpp` (1682\u20131912).",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "Retired: Merged into chunk510 (`P_PlayerThink` cluster).\n\n| Managed | Native (`p_user.cpp`) |\n|---------|-------------------|\n| `ApplyAngleOffset` / `SubtitleTick` / `DecrementSubtitle` / `UpdateSafePosWhenLive` / `SkipBobTimerWhenPredicting` / `BotFrozenSkip` / `DebugLogTick` / `ClearInterpCheats` / `BobWeapon2D` / `BobWeapon3D` / `RecordVelocityWhenNotPredicting` / `VelocityUsesFull3D` / `ApplyAngleOffsetValue` / `MusicCdTrackChange` / `UseHoldButton` / `SafePosTracksLive` / `ClearInterpFlag` / `ShouldRecordVelocity` / `UseXYVelocity` / `ShouldSwapMusic` / \u2026 (26 helpers) | credited band 1682\u20131912 |",
+    "retired": true
+  }
+]

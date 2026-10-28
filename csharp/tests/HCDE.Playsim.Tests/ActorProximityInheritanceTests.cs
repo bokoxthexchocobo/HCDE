@@ -17,17 +17,17 @@ public class ActorProximityInheritanceTests
     public void BuiltInAncestryIsDirectionalAndOptional(int type, string name, int flags, bool expected)
     {
         var sim = Room(); sim.AddBot(20, 0, type);
-        Assert.Equal(expected, ActorProximity.Check(sim.Players.Single(), name, 100, flags: flags));
+        Assert.Equal(expected, VmPThingsRaiseRemoveWarpProximity.Check(sim.Players.Single(), name, 100, flags: flags));
     }
 
     [Fact]
     public void PlayerPawnAncestorMatchesDoomPlayerButExactClassDoesNot()
     {
         var sim = Room(); var caller = sim.AddBot(20, 0);
-        Assert.False(ActorProximity.Check(caller, "PlayerPawn", 100));
-        Assert.True(ActorProximity.Check(caller, "PlayerPawn", 100, flags: 1));
-        Assert.True(ActorProximity.Check(caller, "DoomPlayer", 100));
-        Assert.Equal(1, ActorProximity.CountProximity(caller, "Actor", 100, flags: 1));
+        Assert.False(VmPThingsRaiseRemoveWarpProximity.Check(caller, "PlayerPawn", 100));
+        Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(caller, "PlayerPawn", 100, flags: 1));
+        Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(caller, "DoomPlayer", 100));
+        Assert.Equal(1, VmPThingsRaiseRemoveWarpProximity.CountProximity(caller, "Actor", 100, flags: 1));
     }
 
     [Fact]
@@ -35,8 +35,8 @@ public class ActorProximityInheritanceTests
     {
         var sim = Room(); var caller = sim.AddBot(0, 20); var spectre = sim.AddBot(20, 20, 58);
         sim.AddBot(40, 20, 3002);
-        Assert.Equal(2, ActorProximity.CountProximity(caller, "Demon", 100, flags: 1));
-        Assert.True(ActorProximity.Check(caller, "Demon", 100, flags: 1 | 64 | 1024));
+        Assert.Equal(2, VmPThingsRaiseRemoveWarpProximity.CountProximity(caller, "Demon", 100, flags: 1));
+        Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(caller, "Demon", 100, flags: 1 | 64 | 1024));
         Assert.Equal(spectre.Id, caller.Brain!.TargetId);
     }
 

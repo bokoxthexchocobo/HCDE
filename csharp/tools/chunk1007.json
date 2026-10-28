@@ -1,0 +1,27 @@
+[
+  {
+    "name": "g-game-demo-playback-chunk1007",
+    "bucket": "conversion",
+    "note": "`G_DeferedPlayDemo`, `playdemo`/`timedemo` CCMD gates, and `G_ProcessIFFDemo` header loop from `g_game.cpp` (**3350–3499**); follows chunk **1006** (**3200–3349**).",
+    "auditSeams": "Demo file I/O, `Printf`, `G_TimeDemo`, chunk readers, and userinfo hosts remain injected.",
+    "auditRationale": "UNCredited **3350–3499** CLI band; disjoint from chunks **995–1006** and chunk **9** credited segments.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_game.cpp --start 3350 --end 3499` and `--chunk 1007 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `G_DeferedPlayDemo` gameaction (**3350–3351**) | yes |\n| `playdemo` reject/defer (**3356–3370**) | yes |\n| `timedemo` argc gate (**3375–3379**) | yes |\n| FORM length / ZDEM magic (**3399–3410**) | yes |\n| Chunk bounds + ZDHD version/map (**3419–3456**) | yes |\n| `UINF`/`NETD`/`BODY`/`COMP` cases (**3463–3488**) | yes |\n| Missing header gate (**3495–3498**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **3358–3364** | console print host |\n| **3460–3461** | `C_ReadCVars` host |\n| **3470** | `D_ReadUserInfoStrings` host |\n| **3478** | `P_ReadDemoWeaponsChunk` host |\n| **3500+** | no-players / no-body checks (next band) |\n\n| Managed (`VmGGameDemoPlayback1007Slice.cs`) | Native (`g_game.cpp`) |\n|---------------------------------------------|----------------------|\n| `ResolveDeferredPlayDemoGameAction` | **3351** |\n| `ResolvePlayDemoRejectReason` / argv gate | **3356–3370**, **3375–3379** |\n| FORM/ZDEM/chunk layout helpers | **3399–3423** |\n| ZDHD version/map/RNG gates | **3430–3456** |\n| Player/multiplayer/body chunk predicates | **3463–3488** |\n| `ResolveMissingDemoHeaderFailure` | **3495–3498** |\n| Band hull (exclusive slice) | **3350–3499** |\n\n### Chunk **1007** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1006** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmGGameDemoPlayback1007Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "G_ProcessIFFDemo",
+        "start": 3350,
+        "end": 3499,
+        "tests": [
+          "VmGGameDemoPlayback1007SliceTests.DeferredPlayDemoAction",
+          "VmGGameDemoPlayback1007SliceTests.ProcessIffDemoHead",
+          "VmGGameDemoPlayback1007SliceTests.DemoHeaderChunks"
+        ]
+      }
+    ]
+  }
+]

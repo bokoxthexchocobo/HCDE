@@ -1,0 +1,15 @@
+[
+  {
+    "name": "p-lnspec-scroll-sector-chunk420",
+    "bucket": "conversion",
+    "note": "Sector link, texture/wall scroll, floor/ceiling scroll, damage/gravity/color/fade/panning Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
+    "auditSeams": "`P_AddSectorLinks`, `SetScroller`, and live `sector_t` mutation are not hosted.",
+    "auditRationale": "Credits scroll id normalization, floor carry modes, legacy damage leakiness, gravity clamping, and panning offsets from `p_lnspec.cpp`.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (420)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **283** |\n| **Out-of-body removed** | **283** |\n| **Honest** | **0** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 420 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

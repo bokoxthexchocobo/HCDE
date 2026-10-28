@@ -3,7 +3,7 @@ using System.Text;
 
 namespace HCDE.Client;
 
-internal static class VmRffArchiveReader
+public static class VmRffArchiveReader
 {
     public static IReadOnlyList<(string Name, byte[] Data)> Read(byte[] data)
     {

@@ -1,0 +1,31 @@
+[
+  {
+    "name": "p-lnspec-glass-conversation-chunk933",
+    "bucket": "conversion",
+    "note": "`LS_GlassBreak` junk/quest tail through `LS_SetGlobalFogParameter` (`p_lnspec.cpp` **3305–3454**). Follows **932** (**≤3304**); glow specials at **3458+** deferred.",
+    "auditSeams": "`Spawn`, `pr_glass`, `NativeStartConversation`, `ChangePortal`, sector iterators, and `Level->fogdensity` mutation remain host seams.",
+    "auditRationale": "Honest **150**-line UNCredited band in **3155–3982** corridor; exclusive `VmPLnspecGlassConversation933Slice.cs`.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 3305 --end 3454` and `--chunk 933 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| `BuildGlassShard` / yaw/vel helpers | `LS_GlassBreak` junk loop **3305–3335** |\n| `GlassUsesCustomType` / `GlassSpawnTypeResolved` | typed spawn **3313–3319** |\n| `GlassStateOffset` | default junk state **3323–3325** |\n| `BuildQuestGrant` / `QuestGrantInventory` | quest rewards **3337–3356** |\n| `ResolveQuestActivator` | player fallback **3339–3348** |\n| `TryStartConversation` | `LS_StartConversation` **3362–3382** |\n| `BuildConversationAssign` | `LS_Thing_SetConversation` **3384–3412** |\n| `ConversationApplyToIterator` | TID loop **3396–3405** |\n| portal seam | `LS_Line_SetPortalTarget` **3414–3418** |\n| `BuildPlaneReflection` | `LS_Sector_SetPlaneReflection` **3420–3434** |\n| `BuildGlobalFog` / `ParseGlobalFogKind` | `LS_SetGlobalFogParameter` **3436–3454** |\n| `ApplyGlobalFogDensity` | cases **0–1** **3441–3447** |\n| `ApplyGlobalFogSky` | case **2** **3449–3451** |\n| `return false` glass tail | **3358–3360** |\n\n### Chunk **933** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**932** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPLnspecGlassConversation933Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_GlassBreak",
+        "start": 3305,
+        "end": 3454,
+        "tests": [
+          "VmPLnspecGlassConversation933SliceTests.BuildGlassShard_DefaultJunk_ComputesStateOffset",
+          "VmPLnspecGlassConversation933SliceTests.BuildQuestGrant_SkipsWhenNotSwitched",
+          "VmPLnspecGlassConversation933SliceTests.BuildQuestGrant_ReturnsInventoryList",
+          "VmPLnspecGlassConversation933SliceTests.TryStartConversation_RejectsDeadPlayer",
+          "VmPLnspecGlassConversation933SliceTests.BuildConversationAssign_RejectsMissingDialog",
+          "VmPLnspecGlassConversation933SliceTests.BuildPlaneReflection_SkipsSlopedFloor",
+          "VmPLnspecGlassConversation933SliceTests.BuildGlobalFog_DensityHalvesValue"
+        ]
+      }
+    ]
+  }
+]

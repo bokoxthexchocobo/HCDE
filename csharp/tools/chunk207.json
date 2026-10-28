@@ -1,0 +1,14 @@
+[
+  {
+    "name": "keyconf-chunk207",
+    "bucket": "conversion",
+    "managedLoc": 168,
+    "note": "KEYCONF lump comment strip, addkeysection/addmenukey, LoadKeys, player class KEYCONF helpers. Retired (2026-10-24): `--band` hull overlaps existing credit (keysections-save-chunk147 src/gamedata/keysections.cpp 57-66).",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (207)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **239** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **239** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 207 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

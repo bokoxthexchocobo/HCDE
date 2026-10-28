@@ -1,0 +1,14 @@
+[
+  {
+    "name": "dehacked-patchsound-pointer-chunk276",
+    "bucket": "conversion",
+    "managedLoc": 64,
+    "note": "PatchSound consumer and PatchPointer Boom hack Retired (2026-10-23): out-of-body credit removed; honest **146** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (276)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **4** |\n| **Honest** | **146** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 276 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

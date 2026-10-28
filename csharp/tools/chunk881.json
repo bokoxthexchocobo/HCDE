@@ -1,0 +1,15 @@
+[
+  {
+    "name": "p-secnodes-portal-render-chunk881",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Deferred (2026-10-23): `p_secnodes.cpp` **284–475** passes `uncredited_range_check` as one band (**192** lines) but native `AActor::UpdateRenderSectorList` / `touching_*portallist` have no managed `Actor` fields or playsim tick caller yet — port would be test-only (same policy as deleted **880** leftovers).",
+    "auditSeams": "Chunk **810** credited **42–283**; `VmPSecnodes` is used from `VmPUserHcdeWeaponPhysics` (sector thing lists). Portal `portnode_t` / `FBlockNode` / render lists require `OldRenderPos`, `Level.linePortals`, and `PortalBlockmap` on the actor tick path before honest credit.",
+    "auditRationale": "Band is contiguous and ≥150 native lines, but landing without wiring `UpdateRenderSectorList` into playsim would duplicate **878**/**880** test-only off-tally code.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_secnodes.cpp --start 284 --end 475 → UNCredited (192 lines), exit 0. `uncredited_range_check.py --chunk 881 --band` → retired skip, exit 0.",
+    "auditManagedLocJustification": "Retired row; zero matrix native credit.",
+    "auditPaddingReview": "### vs chunk **810** (no double count)\n\n| | Lines |\n|--|------:|\n| **810** credited (`p-secnodes-freelist-chunk810`) | **242** (**42–283**) |\n| **881** gross band (deferred) | **192** (**284–475**) |\n| **881** net matrix credit | **0** |\n\n**810 credited symbols (unchanged):** `P_GetSecnode` / `P_PutSecnode`, `P_AddSecnode`, `P_DelSecnode`, `P_DelSeclist`, `P_CreateSecNodeList`.\n\n**881 deferred native (function boundaries):**\n\n| Native | Lines |\n|--------|------:|\n| `P_DelPortalnode` | **293–329** |\n| `P_AddPortalnode` | **338–367** |\n| `AActor::UpdateRenderSectorList` | **375–427** |\n| `AActor::ClearRenderSectorList` / `ClearRenderLineList` | **429–439** |\n| `FBlockNode::Create` / `Release` | **449–475** |\n\n### Deferred-bands registry\n\n| File | Band | Lines | Blocker |\n|------|------|------:|---------|\n| `p_linkedsectors.cpp` | see chunk **880** | 225 (non-contiguous) | no ≥150 contiguous band |\n| `p_secnodes.cpp` | **284–475** | **192** | no actor render-portal playsim wiring |\n\n### Behavior ported (matrix credit)\n\n| Native | Behavior ported |\n|--------|-----------------|\n| (none) | **no** (deferred) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross band surveyed | **192** |\n| Net behavior-ported | **0** |",
+    "managedSourceFiles": [],
+    "nativeRanges": []
+  }
+]

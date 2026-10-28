@@ -1,0 +1,13 @@
+[
+  {
+    "name": "p-map-offset-talk-puzzle-chunk492",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Retired: sub-150 after trimming P_NoWayTraverse/P_UsePuzzleItem overlaps (chunk716/718); offset/talk/puzzle helpers remain in VmPMapOffsetTalkPuzzle without matrix credit.",
+    "auditSeams": "`Trace`, `P_AimLineAttack`, `NativeStartConversation`, `FPathTraverse`, and `P_StartScript` are not hosted.",
+    "auditRationale": "Former conversion row; credit moved to chunk716/718 for use-line paths.",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "Retired after overlap trim; see chunk716 (`P_UseTraverse` through `P_UsePuzzleItem`)."
+  }
+]

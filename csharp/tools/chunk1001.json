@@ -1,0 +1,27 @@
+[
+  {
+    "name": "g-game-session-chunk1001",
+    "bucket": "conversion",
+    "note": "`G_DoPlayerPop`, screenshot queue, load-game action, save WAD validation, and save CVAR filter from `g_game.cpp` (**2449–2598**); follows chunk **1000** (**2021–2170**). Orphan session managed files not listed.",
+    "auditSeams": "`Printf`, `GStrings`, `M_ScreenShot`, and `arc()` host I/O remain injected.",
+    "auditRationale": "UNCredited **2449–2598** CLI band; disjoint from chunks **995–1000** and chunk **9** credited segments.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_game.cpp --start 2449 --end 2598` and `--chunk 1001 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `G_DoPlayerPop` spy/status/morph teardown (**2463–2491**) | yes |\n| `G_ScreenShot` gate (**2503–2508**) | yes |\n| `G_LoadGame` (**2517–2521**) | yes |\n| `CheckSingleWad` / `G_CheckSaveGameWads` (**2530–2569**) | yes |\n| `C_SerializeCVars` write filter (**2593–2598**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2449–2447** | prior spawn function close |\n| **2457–2460**, **2572–2576** | string `Printf` host |\n| **2476–2496** | script/destroy host |\n| **2601+** | deserialize branch (next band) |\n| Orphan `VmGGameLoadGame*` / `VmGGamePlayerPop` | not re-credited |\n\n| Managed (`VmGGameSession1001Slice.cs`) | Native (`g_game.cpp`) |\n|----------------------------------------|----------------------|\n| `ShouldRevertSpyCameraToSelf` / morph helpers | **2465–2491** |\n| `ShouldQueueScreenshot` | **2503–2508** |\n| `TryCreateLoadGameRequest` | **2517–2521** |\n| `IsResourceWadLoaded` / WAD merge helpers | **2530–2569** |\n| `ShouldSerializeCvarForSave` | **2593–2598** |\n| Band hull (exclusive slice) | **2449–2598** |\n\n### Chunk **1001** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1000** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmGGameSession1001Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "G_DoPlayerPop",
+        "start": 2449,
+        "end": 2598,
+        "tests": [
+          "VmGGameSession1001SliceTests.PlayerPopAndScreenshot",
+          "VmGGameSession1001SliceTests.LoadGameAndWadChecks",
+          "VmGGameSession1001SliceTests.SaveCvarFilter"
+        ]
+      }
+    ]
+  }
+]

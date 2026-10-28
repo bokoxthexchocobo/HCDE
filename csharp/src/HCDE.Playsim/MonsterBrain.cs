@@ -758,15 +758,18 @@ public sealed class MonsterBrain(MonsterAttack attack)
             && (sim.GameMode != SpawnGameMode.Single || sim.Players.Count() > 1 || actor.TidToHate != 0)
             && !CombatTrace.CheckSight(sim, actor, target))
         {
-            var noSightCheck = actor.NoSightCheck;
+            var lookForBetter = actor.NoSightCheck;
             Actor? replacement;
             try
             {
-                actor.NoSightCheck = false;
+                if (lookForBetter) actor.NoSightCheck = false;
                 replacement = FindForLook(sim, actor, new ActorLookParameters { NativeSight = true },
                     (flags & MonsterChaseFlags.DontLookAllAround) == 0, chaseGoal: true);
             }
-            finally { actor.NoSightCheck = noSightCheck; }
+            finally
+            {
+                if (lookForBetter) actor.NoSightCheck = true;
+            }
             if (replacement is not null && replacement.Id != TargetId)
             {
                 TargetId = replacement.Id;
@@ -817,12 +820,24 @@ public sealed class MonsterBrain(MonsterAttack attack)
                         if (movementTarget.Id != actor.GoalId && !actor.NoFear && (actor.Frightened || movementTarget.Frightening))
                         { dx = -dx; dy = -dy; }
                     }
+                    var oldX = actor.X.ToDouble();
+                    var oldY = actor.Y.ToDouble();
+                    string? oldFloorPic = actor.CantLeaveFloorPic && actor.SectorIndex >= 0
+                        && actor.SectorIndex < sim.Level.Sectors.Count
+                        ? sim.Level.Sectors[actor.SectorIndex].FloorPic : null;
                     if (forceNewDirection) ChooseNativeChaseDirection(sim, actor, dx, dy);
                     else
                     {
                         actor.MoveCount = unchecked(actor.MoveCount - 1);
                         if (actor.MoveCount < 0 && (flags & MonsterChaseFlags.NoRandomTurn) == 0
                             || !ActorWanderActions.Move(sim, actor) && (flags & MonsterChaseFlags.StopIfBlocked) == 0)
+                            ChooseNativeChaseDirection(sim, actor, dx, dy);
+                    }
+                    if (oldFloorPic is not null && actor.SectorIndex >= 0 && actor.SectorIndex < sim.Level.Sectors.Count
+                        && !string.Equals(oldFloorPic, sim.Level.Sectors[actor.SectorIndex].FloorPic, StringComparison.OrdinalIgnoreCase))
+                    {
+                        ActorPhysics.TryMove(sim, actor, oldX, oldY, out _);
+                        if ((flags & MonsterChaseFlags.StopIfBlocked) == 0)
                             ChooseNativeChaseDirection(sim, actor, dx, dy);
                     }
                 }
@@ -1069,7 +1084,8 @@ public sealed class MonsterBrain(MonsterAttack attack)
 
     private static bool SectorAllowsAttacks(Actor actor) => actor.Level is not { } level
         || actor.SectorIndex < 0 || actor.SectorIndex >= level.Sectors.Count
-        || !level.Sectors[actor.SectorIndex].NoAttack;
+        || (!level.Sectors[actor.SectorIndex].NoAttack
+            && (level.Sectors[actor.SectorIndex].RuntimeFlags & 2048) == 0);
 
     private static Actor? FindPlayerTarget(AuthoritySimulation sim, Actor actor, MonsterChaseFlags flags,
         ActorLookParameters? parameters = null)

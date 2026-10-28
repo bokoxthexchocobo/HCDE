@@ -1,0 +1,15 @@
+[
+  {
+    "name": "am-map-custom-cvar-callbacks-chunk397",
+    "bucket": "conversion",
+    "note": "Automap CUSTOM_CVAR callbacks, color tables, colorset helpers Retired (2026-10-23): out-of-body credit removed; honest **30** < **150**.",
+    "auditSeams": "Engine CVAR registration and `primaryLevel->automap` method calls are not hosted.",
+    "auditRationale": "Credits automap CUSTOM_CVAR callbacks, standard/overlay CVAR defaults, `cv_standard`/`cv_overlay`, and `AMColorset` white/lookup helpers from `am_map.cpp` (no overlap with chunks 340/352/354/379/385/393).",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (397)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **161** |\n| **Out-of-body removed** | **131** |\n| **Honest** | **30** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 397 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

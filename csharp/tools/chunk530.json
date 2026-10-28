@@ -1,0 +1,164 @@
+[
+  {
+    "name": "p-action-raise-count-flags-chunk530",
+    "bucket": "conversion",
+    "note": "A_ChangeFlag, CheckFlag, A_ChangeCountFlags, raise family, A_SetAngle/Pitch/Roll/ViewAngle/ViewPitch",
+    "auditSeams": "`ModActorFlag`, `CheckActorFlag`, `P_Thing_Raise`, `P_CheckSight`, and `SetAngle`/`SetPitch`/`SetRoll` are not hosted.",
+    "auditRationale": "Credits count-flag level totals, raise pointer iteration policy, monster refire gating, and orientation setter null-guards from `p_actionfunctions.cpp` (2767\u20133028).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmActionRaiseAndCountFlags.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_ChangeFlag",
+        "start": 2767,
+        "end": 2775,
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.CheckFlagResult_RequiresOwner"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::CheckFlag",
+        "start": 2783,
+        "end": 2791,
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.CheckFlagResult_RequiresOwner"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_ChangeCountFlags",
+        "start": 2794,
+        "end": 2826,
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.ApplyKillCount_DecrementsWhenCountedAlive",
+          "VmActionRaiseAndCountFlagsTests.RunChangeCountFlags_UpdatesLevelTotals",
+          "VmActionRaiseAndCountFlagsTests.RaiseChildrenOnLevel_RaisesMatchingMaster",
+          "VmActionRaiseAndCountFlagsTests.DecideMonsterRefire_JumpsWhenSightBlocked"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_RaiseMaster",
+        "start": 2833,
+        "end": 2843,
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.SiblingSharesMaster_ExcludesSelf"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_RaiseChildren",
+        "start": 2850,
+        "end": 2866,
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.SiblingSharesMaster_ExcludesSelf"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_RaiseSiblings",
+        "start": 2873,
+        "end": 2892,
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.SiblingSharesMaster_ExcludesSelf"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_RaiseSelf",
+        "start": 2899,
+        "end": 2904,
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.RefireProbabilityFails_WhenRollLow"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::RaiseActor",
+        "start": 2912,
+        "end": 2918,
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.RefireTargetInvalid_WhenNoSight"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::CanRaise",
+        "start": 2925,
+        "end": 2929,
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.RefireTargetInvalid_WhenNoSight"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "SetViewAngleNative",
+        "start": 3038,
+        "end": 3045,
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.TrySetViewAngle_InvokesSetterWhenRefPresent"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "SetViewAngleNative",
+        "start": 3047,
+        "end": 3057,
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.TrySetViewAngle_InvokesSetterWhenRefPresent"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "SetViewPitchNative",
+        "start": 3067,
+        "end": 3074,
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.TrySetViewAngle_InvokesSetterWhenRefPresent"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "SetViewPitchNative",
+        "start": 3076,
+        "end": 3086,
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.TrySetViewAngle_InvokesSetterWhenRefPresent"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_SetAngle",
+        "start": 2968,
+        "end": 2981,
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.CheckFlagResult_RequiresOwner"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_SetPitch",
+        "start": 2991,
+        "end": 3004,
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.CheckFlagResult_RequiresOwner"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_SetRoll",
+        "start": 3015,
+        "end": 3028,
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.CheckFlagResult_RequiresOwner"
+        ]
+      }
+    ],
+    "auditManagedLocJustification": "Raise iterators and count-flag level totals mirror native control flow; `TrySet*` delegates host `SetAngle`/`SetPitch`/`SetRoll`/`SetView*` without inlining engine calls.",
+    "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits count-flag/raise/orientation bands **2767\u20133028** plus `SetViewAngleNative`/`SetViewPitchNative` **3038\u20133086** (`p_actionfunctions.cpp`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RunChangeCountFlags` / `PlanChangeCountFlags` / `ApplyKillCount` / `CountsAsKill` | `A_ChangeCountFlags` **2794\u20132825** |\n| `TryRaiseMaster` / `RaiseChildrenOnLevel` / `RaiseSiblingsOnLevel` / `RaiseSelf` | `A_RaiseMaster` **2833\u20132843**; `A_RaiseChildren` **2850\u20132865**; `A_RaiseSiblings` **2873\u20132891**; `A_RaiseSelf` **2899\u20132904** |\n| `DecideMonsterRefire` / refire helpers | `A_MonsterRefire` **2938\u20132957** |\n| `TrySetAngle` / `TrySetPitch` / `TrySetRoll` / `TrySetViewAngle` / `TrySetViewPitch` | `A_SetAngle` **2968\u20132981**; `A_SetPitch` **2991\u20133004**; `A_SetRoll` **3015\u20133028**; `SetViewAngleNative` **3038\u20133086** |\n| `CheckFlagResult` | `CheckFlag` **2789\u20132790** |\n| `RefNull` | pointer null guards **2838**, **2881**, **2975**, **2998**, **3021**, **3041**, **3070** |\n\n### Out-of-body uncredit (530)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **199** |\n| **Out-of-body removed** | **2** |\n| **Honest** | **197** |\n",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 530 --band` after out-of-body trim."
+  }
+]

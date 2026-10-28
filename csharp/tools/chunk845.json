@@ -1,0 +1,15 @@
+[
+  {
+    "name": "fscript-parser-sf-act-value-chunk845",
+    "bucket": "conversion",
+    "note": "`FParser::SF_ObjAwaken` \u2026 `SF_ObjDead` from `fragglescript/t_func.cpp` (2778\u20133047). Retired (2026-10-23): out-of-body credit removed; honest **122** < **150**.",
+    "auditSeams": "No new `ParserContext` Action/Func forwarders. Uses `Actor.Activate`, `ActorSoundActions.StartGlobalSound`, `AuthoritySimulation.MarkExited`, `Actor` placement/death, and `FsFixValue` from chunk 843.",
+    "auditRationale": "Portable mobj/value band; **2884\u20133244** spawn/combat iterators and **3245+** stub/query tail land in **846**; **1381\u20132241** remains deferred.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 845 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "Shared-file stubs credited in chunk 846 (padding allowlist): `SfSkinColor`, `SfPlayDemo`, `SfCheckCVar`, `SfObjType`.\n\n**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_ObjAwaken` | yes |\n| `SF_AmbientSound` | yes |\n| `SF_ExitSecret` | yes |\n| `SF_MobjValue` | yes |\n| `SF_StringValue` | yes |\n| `SF_IntValue` | yes |\n| `SF_FixedValue` | yes |\n| `SF_SetObjPosition` | yes |\n| `SF_ObjDead` | yes |\n\n| Managed | Native (`t_func.cpp` 2778\u20133047) |\n|---------|-------------------------|\n| `SfObjAwaken` | **2778\u20132795** |\n| `SfAmbientSound` | **2805\u20132811** |\n| `SfExitSecret` | **2822\u20132825** |\n| `SfMobjValue` | **2834\u20132841** |\n| `SfStringValue` | **2843\u20132857** |\n| `SfIntValue` | **2859\u20132866** |\n| `SfFixedValue` | **2868\u20132875** |\n| `SfSetObjPosition` | **2944\u20132959** |\n| `SfObjDead` | **3029\u20133047** |\n| (separators / deferred native) | **2796\u20132804**, **2812\u20132821**, **2826\u20132833**, **2960\u20133028**; **2876\u20132943** uncredited until combat band |\n\n### Out-of-body uncredit (845)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **199** |\n| **Out-of-body removed** | **77** |\n| **Honest** | **122** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

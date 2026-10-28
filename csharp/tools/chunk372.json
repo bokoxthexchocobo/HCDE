@@ -1,0 +1,15 @@
+[
+  {
+    "name": "am-map-session-chunk372",
+    "bucket": "conversion",
+    "note": "startDisplay, LevelInit, scale, Responder, changeWindowScale, doFollowPlayer policy Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **97** (50% of honest **194**).",
+    "auditSeams": "Engine object graph (`players`, `StatusBar`, `twod`) is not hosted; managed code mirrors numeric/session rules only.",
+    "auditRationale": "Credits `startDisplay`, `clearMarks`, `LevelInit`, `minOutWindowScale`, `maxOutWindowScale`, `NewUIScale`, `NewResolution`, `Responder`, `changeWindowScale`, and `doFollowPlayer` from `am_map.cpp`.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (372)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **199** |\n| **Out-of-body removed** | **5** |\n| **Honest** | **194** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`check_port_coverage.sh` thin managed: surviving 0 < need 97 (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

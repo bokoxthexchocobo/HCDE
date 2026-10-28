@@ -64,16 +64,6 @@ public static class CanonicalEventPayloadCodec
         return true;
     }
 
-    public static bool PayloadsEqual(byte eventType, ReadOnlySpan<byte> canonical, ReadOnlySpan<byte> legacy)
-    {
-        Span<byte> rebuilt = stackalloc byte[256];
-        var legacyCursor = 0;
-        if (!TryBuildFromLegacy(eventType, legacy, ref legacyCursor, rebuilt, out var length))
-            return false;
-
-        return length == canonical.Length && canonical.SequenceEqual(rebuilt[..length]);
-    }
-
     private static bool TryCopyFixedLegacy(ReadOnlySpan<byte> legacy, ref int legacyCursor, Span<byte> output, ref int cursor, int size)
     {
         if (legacy.Length - legacyCursor < size || output.Length - cursor < size)

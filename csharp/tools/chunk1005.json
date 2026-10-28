@@ -1,0 +1,26 @@
+[
+  {
+    "name": "g-game-save-payload-chunk1005",
+    "bucket": "conversion",
+    "note": "`G_DoSaveGame` zip payload, success path, cleanup, and `G_ReadDemoTiccmd` head from `g_game.cpp` (**3050–3199**); follows chunk **1004** (**2900–3049**).",
+    "auditSeams": "Serializer writers, `WriteZip`, `FResourceFile`, `G_WriteSnapshots`, and demo unpack host remain injected.",
+    "auditRationale": "UNCredited **3050–3199** CLI band; disjoint from chunks **995–1004** and chunk **9** credited segments.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_game.cpp --start 3050 --end 3199` and `--chunk 1005 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `AllowLoadIn` array gate (**3062–3070**) | yes |\n| Globals ticrate/leveltime (**3079–3084**) | yes |\n| `nextskill` optional (**3097–3100**) | yes |\n| Zip verify + notify (**3118–3136**) | yes |\n| JSON buffer cleanup indices (**3145–3146**) | yes |\n| Save completion / time unfreeze (**3151–3154**) | yes |\n| `G_ReadDemoTiccmd` loop head (**3165–3198**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **3050–3058** | PNG finish / info fields (seam with **1004**) |\n| **3072–3077** | `PutSaveWads` / hub / cvar host |\n| **3090–3094** | STAT/RNG/ACS host |\n| **3102–3111** | buffer compression host |\n| **3118–3124** | resource file open host |\n\n| Managed (`VmGGameSavePayload1005Slice.cs`) | Native (`g_game.cpp`) |\n|-------------------------------------------|----------------------|\n| `ShouldSerializeAllowLoadInPorts` | **3062–3070** |\n| `ShouldIncludeLevelTimingInGlobals` / `ShouldSerializeNextSkillGlobal` | **3079–3100** |\n| `ConfirmsSavedArchiveIntegrity` / notification style | **3118–3136** |\n| `JsonContentCleanupIndices` / completion cleanup | **3145–3154** |\n| Demo command predicates | **3165–3198** |\n| Band hull (exclusive slice) | **3050–3199** |\n\n### Chunk **1005** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1004** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmGGameSavePayload1005Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "G_DoSaveGame",
+        "start": 3050,
+        "end": 3199,
+        "tests": [
+          "VmGGameSavePayload1005SliceTests.SaveGlobalsAndArchive",
+          "VmGGameSavePayload1005SliceTests.DemoTiccmdHead"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,33 @@
+[
+  {
+    "name": "sbarinfo-mainblock-load-chunk1064",
+    "bucket": "conversion",
+    "note": "`SBarInfoMainBlock` draw/parse tail, keyword tables, `FreeSBarInfoScript`, and `SBarInfo::Load` head from `sbarinfo.cpp` (**301–450**); follows **1063** (**151–300**).",
+    "auditSeams": "Main-block flag/alpha list (**312–337**) uses **1063** `VmSbarinfoParser1063Slice` only; `FScanner`, `fileSystem`, `new SBarInfo`, and `ParseSBarInfo` body (**463+**) remain host-injected.",
+    "auditRationale": "UNCredited **`sbarinfo.cpp`** **301–450** (+150); excludes duplicate managed credit on **312–337** already tallied on **1063**.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo.cpp --start 301 --end 450` and `--chunk 1064 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Draw offset store + alpha combine (**310–313**) | yes (alpha via **1063** seam) |\n| Parse flow after flag list (**330–339**) | yes |\n| Top-level / status-bar keyword tables (**358–418**) | yes |\n| `FreeSBarInfoScript` slot loop (**420–430**) | yes |\n| `SBarInfo::Load` default + custom lump policy (**432–450**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **312–337** | chunk **1063** flag/alpha list |\n| **301–309**, **341–343** | accessors / thin forwards |\n| **436–444**, **452–457** | host lump I/O + `new`/`ParseSBarInfo` |\n| **451+** | `FindLump` loop host |\n| **463+** | `ParseSBarInfo` outside hull |\n\n| Managed (`VmSbarinfoMainBlockLoad1064Slice.cs`) | Native (`sbarinfo.cpp`) |\n|--------------------------------------------------|-------------------------|\n| `StoreDrawOffsets` / `ApplyDrawAlpha` | **310–313** |\n| `ShouldParseFlowAfterFlagList` | **330–333** |\n| `TopLevelKeywords` / `MatchTopLevelKeyword` | **358–404** |\n| `StatusBarTypeNames` / `MatchStatusBarTypeName` | **375–418** |\n| `ShouldFreeScriptSlot` | **424–428** |\n| Load predicates + slot actions | **432–450** |\n| Band hull (exclusive slice) | **301–450** |\n\n### Chunk **1064** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1063** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoMainBlockLoad1064Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo.cpp",
+        "symbol": "SBarInfoMainBlock / SBarInfo::Load",
+        "start": 301,
+        "end": 450,
+        "tests": [
+          "VmSbarinfoMainBlockLoad1064SliceTests.ApplyDrawAlpha_DelegatesTo1063Combine",
+          "VmSbarinfoMainBlockLoad1064SliceTests.ShouldParseFlowAfterFlagList_WhenSeparatorsEnd",
+          "VmSbarinfoMainBlockLoad1064SliceTests.ResolveMainBlockAlphaAfterFlagList_UsesFloatWhenRead",
+          "VmSbarinfoMainBlockLoad1064SliceTests.ResolveScriptSlotAction_ChoosesCreateOrParse",
+          "VmSbarinfoMainBlockLoad1064SliceTests.MatchTopLevelKeyword_FindsAppendStatusBar",
+          "VmSbarinfoMainBlockLoad1064SliceTests.MatchStatusBarTypeName_RecognizesInventoryFullscreen",
+          "VmSbarinfoMainBlockLoad1064SliceTests.ShouldLoadDefaultFromGameInfo_RequiresName",
+          "VmSbarinfoMainBlockLoad1064SliceTests.ShouldEmitLoadBanners_RequireNonBatchAndValidLump",
+          "VmSbarinfoMainBlockLoad1064SliceTests.ScriptSlotConstants_MatchNativeHeaders"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,15 @@
+[
+  {
+    "name": "maploader-load-segs-chunk375",
+    "bucket": "conversion",
+    "note": "LoadSegs empty-lump gate, vertex validation, split-vertex angle threshold, badseg messages; LoadSubsectors BSP sizing gates Retired (2026-10-23): out-of-body credit removed; honest **60** < **150**.",
+    "auditSeams": "Seg iteration, vertex snap geometry, linedef/sidedef binding, allocation, and subsector read loops are not hosted.",
+    "auditRationale": "Credits only native bands exercised by named tests \u2014 not the full LoadSegs/LoadSubsectors function bodies.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (375)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **60** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **60** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 375 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

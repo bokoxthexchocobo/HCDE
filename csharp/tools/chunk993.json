@@ -1,0 +1,27 @@
+[
+  {
+    "name": "p-openmap-wad-walk-chunk993",
+    "bucket": "conversion",
+    "note": "`P_OpenMapData` WAD lump walk, TEXTMAP supplement mapping, embedded `maps/*.wad` pick, and WAD magic probe from `p_openmap.cpp` (**151–300**); follows chunk **992** (**1–150**).",
+    "auditSeams": "`GetMapIndex` host errors, `fileSystem`/`FResourceFile` IO, `strncpy`, `I_Error`, and `try/catch` teardown remain injected.",
+    "auditRationale": "UNCredited continuation of `p_openmap.cpp`; reuses **992** `ScanMapLumpIndex` without re-crediting **56–94**. No overlap with **992** short-name head (**129–150**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_openmap.cpp --start 151 --end 300` and `--chunk 993 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Classic WAD lump loop via `GetMapIndex` (**165–191**) | yes |\n| TEXTMAP sidecar lump aliases (**197–238**) | yes |\n| Embedded `maps/*.wad` pick (**244–257**) | yes |\n| WAD magic probe (**266–267**) | yes |\n| Resource TEXTMAP header + supplement loop head (**278–300**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **151–164**, **240–241** | **992** build-map return / seam |\n| **157–159**, **189–190**, **196–197**, **236–237** | reader/`strncpy` host |\n| **201–204** | `I_Error` host |\n| **170–178**, **259–264** | `try/catch` / seek-read host |\n| **1–150** | chunk **992** |\n\n| Managed (`VmPOpenMapWadWalk993Slice.cs`) | Native (`p_openmap.cpp`) |\n|-------------------------------------------|-------------------------|\n| `TryAdvanceClassicMapLump` / abort/end/behavior predicates | **172–191** |\n| `NextLumpIsClassicDoomFormat` | **163–164** |\n| `ClassifyTextMapSupplementLump` / `TryResolveTextMapSupplementLump` | **205–235**, **286–301** |\n| `TrySelectEmbeddedMapsWadLump` | **244–257** |\n| `IsRecognizedWadMagic` | **266–267** |\n| `ResourceEntryIsTextMapHeader` | **278–281** |\n| Band hull (exclusive slice) | **151–300** |\n\n### Chunk **993** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**992** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPOpenMapWadWalk993Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/p_openmap.cpp",
+        "symbol": "P_OpenMapData",
+        "start": 151,
+        "end": 300,
+        "tests": [
+          "VmPOpenMapWadWalk993SliceTests.ClassicMapLumpAdvance_Uses992Scanner",
+          "VmPOpenMapWadWalk993SliceTests.TextMapSupplementLumps",
+          "VmPOpenMapWadWalk993SliceTests.EmbeddedWadAndMagic"
+        ]
+      }
+    ]
+  }
+]

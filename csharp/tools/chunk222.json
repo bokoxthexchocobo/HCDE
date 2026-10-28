@@ -1,0 +1,16 @@
+[
+  {
+    "name": "umapinfo-schema-doomed-spawn-chunk222",
+    "bucket": "conversion",
+    "managedLoc": 37,
+    "note": "UMAPINFO token helpers and doomedmap strife tail (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **15** < **150**.",
+    "auditSeams": "",
+    "auditRationale": "Credits small UMAPINFO parse branches and Strife spawnable clear \u2014 not full schema tables or CCMD bodies.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (222)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **43** |\n| **Out-of-body removed** | **28** |\n| **Honest** | **15** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 222 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

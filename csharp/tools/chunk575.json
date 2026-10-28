@@ -1,0 +1,66 @@
+[
+  {
+    "name": "action-range-inventory-respawn-chunk575",
+    "bucket": "conversion",
+    "note": "`A_DropInventory`, `A_SetBlend`, `A_CountdownArg`, `A_Burst`, and `A_Respawn` (`p_actionfunctions.cpp` **1989–2211**). `CheckRange` on **574** (**1954–1981**).",
+    "auditSeams": "`DropInventory`, `CreateThinker`, `P_ExplodeMissile`, `P_DamageMobj`, `Spawn`, `P_TeleportMove`, `P_CheckPosition`, fog spawn, and monster counters are not hosted.",
+    "auditRationale": "Inventory drop gating, blend color normalize, countdown arg bounds, burst shard math, and respawn flag/merge policy from retired **576** hull (disjoint **1989+**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 575 --band` → UNCredited, exit 0.",
+    "auditManagedLocJustification": "`VmActionRangeInventory.cs` (drop/blend/countdown/burst). `VmActionRespawn.cs` (respawn branches).",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `ShouldDropInventory` | `A_DropInventory` **1989–2004** |\n| `NormalizeBlendColor` | `A_SetBlend` **2012–2032** |\n| `CountdownArgInRange` / `DecrementCountdownArg` / `ShouldJumpWhenCountdownZero` | `A_CountdownArg` **2041–2065** (explode/damage seam) |\n| `BurstChunkNull` / `BurstChunkCount` / `BurstOffsetFromPr` / `BurstZFromPr` / `BurstShardVelocityZ` / `BurstVelocityFromPr` | `A_Burst` **2073–2123** (boss/unblock/destroy seam) |\n| `UseTelefragMove` / `ApplySolidFlag` / `RestoreDefaultHeight` / target clear / flag merge / fog gate / `ApplyRespawnSuccess` | `A_Respawn` **2139–2211** |\n\n### vs chunk **574**\n\n| | Lines |\n|--|------:|\n| **574** (sight/range) | **1777–1981** |\n| **575** (this row) | **1989–2211** |\n| Gap | **1982–1988** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **186** |\n| Net behavior-ported | **186** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmActionRangeInventory.cs",
+      "csharp/src/HCDE.Playsim/VmActionRespawn.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_DropInventory",
+        "start": 1989,
+        "end": 2004,
+        "tests": [
+          "VmActionRangeInventoryTests.ShouldDropInventory_WhenFound"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_SetBlend",
+        "start": 2012,
+        "end": 2032,
+        "tests": [
+          "VmActionRangeInventoryTests.NormalizeBlendColor_ClearsWhite"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_CountdownArg",
+        "start": 2041,
+        "end": 2065,
+        "tests": [
+          "VmActionRangeInventoryTests.CountdownArgInRange_RejectsFive",
+          "VmActionRangeInventoryTests.ShouldJumpWhenCountdownZero_AtZero"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_Burst",
+        "start": 2073,
+        "end": 2123,
+        "tests": [
+          "VmActionRangeInventoryTests.BurstChunkCount_ScalesWithRadius",
+          "VmActionRangeInventoryTests.BurstShardVelocityZ_MatchesNative2105"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_Respawn",
+        "start": 2139,
+        "end": 2211,
+        "tests": [
+          "VmActionRespawnTests.UseTelefragMove_WhenFlagSet",
+          "VmActionRespawnTests.ApplyRespawnSuccess_RestoresHealthWhenOk"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,15 @@
+[
+  {
+    "name": "d-main-gameinfo-scan-chunk399",
+    "bucket": "conversion",
+    "note": "ParseGameInfo, GetReserved, CheckGameInfo, SetMapxxFlag Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **81** (50% of honest **161**).",
+    "auditSeams": "`FScanner`, `FileSystem::InitMultipleFiles`, and `gameinfo` mutation are not hosted.",
+    "auditRationale": "Credits static `ParseGameInfo`, `GetReserved`, `CheckGameInfo`, and `SetMapxxFlag` from `d_main.cpp`.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (399)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **161** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **161** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`check_port_coverage.sh` thin managed: surviving 0 < need 81 (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

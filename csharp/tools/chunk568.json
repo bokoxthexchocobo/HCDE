@@ -1,0 +1,13 @@
+[
+  {
+    "name": "acs-behavior-container-chunk568",
+    "bucket": "conversion",
+    "note": "Merged into acs-global-strings-inventory-chunk567 (coverage shrink pass).",
+    "auditSeams": "`FBehavior::Init`, `fileSystem`, `DLevelScript` iteration, and `GlobalACSStrings` mutation are not hosted.",
+    "auditRationale": "Whole-function ports for ACS behavior container helpers in `p_acs.cpp`.",
+    "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `VmAcsBehaviorContainer.LoadDefaultModulesNative` | `LoadDefaultModules` 1977\u20131998 |\n| `LoadModuleNative` | `LoadModule` 2000\u20132023 |\n| `CheckAllGoodNative` | `CheckAllGood` 2025\u20132035 |\n| `GetModuleIndexNative` | `GetModule` 2046\u20132053 |\n| `MarkLevelVarStringsNative` / `LockLevelVarStringsNative` / `UnlockLevelVarStringsNative` | `MarkLevelVarStrings` 2055\u20132077; `LockLevelVarStrings` 2079\u20132101; `UnlockLevelVarStrings` 2103\u20132106 |\n| `MarkMapVarStringsNative` / `LockMapVarStringsNative` | `FBehavior::MarkMapVarStrings` 2108\u20132115; `LockMapVarStrings` 2117\u20132124 |",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

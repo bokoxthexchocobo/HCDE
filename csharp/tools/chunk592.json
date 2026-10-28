@@ -1,0 +1,13 @@
+[
+  {
+    "name": "acs-behavior-init-load-chunk592",
+    "bucket": "conversion",
+    "note": "Merged into acs-behavior-init-arrays-imports-chunk593 (coverage shrink pass).",
+    "auditSeams": "`LoadScriptsDirectory`, `UnescapeStringTable`, `FindChunk`, and `fileSystem` IO are not hosted.",
+    "auditRationale": "Whole-function slices of `FBehavior::Init` with faithful managed mirrors.",
+    "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `ParseAcsFormatByte` | `FBehavior::Init` format switch 2329\u20132343 |\n| `ResolveModuleName` | module name selection 2346\u20132353 |\n| `ShouldUpgradeOldEnhanced` | old ACSE/ACSe upgrade 2358\u20132373 |\n| `ShouldLocalizeHexenHack` | Hexen localization gate 2390\u20132397 |\n| `LoadMiniChunkVars` / `LoadFunctionsFromChunkNative` | MINI map vars and function chunks 2416\u20132490 |",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

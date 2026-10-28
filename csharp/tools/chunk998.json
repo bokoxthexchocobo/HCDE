@@ -1,0 +1,27 @@
+[
+  {
+    "name": "g-game-ccmd-chunk998",
+    "bucket": "conversion",
+    "note": "Weapon/inventory CCMD helpers and netgame pause gating from `g_game.cpp` (**525–674**); follows chunk **997** (**375–524**).",
+    "auditSeams": "`CCMD(slot)` `Printf`, `DisplayNameTag` HUD attach (**602–604**), and `IFVM` inventory VM calls remain host-injected.",
+    "auditRationale": "UNCredited **525–674** CLI band; disjoint from chunks **995–997** and chunk **9** (**204–224**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_game.cpp --start 525 --end 674` and `--chunk 998 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `CCMD(slot)` validation (**531–543**) | yes |\n| `CCMD(centerview)` frozen gate (**549–550**) | yes |\n| `CCMD(land)` / `turn180` (**561**, **586**) | yes |\n| `CCMD(pause)` net_disablepause (**566–580**) | yes |\n| `weapnext` / `weapprev` (**591–596**) | yes |\n| `DisplayNameTag` tag bit (**602**) | yes |\n| `invuse` / `invuseall` / `use` subclass (**645–674**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **525–527** | `turnspeeds` close (chunk **997**) |\n| **554–557**, **547–552** tail | `Net_WriteInt8` host |\n| **599–613** | HUD / `DEFINE_ACTION_FUNCTION_NATIVE` host |\n| **615–635** | `IFVM` / `CallVM` host |\n| **656–663** | `invquery` `Printf` host |\n| **678+** | `invdrop` (next band) |\n\n| Managed (`VmGGameCcmd998Slice.cs`) | Native (`g_game.cpp`) |\n|-------------------------------------|----------------------|\n| `TryResolveWeaponSlotFromArgument` / `ResolveExplicitWeaponSlot` | **533–543** |\n| `ShouldBlockCenterview` | **549** |\n| `ResolveNetgamePauseRejectReason` / `ShouldQueueSendPause` | **566–580** |\n| `ResolveLandCommand` / `ResolveTurn180Command` | **561**, **586** |\n| `ResolveWeapNextSlot` / `ResolveWeapPrevSlot` | **591–596** |\n| `ShouldShowDisplayNameTagHud` | **602** |\n| `CanApplySelectedInventoryUse` / `InventoryTicsAfterInvUseCommand` | **645–653** |\n| `ResolveInvUseAllCommand` | **639–640** |\n| `ParseUseCommandSubclassFlag` / `ShouldRequireUseCommandItemName` | **667–671** |\n| Band hull (exclusive slice) | **525–674** |\n\n### Chunk **998** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**997** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmGGameCcmd998Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "CCMD(slot)",
+        "start": 525,
+        "end": 674,
+        "tests": [
+          "VmGGameCcmd998SliceTests.WeaponSlotParsing",
+          "VmGGameCcmd998SliceTests.PauseAndCenterviewGates",
+          "VmGGameCcmd998SliceTests.InventoryAndUseCommands"
+        ]
+      }
+    ]
+  }
+]

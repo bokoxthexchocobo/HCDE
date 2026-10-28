@@ -1,0 +1,15 @@
+[
+  {
+    "name": "fscript-parser-sf-gzd-shot-chunk849",
+    "bucket": "conversion",
+    "note": "`FParser::SF_SpawnShot2` \u2026 `SaveCurrentScript` from `fragglescript/t_func.cpp` (3700\u20133849). Retired (2026-10-23): out-of-body credit removed; honest **102** < **150**.",
+    "auditSeams": "Uses `SpawnProjectile`, `TagManager` sector tags, line id lookup, `LineSpecials.TryActivate`, and `VmFScriptThinker.AddRunningScript`.",
+    "auditRationale": "GZDoom spawn/kill/line band after **847** `setcolor`; script wait tail in **850**.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 849 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_SpawnShot2` | yes |\n| `SF_KillInSector` | yes |\n| `SF_SetLineTrigger` | yes |\n| `RunLineSpecial` | yes |\n| `SaveCurrentScript` | yes |\n\n| Managed | Native (`t_func.cpp` 3700\u20133849) |\n|---------|-------------------------|\n| `SfSpawnShot2` | **3707\u20133743** |\n| `SfKillInSector` | **3753\u20133766** |\n| `SfSetLineTrigger` | **3776\u20133799** |\n| `SfRunLineSpecial` | **3808\u20133821** |\n| `SaveCurrentScript` | **3830\u20133842** |\n| (separators) | **3700\u20133706**, **3744\u20133752**, **3767\u20133775**, **3800\u20133807**, **3822\u20133829**, **3843\u20133849** |\n\n### Out-of-body uncredit (849)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **48** |\n| **Honest** | **102** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

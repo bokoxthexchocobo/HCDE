@@ -1,0 +1,33 @@
+[
+  {
+    "name": "p-acs-levelinfo-player-chunk954",
+    "bucket": "conversion",
+    "note": "`PCD_SETHUDSIZE` through `PCD_GETPLAYERINFO` setup from `p_acs.cpp` (**10287–10436**). Follows **948** corridor end (**≤10049** credited) and avoids **10050–10199**.",
+    "auditSeams": "`DoGetCVar`, `TexMan`, `InitSkyMap`, `SetActorAngle`/`Pitch`, `SetState`, and `HCDE_ResolveACSPlayer` remain host seams.",
+    "auditRationale": "Honest **150**-line UNCredited band with zero tally overlap; exclusive `VmPAcsVmOpcode954Slice.cs` (`AcsVm` dispatch is not matrix credit).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 10287 --end 10436` and `--chunk 954 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native opcode region | Behavior ported |\n|----------------------|-----------------|\n| `PCD_SETHUDSIZE` (**10288–10296**) | yes |\n| `PCD_GETLEVELINFO` (**10298–10313**) | yes |\n| `PCD_CHANGESKY` (**10315–10332**) | yes |\n| `PCD_SETCAMERATOTEXTURE` (**10334–10363**) | yes |\n| `PCD_SETACTORANGLE` / `SETACTORPITCH` (**10365–10373**) | yes (stack pop) |\n| `PCD_SETACTORSTATE` (**10375–10415**) | yes |\n| `PCD_PLAYERCLASS` / `PCD_GETPLAYERINFO` head (**10417–10436**) | yes |\n\n| Managed (`VmPAcsVmOpcode954Slice.cs`) | Native (`p_acs.cpp`) |\n|----------------------------------------|---------------------|\n| `ResolveHudSize` | **10289–10295** |\n| `ResolveLevelInfoValue` / `LevelInfoSnapshot` | **10299–10311** |\n| `SkyNameApplies` | **10321–10327** |\n| `UseActivatorAsCamera` | **10339–10347** |\n| `SetActorStateTargetsActivator` / count helpers | **10380–10411** |\n| `ResolvePlayerClass` / `ResolveGetPlayerInfoFailure` | **10418–10435** |\n| `AimDistToAcs` / `PlayerInfoTeamValue` | **10439+** (aimdist math; band ends at userinfo bind) |\n\n### Chunk **954** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**953** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPAcsVmOpcode954Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "DLevelScript::RunScript",
+        "start": 10287,
+        "end": 10436,
+        "tests": [
+          "VmPAcsVmOpcode954SliceTests.ResolveHudSize_NegatesHeightWhenCoveringStatusBar",
+          "VmPAcsVmOpcode954SliceTests.ResolveLevelInfoValue_ReturnsParTime",
+          "VmPAcsVmOpcode954SliceTests.ResolveLevelInfoValue_UnknownQueryIsZero",
+          "VmPAcsVmOpcode954SliceTests.SkyNameApplies_RequiresNonEmptyFirstChar",
+          "VmPAcsVmOpcode954SliceTests.SetActorStateTargetsActivator_WhenTidZero",
+          "VmPAcsVmOpcode954SliceTests.AccumulateSetActorStateCount_IncrementsOnSuccess",
+          "VmPAcsVmOpcode954SliceTests.ResolvePlayerClass_ReturnsNegativeOneWhenUnresolved",
+          "VmPAcsVmOpcode954SliceTests.AimDistToAcs_ScalesByNativeFactor",
+          "VmPAcsVmOpcode954SliceTests.UseActivatorAsCamera_WhenTidZero"
+        ]
+      }
+    ]
+  }
+]

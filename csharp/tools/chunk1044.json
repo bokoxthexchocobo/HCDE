@@ -1,0 +1,36 @@
+[
+  {
+    "name": "statistics-level-track-chunk1044",
+    "bucket": "conversion",
+    "note": "`LevelStatEntry`, `STAT_StartNewGame`, `StoreLevelStats`, and `STAT_ChangeLevel` episode checkpoint from `statistics.cpp` (**320–469**). Continues **1043** (**470–619**, EOF **619**).",
+    "auditSeams": "`GetStatisticsList`, `StatisticsEntry`, `time`/`localtime`, `FindLevelInfo`, `P_OpenMapData`, and thinker iteration remain host-injected; **1043** owns aggregation/save tail (**470+**); uncredited `VmStatisticsParser` / `VmOneLevelStats` model not re-credited.",
+    "auditRationale": "File-scoped UNCredited **`statistics.cpp`** **320–469** (+150); excludes credited **470–619** (**1043**). Hull ends **469** before **1043** aggregation loop.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/statistics.cpp --start 320 --end 469` and `--chunk 1044 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `LevelStatEntry` name/info/time (**325–341**) | yes |\n| `STAT_StartNewGame` episode pick (**352–367**) | yes |\n| `compare_level_names` / hub sort (**375–381**, **421–422**) | yes (case-insensitive ordering) |\n| `StoreLevelStats` guards + counters (**384–419**) | yes |\n| `STAT_ChangeLevel` endseq + nextinfo (**432–445**) | yes |\n| Episode save checkpoint (**447–469**) | yes (through `validlevels` setup) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **298–318** | `StatisticsEntry` date/skill host (**320** hull starts comments) |\n| **328–332** | unused `time` locals in `LevelStatEntry` |\n| **411–418** | thinker iterator host |\n| **442–444** | `FindLevelInfo` / redirect host |\n| **453–465** | `P_OpenMapData` / `GetStatisticsList` host |\n| **470–619** | chunk **1043** |\n| `VmStatisticsEpisodeSave1043Slice` | episode totals/formatting — **470+** only |\n\n| Managed (`VmStatisticsLevelTrack1044Slice.cs`) | Native (`statistics.cpp`) |\n|--------------------------------------------------|---------------------------|\n| `BuildLevelStatEntry` | **334–341** |\n| `ShouldAssignStartEpisodeOnNewGame` / `TryResolveStartEpisodeIndex` | **354–366** |\n| `ShouldStoreLevelStatistics` / skip flag / find+apply counters | **388–407** |\n| `ReconcileKillCountWhenNoLivingMonsters` | **419** |\n| `CompareLevelNamesNatural` / `SortLevelDataByName` | **375–381**, **422** |\n| `IsEndSequenceMapTransition` / `ShouldResolveNextLevelInfo` | **440–445** |\n| `ShouldPersistEpisodeStatistics` / `ReachedEpisodeStatisticsCheckpoint` | **447–450** |\n| `BuildEpisodeStatisticsSectionKey` / `ResolveEpisodeNameForStatistics` | **460–464** |\n| Band hull (exclusive slice, EOF **619**) | **320–469** |\n\n### Chunk **1044** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1043** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmStatisticsLevelTrack1044Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/statistics.cpp",
+        "symbol": "StoreLevelStats / STAT_ChangeLevel",
+        "start": 320,
+        "end": 469,
+        "tests": [
+          "VmStatisticsLevelTrack1044SliceTests.BuildLevelStatEntry_TruncatesNameAndInfo",
+          "VmStatisticsLevelTrack1044SliceTests.ShouldAssignStartEpisodeOnNewGame_SkipsDmAndMp",
+          "VmStatisticsLevelTrack1044SliceTests.FindOrReserveLevelIndex_CaseInsensitiveReuse",
+          "VmStatisticsLevelTrack1044SliceTests.ApplyLevelCounterSnapshot_CopiesCounters",
+          "VmStatisticsLevelTrack1044SliceTests.ReconcileKillCountWhenNoLivingMonsters_ForcesFullClear",
+          "VmStatisticsLevelTrack1044SliceTests.ShouldSkipLevelStatistics_WhenNoStatisticsFlag",
+          "VmStatisticsLevelTrack1044SliceTests.IsEndSequenceMapTransition_DetectsPrefix",
+          "VmStatisticsLevelTrack1044SliceTests.ReachedEpisodeStatisticsCheckpoint_EndGameOrMissingNext",
+          "VmStatisticsLevelTrack1044SliceTests.BuildEpisodeStatisticsSectionKey_Uppercases",
+          "VmStatisticsLevelTrack1044SliceTests.ResolveEpisodeNameForStatistics_LocalizesDollarPrefix",
+          "VmStatisticsLevelTrack1044SliceTests.SortLevelDataByName_OrdersAlphabetically",
+          "VmStatisticsLevelTrack1044SliceTests.ShouldPersistEpisodeStatistics_OnlyModeOne"
+        ]
+      }
+    ]
+  }
+]

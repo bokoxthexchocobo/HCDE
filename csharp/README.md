@@ -29,6 +29,8 @@ Support matrix: [native-to-managed inventory (2026-10-19)](docs/HCDE_NATIVE_MANA
 
 Current review: [full conversion status, 2026-10-04](docs/HCDE_CSHARP_STATUS_2026_10_04.md).
 
+Native-to-managed inventory: [support matrix](docs/HCDE_CSHARP_NATIVE_MANAGED_MATRIX.md) (regenerate with `python3 tools/generate_native_managed_matrix.py`). Principal audit: [`HCDE_CSHARP_NATIVE_MANAGED_MATRIX_AUDIT.md`](docs/HCDE_CSHARP_NATIVE_MANAGED_MATRIX_AUDIT.md).
+
 The dedicated server accepts `--limit-pain` to stop Pain Elemental spawning when
 21 Lost Souls exist, including retained dead souls. It is disabled by default.
 

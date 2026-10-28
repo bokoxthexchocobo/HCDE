@@ -67,3 +67,6 @@ doom2.wad
 !wadsrc/**/*.wad
 *.err
 /CrashReport*
+
+# ephemeral pre-push verify worktree (see csharp/tools/git-hooks/pre-push)
+.hcde-push-verify-wt/

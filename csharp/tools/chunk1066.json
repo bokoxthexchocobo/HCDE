@@ -1,0 +1,34 @@
+[
+  {
+    "name": "sbarinfo-parse-toplevel-chunk1066",
+    "bucket": "conversion",
+    "note": "`ParseSBarInfo` top-level commands from `lowerhealthcap` through `protrusion` loop head in `sbarinfo.cpp` (**601–750**); follows **1065**.",
+    "auditSeams": "Status-bar type names use **1064** `MatchStatusBarTypeName`; `FScanner`, `new`/`delete` HUD blocks, `ParseMugShotBlock`, `popup.init`, and **751+** loop tail remain host-injected.",
+    "auditRationale": "UNCredited **`sbarinfo.cpp`** **601–750** (+150); no tally overlap with **1065** monospace body (**574–600**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo.cpp --start 601 --end 750` and `--chunk 1066 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `lowerhealthcap` false-first bool (**603–613**) | yes |\n| `resolution` width/height (**615–621**) | yes |\n| `statusbar` / `appendstatusbar` policy (**623–651**) | yes |\n| `mugshot` flag list (**654–682**) | yes |\n| `createpopup` kind/size/transition (**685–736**) | yes |\n| `protrusion` ascending factor pairs (**739–750**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **601–602** | **1065** monospace statement tail (host `;`) |\n| **632**, **639–641**, **651** | host `MustMatchString` / alloc / `Parse` |\n| **676** | `ParseMugShotBlock` host |\n| **735** | `popup.init` host |\n| **751+** | protrusion loop tail + switch close outside hull |\n\n| Managed (`VmSbarinfoParseTopLevel1066Slice.cs`) | Native (`sbarinfo.cpp`) |\n|--------------------------------------------------|-------------------------|\n| `ResolveLowerHealthCap` | **603–612** |\n| `MergeResolution` | **616–620** |\n| HUD append/create + automap | **626–650** |\n| `ApplyMugShotStateFlag` / replace index | **662–682** |\n| Popup kind/transition/fade speeds | **688–730** |\n| Protrusion order + pair build | **741–750** |\n| Band hull (exclusive slice) | **601–750** |\n\n### Chunk **1066** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1065** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoParseTopLevel1066Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo.cpp",
+        "symbol": "SBarInfo::ParseSBarInfo",
+        "start": 601,
+        "end": 750,
+        "tests": [
+          "VmSbarinfoParseTopLevel1066SliceTests.ResolveLowerHealthCap_PrefersFalseBranchFirst",
+          "VmSbarinfoParseTopLevel1066SliceTests.ResolveImplicitGameTypeWhenBaseUnset_MatchesNative",
+          "VmSbarinfoParseTopLevel1066SliceTests.StatusBarHudPolicy_HandlesAppendVsCreate",
+          "VmSbarinfoParseTopLevel1066SliceTests.ApplyMugShotStateFlag_StacksHealth2Flags",
+          "VmSbarinfoParseTopLevel1066SliceTests.ClassifyPopupKind_MapsLogKeysStatus",
+          "VmSbarinfoParseTopLevel1066SliceTests.ComputeFadePopupSpeed_UsesTicRate",
+          "VmSbarinfoParseTopLevel1066SliceTests.BuildFadePopupSpeeds_PairsBothFloats",
+          "VmSbarinfoParseTopLevel1066SliceTests.IsProtrusionFactorAscending_EnforcesStrictIncrease",
+          "VmSbarinfoParseTopLevel1066SliceTests.ClassifyPopupTransition_RecognizesSlideAndFade",
+          "VmSbarinfoParseTopLevel1066SliceTests.MergeResolution_ReplacesWhenCommandActive"
+        ]
+      }
+    ]
+  }
+]

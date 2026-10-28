@@ -1,0 +1,27 @@
+[
+  {
+    "name": "g-game-demo-record-chunk1006",
+    "bucket": "conversion",
+    "note": "Demo net dispatch tail, `CCMD (stop)`, `G_WriteDemoTiccmd`, `G_RecordDemo`, and `G_BeginRecording` from `g_game.cpp` (**3200–3349**); follows chunk **1005** (**3050–3199**).",
+    "auditSeams": "`Net_DoCommand`, demo buffer host I/O, chunk writers, and `C_WriteCVars` remain injected.",
+    "auditRationale": "UNCredited **3200–3349** CLI band; disjoint from chunks **995–1005** and chunk **9** credited segments.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_game.cpp --start 3200 --end 3349` and `--chunk 1006 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `G_ReadDemoTiccmd` default (**3201–3203**) | yes |\n| `CCMD (stop)` / write stop gate (**3208–3225**) | yes |\n| Special ticcmd + buffer growth (**3229–3248**) | yes |\n| `G_RecordDemo` setup (**3257–3265**) | yes |\n| `G_BeginRecording` header (**3273–3338**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **3204–3206** | loop close host |\n| **3230–3233** | `WriteUserCmdMessage` host |\n| **3283–3296** | FORM chunk binary host |\n| **3303–3307** | userinfo string host |\n| **3321–3328** | cvar/weapon chunk host |\n| **3342+** | `G_DeferedPlayDemo` (next band) |\n\n| Managed (`VmGGameDemoRecord1006Slice.cs`) | Native (`g_game.cpp`) |\n|------------------------------------------|----------------------|\n| `RoutesUnhandledDemoCommandToNet` | **3201–3203** |\n| `ResolveDemoRecordingWriteGate` / full console trace | **3218–3224** |\n| `ShouldWriteSpecialDemoTics` / buffer expansion | **3229–3248** |\n| `AppendDefaultDemoExtensionIfMissing` | **3260–3263** |\n| `ResolveRecordingStartMap` / header chunk gates | **3277–3338** |\n| Band hull (exclusive slice) | **3200–3349** |\n\n### Chunk **1006** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1005** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmGGameDemoRecord1006Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "G_WriteDemoTiccmd",
+        "start": 3200,
+        "end": 3349,
+        "tests": [
+          "VmGGameDemoRecord1006SliceTests.ReadDemoDefaultDispatch",
+          "VmGGameDemoRecord1006SliceTests.WriteDemoTiccmd",
+          "VmGGameDemoRecord1006SliceTests.RecordAndBeginDemo"
+        ]
+      }
+    ]
+  }
+]

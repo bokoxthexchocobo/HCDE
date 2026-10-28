@@ -1,0 +1,27 @@
+[
+  {
+    "name": "g-level-map-commands-chunk1012",
+    "bucket": "conversion",
+    "note": "`CCMD(map)`, `recordmap`, and `open` from `g_level.cpp` (**301–450**); follows chunk **1011** (**151–300**).",
+    "auditSeams": "`Printf`, `P_CheckMapData`, `G_DeferedInitNew`, recoverable-error print, and `G_NewInit` (**452+**) remain injected.",
+    "auditRationale": "UNCredited **301–450** CLI band; disjoint from chunks **1010–1011**.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_level.cpp --start 301 --end 450` and `--chunk 1012 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `CCMD(map)` net/usage/map name (**305–348**) | yes |\n| Coop/dm flags (**326–335**, **376–385**, **426–435**) | yes |\n| `recordmap` (**356–401**) | yes |\n| `open` (**409–443**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **300–304** | comment seam with **1011** |\n| **318–343** | try/catch + `Printf` host |\n| **336–337** | `G_DeferedInitNew` host call |\n| **387–389** | demo name assignment host |\n| **452+** | `G_NewInit` (next band) |\n\n| Managed (`VmGLevelMapCommands1012Slice.cs`) | Native (`g_level.cpp`) |\n|---------------------------------------------|----------------------|\n| SP-only reject / argc gates | **307–347**, **358–400**, **411–442** |\n| `ResolveMapNameArgument` | **316–316**, **366–366** |\n| Coop/dm flag resolution | **326–335** etc. |\n| Record/open deferred setup | **386–437** |\n| Band hull (exclusive slice) | **301–450** |\n\n### Chunk **1012** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1011** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmGLevelMapCommands1012Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_level.cpp",
+        "symbol": "CCMD(map)",
+        "start": 301,
+        "end": 450,
+        "tests": [
+          "VmGLevelMapCommands1012SliceTests.MapCommand",
+          "VmGLevelMapCommands1012SliceTests.RecordMapCommand",
+          "VmGLevelMapCommands1012SliceTests.OpenCommand"
+        ]
+      }
+    ]
+  }
+]

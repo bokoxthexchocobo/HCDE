@@ -1,0 +1,32 @@
+[
+  {
+    "name": "g-mapinfo-parse-cluster-chunk1056",
+    "bucket": "conversion",
+    "note": "`ParseCluster` tail, Hexen exit remap, `ParseNextMap`, shadow cap normalize, and map-option head from `g_mapinfo.cpp` (**983–1132**). Follows **1027** (**833–982**).",
+    "auditSeams": "`ParseCutscene`, `ParseCloseBrace`, `SkipToNext`, `CheckEndSequence`, `FindWadClusterInfo`, and `wadclusterinfos.Reserve` remain host-injected; uncredited `VmMapInfoClusterExitTextRemap` / `VmMapInfoParseNextMap` / `VmMapInfoShadowQualityCap` are not re-credited.",
+    "auditRationale": "File-scoped UNCredited **`g_mapinfo.cpp`** **983–1132** (+150); excludes **833–982** (**1027**). Hull ends at **`cluster` map-option `MustGetNumber`** (**1132**); hub auto-create (**1139+**) deferred without padding.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_mapinfo.cpp --start 983 --end 1132` and `--chunk 1056 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `ParseCluster` intro/outro/gameover + loop tail (**985–1007**) | yes (via **1027** cutscene/cluster helpers as seams) |\n| Hexen exit lump remap (**1008–1029**) | yes |\n| `CheckEndOfFile(\"cluster\")` (**1030**) | yes |\n| `ParseNextMap` (**1041–1064**) | yes |\n| `NormalizeHcdeShadowQualityCap` (**1066–1075**) | yes |\n| `DEFINE_MAP_OPTION` head (**1083–1132**) | yes (keyword classify + assign policy) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **833–982** | chunk **1027** |\n| **1031–1033** | closing brace / comment banner |\n| **1076–1082** | comment banner |\n| **1133+** | cluster hub reserve + remainder (**1139+**) |\n| **1191+** | chunk **1028** deferred band |\n| `VmMapInfoClusterExitTextRemap` / `VmMapInfoParseNextMap` / `VmMapInfoShadowQualityCap` | uncredited helpers — seam only |\n\n| Managed (`VmMapInfoParseCluster1056Slice.cs`) | Native (`g_mapinfo.cpp`) |\n|-----------------------------------------------|---------------------------|\n| `ApplyClusterCutsceneSlot` / `ClusterLoopAfterCloseBraceAttempt` | **985–1007** |\n| `TryRemapHexenClusterExitText` | **1008–1029** |\n| `ShouldErrorClusterDefinitionEof` | **1030** |\n| `ResolveNumericNextMapToken` / `ResolveEndSequenceNextMapToken` | **1041–1064** |\n| `NormalizeHcdeShadowQualityCap` | **1066–1075** |\n| `ClassifyMapOptionKeyword` / assign policy | **1083–1132** |\n| Band hull (exclusive slice) | **983–1132** |\n\n### Chunk **1056** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1055** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmMapInfoParseCluster1056Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "ParseCluster tail / ParseNextMap / map options head",
+        "start": 983,
+        "end": 1132,
+        "tests": [
+          "VmMapInfoParseCluster1056SliceTests.TryRemapHexenClusterExitText_SetsLookupFlag",
+          "VmMapInfoParseCluster1056SliceTests.ResolveNumericNextMapToken_HexenUsesWarpTrans",
+          "VmMapInfoParseCluster1056SliceTests.NormalizeHcdeShadowQualityCap_SnapsToStep",
+          "VmMapInfoParseCluster1056SliceTests.ClassifyMapOptionKeyword_RecognizesSecretAlias",
+          "VmMapInfoParseCluster1056SliceTests.MapOptionUsesParseNextMap_ForNextAndSecretVariants",
+          "VmMapInfoParseCluster1056SliceTests.ShouldErrorClusterDefinitionEof_NewFormatOnly",
+          "VmMapInfoParseCluster1056SliceTests.ClusterLoopAfterCloseBraceAttempt_BreaksOnCloseBrace",
+          "VmMapInfoParseCluster1056SliceTests.ApplyClusterCutsceneSlot_DelegatesIntroKeyword"
+        ]
+      }
+    ]
+  }
+]

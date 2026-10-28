@@ -25,6 +25,8 @@ public sealed class ProjectileActor : Actor
         Owner = owner;
     }
     internal void OwnerFromSave(Actor? owner) => Owner = owner;
+    /// <summary>Native <c>MF2_PCROSS</c>: crossing may activate missile-cross lines.</summary>
+    public bool ProjectileCross { get; set; }
     public ProjectileKind Kind { get; }
     internal string NativeClassName => NativeClassNameOf(Kind);
     internal static string NativeClassNameOf(ProjectileKind kind) => kind switch
@@ -527,17 +529,8 @@ public sealed class ProjectileActor : Actor
                     planeSector >= 0 ? planeSector : ActorPhysics.SectorAt(sim.Level, X.ToDouble(), Y.ToDouble()))), immediate: true);
         }
         if (BlastRadius > 0)
-        {
-            foreach (var actor in sim.Actors.ToArray())
-            {
-                if (!actor.IsBlockmapActor || !actor.CanTakeDamage || actor.NoRadiusDamage || actor.SplashImmune(this)) continue;
-                if (actor.RadiusSourceImmune(Owner)) continue;
-                var distance = RadiusDamageGeometry.Distance(this, actor);
-                if (distance >= BlastRadius || !CombatTrace.CheckSight(sim, actor, this, ActorSightFlags.IgnoreVisibility)) continue;
-                var damage = (int)(BlastRadius * (1 - distance / BlastRadius));
-                if (damage > 0) ActorDamage.Apply(actor, damage, Owner, damageType: DamageType, inflictor: this);
-            }
-        }
+            MapRadiusAttack.Apply(sim, this, Owner, (int)BlastRadius, BlastRadius, DamageType ?? "Unknown",
+                hurtSource: true, oldRadius: Owner?.OldRadiusDamage ?? false);
         if (Kind == ProjectileKind.Bfg)
             BfgSprayActions.Apply(sim, this, Owner);
         Destroy();

@@ -1,0 +1,15 @@
+[
+  {
+    "name": "fscript-parser-sf-tex-door-chunk870",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Retired (2026-10-23): `t_func.cpp` **1876–2038** band had honest behavior ports in `VmFScriptParserSfTexDoor.cs`, but **72** surviving managed lines vs **153** native credit (**47%**) after removing coverage-padding helpers (`FraggleDoorSpeedArg`, `FraggleDoorWaitTics`, `FraggleDoorTagAllowed`). No further top-up; band uncredited until a re-land meets the **50%** floor without line-count padding.",
+    "auditSeams": "Retired **870** dead code **deleted** (2026-10-23): `VmFScriptParserSfTexDoor.cs`, `VmFScriptInitFunctionsReg870.cs`, and door tests removed from tree; honest re-land on **873**.",
+    "auditRationale": "Padding incident: commits **84faa281** / **50943a25** added door helpers solely to pass `check_port_coverage.sh`; reverted on **a674ab10** / **8a186f7a**. Ratio still below floor with inlined native door math — retire instead of dishonest LOC.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 870 --band → retired skip, exit 0.",
+    "auditManagedLocJustification": "Retired row; managed bodies kept off-tally for colormap/ceiling/door `Sf*` only.",
+    "auditPaddingReview": "### Padding incident (chunk **870**)\n\n| Artifact | Native basis | Verdict |\n|----------|--------------|--------|\n| `FraggleDoorSpeedArg` | `2.*clamp(speed,1,127)` inline in `SF_OpenDoor` / `SF_CloseDoor` | **Padding** — extracted for managed LOC; reverted |\n| `FraggleDoorWaitTics` | `(intvalue(argv[1])*TICRATE)/100` inline in `SF_OpenDoor` | **Padding** — reverted |\n| `FraggleDoorTagAllowed` | `if (sectag==0) return` | **Padding** — reverted |\n| Blank lines in `VmFScriptInitFunctions.cs` (uncommitted) | tally **283** vs **282** | **Padding** — discarded (tally follows HEAD) |\n\n### Behavior ported (off-tally, not matrix-credited)\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_SectorColormap` | yes (native no-op) |\n| `SF_CeilingTexture` | yes |\n| `SF_OpenDoor` / `SF_CloseDoor` | yes (inlined speed/wait/tag guards) |\n\n| Managed (off-tally) | Native |\n|---------|--------|\n| `SfSectorColormap` | **1883–1922** |\n| `SfCeilingTexture` | **1931–1965** |\n| `SfOpenDoor` | **1992–2013** |\n| `SfCloseDoor` | **2021–2038** |\n| (separators) | **1876–1882**, **1923–1930**, **1966–1972**, **1983–1991**, **2014–2020** |\n| (unregistered hub/skill) | **1973–1982** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Prior active `nativeLoc` | **153** |\n| Surviving managed (HEAD, no helpers) | **72** |\n| Matrix credit after retire | **0** |",
+    "managedSourceFiles": [],
+    "nativeRanges": []
+  }
+]

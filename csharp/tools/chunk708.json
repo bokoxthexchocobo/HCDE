@@ -1,0 +1,15 @@
+[
+  {
+    "name": "p-effect-particle-run-chunk708",
+    "bucket": "conversion",
+    "note": "Whole `P_ThinkParticles`, `P_SpawnParticle`, `P_RunEffect` (`p_effect.cpp` 278\u2013567). Retired (2026-10-24): `--band` hull overlaps existing credit (p-effect-particle-pool-splash-chunk775 src/playsim/p_effect.cpp 401-425).",
+    "auditSeams": "`NewParticle`, `JitterParticle`, `P_DrawSplash2`, and trail cvars are injected.",
+    "auditRationale": "Particle think/spawn and actor effect trails.",
+    "auditPaddingReview": "| Managed | Native (`p_effect.cpp`) |\n|---------|------------------------|\n| `ThinkParticles` | `P_ThinkParticles` 278\u2013351 |\n| `SpawnParticle` | `P_SpawnParticle` 353\u2013394 |\n| `RunEffect` | `P_RunEffect` 457\u2013567 |\n\n### Out-of-body uncredit (708)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **227** |\n| **Out-of-body removed** | **42** |\n| **Honest** | **185** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 708 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

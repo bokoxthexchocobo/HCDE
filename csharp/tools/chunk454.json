@@ -1,0 +1,13 @@
+[
+  {
+    "name": "p-map-portal-missile-chunk454",
+    "bucket": "conversion",
+    "note": "Merged into p-map-test-mobj-chunk457 (sub-150 depad merge).",
+    "auditSeams": "BlockLinesIterator, `P_LineOpening`, and live mobj iterators are not hosted.",
+    "auditRationale": "Credits portal probe, rip/projectile immunity, and `CanAttackHurt` infighting policy from `p_map.cpp`.",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `IgnorePortalInVerticalSlice` | `PIT_CheckPortal` 1137 |\n| `SkipWhenBoxMisses` | 1139\u20131140 |\n| `AdjustCeilingWhenLower` | 1173\u20131175 |\n| `AdjustFloorWhenHigher` | 1185\u20131187 |\n| `UpdateDropoffWhenLower` | 1199\u20131200 |\n| `CheckRipLevel` | 1216\u20131218 |\n| `ProjectileImmuneDefaultSpecies` / `ProjectileImmuneSameGroup` | 1239\u20131246 |\n| `InfightWithForce` | 1257 |\n| `MonstersBlockedWhenNoInfight` / `NoInfightMonsterBlock` / `HateTidAllowsDamage` | 1259\u20131276 |\n| `FriendsBlockedUnlessHarmFriends` / `FriendBlocksUnlessHarm` | 1285\u20131288 |\n| `SharedHateBlocksDamage` / `SharedHateTeammateBlock` | 1292\u20131295 |\n| `ProjectileImmuneSpeciesBlock` | 1298\u20131308 |\n| `EvaluateCanAttackHurt` | `CanAttackHurt` 1254\u20131315 |\n| `RipperMissile` | `P_DoMissileDamage` 1329 |\n| `RipperDamageRollSides` / `NormalMissileDamageRollSides` | 1336 |\n| `ShouldDealDamage` | 1337 |\n| `SkipBloodFx` / `BloodSplatterRoll` | 1343\u20131350 |\n| `HealOnZeroDamage` / `HealAmountFromNegativeDamage` | 1355\u20131357 |\n",
+    "retired": true
+  }
+]

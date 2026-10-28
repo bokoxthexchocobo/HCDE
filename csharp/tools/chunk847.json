@@ -1,0 +1,15 @@
+[
+  {
+    "name": "fscript-parser-sf-level-chunk847",
+    "bucket": "conversion",
+    "note": "`FParser::SF_LevelNum` \u2026 `SF_SetColor` from `fragglescript/t_func.cpp` (3541\u20133698). Retired (2026-10-23): out-of-body credit removed; honest **127** < **150**.",
+    "auditSeams": "Uses `AuthoritySimulation`, `DoomActorCatalog`, `AcsThingCountReplacementPolicy`, and `LevelSector.ColormapLightColor` for script sector tint.",
+    "auditRationale": "Portable GZDoom query band after **846** trig; **1381\u20132241** remains deferred.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 847 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_LevelNum` | yes |\n| `SF_MobjRadius` | yes |\n| `SF_MobjHeight` | yes |\n| `SF_ThingCount` | yes |\n| `SF_SetColor` | yes |\n\n| Managed | Native (`t_func.cpp` 3541\u20133698) |\n|---------|-------------------------|\n| `SfLevelNum` | **3541\u20133545** |\n| `SfMobjRadius` | **3554\u20133568** |\n| `SfMobjHeight` | **3577\u20133591** |\n| `SfThingCount` | **3600\u20133652** |\n| `SfSetColor` | **3660\u20133698** |\n| (separators) | **3546\u20133553**, **3569\u20133576**, **3592\u20133599**, **3653\u20133659** |\n\n### Out-of-body uncredit (847)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **158** |\n| **Out-of-body removed** | **31** |\n| **Honest** | **127** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

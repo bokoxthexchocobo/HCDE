@@ -1,0 +1,15 @@
+[
+  {
+    "name": "p-enemy-look-core-chunk721",
+    "bucket": "conversion",
+    "note": "Whole `P_IsVisible`, `isTargetablePlayer`, `ValidEnemyInBlock`, and `P_LookForPlayers` (`p_enemy.cpp` 1268\u20131440, 1789\u20131933). Retired (2026-10-24): `--band` hull overlaps existing credit (p-enemy-look-targets-whole-chunk707 src/playsim/p_enemy.cpp 1489-1531).",
+    "auditSeams": "`P_CheckSight`, blockmap iterators, `P_LookForTID`/`P_LookForEnemies`/`P_LookForMonsters`, and `A_Look` action glue remain native.",
+    "auditRationale": "Core visibility and player scan drivers for monster look.",
+    "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `IsVisible` | `P_IsVisible` 1268\u20131314 |\n| `IsTargetablePlayer` | `isTargetablePlayer` 1316\u20131363 |\n| `ValidEnemyInBlock` | `ValidEnemyInBlock` 1365\u20131440 |\n| `LookForPlayers` | `P_LookForPlayers` 1789\u20131933 |\n\n### Out-of-body uncredit (721)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **316** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **316** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 721 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

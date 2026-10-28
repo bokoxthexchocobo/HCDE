@@ -1,0 +1,29 @@
+[
+  {
+    "name": "p-setup-precache-addtolist-chunk979",
+    "bucket": "conversion",
+    "note": "`AddToList` precache marking and `PrecacheLevel` header from `p_setup.cpp` (**1–150**). **Pivot:** `p_spec.cpp` **1–150** aborted — existing `VmPSpecActivateLine` (74–223) must not be re-credited.",
+    "auditSeams": "`TexAnim`, `TexMan`, `memset`, thinker iteration, and `hw_PrecacheTexture` remain host-injected; `PrecacheLevel` body past **150** deferred.",
+    "auditRationale": "First UNCredited `p_setup.cpp` band; no tally row on **1–150**. No overlap with retired **437** / off-tally `VmPSpecActivateLine`.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_setup.cpp --start 1 --end 150` and `--chunk 979 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `AddToList` idempotent merge (**94–97**) | yes |\n| Animation expansion (**99–111**) | yes |\n| Switch frame marking (**115–136**) | yes |\n| Animated door frames (**139–146**) | yes |\n| `PrecacheLevel` header (**149–150**) | seam (function entry only) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1–93** | includes / comments / forward decls |\n| **151+** | outside hull (**151–152** dedicated skip deferred) |\n\n**Aborted target (979 primary)**\n\n| TU | Reason |\n|----|--------|\n| `p_spec.cpp` **1–150** | `VmPSpecActivateLine` already ports **74–223** — no second credit |\n\n| Managed (`VmPSetupPrecache979Slice.cs`) | Native (`p_setup.cpp`) |\n|-------------------------------------------|----------------------|\n| `ShouldSkipAddToList` / `TryAddToHitlist` | **94–97** |\n| `ShouldExpandAnimationFrames` | **101–108** |\n| `ShouldMarkSwitchFrames` / `ShouldUseBoomAnimatedSwitchFallback` | **115–136** |\n| `ShouldMarkAnimatedDoorFrames` / `MarkHitlistRange` | **139–146** |\n| `ApplyAddToListPolicy` | **94–147** policy |\n| `PrecacheLevelHeaderInBand` | **149–150** |\n| Band hull (exclusive slice) | **1–150** |\n\n### Chunk **979** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**978** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPSetupPrecache979Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/p_setup.cpp",
+        "symbol": "AddToList",
+        "start": 1,
+        "end": 150,
+        "tests": [
+          "VmPSetupPrecache979SliceTests.HitlistMerge_SkipsWhenBitSet",
+          "VmPSetupPrecache979SliceTests.AnimationExpansion_RespectsDiscreteFlag",
+          "VmPSetupPrecache979SliceTests.SwitchAndDoorPredicates",
+          "VmPSetupPrecache979SliceTests.MarkHitlistRange_MarksUnsetEntries",
+          "VmPSetupPrecache979SliceTests.ApplyAddToListPolicy_ReturnsOneWhenMerged"
+        ]
+      }
+    ]
+  }
+]

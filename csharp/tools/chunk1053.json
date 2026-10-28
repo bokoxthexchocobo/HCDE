@@ -1,0 +1,32 @@
+[
+  {
+    "name": "g-mapinfo-parse-tail-chunk1053",
+    "bucket": "conversion",
+    "note": "`level_info_t::Reset` tail, `LookupLevelName`, `CheckLevelRedirect`, and `isValid` from `g_mapinfo.cpp` (**301–450**). Follows **1052** (**151–300**).",
+    "auditSeams": "`GStrings.CheckString`, `PClass::FindActor`, inventory scans, `FindCVar` / `GetCVar`, `P_CheckMapData`, and `FindLevelInfo` remain host-injected; uncredited `VmMapInfoLookupLevelName` / `VmMapInfoLevelReset` are not re-credited.",
+    "auditRationale": "File-scoped UNCredited **`g_mapinfo.cpp`** **301–450** (+150); excludes **151–300** (**1052**). Hull ends at **`isValid` opening brace** (**450**); **451–452** return deferred without padding.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_mapinfo.cpp --start 301 --end 450` and `--chunk 1053 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `Reset` tail (**301–334**) | yes |\n| `LookupLevelName` (**342–389**) | yes |\n| `CheckLevelRedirect` predicates (**397–441**) | yes (host callbacks for actor/cvar/map) |\n| `isValid` policy (**449–452**) | yes (`IsLevelInfoValid`; hull **450** ends at `{`) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **151–300** | chunk **1052** |\n| **335–341** | comment banners |\n| **390–396** | comment banners / redirect prologue host |\n| **453+** | `GetSecretMap` / parse helpers (future band) |\n| **833+** | chunks **1027–1036** |\n| `VmMapInfoLookupLevelName` | uncredited strip helper — seam only |\n\n| Managed (`VmMapInfoParseTail1053Slice.cs`) | Native (`g_mapinfo.cpp`) |\n|-------------------------------------------|---------------------------|\n| `ApplyLevelInfoResetTail` | **301–334** |\n| `ResolveLookupLevelName` / prefix builder | **342–389** |\n| redirect predicates | **397–441** |\n| `IsLevelInfoValid` | **449–452** |\n| Band hull (exclusive slice) | **301–450** |\n\n### Chunk **1053** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1052** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmMapInfoParseTail1053Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "Reset tail / LookupLevelName / CheckLevelRedirect",
+        "start": 301,
+        "end": 450,
+        "tests": [
+          "VmMapInfoParseTail1053SliceTests.ApplyLevelInfoResetTail_SetsHcdeShadowUnsetAndSkyRotate",
+          "VmMapInfoParseTail1053SliceTests.ResolveLookupLevelName_ReturnsPlainWhenFlagUnset",
+          "VmMapInfoParseTail1053SliceTests.ResolveLookupLevelName_StripsMapHeaderFromLocalizedString",
+          "VmMapInfoParseTail1053SliceTests.BuildLocalizedHeaderPrefix_FormatsEpisodeMap",
+          "VmMapInfoParseTail1053SliceTests.ShouldEvaluateInventoryRedirect_RequiresNamedType",
+          "VmMapInfoParseTail1053SliceTests.ShouldEvaluateCvarRedirect_RejectsIgnoredBool",
+          "VmMapInfoParseTail1053SliceTests.UsesPerPlayerCvarRedirect_DetectsUserInfoFlag",
+          "VmMapInfoParseTail1053SliceTests.IsLevelInfoValid_AllowsDefaultRecordWithoutMapName"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,15 @@
+[
+  {
+    "name": "i-net-launcher-pregame-ui-chunk649",
+    "bucket": "conversion",
+    "note": "Split from chunk622: server query respond + pregame UI (`i_net.cpp` 904\u20131092, 1641\u20131810). Retired (2026-10-23): out-of-body credit removed; honest **146** < **150**.",
+    "auditSeams": "`DebugTrace`, socket I/O, and UI pumps are injected.",
+    "auditRationale": "Whole-function bands for launcher respond and `I_Net*` pregame UI entry points.",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GetLocalServerSnapshotNative` | `I_GetLocalServerSnapshot` 904\u2013907 |\n| `GetCachedServerQuerySnapshotNative` | `GetCachedServerQuerySnapshot` 955\u2013970 |\n| `EncodeLauncherInfoNative` | `SendLauncherInfo` encode 972\u20131042 |\n| `SendLauncherInfoNative` | `SendLauncherInfo` send 1044\u20131050 |\n| `WriteSessionTokenNative` | `WriteSessionToken` 1053\u20131066 |\n| `ReadSessionTokenNative` | `ReadSessionToken` 1068\u20131071 |\n| `TryHandleServerQueryNative` | `TryHandleServerQuery` 1073\u20131092 |\n| `INetErrorNative` | `I_NetError` 1641\u20131649 |\n| `INetInitNative` | `I_NetInit` 1651\u20131665 |\n| `INetMessageNative` | `I_NetMessage` 1672\u20131686 |\n| `INetLoopNative` | `I_NetLoop` 1697\u20131728 |\n| `INetClientConnectedNative` | `I_NetClientConnected` 1732\u20131750 |\n| `INetClientUpdatedNative` | `I_NetClientUpdated` 1753\u20131756 |\n| `INetClientDisconnectedNative` | `I_NetClientDisconnected` 1758\u20131770 |\n| `INetUpdatePlayersNative` | `I_NetUpdatePlayers` 1772\u20131780 |\n| `IShouldStartNetGameNative` | `I_ShouldStartNetGame` 1782\u20131787 |\n| `IGetKickClientsNative` | `I_GetKickClients` 1789\u20131796 |\n| `IGetBanClientsNative` | `I_GetBanClients` 1798\u20131805 |\n| `INetDoneNative` | `I_NetDone` 1807\u20131810 |\n\n### Out-of-body uncredit (649)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **278** |\n| **Out-of-body removed** | **132** |\n| **Honest** | **146** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 649 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

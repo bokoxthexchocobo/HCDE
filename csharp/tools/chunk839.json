@@ -1,0 +1,15 @@
+[
+  {
+    "name": "fscript-parser-sf-player-spawn-chunk839",
+    "bucket": "conversion",
+    "note": "Retired (2026-10-23): separator `nativeRanges` removed per policy; honest whole-function credit **125** (< **150** floor). Prior tally **155** included banned separator padding. Matrix credit **0**.",
+    "auditSeams": "Player display name, spawn, placement test, and failed-spawn destroy are host callbacks on `ParserContext` (`VmFScriptParserSfPlayer.cs` partial only).",
+    "auditRationale": "Separator padding between `SF_*` bands must not count toward `nativeLoc`. After uncredit, band is below floor \u2192 retire (behavior may remain off-tally).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 839 --band` \u2192 retired skip, exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "### Separator uncredit \u2192 retire\n\n| | `nativeLoc` |\n|--|----------:|\n| **Before** (incl. separators) | **155** |\n| **After uncredit** (functions only) | **125** |\n| **After retire** (matrix) | **0** |\n\nRemoved **30** separator lines across **4** `nativeRanges` entries.\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

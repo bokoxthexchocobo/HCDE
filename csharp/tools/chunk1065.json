@@ -1,0 +1,37 @@
+[
+  {
+    "name": "sbarinfo-parse-toplevel-chunk1065",
+    "bucket": "conversion",
+    "note": "Custom `FindLump` scan tail and `ParseSBarInfo` top-level commands through `monospacefonts` alignment from `sbarinfo.cpp` (**451–600**); follows **1064** load head.",
+    "auditSeams": "Custom/default slot create vs parse uses **1064** `ResolveScriptSlotAction`; `FScanner`, `fileSystem`, recursive `ParseSBarInfo`, and **601+** statement terminators remain host-injected.",
+    "auditRationale": "UNCredited **`sbarinfo.cpp`** **451–600** (+150); zero overlap with **1064** load predicates (**432–450**) except delegated slot policy.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo.cpp --start 451 --end 600` and `--chunk 1065 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Custom lump `FindLump` loop continuation (**452–458**) | yes (scan policy; slot action via **1064** seam) |\n| `ParseSBarInfo` include + main loop entry (**463–483**) | yes |\n| `base` game name + standard lump policy (**485–520**) | yes |\n| `height` assignment (**523–526**) | yes |\n| `interpolatehealth` / `interpolatearmor` bool + speed (**528–560**) | yes |\n| `completeborder` bool (**562–571**) | yes |\n| `monospacefonts` spacing + alignment (**574–600**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **454–457** | **1064** slot create/parse (delegated only) |\n| **467–468**, **474–477**, **519** | host scanner / lump I/O / recurse |\n| **601+** | trailing `;` and **`lowerhealthcap`** outside hull |\n| **603+** | commands past band end |\n\n| Managed (`VmSbarinfoParseTopLevel1065Slice.cs`) | Native (`sbarinfo.cpp`) |\n|--------------------------------------------------|-------------------------|\n| `ShouldContinueCustomLumpScan` / `ResolveCustomSlotAction` | **452–458** |\n| Include + top-level token gates | **469–483** |\n| `ClassifyBaseGameName` / standard base paths | **489–520** |\n| `MergeStatusBarHeight` | **524–525** |\n| `BuildInterpolateHealthState` / armor twin | **528–560** |\n| `ResolveCompleteBorder` | **562–571** |\n| Monospace spacing + alignment | **574–600** |\n| Band hull (exclusive slice) | **451–600** |\n\n### Chunk **1065** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1064** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoParseTopLevel1065Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo.cpp",
+        "symbol": "SBarInfo::Load / ParseSBarInfo",
+        "start": 451,
+        "end": 600,
+        "tests": [
+          "VmSbarinfoParseTopLevel1065SliceTests.ClassifyBaseGameName_RecognizesStandardAndOverrideNames",
+          "VmSbarinfoParseTopLevel1065SliceTests.StandardBaseRelativePath_MapsDoomHereticHexen",
+          "VmSbarinfoParseTopLevel1065SliceTests.ResolveGameTypeOverride_MatchesNativeStrifeAndNone",
+          "VmSbarinfoParseTopLevel1065SliceTests.ShouldLoadStandardBaseAfterLookup_UsesUnsetSentinel",
+          "VmSbarinfoParseTopLevel1065SliceTests.BuildInterpolateHealthState_HonorsTrueAndOptionalSpeed",
+          "VmSbarinfoParseTopLevel1065SliceTests.ResolveTopLevelBool_AcceptsFalsePath",
+          "VmSbarinfoParseTopLevel1065SliceTests.MergeStatusBarHeight_ReplacesWhenIntPresent",
+          "VmSbarinfoParseTopLevel1065SliceTests.ResolveMonospaceSpacingCharacter_ClearsOnFalseBranch",
+          "VmSbarinfoParseTopLevel1065SliceTests.TryClassifySpacingAlignment_RecognizesNativeKeywords",
+          "VmSbarinfoParseTopLevel1065SliceTests.ResolveCustomSlotAction_DelegatesTo1064",
+          "VmSbarinfoParseTopLevel1065SliceTests.ShouldRecurseParsedInclude_RequiresValidLump",
+          "VmSbarinfoParseTopLevel1065SliceTests.TryParseOptionalSpacingAlignment_SkipsWhenNoComma",
+          "VmSbarinfoParseTopLevel1065SliceTests.ShouldContinueCustomLumpScan_StopsOnMissingLump"
+        ]
+      }
+    ]
+  }
+]

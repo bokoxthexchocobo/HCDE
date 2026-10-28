@@ -1,0 +1,34 @@
+[
+  {
+    "name": "p-acs-runscript-bitwise-ls-chunk915",
+    "bucket": "conversion",
+    "note": "`DLevelScript::RunScript` `PCD_ANDSCRIPTARRAY`…`ANDGLOBALARRAY`, full `PCD_EOR*` / `PCD_OR*`, and `PCD_LSSCRIPTVAR`…`LSGLOBALVAR` from `p_acs.cpp` (**8205–8363**). Follows **914** (**≤8203**); `PCD_LSSCRIPTARRAY` at **8365** deferred.",
+    "auditSeams": "`FBehavior::SetArrayVal` / `GetArrayVal` and full `RunScript` dispatch are not hosted; slice models stack operand layout and in-place bitwise/shift updates only.",
+    "auditRationale": "Honest **159**-line UNCredited band; exclusive `VmPAcsVmOpcode915Slice.cs` without modifying **911–914** slice files.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 8205 --end 8363` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native opcode region | Behavior ported |\n|----------------------|-----------------|\n| `PCD_ANDSCRIPTARRAY` … `PCD_ANDGLOBALARRAY` (**8205–8236**) | yes |\n| `PCD_EORSCRIPTVAR` … `PCD_EORGLOBALARRAY` (**8238–8289**) | yes |\n| `PCD_ORSCRIPTVAR` … `PCD_ORGLOBALARRAY` (**8291–8343**) | yes |\n| `PCD_LSSCRIPTVAR` … `PCD_LSGLOBALVAR` (**8345–8363**) | yes |\n\n| Managed (`VmPAcsVmOpcode915Slice.cs`) | Native (`p_acs.cpp`) |\n|----------------------------------------|---------------------|\n| `AndScriptArray` … `AndGlobalArray` | **8205–8236** |\n| `EorScriptVar` … `EorGlobalArray` | **8238–8289** |\n| `OrScriptVar` … `OrGlobalArray` | **8291–8343** |\n| `LsScriptVar` … `LsGlobalVar` | **8345–8363** |\n| `AcsScriptArrayStore` / `AcsMapArrayStore` | array backing **8208–8340** |\n\n### Chunk **915** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **159** |\n| **Net headline** | **+159** vs post-**914** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPAcsVmOpcode915Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "DLevelScript::RunScript",
+        "start": 8205,
+        "end": 8363,
+        "tests": [
+          "VmPAcsVmOpcode915SliceTests.AndScriptArray_BitwiseAndsCell",
+          "VmPAcsVmOpcode915SliceTests.EorGlobalVar_TogglesBits",
+          "VmPAcsVmOpcode915SliceTests.OrWorldArray_OrCombinesElement",
+          "VmPAcsVmOpcode915SliceTests.OrMapArray_ResolvesArrayThroughMapVar",
+          "VmPAcsVmOpcode915SliceTests.LsScriptVar_ShiftsLocalLeft",
+          "VmPAcsVmOpcode915SliceTests.LsGlobalVar_ShiftsByStackAmount",
+          "VmPAcsVmOpcode915SliceTests.AndGlobalArray_AndsInPlace",
+          "VmPAcsVmOpcode915SliceTests.EorScriptArray_UpdatesStoredValue",
+          "VmPAcsVmOpcode915SliceTests.OrScriptVar_MergesBits",
+          "VmPAcsVmOpcode915SliceTests.LsMapVar_LeftShiftsMapSlot"
+        ]
+      }
+    ]
+  }
+]

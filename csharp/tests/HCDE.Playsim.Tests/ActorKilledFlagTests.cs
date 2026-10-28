@@ -10,8 +10,8 @@ public class ActorKilledFlagTests
     {
         var sim = Room(); var target = sim.AddBot(20, 0, 3001); target.Health = 0;
         Assert.False(target.Killed);
-        Assert.True(ActorProximity.Check(sim.Players.Single(), "DoomImp", 100));
-        Assert.False(ActorProximity.Check(sim.Players.Single(), "DoomImp", 100, flags: 16));
+        Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(sim.Players.Single(), "DoomImp", 100));
+        Assert.False(VmPThingsRaiseRemoveWarpProximity.Check(sim.Players.Single(), "DoomImp", 100, flags: 16));
     }
 
     [Fact]
@@ -22,11 +22,11 @@ public class ActorKilledFlagTests
             new(-1, 2, Action: self => observed = self.Killed)], 0);
         ActorDamage.Apply(target, 1000, sim.Players.Single());
         Assert.True(observed); Assert.True(target.Killed);
-        Assert.False(ActorProximity.Check(sim.Players.Single(), "DoomImp", 100));
-        Assert.True(ActorProximity.Check(sim.Players.Single(), "DoomImp", 100, flags: 16));
+        Assert.False(VmPThingsRaiseRemoveWarpProximity.Check(sim.Players.Single(), "DoomImp", 100));
+        Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(sim.Players.Single(), "DoomImp", 100, flags: 16));
         ActorRaise.ReviveSupported(target);
         Assert.False(target.Killed);
-        Assert.True(ActorProximity.Check(sim.Players.Single(), "DoomImp", 100));
+        Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(sim.Players.Single(), "DoomImp", 100));
     }
 
     [Fact]
@@ -35,7 +35,7 @@ public class ActorKilledFlagTests
         var sim = Room(); var target = sim.AddBot(20, 0, 3001);
         ActorDamage.Apply(target, 1000); target.Health = 100;
         Assert.True(target.Killed);
-        Assert.True(ActorProximity.Check(sim.Players.Single(), "DoomImp", 100, flags: 16));
+        Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(sim.Players.Single(), "DoomImp", 100, flags: 16));
     }
 
     [Fact]

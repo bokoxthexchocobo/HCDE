@@ -1,0 +1,153 @@
+[
+  {
+    "name": "fscript-variable-chunk856",
+    "bucket": "conversion",
+    "note": "FraggleScript variables from `fragglescript/t_variable.cpp` (1\u2013424).",
+    "auditSeams": "`actorvalue` uses host `SpawnedThings` and `IsMapActor`; `SetValue` uses injected `ScriptError`.",
+    "auditRationale": "Variable hash chains after preprocessor (**853**).",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 856 --band \u2192 UNCredited, exit 0.",
+    "auditManagedLocJustification": "Faithful ports in `VmFScriptVariable.cs`.",
+    "auditPaddingReview": "**Behavior ported**\n\n| Managed | Native |\n|---------|--------|\n| coercion + script variable API | **1\u2013424** |\n\nGross **424** net +424 vs **854**.\n\n### Out-of-body uncredit (856)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **424** |\n| **Out-of-body removed** | **160** |\n| **Honest** | **264** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmFScriptVariable.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "intvalue",
+        "start": 45,
+        "end": 50,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "fixedvalue",
+        "start": 58,
+        "end": 63,
+        "tests": [
+          "VmFScriptVariableTests.FixedValue_FromInt"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "floatvalue",
+        "start": 71,
+        "end": 77,
+        "tests": [
+          "VmFScriptVariableTests.FloatValue_FromFixed"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "stringvalue",
+        "start": 85,
+        "end": 110,
+        "tests": [
+          "VmFScriptVariableTests.StringValue_FromInt"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "actorvalue",
+        "start": 117,
+        "end": 150,
+        "tests": [
+          "VmFScriptVariableTests.ActorValue_MapThingIndex"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "DFsVariable::DFsVariable",
+        "start": 169,
+        "end": 176,
+        "tests": [
+          "VmFScriptVariableTests.NewVariable_ChainsInHash"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "DFsVariable::GetValue",
+        "start": 185,
+        "end": 220,
+        "tests": [
+          "VmFScriptVariableTests.GetValue_CopiesString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "DFsVariable::SetValue",
+        "start": 229,
+        "end": 278,
+        "tests": [
+          "VmFScriptVariableTests.SetValue_AdaptsConst"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "DFsVariable::Serialize",
+        "start": 286,
+        "end": 295,
+        "tests": [
+          "VmFScriptVariableTests.Serialize_RoundTripsName"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "DFsScript::NewVariable",
+        "start": 310,
+        "end": 320,
+        "tests": [
+          "VmFScriptVariableTests.NewVariable_ChainsInHash"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "DFsScript::NewFunction",
+        "start": 323,
+        "end": 326,
+        "tests": [
+          "VmFScriptVariableTests.NewFunction_StoresHandler"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "DFsScript::VariableForName",
+        "start": 335,
+        "end": 348,
+        "tests": [
+          "VmFScriptVariableTests.VariableForName_FindsChain"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "DFsScript::FindVariable",
+        "start": 358,
+        "end": 378,
+        "tests": [
+          "VmFScriptVariableTests.FindVariable_WalksParentAndGlobal"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "DFsScript::ClearVariables",
+        "start": 387,
+        "end": 412,
+        "tests": [
+          "VmFScriptVariableTests.ClearVariables_StopsAtLabels"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "DFsScript::LabelValue",
+        "start": 420,
+        "end": 424,
+        "tests": [
+          "VmFScriptVariableTests.LabelValue_ReturnsIndex"
+        ]
+      }
+    ],
+    "auditSingleFunctionOversizeException": true
+  }
+]

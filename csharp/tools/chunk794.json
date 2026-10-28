@@ -1,0 +1,15 @@
+[
+  {
+    "name": "a-door-construct-ev-chunk794",
+    "bucket": "conversion",
+    "note": "`DDoor::Construct` overload and `FLevelLocals::EV_DoDoor` (`mapthinkers/a_doors.cpp` 355\u2013538). Retired (2026-10-23): out-of-body credit removed; honest **75** < **150**.",
+    "auditSeams": "`P_CheckKeys`, sector tag iteration, `CreateThinker`, height finders, and diag hooks are injected on construct/EV contexts; `DoorSound` reuses `VmADoorTickSound`.",
+    "auditRationale": "Vertical-door spawn and EV band after tick/sound chunk793.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "| Managed | Native (`a_doors.cpp`) |\n|---------|-------------------------|\n| `Construct` / `DoorThinker` fields | **355\u2013367** |\n| `Construct` compat light | **368\u2013371** |\n| `Construct` `doorClose` | **375\u2013380** |\n| `Construct` `doorOpen`/`doorRaise` | **382\u2013389** |\n| `Construct` `doorCloseWaitOpen` | **391\u2013395** |\n| `Construct` `doorWaitRaise` | **397\u2013401** |\n| `Construct` `doorWaitClose` | **403\u2013410** |\n| `Construct` bot dist block | **414\u2013428** |\n| `Construct` tail / `Super::Construct` | **429** |\n| `EvDoDoor` signature / locals | **438\u2013444** |\n| `EvDoDoor` keys/manual/reuse/tag/diag | **445\u2013536** |\n| `EvDoDoor` return | **537\u2013538** |\n\n### Out-of-body uncredit (794)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **176** |\n| **Out-of-body removed** | **101** |\n| **Honest** | **75** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 794 --band` \u2192 retired skip (out-of-body cleanup), exit 0."
+  }
+]

@@ -1,0 +1,15 @@
+[
+  {
+    "name": "p-lnspec-acs-light-chunk418",
+    "bucket": "conversion",
+    "note": "ACS execute/suspend, FS execute, LowerRaise boom gate, light line specials Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
+    "auditSeams": "`P_StartScript`, `T_RunScript`, `EV_*` light movers, and `ForceLightning` are not hosted.",
+    "auditRationale": "Credits ACS map resolution, locked execute gates, FS execute checks, Boom `LowerRaise` floor fallback, and `LS_Light_*` argument wiring from `p_lnspec.cpp`.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (418)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **205** |\n| **Out-of-body removed** | **205** |\n| **Honest** | **0** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 418 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

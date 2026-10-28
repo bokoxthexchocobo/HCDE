@@ -1,0 +1,15 @@
+[
+  {
+    "name": "fscript-parser-sf-ctrl-chunk873",
+    "bucket": "conversion",
+    "note": "`FParser::SF_Goto` \u2026 `SF_PlayerInGame` plus `SF_ExitLevel` / tip natives from `fragglescript/t_func.cpp` (502\u2013721). Retired (2026-10-23): out-of-body credit removed; honest **98** < **150**.",
+    "auditSeams": "Uses **837** `PrintHigh` / `GameTic`, **742** local view, and `VmSoundEngineStartSound` for credited paths. `SF_Include` / `SF_ExitLevel` console hosts deferred; `exitlevel` maps to `MarkExited`.",
+    "auditRationale": "Honest re-credit of retired **852** footprint plus additional ported `SF_*` in the same uncredited **502\u2013721** island to meet the **150** native floor without padding helpers.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 873 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported | Registered |\n|---------------|-----------------|------------|\n| `SF_Goto` | yes | `goto` (BuildTable) |\n| `SF_Return` | yes | `return` |\n| `SF_Input` | yes | `input` |\n| `SF_Beep` | yes | `beep` |\n| `SF_Clock` | yes | `clock` |\n| `SF_ExitLevel` | yes | `exitlevel` |\n| `SF_Tip` | yes | `tip` |\n| `SF_TimedTip` | partial (`PrintHigh`, no `con_midtime`) | `timedtip` |\n| `SF_PlayerTip` | yes | `playertip` |\n| `SF_Message` | yes | `message` |\n| `SF_PlayerMsg` | yes | `playermsg` |\n| `SF_PlayerInGame` | yes | `playeringame` |\n\n**Not in this chunk (zero credit, not registered)**\n\n| Native | Policy |\n|--------|--------|\n| `SF_Include` (**543\u2013559**) | Unregistered |\n\n| Managed | Native |\n|---------|--------|\n| `SfGoto` | **509\u2013524** |\n| `SfReturn` | **532\u2013535** |\n| `SfInput` | **567\u2013570** |\n| `SfBeep` | **578\u2013581** |\n| `SfClock` | **589\u2013593** |\n| `SfExitLevel` | **603\u2013606** |\n| `SfTip` | **614\u2013621** |\n| `SfTimedTip` | **633\u2013642** |\n| `SfPlayerTip` | **651\u2013661** |\n| `SfMessage` | **669\u2013676** |\n| `SfPlayerMsg` | **684\u2013694** |\n| `SfPlayerInGame` | **702\u2013714** |\n| `VmFScriptInitFunctionsReg873.Register` | `NewFunction` rows |\n| (separators) | **502\u2013508**, **525\u2013531**, **536\u2013542**, **560\u2013566**, **571\u2013577**, **582\u2013588**, **594\u2013602**, **607\u2013613**, **622\u2013632**, **643\u2013650**, **662\u2013668**, **677\u2013683**, **695\u2013701**, **715\u2013721** |\n| (unregistered band) | **543\u2013559** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| `nativeLoc` | **158** |\n\n### Out-of-body uncredit (873)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **203** |\n| **Out-of-body removed** | **105** |\n| **Honest** | **98** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

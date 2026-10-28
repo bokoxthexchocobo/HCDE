@@ -1,0 +1,15 @@
+[
+  {
+    "name": "a-floor-ev-chunk800",
+    "bucket": "conversion",
+    "note": "Floor line specials: `EV_DoFloor`, crush/stop, `EV_BuildStairs`, `EV_DoDonut`, `EV_DoChange` (`a_floor.cpp` 539\u2013552, 562\u2013596, 607\u2013788, 796\u2013863, 1113\u20131154). Retired (2026-10-24): `--band` hull overlaps existing credit (p-floor-waggle-donut-elevator-chunk6 src/playsim/mapthinkers/a_floor.cpp 941-984).",
+    "auditSeams": "Tag iterators, `CreateFloor`, height/neighbor finders, thinker spawn/destroy, and sector texture/special hooks are injected.",
+    "auditRationale": "Single 339-native FLevelLocals floor-EV band after `CreateFloor` (799); avoids engineered 157-line five-function patch.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "| Managed | Native (`a_floor.cpp`) |\n|---------|----------------------|\n| `EvDoFloor` | `FLevelLocals::EV_DoFloor` **539\u2013552** |\n| `EvFloorCrushStop` | `FLevelLocals::EV_FloorCrushStop` **562\u2013579** |\n| `EvStopFloor` | `FLevelLocals::EV_StopFloor` **582\u2013596** |\n| `EvBuildStairs` | `FLevelLocals::EV_BuildStairs` **607\u2013788** |\n| `EvDoDonut` | `FLevelLocals::EV_DoDonut` **796\u2013863** |\n| `EvDoChange` | `FLevelLocals::EV_DoChange` **1113\u20131154** |\n\n### Out-of-body uncredit (800)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **339** |\n| **Out-of-body removed** | **14** |\n| **Honest** | **325** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 800 --band` \u2192 retired skip (OVERLAP), exit 0."
+  }
+]

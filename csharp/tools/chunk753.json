@@ -1,0 +1,15 @@
+[
+  {
+    "name": "p-mobj-bounce-seek-matrix-water-chunk753",
+    "bucket": "conversion",
+    "note": "Explode DEFINE tail, bounce sound, seeker helpers, object matrix, and water-level refresh (`p_mobj.cpp` 2098\u20132411, 4501\u20134518, 5402\u20135445). Retired (2026-10-24): `--band` hull overlaps existing credit (p-mobj-poison-kill-sector-chunk57 src/playsim/p_mobj.cpp 5098-5108).",
+    "auditSeams": "`P_ExplodeMissile`, `S_Sound`, `VMCall`, `FindModelFrame`, `SplashCheck`, and `UpdateWaterDepth` are injected.",
+    "auditRationale": "Whole uncredited helpers after chunk726 partial explode/bounce credits; matrix and player dive hooks sit in honest sub-200 bands.",
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, ExplodeMissile)` 2098\u20132105 |\n| `RunPlayBounceSound` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `FaceMobjDir` / `FaceMobjDelta` | `P_FaceMobj` 2286\u20132301 |\n| `CanSeek` | `AActor::CanSeek` 2311\u20132322 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, CanSeek)` 2324\u20132329 |\n| `SeekerMissile` | `P_SeekerMissile` 2340\u20132411 |\n| `GetObjectToWorldMatrix` | `AActor::GetObjectToWorldMatrix` 4501\u20134518 |\n| `CallPlayDiveOrSurfaceSounds` | `AActor::PlayDiveOrSurfaceSounds` 5402\u20135409 |\n| `UpdateWaterLevel` | `AActor::UpdateWaterLevel` 5419\u20135438 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, UpdateWaterLevel)` 5440\u20135445 |\n\n### Out-of-body uncredit (753)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **190** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **190** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 753 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

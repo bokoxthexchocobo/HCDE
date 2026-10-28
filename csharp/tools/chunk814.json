@@ -1,0 +1,15 @@
+[
+  {
+    "name": "p-map-line-trace-chunk814",
+    "bucket": "conversion",
+    "note": "Whole `P_LineAttack` puff-type overload, `CheckLineTrace`, `P_LineTrace`, and `P_LinePickActor` from `p_map.cpp` (5052\u20135237). Retired (2026-10-23): out-of-body credit removed; honest **48** < **150**.",
+    "auditSeams": "`Trace`, `PClass::FindActor`, and sector queries are injected.",
+    "auditRationale": "First tally credit for ACS/trace helpers after chunk710 class `P_LineAttack`; retires recognition-only chunk480 row.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 814 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|----------------------|\n| `P_LineAttack` (FName puff) | **5052\u20135067** |\n| `CheckLineTrace` | **5083\u20135100** |\n| `P_LineTrace` | **5102\u20135200** |\n| `P_LinePickActor` | **5208\u20135237** |\n\n### Out-of-body uncredit (814)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **163** |\n| **Out-of-body removed** | **115** |\n| **Honest** | **48** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

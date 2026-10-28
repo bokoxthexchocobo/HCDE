@@ -1,0 +1,15 @@
+[
+  {
+    "name": "p-lnspec-thing-lifecycle-chunk427",
+    "bucket": "conversion",
+    "note": "Thing_SetSpecial, ChangeTID, Damage/Heal, activation helpers, activate/deactivate/remove/destroy Retired (2026-10-23): out-of-body credit removed; honest **20** < **150**.",
+    "auditSeams": "`P_DamageMobj`, `P_GiveBody`, and actor iterators are not hosted.",
+    "auditRationale": "Credits TID/special assignment, damage/heal branches, `THINGSPEC` activation toggles, and destroy/massacre policy from `p_lnspec.cpp`.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (427)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **235** |\n| **Out-of-body removed** | **215** |\n| **Honest** | **20** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 427 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

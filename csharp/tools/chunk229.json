@@ -1,0 +1,14 @@
+[
+  {
+    "name": "teaminfo-vm-export-chunk229",
+    "bucket": "recognition",
+    "managedLoc": 0,
+    "note": "DEFINE_GLOBAL/ACTION_FUNCTION exports for FTeam; accessors are chunk 228. Retired (2026-10-23): out-of-body credit removed; honest **74** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (229)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **87** |\n| **Out-of-body removed** | **13** |\n| **Honest** | **74** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 229 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

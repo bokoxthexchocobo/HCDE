@@ -1,0 +1,14 @@
+[
+  {
+    "name": "dehacked-patchweapon-ammo-chunk275",
+    "bucket": "conversion",
+    "managedLoc": 79,
+    "note": "PatchWeapon ammo/decal/MBF21 tail Retired (2026-10-23): out-of-body credit removed; honest **147** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (275)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **155** |\n| **Out-of-body removed** | **8** |\n| **Honest** | **147** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 275 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

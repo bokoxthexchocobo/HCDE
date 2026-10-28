@@ -1,0 +1,31 @@
+[
+  {
+    "name": "g-mapinfo-parse-mapinfo-chunk1029",
+    "bucket": "conversion",
+    "note": "`SetLevelNum` and `ParseMapInfo` lump loop head from `g_mapinfo.cpp` (**2600–2749**). **Pivot:** primary **1491–1640** aborted — `VmMapInfoMapOptionsLate` (**1421–1560**), `VmMapInfoScalarOptionsBlock` (**1567–1716**), and `VmMapInfoMapOptionsExitEnvironment` (**1567–1652**) leave no honest ≥150 exclusive credit.",
+    "auditSeams": "`FScanner`, nested `ParseMapInfo`, `ParseMapDefinition`, `ParseCluster`, and host filesystem lookups remain native.",
+    "auditRationale": "UNCredited `g_mapinfo.cpp` band **≥2600** with zero tally/recognition overlap and zero Vm* line-range collision (alternate **2800–2949** also clean; chose lower contiguous parse entry).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_mapinfo.cpp --start 2600 --end 2749` and `--chunk 1029 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `SetLevelNum` duplicate clearing (**2602–2613**) | yes |\n| `ParseMapInfo` lump reopen + duplicate lump warn (**2623–2637**) | yes |\n| `include` container / core override gate (**2641–2657**) | yes (policy predicates) |\n| Top-level `gamedefaults` / `defaultmap` / `adddefaultmap` / `map` dispatch (**2664–2691**) | yes |\n| `-NOFLAT-` sky2 copy (**2687–2690**) | yes |\n| `clusterdef`/`cluster`/`episode`/`skill` clears (**2695–2715**) | yes |\n| New-format gates for `gameinfo`/`intermission`/`doomednums` (**2716–2750** hull ends **2749**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1491–1640** (primary target) | off-tally `VmMapInfoMapOptionsLate` + scalar/exit merge bands |\n| **1191–1340** | chunk **1028** |\n| **833–982** | chunk **1027** |\n| **2658–2662** | nested include recursion host |\n| **2750+** | outside hull |\n\n| Managed (`VmMapInfoParseMapInfo1029Slice.cs`) | Native (`g_mapinfo.cpp`) |\n|------------------------------------------------|---------------------------|\n| `ApplySetLevelNum` | **2602–2613** |\n| `LumpAlreadyParsed` | **2630–2633** |\n| `ShouldFatalOnCoreIncludeOverride` | **2649–2656** |\n| `ResolveSkyPic2WhenNoFlat` | **2687–2690** |\n| `TryParseTopLevelKeyword` | **2641–2749** |\n| Band hull (exclusive slice) | **2600–2749** |\n\n### Chunk **1029** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1028** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmMapInfoParseMapInfo1029Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "ParseMapInfo head",
+        "start": 2600,
+        "end": 2749,
+        "tests": [
+          "VmMapInfoParseMapInfo1029SliceTests.ApplySetLevelNum_ClearsDuplicatesOnOtherMaps",
+          "VmMapInfoParseMapInfo1029SliceTests.ShouldFatalOnCoreIncludeOverride_DetectsCoreOverride",
+          "VmMapInfoParseMapInfo1029SliceTests.ResolveSkyPic2WhenNoFlat_CopiesPrimarySky",
+          "VmMapInfoParseMapInfo1029SliceTests.TryParseTopLevelKeyword_RejectsGameInfoOnOldFormat",
+          "VmMapInfoParseMapInfo1029SliceTests.TryParseTopLevelKeyword_AllowsClusterKeywordOnNewFormat",
+          "VmMapInfoParseMapInfo1029SliceTests.TryParseTopLevelKeyword_MapsClearsSkills",
+          "VmMapInfoParseMapInfo1029SliceTests.LumpAlreadyParsed_TracksDuplicates"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "po-man-spatial-sight-tail-chunk675",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Retired: spatial bands merged into `po-man-link-update-chunk673` (1259–1384); sight bands merged into `p-sight-line-policy-chunk669`; BSP remains `po-man-subsector-bsp-chunk676`.",
+    "nativeRanges": [],
+    "managedSourceFiles": []
+  }
+]

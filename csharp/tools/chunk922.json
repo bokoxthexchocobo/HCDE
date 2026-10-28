@@ -1,0 +1,54 @@
+[
+  {
+    "name": "a-floor-waggle-chunk922",
+    "bucket": "conversion",
+    "note": "Waggle thinkers and `EV_StartWaggle` from `mapthinkers/a_floor.cpp` (**1163–1353**). Post–`EV_DoChange` (**1154**); avoids chunk **6** `DElevator::Tick` (**941–984**).",
+    "auditSeams": "Tag iterators, thinker spawn, plane hooks, `BobSin`, scroll/linked-sector/sector-change, and interpolation are injected.",
+    "auditRationale": "Tally orphan `VmAFloorWaggleElevator.cs` (retired **801**); **191** UNCredited lines in **1163–1353** band, **≥150** function-bounded.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/mapthinkers/a_floor.cpp --start 1163 --end 1353` and `--chunk 922 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `IMPLEMENT_CLASS` waggle types (**1163–1165**) | yes (manifest) |\n| `DWaggleBase::Serialize` (**1167–1178**) | yes |\n| `DWaggleBase::Construct` / `DoWaggle` (**1190–1270**) | yes |\n| `DFloorWaggle` / `DCeilingWaggle` (**1278–1306**) | yes |\n| `EV_StartWaggle` (**1314–1353**) | yes |\n\n| Managed (`VmAFloorWaggleElevator.cs`) | Native (`a_floor.cpp`) |\n|--------------------------------------|----------------------|\n| `WaggleBaseSerialize` | **1167–1178** |\n| `WaggleBaseConstruct` | **1190–1193** |\n| `DoWaggle` | **1201–1270** |\n| `FloorWaggleConstruct` / `FloorWaggleTick` | **1278–1288** |\n| `CeilingWaggleConstruct` / `CeilingWaggleTick` | **1296–1306** |\n| `EvStartWaggle` | **1314–1353** |\n| Waggle state constants | **1186–1188** |\n\n### Chunk **922** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **166** |\n| **Net headline** | **+166** vs post-**921** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmAFloorWaggleElevator.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/mapthinkers/a_floor.cpp",
+        "symbol": "DWaggleBase::Serialize",
+        "start": 1163,
+        "end": 1178,
+        "tests": [
+          "VmAFloorWaggleElevatorTests.WaggleBaseSerialize_WritesFields"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_floor.cpp",
+        "symbol": "DWaggleBase::DoWaggle",
+        "start": 1190,
+        "end": 1270,
+        "tests": [
+          "VmAFloorWaggleElevatorTests.DoWaggle_ExpandReachesStable",
+          "VmAFloorWaggleElevatorTests.DoWaggle_ReduceDestroysThinker"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_floor.cpp",
+        "symbol": "DFloorWaggle",
+        "start": 1278,
+        "end": 1306,
+        "tests": [
+          "VmAFloorWaggleElevatorTests.EvStartWaggle_Floor_SetsExpandState"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_floor.cpp",
+        "symbol": "FLevelLocals::EV_StartWaggle",
+        "start": 1314,
+        "end": 1353,
+        "tests": [
+          "VmAFloorWaggleElevatorTests.EvStartWaggle_SkipsWhenPlaneMoving",
+          "VmAFloorWaggleElevatorTests.EvStartWaggle_Floor_SetsExpandState"
+        ]
+      }
+    ]
+  }
+]

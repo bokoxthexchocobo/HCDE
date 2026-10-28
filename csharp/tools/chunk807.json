@@ -1,0 +1,15 @@
+[
+  {
+    "name": "p-switch-change-texture-chunk807",
+    "bucket": "conversion",
+    "note": "Whole `P_ChangeSwitchTexture`, `DActiveButton` construct/tick/advance, and `FTextureAnimator::AddSwitchPair` (`p_switch.cpp` 243\u2013310, 320\u2013331, 380\u2013452; `anim_switches.cpp` 305\u2013330). Retired (2026-10-24): `--band` hull overlaps existing credit ((multiple native files; --band hull undefined)).",
+    "auditSeams": "`TexAnim::FindSwitch`, `P_StartButton`, `S_Sound`, and thinker destroy are injected.",
+    "auditRationale": "Faithful switch texture animation band; retires remainder of `p-switch-textures-button-chunk5`.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "| Managed | Native |\n|---------|--------|\n| `ChangeSwitchTexture` | **243\u2013310** |\n| `ConstructButton` | **320\u2013331** |\n| `TickButton` | **380\u2013419** |\n| `AdvanceFrame` | **427\u2013452** |\n| `AddSwitchPair` | **305\u2013330** |\n\n### Out-of-body uncredit (807)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **172** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **172** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 807 --band` \u2192 retired skip (OVERLAP), exit 0."
+  }
+]

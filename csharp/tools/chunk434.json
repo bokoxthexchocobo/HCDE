@@ -1,0 +1,15 @@
+[
+  {
+    "name": "p-lnspec-polyobj-chunk434",
+    "bucket": "conversion",
+    "note": "MODtoDamageType, CRUSHTYPE helpers, ACS name map, LS_NOP, polyobj movers Retired (2026-10-23): out-of-body credit removed; honest **38** < **150**.",
+    "auditSeams": "`EV_RotatePoly`, `EV_MovePoly`, and `EV_OpenPolyDoor` are not hosted.",
+    "auditRationale": "Credits damage-type name mapping, ceiling crush mode selection, named ACS opcode table, and polyobj rotate/move/door argument wiring from `p_lnspec.cpp`.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (434)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **161** |\n| **Out-of-body removed** | **123** |\n| **Honest** | **38** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 434 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

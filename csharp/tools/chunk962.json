@@ -1,0 +1,15 @@
+[
+  {
+    "name": "p-mobj-setstate-inventory-chunk962",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Retired (2026-10-28): attempted band **872–1021** overlaps existing managed `VmPMobjSetStateUse.cs` (**856–1095**, chunk **737** retire row). Standing rule: no duplicate credit when managed already ports `SetState` / `DestroyAllInventory` / `UseInventory` head — matrix credit **0**.",
+    "auditSeams": "N/A — row retired before valid exclusive port.",
+    "auditRationale": "`VmPMobjSetStateUse.SetState` mirrors `AActor::SetState` loop; `DestroyAllInventory` / `UseInventory` helpers already tested off-tally. `VmPMobjSetStateInventory962Slice` was redundant helper duplication — removed.",
+    "auditUncreditedRangeCheck": "CLI band **872–1021** remains tally-uncredited; `--chunk 962 --band` → retired skip, exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "### Retire reason (**962**)\n\n| Issue | Resolution |\n|-------|------------|\n| `VmPMobjSetStateUse.cs` already ports **856–961**, **978–1005**, **1024+** stubs | Abort matrix credit on **872–1021** |\n| `VmPMobjSetStateInventory962Slice` | Deleted — exclusive helper re-port = double-count |\n| Chunk **737** | Already retired for **738** overlap; managed file remains canonical off-tally port |\n\n### Behavior ported (matrix credit)\n\n| Native | Behavior ported |\n|--------|-----------------|\n| (none) | **no** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross attempted (invalid land) | **150** |\n| Net behavior-ported (matrix) | **0** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": []
+  }
+]

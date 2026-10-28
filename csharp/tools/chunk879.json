@@ -1,0 +1,92 @@
+[
+  {
+    "name": "bot-func-sight-mate-enemy-chunk879",
+    "bucket": "conversion",
+    "note": "Cajun `Reachable`, `Dofire`, `Check_LOS`, and `IsLeader` from `b_func.cpp` (**44–280**). Mate/enemy + body helpers on chunk **885**.",
+    "auditSeams": "`AuthoritySimulation.CajunReachable` / `CajunDoFire` call `VmBBotFuncReachFire`. `CheckLos` / `IsLeader` on `VmBBotFunc` (file attributed on **885**; native credit here). Rocket branch in `Dofire` calls `FireRox` credited on **885**.",
+    "auditRationale": "Sight/reach/fire hull **44–280** disjoint from **885** mate/body band (**327+**). Retired overlap merge on one row blocked `--band` for **454+** helpers.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 879 --band → UNCredited, exit 0 (hull **44–280**).",
+    "auditManagedLocJustification": "`VmBBotFuncReachFire.cs` (`Reachable`/`Dofire`). `VmBBotFunc.cs` listed on chunk **885**.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `DBot::Reachable` (**45–124**) | **yes** |\n| `DBot::Dofire` (**151–266**) | **yes** |\n| `DBot::Check_LOS` | **yes** |\n| `FCajunMaster::IsLeader` | **yes** |\n| `DBot::Choose_Mate` / `Find_enemy` | **885** |\n| `SetBodyAt` / `FireRox` / travel helpers | **885** |\n| `FCajunMaster::BotTick` (**284–322**) | **deferred** (`WhatToGet`) |\n\n| Managed | Native (`b_func.cpp`) |\n|---------|----------------------|\n| `Reachable` | **45–124** |\n| `Dofire` | **151–266** |\n| `CheckLos` | **134–144** |\n| `IsLeader` | **268–280** |\n| (headers / separators) | **44**, **126–133**, **146–150**, **267** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **235** |\n| Net behavior-ported | **235** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmBBotFuncReachFire.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/bots/b_func.cpp",
+        "symbol": "b_func headers",
+        "start": 44,
+        "end": 44,
+        "tests": [
+          "VmBBotFuncTests.CheckLos_RequiresSightAndFov"
+        ]
+      },
+      {
+        "file": "src/playsim/bots/b_func.cpp",
+        "symbol": "DBot::Reachable",
+        "start": 45,
+        "end": 124,
+        "tests": [
+          "VmBBotFuncReachFireTests.Reachable_TrueInOpenRoom",
+          "VmBBotFuncReachFireTests.Reachable_FalseThroughOneSidedWall"
+        ]
+      },
+      {
+        "file": "src/playsim/bots/b_func.cpp",
+        "symbol": "b_func separators",
+        "start": 126,
+        "end": 133,
+        "tests": [
+          "VmBBotFuncTests.CheckLos_RequiresSightAndFov"
+        ]
+      },
+      {
+        "file": "src/playsim/bots/b_func.cpp",
+        "symbol": "DBot::Check_LOS",
+        "start": 134,
+        "end": 144,
+        "tests": [
+          "VmBBotFuncTests.CheckLos_RequiresSightAndFov",
+          "VmBBotFuncTests.CheckLos_BlockedLineFails"
+        ]
+      },
+      {
+        "file": "src/playsim/bots/b_func.cpp",
+        "symbol": "b_func separators",
+        "start": 146,
+        "end": 150,
+        "tests": [
+          "VmBBotFuncTests.CheckLos_RequiresSightAndFov"
+        ]
+      },
+      {
+        "file": "src/playsim/bots/b_func.cpp",
+        "symbol": "DBot::Dofire",
+        "start": 151,
+        "end": 266,
+        "tests": [
+          "VmBBotFuncReachFireTests.Dofire_SetsAttackWhenMeleeInRangeAndLos",
+          "VmBBotFuncReachFireTests.Dofire_WaitsWhileReactionTimerRuns"
+        ]
+      },
+      {
+        "file": "src/playsim/bots/b_func.cpp",
+        "symbol": "b_func separators",
+        "start": 267,
+        "end": 267,
+        "tests": [
+          "VmBBotFuncTests.IsLeader_WhenAnotherBotTargetsPlayer"
+        ]
+      },
+      {
+        "file": "src/playsim/bots/b_func.cpp",
+        "symbol": "FCajunMaster::IsLeader",
+        "start": 268,
+        "end": 280,
+        "tests": [
+          "VmBBotFuncTests.IsLeader_WhenAnotherBotTargetsPlayer"
+        ]
+      }
+    ]
+  }
+]

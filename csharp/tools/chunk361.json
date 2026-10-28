@@ -1,0 +1,15 @@
+[
+  {
+    "name": "d-main-wipetype-chunk361",
+    "bucket": "conversion",
+    "note": "CUSTOM_CVAR wipetype clamp Retired (2026-10-23): out-of-body credit removed; honest **4** < **150**.",
+    "auditSeams": "Wipe drawer selection stays native; only invalid wipe index clamp is modeled.",
+    "auditRationale": "Credits `CUSTOM_CVAR(wipetype)` bounds check against `wipe_None` and `wipe_NUMWIPES`.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (361)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **4** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **4** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 361 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

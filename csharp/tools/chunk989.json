@@ -1,0 +1,27 @@
+[
+  {
+    "name": "p-states-parser-goto-chunk989",
+    "bucket": "conversion",
+    "note": "`InstallStates` cache tail, `MakeStateList`/`MakeStateDefines`, `AddStateDefines`, retarget helpers, and `ResolveGotoLabel` head from `p_states.cpp` (**601–750**); follows chunk **988** (**451–600**).",
+    "auditSeams": "`CreateStateLabelList`, `FindState`, `FxAlloc.Strdup`, `I_Error`, and `strstr` host calls remain injected.",
+    "auditRationale": "UNCredited parser/dehacked band; disjoint from **985–988**. Does not re-port **988** install head (**579–600**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_states.cpp --start 601 --end 750` and `--chunk 989 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `InstallStates` default cache (**603–609**) | yes |\n| `MakeStateList` / `MakeStateDefines` (**621–654**) | yes |\n| `AddStateDefines` flat merge (**664–681**) | yes |\n| `RetargetStatePointers` (**696–718**) | yes |\n| `ResolveGotoLabel` class scope head (**734–750**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **601–602** | `CreateStateLabelList` assign (**988** seam continuation) |\n| **612–619**, **656–662**, **683–694**, **726–732**, **751+** | comment banners / outside hull |\n| **709**, **757–762** | host string alloc / `I_Error` |\n| **1–600** | chunks **985–988** |\n\n| Managed (`VmPStatesParser989Slice.cs`) | Native (`p_states.cpp`) |\n|---------------------------------------|----------------------|\n| `CacheInstalledDefaultStates` | **604–609** |\n| `ImportStateLabelTree` / `ResetStateDefineSession` / `ShouldRebuildStateDefinesFromClass` | **621–654** |\n| `ShouldMergeFlatStateDefine` | **668–678** |\n| `RetargetIndexedDefinesInTree` / `ApplyRetarget*` | **698–716** |\n| `GotoLabelHasClassScope` / `GotoClassScopeIsSuper` / `ExtractGotoLabelAfterScope` | **743–754** |\n| Band hull (exclusive slice) | **601–750** |\n\n### Chunk **989** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**988** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPStatesParser989Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/p_states.cpp",
+        "symbol": "FStateDefinitions::ResolveGotoLabel",
+        "start": 601,
+        "end": 750,
+        "tests": [
+          "VmPStatesParser989SliceTests.InstallCacheAndImport",
+          "VmPStatesParser989SliceTests.RetargetIndexedDefines",
+          "VmPStatesParser989SliceTests.ResolveGotoLabelHead"
+        ]
+      }
+    ]
+  }
+]

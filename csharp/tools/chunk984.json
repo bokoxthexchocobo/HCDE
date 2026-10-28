@@ -1,0 +1,27 @@
+[
+  {
+    "name": "p-conversation-head-chunk984",
+    "bucket": "conversion",
+    "note": "`SetConversation`, `GetStrifeType`, `GetConversation`, dialogue reply dtor, and `FindNode` from `p_conversation.cpp` (**1–150**); fills UNCredited head before chunk **973** (**151–300**).",
+    "auditSeams": "Includes, CVAR, and menu forward declarations remain host-only; `ClearConversationStuff` (**154+**) credited on **973**.",
+    "auditRationale": "UNCredited `p_conversation.cpp` prologue with no existing `VmPConversation*` slice on **1–150**; disjoint from **973–976** (`151+`).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_conversation.cpp --start 1 --end 150` and `--chunk 984 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `SetConversation` root registration (**77–87**) | yes |\n| `GetStrifeType` table miss (**89–94**) | yes |\n| `GetConversation` by id/name (**96–108**) | yes |\n| `FStrifeDialogueNode` dtor chain (**116–125**) | yes |\n| `FindNode` linear scan (**135–144**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1–76** | includes / static decls |\n| **146–150** | comment banner before `ClearConversationStuff` |\n| **154+** | outside hull / **973** (`ClearConversationStuff` onward) |\n\n| Managed (`VmPConversationHead984Slice.cs`) | Native (`p_conversation.cpp`) |\n|---------------------------------------------|--------------------------------|\n| `ShouldRegisterConversationRoot` / `TryRegisterConversationRoots` | **79–86** |\n| `ResolveStrifeTypeFromTable` | **91–94** |\n| `ResolveConversationIndexById` / `ResolveConversationIndexByClassName` | **98–107** |\n| `FreeDialogueReplyChain` | **118–124** |\n| `FindDialogueNodeIndex` | **137–143** |\n| Band hull (exclusive slice) | **1–150** |\n\n### Chunk **984** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**983** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPConversationHead984Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/p_conversation.cpp",
+        "symbol": "FLevelLocals::SetConversation",
+        "start": 1,
+        "end": 150,
+        "tests": [
+          "VmPConversationHead984SliceTests.SetConversation_RegistersRoots",
+          "VmPConversationHead984SliceTests.ConversationLookups_MissReturnsInvalid",
+          "VmPConversationHead984SliceTests.ReplyChainAndFindNode"
+        ]
+      }
+    ]
+  }
+]

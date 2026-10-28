@@ -1,0 +1,15 @@
+[
+  {
+    "name": "bot-func-reach-fire-chunk883",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Retired (2026-10-23): six disjoint `b_func.cpp` functions fail land `--band` hull **45–563** (overlaps **879** gap credit). Re-land as contiguous `b_func.cpp` bands that pass `--band` honestly.",
+    "auditSeams": "Off-tally helpers `VmBBotFuncReachFire` / `CajunReachable` remain for **875** direct calls until a passing contiguous chunk re-credits them.",
+    "auditRationale": "Contiguous-band gate (`uncredited_range_check --chunk N --band`) rejects multi-gap same-TU credit; not fragment stitching.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 883 --band` → OVERLAP **879** in hull; retired skip exit 0. Land gate restored to `--band` only.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "### Retire reason\n\n| Issue | Resolution |\n|-------|------------|\n| Six disjoint native bands on `b_func.cpp` | Hull **45–563** overlaps **879** (**125–150**, **267–449**, …) |\n| Per-row land gate (no `--band`) | **Reverted** — gate tooling must not loosen contiguous-band rule |\n\n### Behavior ported (matrix credit)\n\n| Native | Behavior ported |\n|--------|-----------------|\n| (none) | **no** |\n\n### Padding map\n\n| Native lines | Reason |\n|--------------|--------|\n| **45–124**, **151–266**, **454–478**, **490–510**, **512–551**, **556–563** | Attempted credit; retired — re-chunk contiguously |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross attempted | **290** |\n| Net behavior-ported | **0** |",
+    "managedSourceFiles": [],
+    "nativeRanges": []
+  }
+]

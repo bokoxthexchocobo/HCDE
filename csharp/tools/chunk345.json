@@ -1,0 +1,16 @@
+[
+  {
+    "name": "g-mapinfo-warp-reset-chunk345",
+    "bucket": "conversion",
+    "managedLoc": 101,
+    "note": "WarpTrans secret visit Reset flags2 (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **33** < **150**.",
+    "auditSeams": "Snapshot `Clean` and ACS string locks are modeled as policy hooks; full `level_info_t` storage stays native-shaped drafts.",
+    "auditRationale": "Credits `CheckWarpTransMap`, `SecretLevelVisited`, and Hexen/Doom `flags2` default in `level_info_t::Reset` only.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (345)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **33** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **33** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 345 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

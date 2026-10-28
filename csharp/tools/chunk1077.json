@@ -1,0 +1,34 @@
+[
+  {
+    "name": "sbarinfo-commands-switchable-string-chunk1077",
+    "bucket": "conversion",
+    "note": "Switchable inventory `Tick` tail + `CommandDrawString` parse head from `sbarinfo_commands.cpp` (**601–750**); follows **1076** armor tick seam.",
+    "auditSeams": "**1076** owns armor/key/weapon `drawAlt` through **600**; **1071** owns runtime `DSBarInfo::DrawString` draw path in `sbarinfo.cpp`. Host `FindInventory`, `V_GetFont`, and `DrawString` calls excluded.",
+    "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **601–750** (+150); inventory dual-condition + off-image tick + drawstring parse flags; no tally overlap on credited seams.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 601 --end 750` and `--chunk 1077 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Inventory first-fail `drawAlt` (**609–611**) | yes |\n| Dual-condition inventory merge (**612–627**) | yes |\n| Off-image index + alpha (**630–637**) | yes |\n| Delegate to `CommandDrawImage::Tick` gate (**639**) | yes (predicate) |\n| DrawString font fallback (**693–696**) | yes |\n| Alignment / shadow / linebreak flags (**712–745**) | yes |\n| Line-break vertical spacing (**682**) | yes |\n| Flag list continuation (**749**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **601–605** | **1076** armor `drawAlt` tail |\n| **642–661** | switchable member fields / enums |\n| **675–686**, **698–703** | host draw / scanner / coordinates |\n| **755+** | `RealignString` outside hull |\n\n| Managed (`VmSbarinfoCommandDrawSwitchable1077Slice.cs`, `VmSbarinfoCommandDrawString1077Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|--------------------------------------------------------------------------------------------------|----------------------------------|\n| Inventory compare + dual `drawAlt` | **609–627** |\n| Off-image tick path | **630–637** |\n| Font fallback + parse flags | **693–745** |\n| Line-break Y advance | **682** |\n| Band hull (exclusive slice) | **601–750** |\n\n### Chunk **1077** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1076** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoCommandDrawSwitchable1077Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo_commands.cpp",
+        "symbol": "CommandDrawSwitchableImage::Tick / CommandDrawString::Parse",
+        "start": 601,
+        "end": 750,
+        "tests": [
+          "VmSbarinfoCommandDrawSwitchable1077SliceTests.MergeInventoryDualConditionDrawAlt_MatchesNativeTable",
+          "VmSbarinfoCommandDrawSwitchable1077SliceTests.ResolveInventoryDrawAltWhenFirstFails_UsesOffStateWhenMissing",
+          "VmSbarinfoCommandDrawSwitchable1077SliceTests.EvaluateInventoryAmountCondition_DelegatesTo1075Compare",
+          "VmSbarinfoCommandDrawSwitchable1077SliceTests.ResolveSwitchableOffImageIndex_MapsDrawAltToImageSlot",
+          "VmSbarinfoCommandDrawString1077SliceTests.ResolveDrawStringFontSource_FallsBackWhenLookupFails",
+          "VmSbarinfoCommandDrawString1077SliceTests.TryParseDrawStringAlignment_MapsRightLeftCenter",
+          "VmSbarinfoCommandDrawString1077SliceTests.ApplyDrawShadowFlag_EnablesShadowWithOptionalOffsets",
+          "VmSbarinfoCommandDrawString1077SliceTests.ApplyLineBreaksFlag_StoresBreakWidth",
+          "VmSbarinfoCommandDrawString1077SliceTests.ComputeLineBreakDrawY_UsesHeightPlusFourSpacing",
+          "VmSbarinfoCommandDrawString1077SliceTests.ClassifyDrawStringParseFlag_RejectsUnknownFlags"
+        ]
+      }
+    ]
+  }
+]

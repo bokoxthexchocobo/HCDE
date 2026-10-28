@@ -1,0 +1,15 @@
+[
+  {
+    "name": "d-main-startup-post-init-chunk433",
+    "bucket": "conversion",
+    "note": "D_InitGame texture progress, startup screen, exec/cvars, TexMan init header Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **81** (50% of honest **161**).",
+    "auditSeams": "`FStartupScreen`, `TexMan.Init`, and `V_Init2` are not hosted.",
+    "auditRationale": "Credits startup kind selection, nostartscreen gating, dedicated delayed-command policy, compatmode argv parsing, and progress budget math from `d_main.cpp`.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (433)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **161** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **161** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`check_port_coverage.sh` thin managed: surviving 0 < need 81 (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

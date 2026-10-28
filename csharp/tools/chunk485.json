@@ -1,0 +1,57 @@
+[
+  {
+    "name": "p-mobj-floorclip-morph-chunk485",
+    "bucket": "conversion",
+    "note": "AdjustFloorClip, PlayerPointerSubstitution, MorphPointerSubstitution gates",
+    "auditSeams": "`touching_sectorlist`, `GC::Root` pointer substitution, and `VMCall` PreMorph are not hosted.",
+    "auditRationale": "Credits floorclip terrain/3D-floor selection, player pointer rewiring on pawn swap, and morph substitution eligibility from `p_mobj.cpp` (6006\u20136190).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjAdjustFloorClip.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::AdjustFloorClip",
+        "start": 6006,
+        "end": 6064,
+        "tests": [
+          "VmPMobjAdjustFloorClipTests.Skip_SpecialFloorclipFlag",
+          "VmPMobjAdjustFloorClipTests.TerrainClip_PicksShallowest",
+          "VmPMobjAdjustFloorClipTests.PlayerView_AdjustsWhenClipChanges"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::AdjustFloorClip",
+        "start": 6066,
+        "end": 6071,
+        "tests": [
+          "VmPMobjAdjustFloorClipTests.Skip_SpecialFloorclipFlag",
+          "VmPMobjAdjustFloorClipTests.TerrainClip_PicksShallowest",
+          "VmPMobjAdjustFloorClipTests.PlayerView_AdjustsWhenClipChanges"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "PlayerPointerSubstitution",
+        "start": 6093,
+        "end": 6133,
+        "tests": [
+          "VmPMobjAdjustFloorClipTests.PlayerSub_RejectsInvalidPair"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "MorphPointerSubstitution",
+        "start": 6143,
+        "end": 6190,
+        "tests": [
+          "VmPMobjAdjustFloorClipTests.MorphSub_BlocksUnmorphedDummy",
+          "VmPMobjAdjustFloorClipTests.MorphSub_PlayerRequiresRealMo"
+        ]
+      }
+    ],
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SkipWhenSpecialFloorclip` / `ComputeShallowestClip` / `RunAdjustFloorClip` / terrain+3D helpers | `AdjustFloorClip` 6006\u20136071 |\n| `PlayerSubValid` / `RunPlayerPointerSubstitution` / `SubstitutePlayerPointers` / `SubstituteSectorSoundTargets` | `PlayerPointerSubstitution` 6093\u20136133 |\n| `MorphSubstitutionBlocked` / `EvaluateMorphSubstitution` / `RunPreMorphHooks` / morph gates | `MorphPointerSubstitution` 6143\u20136190 |\n\n### Out-of-body uncredit (485)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **155** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **154** |\n",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 485 --band` after out-of-body trim."
+  }
+]

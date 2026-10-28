@@ -1,0 +1,32 @@
+[
+  {
+    "name": "gskill-info-assign-export-chunk1047",
+    "bucket": "conversion",
+    "note": "`FSkillInfo::operator=`, `GetTextColor`, replacement maps, `DEFINE_FIELD` exports, and native `GetTextColor` action from `g_skill.cpp` (**541–690**).",
+    "auditSeams": "`DEFINE_GLOBAL` / `DEFINE_FIELD` / `DEFINE_ACTION_FUNCTION_NATIVE` macro expansion and `V_ParseFontColor` remain host-injected; uncredited `VmSkillInfoRuntime` / `VmGSkillNativeExportRecognition` are not re-credited.",
+    "auditRationale": "File-scoped UNCredited **`g_skill.cpp`** **541–690** (+150); excludes other credited `g_skill` bands in tally recognition rows only.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_skill.cpp --start 541 --end 690` and `--chunk 1047 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `FSkillInfo::operator=` (**530–569**, hull **541–569**) | yes |\n| `FSkillInfo::GetTextColor` (**578–592**) | yes |\n| `SetReplacement` / `GetReplacement` (**600–615**) | yes |\n| `SetReplacedBy` / `GetReplacedBy` (**623–638**) | yes |\n| `DEFINE_GLOBAL(AllSkills)` (**640**) | yes (export name constant) |\n| `DEFINE_FIELD` list (**643–679**) | yes (field registry) |\n| Native `GetTextColor` thunk (**681–690**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1–540** | prior `g_skill` conversion / parse bands |\n| **691+** | past EOF |\n| `VmSkillInfoRuntime` | uncredited parallel — seam only |\n| `VmGSkillNativeExportRecognition` | recognition catalog — seam only |\n\n| Managed (`VmGSkillInfoAssignExport1047Slice.cs`) | Native (`g_skill.cpp`) |\n|---------------------------------------------------|------------------------|\n| `ApplySkillInfoOperatorAssign` | **532–568** (hull **541–569**) |\n| `ResolveSkillInfoTextColor` / format helper | **578–592** |\n| `SetSkillReplacement` / `GetSkillReplacement` | **600–615** |\n| `SetSkillReplacedBy` / `GetSkillReplacedBy` | **623–638** |\n| `AllSkillsGlobalExportName` | **640** |\n| `DefineFieldExportNames` / `IsExportedSkillInfoField` | **643–679** |\n| `InvokeNativeGetTextColorAction` | **681–690** |\n| Band hull (exclusive slice) | **541–690** |\n\n### Chunk **1047** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1046** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmGSkillInfoAssignExport1047Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "FSkillInfo assign / VM export",
+        "start": 541,
+        "end": 690,
+        "tests": [
+          "VmGSkillInfoAssignExport1047SliceTests.ApplySkillInfoOperatorAssign_CopiesTailFieldsAndMaps",
+          "VmGSkillInfoAssignExport1047SliceTests.ResolveSkillInfoTextColor_EmptyUsesUntranslated",
+          "VmGSkillInfoAssignExport1047SliceTests.ResolveSkillInfoTextColor_LogsUndefined",
+          "VmGSkillInfoAssignExport1047SliceTests.ReplacementMaps_RoundTrip",
+          "VmGSkillInfoAssignExport1047SliceTests.DefineFieldExportNames_IncludesAmmoFactor",
+          "VmGSkillInfoAssignExport1047SliceTests.InvokeNativeGetTextColorAction_MatchesInstanceMethod",
+          "VmGSkillInfoAssignExport1047SliceTests.AllSkillsGlobalExportName_MatchesDefineGlobal",
+          "VmGSkillInfoAssignExport1047SliceTests.FormatUndefinedSkillTextColorMessage_IncludesSkillName"
+        ]
+      }
+    ]
+  }
+]

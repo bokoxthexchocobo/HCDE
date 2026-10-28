@@ -1,0 +1,10 @@
+[
+  {
+    "name": "sound-engine-limit-stop-chunk655",
+    "bucket": "conversion",
+    "note": "Merged into sound-engine-start-sound-chunk654 (whole-function boundaries).",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

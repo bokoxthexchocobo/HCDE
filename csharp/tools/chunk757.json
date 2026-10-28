@@ -1,0 +1,11 @@
+[
+  {
+    "name": "p-effect-jitter-splash-chunk757",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Retired: padding-map / coverage gate; particle band deferred for a follow-up land.",
+    "auditPaddingReview": "Retired before land.",
+    "managedSourceFiles": [],
+    "nativeRanges": []
+  }
+]

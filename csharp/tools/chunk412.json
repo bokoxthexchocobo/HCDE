@@ -1,0 +1,15 @@
+[
+  {
+    "name": "g-game-corpse-loadsave-chunk412",
+    "bucket": "conversion",
+    "note": "QueueBody, DoPlayerPop, ScreenShot, LoadGame, save WAD check Retired (2026-10-24): `--band` hull overlaps existing credit (g-game-headless-ticker-chunk9 src/g_game.cpp 2360-2448).",
+    "auditSeams": "Filesystem, serializer, and screenshot/menu IO are not hosted.",
+    "auditRationale": "Credits corpse queue, disconnect pop, screenshot gate, and save-game WAD validation from `g_game.cpp` (bands avoid chunk 9 deathmatch spawn).",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (412)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **162** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **161** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 412 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

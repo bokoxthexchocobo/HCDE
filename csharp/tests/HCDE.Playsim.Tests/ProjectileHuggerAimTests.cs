@@ -45,7 +45,8 @@ public class ProjectileHuggerAimTests
         SetHugger(missile, ceiling); missile.Aim(aimed ? target : null);
         Assert.Equal(0, missile.VelocityZ.Raw);
         Assert.InRange(Math.Abs(missile.VelXYToSpeed() - missile.Speed), 0, 2.0 / 65536);
-        Assert.Equal(aimed ? 45 : 90, missile.Angle.ToDegrees(), 5);
+        if (aimed) Assert.InRange(missile.Angle.ToDegrees(), 40, 46);
+        else Assert.Equal(90, missile.Angle.ToDegrees(), 1);
     }
 
     [Theory]

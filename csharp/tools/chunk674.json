@@ -1,0 +1,10 @@
+[
+  {
+    "name": "po-man-thinker-moveto-chunk674",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Retired: unbacked DPolyAction credit removed; thinker ticks and `EV_MovePolyTo` live in `po-man-poly-thinker-init-chunk678`.",
+    "nativeRanges": [],
+    "managedSourceFiles": []
+  }
+]

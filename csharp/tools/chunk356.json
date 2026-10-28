@@ -1,0 +1,15 @@
+[
+  {
+    "name": "am-map-arrow-static-init-chunk356",
+    "bucket": "conversion",
+    "note": "AM_ParseArrow lump parser and AM_StaticInit mark textures Retired (2026-10-23): out-of-body credit removed; honest **52** < **150**.",
+    "auditSeams": "`fileSystem` lump IO and `TexMan` lookups are callbacks; vector arrays mirror `mline_t` scaling.",
+    "auditRationale": "Credits default thin triangle, `AM_ParseArrow` coordinate scaling, fatal guard when no arrow, and `AMMNUM` mark lump names.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (356)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **57** |\n| **Out-of-body removed** | **5** |\n| **Honest** | **52** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 356 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

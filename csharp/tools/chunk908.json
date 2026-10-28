@@ -1,0 +1,34 @@
+[
+  {
+    "name": "fscript-parser-sf-cam-floor-sound-chunk908",
+    "bucket": "conversion",
+    "note": "`FParser::SF_SetCamera` … `SF_MoveFloor` from `fragglescript/t_func.cpp` (**1379–1593**). Re-credits retired **868** band at honest **215** LOC; `SF_CeilingHeight` deferred at **1595** (**869**).",
+    "auditSeams": "Camera uses `CameraThingId` + actor save fields; sounds use `ActorSoundActions`; sector sound iterates tagged sectors via `StartSoundAt`; floors use `Floors[]` / `LineSpecials.ExecuteFloorSpecial` (279).",
+    "auditRationale": "Full UNCredited **1379–1593** row with camera on exclusive `VmFScriptParserSfCamera908Slice.cs`; `SF_StartSectorSound` ported (retired **868** deferral cleared).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 1379 --end 1593` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_SetCamera` | yes |\n| `SF_ClearCamera` | yes |\n| `SF_StartSound` | yes |\n| `SF_StartSectorSound` | yes |\n| `SF_FloorHeight` | yes |\n| `SF_MoveFloor` | yes |\n\n| Managed | Native (`t_func.cpp`) |\n|---------|----------------------|\n| `SfSetCamera` | **1391–1421** |\n| `SfClearCamera` | **1429–1443** |\n| `SfStartSound` | **1456–1469** |\n| `SfStartSectorSound` | **1478–1495** |\n| `SfFloorHeight` | **1504–1556** |\n| `SfMoveFloor` | **1565–1586** |\n| (separator) | **1379–1390** |\n| (separator) | **1422–1428** |\n| (separator) | **1444–1455** |\n| (separator) | **1470–1477** |\n| (separator) | **1496–1503** |\n| (separator) | **1557–1564** |\n| (separator) | **1587–1593** |\n\n### Chunk **908** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **215** |\n| **Net headline** | **+215** vs post-**907** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmFScriptParserSfCamera908Slice.cs",
+      "csharp/src/HCDE.Playsim/VmFScriptParserSfCamFloor.cs",
+      "csharp/src/HCDE.Playsim/VmFScriptInitFunctionsReg868.cs",
+      "csharp/src/HCDE.Playsim/VmFScriptInitFunctionsReg908.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/fragglescript/t_func.cpp",
+        "symbol": "FParser::SF_SetCamera",
+        "start": 1379,
+        "end": 1593,
+        "tests": [
+          "VmFScriptParserSfCamFloorTests.SfSetCamera_SetsCameraThingId",
+          "VmFScriptParserSfCamFloorTests.SfClearCamera_RestoresSavedAngleAndZ",
+          "VmFScriptParserSfCamFloorTests.SfStartSound_OnActor_DoesNotThrow",
+          "VmFScriptParserSfCamFloorTests.SfStartSectorSound_TaggedSector_QueuesSound",
+          "VmFScriptParserSfCamFloorTests.SfFloorHeight_ReadsSectorFloor",
+          "VmFScriptParserSfCamFloorTests.SfFloorHeight_WriteUpdatesPlaysimFloor",
+          "VmFScriptParserSfCamFloorTests.SfMoveFloor_StartsSectorMotion"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,15 @@
+[
+  {
+    "name": "quake-damage-start-chunk832",
+    "bucket": "conversion",
+    "note": "`DEarthquake` damage/falloff/intensity and `P_StartQuake*` from `mapthinkers/a_quake.cpp` (174\u2013463). Retired (2026-10-23): out-of-body credit removed; honest **124** < **150**.",
+    "auditSeams": "Actor distance, damage/thrust, thinker spawn, and RNG are injected; `StaticGetQuakeIntensities` and tick left for a later row.",
+    "auditRationale": "Credits earthquake damage falloff and level start helpers without splitting `GetModIntensity`.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 832 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "| Managed | Native (`a_quake.cpp`) |\n|---------|------------------------|\n| `DoQuakeDamage` | **174\u2013208** |\n| `GetModWave` | **220\u2013224** |\n| `GetModIntensity` | **234\u2013296** |\n| `GetFalloff` | **306\u2013322** |\n| `P_StartQuakeXYZ` | **425\u2013458** |\n| `P_StartQuake` | **460\u2013463** |\n\n**Deferred:** `Construct`/`Serialize`/`Tick` **47\u2013164**, `StaticGetQuakeIntensities` **335\u2013417** (orphan avoidance deferred to follow-up row).\n\n### Out-of-body uncredit (832)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **158** |\n| **Out-of-body removed** | **34** |\n| **Honest** | **124** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

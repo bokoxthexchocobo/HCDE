@@ -1,0 +1,27 @@
+[
+  {
+    "name": "p-states-storage-define-chunk987",
+    "bucket": "conversion",
+    "note": "`VerifyJumpTarget`, `FStateLabelStorage::GetState`, state-definition lookup, and `FindStateAddress` from `p_states.cpp` (**301–450**); follows chunk **986** (**151–300**).",
+    "auditSeams": "`FindStateByString` (**300–304**), `DEFINE_ACTION_FUNCTION` VM bodies, and `memcpy` storage reads remain host-injected.",
+    "auditRationale": "UNCredited mid-file state script/define band; disjoint from **985–986**. Does not re-port **986** `FindState` / `MakeStateNameList` logic.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_states.cpp --start 301 --end 450` and `--chunk 987 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `VerifyJumpTarget` (**313–328**) | yes |\n| `GetState` named/jump/bundle paths (**336–373**) | yes |\n| `FindStateLabelInList` (**412–430**) | yes |\n| `FindStateAddress` walk (**439–450**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **300–304** | `FindStateByString` defers to **986** helpers (seam) |\n| **307–311**, **375–411**, **432–438**, **453+** | comments / VM glue / next function |\n| **348–358**, **363–368** | `memcpy` host |\n| **1–300** | chunks **985–986** |\n\n| Managed (`VmPStatesStorage987Slice.cs`) | Native (`p_states.cpp`) |\n|-----------------------------------------|----------------------|\n| `UsesNamedNameLabelEncoding` / decode helpers | **338–341**, **345–346** |\n| `VerifyJumpTargetInClassHierarchy` | **315–327** |\n| `ResolveScriptStateFromStorage` / `ResolveBundledStoragePos` | **336–373** |\n| `FindStateDefineIndex` / `FindOrCreateStateDefineIndex` | **414–429** |\n| `WalkStateDefineAddress` | **442–450** |\n| Band hull (exclusive slice) | **301–450** |\n\n### Chunk **987** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**986** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPStatesStorage987Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/p_states.cpp",
+        "symbol": "FStateLabelStorage::GetState",
+        "start": 301,
+        "end": 450,
+        "tests": [
+          "VmPStatesStorage987SliceTests.JumpVerificationAndEncodings",
+          "VmPStatesStorage987SliceTests.ResolveScriptStateFromStorage",
+          "VmPStatesStorage987SliceTests.StateDefineListWalk"
+        ]
+      }
+    ]
+  }
+]

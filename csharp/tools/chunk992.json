@@ -1,0 +1,27 @@
+[
+  {
+    "name": "p-openmap-head-chunk992",
+    "bucket": "conversion",
+    "note": "`GetMapIndex`, `P_IsBuildMap`, and `P_OpenMapData` head from `p_openmap.cpp` (**1–150**); first UNCredited band in this TU (EOF **404**).",
+    "auditSeams": "`I_Error`, `FileExists`, `FResourceFile::OpenResourceFile`, `fileSystem`, `strncpy`, and `P_IsBuildMap` host probe remain injected.",
+    "auditRationale": "No existing `VmPOpenMap*` managed slice; CLI UNCredited **1–150**. `P_OpenMapData` is named in **982** seams only (not credited).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_openmap.cpp --start 1 --end 150` and `--chunk 992 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `P_IsBuildMap` (**37–40**) | yes (probe policy) |\n| `GetMapIndex` lump walk (**56–94**) | yes |\n| `P_OpenMapData` external `file:` branch head (**108–118**) | yes (predicates) |\n| Classic short-name vs `maps/*.wad` / `*.map` pick (**129–150**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1–36**, **42–48**, **96–100** | license / includes / banners |\n| **87–88** | `I_Error` host |\n| **111–116**, **117–118** | `FileExists` / resource open host |\n| **146–147** | `ReopenFileReader` host |\n| **151+** | outside hull |\n\n| Managed (`VmPOpenMapHead992Slice.cs`) | Native (`p_openmap.cpp`) |\n|---------------------------------------|-------------------------|\n| `MapLumpTable` / `MapLumpNameMatches` / `ScanMapLumpIndex` | **58–94** |\n| `IsBuildMapProbeAlwaysFalse` / `ShouldAbortStandaloneNonBuildMap` | **37–40**, **147–150** |\n| `IsExternalFileMapName` / `StripExternalFileMapPrefix` | **106–110** |\n| `UsesClassicShortMapName` / `FormatMaps*` / `ShouldPreferShortNameLump` | **129–135** |\n| `IsLumpFromDifferentContainer` | **142–150** |\n| Band hull (exclusive slice) | **1–150** |\n\n### Chunk **992** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**991** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPOpenMapHead992Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/p_openmap.cpp",
+        "symbol": "P_OpenMapData",
+        "start": 1,
+        "end": 150,
+        "tests": [
+          "VmPOpenMapHead992SliceTests.ScanMapLumpIndex_MatchesAndRequiredGaps",
+          "VmPOpenMapHead992SliceTests.ExternalAndClassicMapPaths",
+          "VmPOpenMapHead992SliceTests.ShortNameLumpSelectionAndBuildProbe"
+        ]
+      }
+    ]
+  }
+]

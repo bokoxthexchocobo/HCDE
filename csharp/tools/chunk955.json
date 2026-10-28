@@ -1,0 +1,33 @@
+[
+  {
+    "name": "a-dynlight-attach-user-chunk955",
+    "bucket": "conversion",
+    "note": "`SetDynamicLights` tail, attached-light teardown, `FindUserLight`, `AttachLightDef`/`AttachLightDirect`, and `RemoveLight` head from `a_dynlight.cpp` (**751–900**). Pivot from dry `p_acs` queue.",
+    "auditSeams": "`AttachLight`, `GetLight`, `LightDefaults`, `DEFINE_ACTION_FUNCTION_NATIVE`, and `delete`/`UserLights` storage remain host seams.",
+    "auditRationale": "Honest **150**-line UNCredited band with zero tally overlap; exclusive `VmADynLightAttach955Slice.cs` (dynamic light tick/render from chunk **823** is not matrix credit).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/a_dynlight.cpp --start 751 --end 900` and `--chunk 955 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `SetDynamicLights` state-light tail + deactivate extras (**751–759**) | yes |\n| `DeleteAttachedLights` (**768–776**) | yes (seam: host unlink) |\n| `FindUserLight` (**785–797**) | yes |\n| `AttachLightDef` (**805–825**) | yes |\n| `A_AttachLightDef` export (**827–833**) | seam (VM export) |\n| `AttachLightDirect` (**841–871**) | yes |\n| `A_AttachLight` export (**873–891**) | seam (VM export) |\n| `RemoveLight` head (**899–900**) | yes |\n\n| Managed (`VmADynLightAttach955Slice.cs`) | Native (`a_dynlight.cpp`) |\n|------------------------------------------|-------------------------|\n| `ShouldAttachStateLightEntry` / `ShouldFallbackToStateLights` / `ShouldDeactivateExtraLight` | **751–759** |\n| `LightAssociationMatches` | **738–742** |\n| `DeleteAttachedLights` host seam | **768–776** |\n| `FindUserLightIndex` | **785–797** |\n| `AbortLightAttachWhenEuthanizing` / `ShouldCopyLightDefaults` / `UserLightSlotAfterCreate` | **805–825** |\n| `A_AttachLightDef` VM export | **827–833** |\n| `ExtractColor*` / `AttachLightOffsetComponents` / `AttachLightTypeParameter` / `SpotPitchInRange` | **841–871** |\n| `ApplyRecreateLights*` | **820–821**, **868–869** |\n| `A_AttachLight` VM export | **873–891** |\n| `RemoveLightIndexValid` | **899–900** |\n| Band hull (exclusive slice) | **751–900** |\n\n### Chunk **955** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**954** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmADynLightAttach955Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/a_dynlight.cpp",
+        "symbol": "AActor::SetDynamicLights",
+        "start": 751,
+        "end": 900,
+        "tests": [
+          "VmADynLightAttach955SliceTests.LightAssociationMatches_AnyFrameWildcard",
+          "VmADynLightAttach955SliceTests.ShouldFallbackToStateLights_WhenNoAttachmentsYet",
+          "VmADynLightAttach955SliceTests.FindUserLightIndex_NotFoundWithoutCreate",
+          "VmADynLightAttach955SliceTests.AttachLightTypeParameter_ScalesPulseWithTicrate",
+          "VmADynLightAttach955SliceTests.SpotPitchInRange_AcceptsPlusMinusNinety",
+          "VmADynLightAttach955SliceTests.ExtractColorComponents_SplitsRgb",
+          "VmADynLightAttach955SliceTests.AttachLightOffsetComponents_SwapsYIntoMiddleSlot",
+          "VmADynLightAttach955SliceTests.AbortLightAttachWhenEuthanizing_WhenFlagSet",
+          "VmADynLightAttach955SliceTests.RemoveLightIndexValid_BeforeCount"
+        ]
+      }
+    ]
+  }
+]

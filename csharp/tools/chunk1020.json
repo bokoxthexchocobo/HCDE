@@ -1,0 +1,30 @@
+[
+  {
+    "name": "p-trace-dlinetracer-zscript-chunk1020",
+    "bucket": "conversion",
+    "note": "`DLineTracer` ZScript field exports, `Trace` action flag masks, and `TraceCallback` wall-texture patching from `p_trace.cpp` (**983–1132**, hull ends at EOF). **Pivot:** `EditTraceResult` (**983–1025**) excluded — already on `VmPTraceThingPlaneEdit` (retired chunk **693**).",
+    "auditSeams": "`Trace()` host call, `PARAM_*` parsing, `IMPLEMENT_CLASS`, and `GC`/VM runtime remain native.",
+    "auditRationale": "First tally-clean **150**-line `p_trace.cpp` tail with exclusive managed slice; honest zero-credit for sky/no-sky result editing already ported off-tally.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_trace.cpp --start 983 --end 1132` and `--chunk 1020 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `TraceResults` `DEFINE_FIELD*` export block (**1036–1054**) | yes (field manifest) |\n| `DLineTracer::Trace` flag sanitize (**1079–1081**) | yes |\n| `DLineTracer::Trace` actor-mask ternary (**1085**) | yes |\n| `TraceCallback` wall tier texture patch (**1096–1114**) | yes |\n| `CallZScriptCallback` virtual dispatch fallback (**1120–1131**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **983–1025** | `EditTraceResult` — **`VmPTraceThingPlaneEdit`** (retired **693**) |\n| **1026–1031** | comment / class header banners |\n| **1056–1086** | VM action glue outside ported policy helpers |\n\n| Managed (`VmPTraceDLineTracer1020Slice.cs`) | Native (`p_trace.cpp`) |\n|---------------------------------------------|----------------------|\n| `TraceResultsVmFieldNames` | **1036–1054** |\n| `SanitizeZScriptTraceFlags` | **1079–1081** |\n| `ActorMaskForIgnoreAll` | **1085** |\n| `TryPatchWallHitTexture` / `SelectFfloorTexturePart` | **1096–1114** |\n| `ResolveTraceCallbackStatus` | **1120–1131** |\n| Band hull (exclusive slice) | **983–1132** |\n\n### Chunk **1020** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1019** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPTraceDLineTracer1020Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_trace.cpp",
+        "symbol": "DLineTracer / TraceResults",
+        "start": 983,
+        "end": 1132,
+        "tests": [
+          "VmPTraceDLineTracer1020SliceTests.SanitizeZScriptTraceFlags_ClearsPcrossImpactAndSets3DCallback",
+          "VmPTraceDLineTracer1020SliceTests.ActorMaskForIgnoreAll_MatchesNativeTernary",
+          "VmPTraceDLineTracer1020SliceTests.TraceResultsVmFieldCount_MatchesNativeDefineBlock",
+          "VmPTraceDLineTracer1020SliceTests.TryPatchWallHitTexture_MapsTiersLikeNativeCallback",
+          "VmPTraceDLineTracer1020SliceTests.SelectFfloorTexturePart_UsesUpperLowerOrMiddle",
+          "VmPTraceDLineTracer1020SliceTests.ResolveTraceCallbackStatus_StopWhenNoVirtual"
+        ]
+      }
+    ]
+  }
+]

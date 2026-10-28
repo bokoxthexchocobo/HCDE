@@ -1,0 +1,13 @@
+[
+  {
+    "name": "p-mobj-shade-pitch-chunk467",
+    "bucket": "conversion",
+    "note": "Merged into p-interaction-virtual-damage-chunk473 (sub-150 depad merge).",
+    "auditSeams": "`ColorMatcher`, `deltaangle`, and player cheat flags are not hosted.",
+    "auditRationale": "Credits fillcolor packing, pitch clamp policy, and SPF interpolation/scaled-no-lerp branches from `p_mobj.cpp` (4019+).",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `ApplyForceClamp` / `ClampAngle` | `AActor::SetShade` 4021\u20134038 |\n| `EvaluateClampPitch` | `AActor::ClampPitch` 4041\u20134058 |\n| `EvaluateGetFov` | `AActor::GetFOV` 4173\u20134189 |\n| `EvaluateSetAngle` | `AActor::SetRoll` 4117\u20134140 |\n| `EvaluateSetPitch` | `AActor::SetPitch` 4060\u20134089 |\n| `EvaluateSetRoll` / `EvaluateSetViewAngle` | `AActor::SetShade` 4021\u20134038 |\n| `EvaluateSetViewPitch` | `AActor::SetViewRoll` 4191\u20134201 |\n| `EvaluateSetViewRoll` / `InterpolateView` / `InterpolateViewAngles` / `LerpFov` / `NoFovInterpCheat` | `AActor::SetShade` 4021\u20134038 |\n| `NonPlayerMaxPitch` / `NonPlayerMinPitch` | `AActor::ClampPitch` 4053\u20134054 |\n| `PitchChanged` / `RollChanged` / `ScaledNoLerpPitch` / `ShadeRgbMask` / `ViewPitchChanged` / `ViewYawChanged` / `YawChanged` | `AActor::SetShade` 4021\u20134038 |\n",
+    "retired": true
+  }
+]

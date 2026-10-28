@@ -24,8 +24,8 @@ public class DecorationAncestryTests
         foreach (var world in new[] { sim, fresh })
         {
             var player = world.Players.Single(); var decoration = world.Actors.Single(a => a.ThingId == 9);
-            Assert.Equal(0, ActorProximity.CountProximity(player, parent, 256, flags: 4));
-            Assert.Equal(1, ActorProximity.CountProximity(player, parent.ToLowerInvariant(), 256, flags: 1 | 4));
+            Assert.Equal(0, VmPThingsRaiseRemoveWarpProximity.CountProximity(player, parent, 256, flags: 4));
+            Assert.Equal(1, VmPThingsRaiseRemoveWarpProximity.CountProximity(player, parent.ToLowerInvariant(), 256, flags: 1 | 4));
             ActorRemovalActions.Remove(decoration, flags: 8, classFilter: parent); Assert.False(decoration.Destroyed);
         }
     }
@@ -41,7 +41,7 @@ public class DecorationAncestryTests
         {
             var marker = world.Actors.Single(a => a.ThingId == 9);
             Assert.Equal(name, AcsCallFunctions.ClassNameOf(marker));
-            Assert.Equal(1, ActorProximity.CountProximity(world.Players.Single(), name, 256));
+            Assert.Equal(1, VmPThingsRaiseRemoveWarpProximity.CountProximity(world.Players.Single(), name, 256));
             ActorRemovalActions.Remove(marker, flags: 8, classFilter: name); Assert.True(marker.Destroyed);
         }
     }
@@ -50,7 +50,7 @@ public class DecorationAncestryTests
     public void SimilarHangingDecorationsDoNotGainUnrelatedParents()
     {
         var sim = Room(59); var player = sim.Players.Single();
-        Assert.Equal(0, ActorProximity.CountProximity(player, "Meat3", 256, flags: 1 | 4));
+        Assert.Equal(0, VmPThingsRaiseRemoveWarpProximity.CountProximity(player, "Meat3", 256, flags: 1 | 4));
     }
 
     private static AuthoritySimulation Room(int type) => AuthoritySimulation.Start(new PlayLevel {

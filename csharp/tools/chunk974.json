@@ -1,0 +1,31 @@
+[
+  {
+    "name": "p-conversation-start-chunk974",
+    "bucket": "conversion",
+    "note": "`P_StartConversation`, console menu open policy, item-check node jump, and `P_ResumeConversation` head from `p_conversation.cpp` (**301–450**); follows chunk **973** (**≤300**).",
+    "auditSeams": "`PlayIdle`, `S_Sound`, `A_FaceTarget`, `PClass`/`VMCall` menu init, `M_*` menu APIs, and `P_StartConversation` re-entry from resume remain host-injected.",
+    "auditRationale": "UNCredited continuation of Strife dialog TU; predicates mirror start/resume gates without duplicating chunk **933** line-special `TryStartConversation` on `p_lnspec.cpp` or chunk **973** item/reply band.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_conversation.cpp --start 301 --end 450` and `--chunk 974 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `P_StartConversation` actor/busy gates (**318–330**) | yes |\n| in-conversation flag + angle/face policy (**338–364**) | yes |\n| item-check node jump loop (**367–387**) | yes |\n| console menu/voice/music path (**393–425**) | yes (predicates + class resolve) |\n| `P_ResumeConversation` restart gate (**446–448**) | yes |\n\n**Excluded (zero credit / prior chunk)**\n\n| Native | Reason |\n|--------|--------|\n| **301–303** | `P_FreeStrifeConversations` closing braces (adjacent **973**) |\n| **304–311**, **428–435**, **453+** | comment banners / next function head outside behavior |\n| **332–335**, **344–345**, **390**, **409–415**, **424** | host calls (movement, sound, VM) |\n\n| Managed (`VmPConversationStart974Slice.cs`) | Native (`p_conversation.cpp`) |\n|---------------------------------------------|--------------------------------|\n| `StartConversationActorsValid` / `NpcBusyWithOtherPlayer` | **318–330** |\n| `ApplyInConversationFlag` / face + target restore | **338–364** |\n| `TryResolveItemCheckDialogueIndex` | **367–387** |\n| `ShouldOpenConversationMenu` / `ResolveMenuClassName` / menu reset | **393–425** |\n| `ResumeConversationShouldRestart` | **446–448** |\n| Band hull (exclusive slice) | **301–450** |\n\n### Chunk **974** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**973** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPConversationStart974Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/p_conversation.cpp",
+        "symbol": "P_StartConversation",
+        "start": 301,
+        "end": 450,
+        "tests": [
+          "VmPConversationStart974SliceTests.StartConversationActorsValid_RejectsNullOrNonPrimary",
+          "VmPConversationStart974SliceTests.NpcBusyWithOtherPlayer_MatchesReference",
+          "VmPConversationStart974SliceTests.TryResolveItemCheckDialogueIndex_JumpsWhenAllItemsPresent",
+          "VmPConversationStart974SliceTests.ShouldFaceTalker_RespectsDontFaceTalkerFlag",
+          "VmPConversationStart974SliceTests.ResolveMenuClassName_FallsBackToConversationMenu",
+          "VmPConversationStart974SliceTests.ShouldResetStaticLastReply_WhenNodeChanges",
+          "VmPConversationStart974SliceTests.ResumeConversationShouldRestart_RequiresBothPointers"
+        ]
+      }
+    ]
+  }
+]

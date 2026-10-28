@@ -1,0 +1,15 @@
+[
+  {
+    "name": "maploader-load-linedefs-chunk382",
+    "bucket": "conversion",
+    "note": "LoadLineDefs and LoadLineDefs2 vertex/zero-length preprocessing and activation normalization Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **75** (50% of honest **150**).",
+    "auditSeams": "`TranslateLineDef`, `AllocateSideDefs`, and `SetLineID` bodies are not fully hosted.",
+    "auditRationale": "Credits `MapLoader::LoadLineDefs` and `MapLoader::LoadLineDefs2` from `maploader.cpp`.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (382)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **150** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`check_port_coverage.sh` thin managed: surviving 0 < need 75 (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

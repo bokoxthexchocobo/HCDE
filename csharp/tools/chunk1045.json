@@ -1,0 +1,38 @@
+[
+  {
+    "name": "statistics-parse-head-chunk1045",
+    "bucket": "conversion",
+    "note": "CVAR/globals layout and `ParseStatistics` scanner head from `statistics.cpp` (**1–150**). Completes file with **1044** (**320–469**) + **1043** (**470–619**).",
+    "auditSeams": "`FScanner`, `CRecoverableError`, and global `EpisodeStatistics` arrays remain host-injected; uncredited `VmStatisticsConfig`, `VmStatisticsParser.ParseTimeToTics`, and `VmOneLevelStats` are not re-credited.",
+    "auditRationale": "File-scoped UNCredited **`statistics.cpp`** **1–150** (+150); excludes credited **320–619** (**1044–1043**). Hull ends mid nested level parse (**150**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/statistics.cpp --start 1 --end 150` and `--chunk 1045 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `savestatistics` / `statfile` defaults (**50–51**) | yes (via `VmStatisticsConfig` seam constants) |\n| `OneLevel` / stats struct field sizes (**60–95**) | yes (layout constants) |\n| `ParseStatistics` open/clear (**108–114**) | yes (skip-when-missing policy) |\n| Episode header + `{` (**116–125**) | yes |\n| Session token/time/skill (**127–141**) | yes |\n| Level block `{` + name token (**142–149**) | yes |\n| Level info token read start (**150**) | yes (hull seam; **151+** outside band) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1–49** | license / includes host |\n| **70–100** | static global containers host |\n| **151–319** | remainder of `ParseStatistics` + save/read helpers (future band) |\n| **320–619** | chunks **1044–1043** |\n| `VmStatisticsParser.TryParseDocument` | uncredited parallel parser — time helper seam only |\n\n| Managed (`VmStatisticsParseHead1045Slice.cs`) | Native (`statistics.cpp`) |\n|-----------------------------------------------|---------------------------|\n| `DefaultStatFileName` / `DefaultSaveStatisticsMode` | **50–51** |\n| `OneLevelCounterFieldCount` / field length constants | **60–80** |\n| `ShouldSkipParseWhenFileUnavailable` | **110–114** |\n| `BuildEpisodeDraft` / `IsStatisticsBlockOpenToken` | **116–125** |\n| `BuildSessionDraft` / `TryBuildSessionDraft` / loop guards | **127–144** |\n| `BeginNestedLevelStatEntry` / `TakePendingLevelInfoToken` | **148–150** |\n| Band hull (exclusive slice) | **1–150** |\n\n### Chunk **1045** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1044** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmStatisticsParseHead1045Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/statistics.cpp",
+        "symbol": "ParseStatistics / globals",
+        "start": 1,
+        "end": 150,
+        "tests": [
+          "VmStatisticsParseHead1045SliceTests.BuildEpisodeDraft_CapturesHeaderAndName",
+          "VmStatisticsParseHead1045SliceTests.IsStatisticsBlockOpenToken_OnlyBrace",
+          "VmStatisticsParseHead1045SliceTests.BuildSessionDraft_ParsesDurationAndTruncates",
+          "VmStatisticsParseHead1045SliceTests.SelectSessionNameFromFileTokens_UsesSecondToken",
+          "VmStatisticsParseHead1045SliceTests.ParseColonDurationToTics_DelegatesToParser",
+          "VmStatisticsParseHead1045SliceTests.ShouldSkipParseWhenFileUnavailable",
+          "VmStatisticsParseHead1045SliceTests.ParseLevelStatNameFromToken_Truncates",
+          "VmStatisticsParseHead1045SliceTests.ShouldBeginSessionLevelBlock_MatchesOpenBrace",
+          "VmStatisticsParseHead1045SliceTests.DefaultConfig_MatchesCvarDefaults",
+          "VmStatisticsParseHead1045SliceTests.OneLevelCounterFieldCount_MatchesStruct",
+          "VmStatisticsParseHead1045SliceTests.SessionDurationHasValidShape_RejectsMalformed",
+          "VmStatisticsParseHead1045SliceTests.NormalizeEpisodeHeaderToken_Trims",
+          "VmStatisticsParseHead1045SliceTests.TryBuildSessionDraft_ValidatesTokens",
+          "VmStatisticsParseHead1045SliceTests.TakePendingLevelInfoToken_Truncates"
+        ]
+      }
+    ]
+  }
+]

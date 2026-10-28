@@ -1,0 +1,11 @@
+[
+  {
+    "name": "p-enemy-resurrect-chunk471",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Retired: whole-function credit in chunk711 (`VmPEnemyResurrection.cs`).",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "Retired in favor of chunk711 (`VmPEnemyResurrection.cs`)."
+  }
+]

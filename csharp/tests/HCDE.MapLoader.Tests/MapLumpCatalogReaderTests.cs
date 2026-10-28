@@ -5,6 +5,35 @@ namespace HCDE.MapLoader.Tests;
 
 public static class TestWadBuilder
 {
+    public static byte[] BuildCustomWad(params (string Name, byte[] Data)[] lumps)
+    {
+        var headerSize = WadArchiveReader.HeaderSize;
+        var directorySize = lumps.Length * WadArchiveReader.LumpEntrySize;
+        var dataOffset = headerSize;
+        foreach (var lump in lumps)
+            dataOffset += lump.Data.Length;
+        var directoryOffset = dataOffset;
+        var wad = new byte[directoryOffset + directorySize];
+        BinaryPrimitives.WriteUInt32LittleEndian(wad.AsSpan(0, 4), (uint)WadType.Pwad);
+        BinaryPrimitives.WriteUInt32LittleEndian(wad.AsSpan(4, 4), (uint)lumps.Length);
+        BinaryPrimitives.WriteUInt32LittleEndian(wad.AsSpan(8, 4), (uint)directoryOffset);
+        var fileCursor = headerSize;
+        var directoryCursor = directoryOffset;
+        foreach (var lump in lumps)
+        {
+            BinaryPrimitives.WriteUInt32LittleEndian(wad.AsSpan(directoryCursor, 4), (uint)fileCursor);
+            BinaryPrimitives.WriteUInt32LittleEndian(wad.AsSpan(directoryCursor + 4, 4), (uint)lump.Data.Length);
+            var nameBytes = Encoding.ASCII.GetBytes(lump.Name);
+            nameBytes.AsSpan(0, Math.Min(nameBytes.Length, 8)).CopyTo(wad.AsSpan(directoryCursor + 8, 8));
+            if (lump.Data.Length > 0)
+                lump.Data.CopyTo(wad, fileCursor);
+            fileCursor += lump.Data.Length;
+            directoryCursor += WadArchiveReader.LumpEntrySize;
+        }
+
+        return wad;
+    }
+
     public static byte[] BuildMinimalMapWad(string mapName, bool udmfTextMap = false, bool includeBehavior = false)
     {
         var lumps = new List<(string Name, byte[] Data)>

@@ -1,0 +1,27 @@
+[
+  {
+    "name": "g-game-look-spy-chunk999",
+    "bucket": "conversion",
+    "note": "`G_BuildTiccmd` net tail, `LookAdjust` / view pitch-yaw, and `ChangeSpy` advance from `g_game.cpp` (**1101–1250**); follows chunk **998** (**525–674**). Starts after chunk **9** (**798–1100**). Retired chunk **405** files remain uncredited — this row uses `VmGGameLookSpy999Slice` only.",
+    "auditSeams": "`K8tiAgentMergeTiccmd`, `Net_Write*`, `StatusBar`, and `S_UpdateSounds` remain host-injected.",
+    "auditRationale": "UNCredited **1101–1250** CLI band; disjoint from chunks **995–998** and chunk **9** (**798–1100**, **204–224**). Do not re-credit retired **405** managed filenames.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_game.cpp --start 1101 --end 1250` and `--chunk 999 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Weapon select / flechette net tail (**1098–1108**) | yes (from **1101**) |\n| Movement `<< 8` + input trace (**1110–1127**) | yes |\n| `LookAdjust` (**1130–1148**) | yes |\n| `G_AddViewPitch` (**1150–1189**) | yes |\n| `G_AddViewAngle` (**1191–1204**) | yes |\n| `ChangeSpy` eligibility loop (**1208–1253**) | yes (through **1250** hull) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **798–1100** | chunk **9** `G_BuildTiccmd` body |\n| **1114–1115** | `K8tiAgentMergeTiccmd` host |\n| **1098–1100** | chunk **9** tail overlap (hull starts **1101**) |\n| **1256–1263** | camera attach / status bar host |\n| Retired **405** `VmGGameLookAdjust*` / `VmGGameBuildTiccmdTail` | duplicate managed — not listed |\n\n| Managed (`VmGGameLookSpy999Slice.cs`) | Native (`g_game.cpp`) |\n|---------------------------------------|----------------------|\n| `ScaleMovementAxis` / `ScaleMovementPair` | **1110–1111** |\n| `ShouldWriteWeaponSelectNet` | **1098–1102** (net flush) |\n| `ShouldEmitPeriodicInputTrace` / `FormatInputTraceLine` | **1118–1126** |\n| `AdjustLookWithWeaponScales` | **1130–1147** |\n| `ApplyViewPitchDelta` | **1156–1183** |\n| `ApplyViewAngleDelta` | **1198–1199** |\n| `ChangeSpy` gates / `AdvanceSpyPlayerIndexChangeSpy` | **1211–1253** |\n| Band hull (exclusive slice) | **1101–1250** |\n\n### Chunk **999** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**998** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmGGameLookSpy999Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "ChangeSpy",
+        "start": 1101,
+        "end": 1250,
+        "tests": [
+          "VmGGameLookSpy999SliceTests.BuildTiccmdTail",
+          "VmGGameLookSpy999SliceTests.LookAndViewAdjust",
+          "VmGGameLookSpy999SliceTests.ChangeSpyAdvance"
+        ]
+      }
+    ]
+  }
+]
