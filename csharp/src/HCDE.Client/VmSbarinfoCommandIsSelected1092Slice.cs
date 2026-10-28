@@ -68,7 +68,8 @@ public static class VmSbarinfoCommandPlayerClass1092Slice
 public static class VmSbarinfoCommandPlayerType1092Slice
 {
     public static (bool MustReadIdentifier, bool AcceptedStringConst) ResolvePlayerTypeParseHeadToken(
-        bool         stringConstPresent
+        bool stringConstPresent) =>
+        stringConstPresent
             ? (MustReadIdentifier: false, AcceptedStringConst: true)
             : (MustReadIdentifier: true, AcceptedStringConst: false);
 
@@ -77,7 +78,8 @@ public static class VmSbarinfoCommandPlayerType1092Slice
         bool classLookupSucceeded) => classLookupSucceeded ? priorCount + 1 : priorCount;
 
     public static (bool ContinueTypeList, bool RequireNextToken) ResolvePlayerTypeParseListAdvance(
-        bool         commaAfterEntry
+        bool commaAfterEntry) =>
+        commaAfterEntry
             ? (ContinueTypeList: true, RequireNextToken: true)
             : (ContinueTypeList: false, RequireNextToken: false);
 }
