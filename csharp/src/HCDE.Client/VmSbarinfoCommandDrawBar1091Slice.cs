@@ -101,6 +101,6 @@ public static class VmSbarinfoCommandDrawBar1091Slice
     public static (bool Applied, bool UseMaximumConstant, int MaximumConstant)
         TryApplyDrawBarComparatorMaximumConstant(bool extendedSyntax, bool hasIntConst, int number) =>
         extendedSyntax && hasIntConst
-            ? (true, UseMaximumConstant: true, MaximumConstant: number)
-            : (false, false, 0);
+            ? (Applied: true, UseMaximumConstant: true, MaximumConstant: number)
+            : (Applied: false, UseMaximumConstant: false, MaximumConstant: 0);
 }
