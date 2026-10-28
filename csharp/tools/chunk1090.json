@@ -1,0 +1,34 @@
+[
+  {
+    "name": "sbarinfo-commands-drawbar-parse-tick-chunk1090",
+    "bucket": "conversion",
+    "note": "`CommandDrawBar::Parse` tail, `Reset`, and `Tick` value head from `sbarinfo_commands.cpp` (**2551–2700**); follows **1089** ammo validation seam (**2556**).",
+    "auditSeams": "**1089** owns ammo class validation (**2553–2556**) and clip math; **1090** starts at post-validation ammo tail and stat-keyword continuation. Host `PClass::FindActor`, `GetCoordinates`, and `FindInventory` excluded.",
+    "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **2551–2700** (+150); draw bar stat tail/powerup/inventory validation, orientation/flag/border parse, script interpolation override, reset, health/armor/ammo1/ammo2 tick value policy; hull ends at **AMMO2** max lookup (**2700**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 2551 --end 2700` and `--chunk 1090 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Ammo parse paren close (**2559–2560**) | yes (shape gate) |\n| Stat keywords frags…savepercent (**2561–2572**) | yes (via **1089** classifier at seam) |\n| `poweruptime` class validation (**2581–2585**) | yes |\n| Generic inventory validation (**2593–2596**) | yes |\n| Draw bar orientation (**2601–2604**) | yes |\n| Parse `reverse` / `interpolate` flags (**2608–2618**) | yes |\n| Flag list `|` vs `,` (**2619–2620**) | yes |\n| Border reverse flip (**2628–2630**) | yes |\n| Health/armor script interpolation (**2634–2637**) | yes |\n| `Reset` draw value (**2641**) | yes |\n| Health clamp + max policy (**2650–2665**) | yes |\n| Armor value/max (**2667–2680**) | yes |\n| Ammo1/ammo2 empty slot policy (**2682–2700**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2553–2556** | **1089** ammo validation seam |\n| **2506–2512**, **2487–2489** | **1089** clip helpers |\n| **2551–2552**, **2578–2580**, **2592** | host class lookup |\n| **2622**, **2645+** host switch scaffolding | host `GetCoordinates` / member reads |\n| **2701+** | `AMMO` tick body outside hull |\n\n| Managed (`VmSbarinfoCommandDrawBar1090Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|-----------------------------------------------------|----------------------------------|\n| Parse tail + reset + tick head | **2559–2700** |\n| Band hull (exclusive slice) | **2551–2700** |\n\n### Chunk **1090** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1089** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoCommandDrawBar1090Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo_commands.cpp",
+        "symbol": "CommandDrawBar::Parse / Reset / Tick",
+        "start": 2551,
+        "end": 2700,
+        "tests": [
+          "VmSbarinfoCommandDrawBar1090SliceTests.TryClassifyDrawBarParseFlagKeyword_MapsInterpolate",
+          "VmSbarinfoCommandDrawBar1090SliceTests.ResolveDrawBarParseFlagListContinuation_ContinuesOnPipe",
+          "VmSbarinfoCommandDrawBar1090SliceTests.ShouldReplaceDrawBarPowerupGiverClass_WhenMissing",
+          "VmSbarinfoCommandDrawBar1090SliceTests.ApplyDrawBarReverseWhenBorderNonZero_FlipsReverse",
+          "VmSbarinfoCommandDrawBar1090SliceTests.ResolveDrawBarInterpolationSpeedForType_HealthUsesScriptSpeed",
+          "VmSbarinfoCommandDrawBar1090SliceTests.ApplyCommandDrawBarResetState_ClearsDrawValueOnly",
+          "VmSbarinfoCommandDrawBar1090SliceTests.ClampDrawBarDisplayedHealth_SuppressesNegative",
+          "VmSbarinfoCommandDrawBar1090SliceTests.ResolveDrawBarHealthTickMax_UsesClassMaxByDefault",
+          "VmSbarinfoCommandDrawBar1090SliceTests.ResolveDrawBarAmmoSlotTick_EmptyAmmoUsesMaxOne",
+          "VmSbarinfoCommandDrawBar1090SliceTests.ClassifyDrawBarOrientationKeyword_RejectsUnknown"
+        ]
+      }
+    ]
+  }
+]
