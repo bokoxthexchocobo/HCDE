@@ -13,11 +13,15 @@ public static class VmSbarinfoCommandIsSelected1092Slice
 
     public static (bool RequireSecondToken, bool UseStringConstFallback) ResolveIsSelectedFirstWeaponTokenShape(
         bool identifierPresent) =>
-        identifierPresent ? (false, false) : (true, true);
+        identifierPresent
+            ? (RequireSecondToken: false, UseStringConstFallback: false)
+            : (RequireSecondToken: true, UseStringConstFallback: true);
 
     public static (bool ParseSecondWeapon, bool RequireStringOrIdentifier) ResolveIsSelectedSecondWeaponParse(
         bool commaAfterFirstWeapon) =>
-        commaAfterFirstWeapon ? (ParseSecondWeapon: true, RequireStringOrIdentifier: true) : (false, false);
+        commaAfterFirstWeapon
+            ? (ParseSecondWeapon: true, RequireStringOrIdentifier: true)
+            : (ParseSecondWeapon: false, RequireStringOrIdentifier: false);
 
     public static bool ResolveIsSelectedFlowControlTruth(
         bool readyWeaponPresent,
@@ -38,7 +42,9 @@ public static class VmSbarinfoCommandPlayerClass1092Slice
 
     public static (bool ContinueClassList, bool RequireNextIdentifier) ResolvePlayerClassParseListAdvance(
         bool commaAfterEntry) =>
-        commaAfterEntry ? (ContinueClassList: true, RequireNextIdentifier: true) : (false, false);
+        commaAfterEntry
+            ? (ContinueClassList: true, RequireNextIdentifier: true)
+            : (ContinueClassList: false, RequireNextIdentifier: false);
 
     public static bool ResolvePlayerClassFlowControlTruthFromScan(
         bool playerClassMissing,
@@ -62,14 +68,16 @@ public static class VmSbarinfoCommandPlayerClass1092Slice
 public static class VmSbarinfoCommandPlayerType1092Slice
 {
     public static (bool MustReadIdentifier, bool AcceptedStringConst) ResolvePlayerTypeParseHeadToken(
-        bool stringConstPresent) =>
-        stringConstPresent ? (MustReadIdentifier: false, AcceptedStringConst: true) : (true, false);
+        bool         stringConstPresent
+            ? (MustReadIdentifier: false, AcceptedStringConst: true)
+            : (MustReadIdentifier: true, AcceptedStringConst: false);
 
     public static int ResolvePlayerTypeClassListCountAfterLookup(
         int priorCount,
         bool classLookupSucceeded) => classLookupSucceeded ? priorCount + 1 : priorCount;
 
     public static (bool ContinueTypeList, bool RequireNextToken) ResolvePlayerTypeParseListAdvance(
-        bool commaAfterEntry) =>
-        commaAfterEntry ? (ContinueTypeList: true, RequireNextToken: true) : (false, false);
+        bool         commaAfterEntry
+            ? (ContinueTypeList: true, RequireNextToken: true)
+            : (ContinueTypeList: false, RequireNextToken: false);
 }
