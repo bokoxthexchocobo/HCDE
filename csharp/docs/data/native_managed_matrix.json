@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 245543
+    "managedCSharpLoc": 245709
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 81006,
+    "convertedThisRunNative": 81156,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 102739,
+    "convertedThisRunManaged": 102905,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 407866,
+    "remainingNative": 407716,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 99533,
+    "convertedBehaviorNative": 99683,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 100220,
-    "convertedBehaviorManaged": 112410,
+    "combinedBehaviorNative": 100370,
+    "convertedBehaviorManaged": 112576,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -39122,6 +39122,41 @@
         "nativeLoc": 150,
         "managedLoc": 111,
         "conversionManagedCommit": "c3b2a2d02a0de61ab53ebd6535a1ab4691e9118b"
+      },
+      {
+        "name": "sbarinfo-commands-keybar-parse-drawbar-chunk1089",
+        "bucket": "conversion",
+        "note": "`CommandDrawKeyBar::Parse` tail and `CommandDrawBar` ctor/draw clip/parse head from `sbarinfo_commands.cpp` (**2401\u20132550**); follows **1088** orientation/number seam (**2407**).",
+        "auditSeams": "**1088** owns **2400\u20132407** (`number`, direction keywords); **1089** starts at post-orientation comma (**2408**). Host `GetCoordinates`, `newImage`, `DrawGraphic`, and `PClass::FindActor` excluded.",
+        "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **2401\u20132550** (+150); key bar flag/icon/optional row parse tail, **CommandDrawBar** ctor defaults, draw skip/invert/clip index policy, stat keyword head through ammo class validation (**2550** hull).",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 2401 --end 2550` and `--chunk 1089 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Key bar `reverse` / `reverserows` flags (**2411\u20132416**) | yes |\n| Flag list `|` vs `,` (**2417\u20132418**) | yes |\n| Icon size `auto` vs int (**2420\u20132425**) | yes |\n| Optional key offset / row layout (**2429\u20132447**) | yes (clause gates + row icon auto) |\n| Parse terminating `;` (**2450**) | yes (host seam marker) |\n| **CommandDrawBar** ctor defaults (**2470\u20132474**) | yes |\n| Draw early-out (**2479\u20132480**) | yes |\n| Border draw value invert (**2487\u20132489**) | yes |\n| Matching bg dimensions gate (**2497\u20132498**) | yes |\n| Clip fill remaining (**2506\u20132507**) | yes |\n| Clip component index (**2507**) | yes |\n| Border clip inset (**2509\u20132512**) | yes |\n| Stat keywords health/armor/ammo* (**2531\u20132545**) | yes |\n| Generic `ammo` inventory validation (**2553\u20132556**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2400\u20132407** | **1088** number/orientation seam |\n| **2428**, **2622+** | host `GetCoordinates` |\n| **2452\u20132463** | key bar member field layout |\n| **2477\u20132505**, **2514\u20132520** | host `DrawGraphic` |\n| **2524\u20132528** | host `newImage` |\n| **2547\u20132552** | scanner token I/O outside pure policy |\n\n| Managed (`VmSbarinfoCommandDrawKeyBar1089Slice.cs`, `VmSbarinfoCommandDrawBar1089Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|------------------------------------------------------------------------------------------------|----------------------------------|\n| Key bar parse tail | **2408\u20132451** |\n| Draw bar draw/parse head | **2470\u20132550** |\n| Band hull (exclusive slice) | **2401\u20132550** |\n\n### Chunk **1089** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1088** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Client/VmSbarinfoCommandDrawKeyBar1089Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/g_statusbar/sbarinfo_commands.cpp",
+            "symbol": "CommandDrawKeyBar::Parse / CommandDrawBar",
+            "start": 2401,
+            "end": 2550,
+            "tests": [
+              "VmSbarinfoCommandDrawKeyBar1089SliceTests.TryClassifyKeyBarParseFlagKeyword_MapsReverseRows",
+              "VmSbarinfoCommandDrawKeyBar1089SliceTests.ResolveKeyBarFlagListContinuation_EndsOnComma",
+              "VmSbarinfoCommandDrawKeyBar1089SliceTests.ResolveKeyBarIconSizeFromParse_AutoUsesNegativeOne",
+              "VmSbarinfoCommandDrawKeyBar1089SliceTests.ResolveKeyBarOptionalLayoutParse_ReadsRowWhenTwoCommas",
+              "VmSbarinfoCommandDrawKeyBar1089SliceTests.CreateDrawBarCtorDefaults_MatchesNativeInit",
+              "VmSbarinfoCommandDrawKeyBar1089SliceTests.InvertNormalizedDrawValueForBorderDraw_FlipsWhenBorderNonZero",
+              "VmSbarinfoCommandDrawKeyBar1089SliceTests.ComputeDrawBarClipFillRemaining_ScalesByValue",
+              "VmSbarinfoCommandDrawKeyBar1089SliceTests.ResolveDrawBarClipComponentIndex_VerticalReverseUsesIndexThree",
+              "VmSbarinfoCommandDrawKeyBar1089SliceTests.TryClassifyDrawBarStatKeyword_HealthUsesComparator",
+              "VmSbarinfoCommandDrawKeyBar1089SliceTests.ShouldReplaceDrawBarAmmoClass_WhenNotAmmoKind"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 166,
+        "conversionManagedCommit": "f810ae60448187ededb9b2f046b06ac0b927af14"
       }
     ],
     "behaviorNativeChecksum": 508086,
