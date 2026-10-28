@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 240210
+    "managedCSharpLoc": 240324
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 74237,
+    "convertedThisRunNative": 74387,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 97406,
+    "convertedThisRunManaged": 97520,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 414568,
+    "remainingNative": 414418,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 92764,
+    "convertedBehaviorNative": 92914,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 93518,
-    "convertedBehaviorManaged": 107077,
+    "combinedBehaviorNative": 93668,
+    "convertedBehaviorManaged": 107191,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -37630,6 +37630,43 @@
         "nativeLoc": 150,
         "managedLoc": 127,
         "conversionManagedCommit": "d1dc88b3dfb21e69a8c5d661677d63d7849330f9"
+      },
+      {
+        "name": "statistics-level-track-chunk1044",
+        "bucket": "conversion",
+        "note": "`LevelStatEntry`, `STAT_StartNewGame`, `StoreLevelStats`, and `STAT_ChangeLevel` episode checkpoint from `statistics.cpp` (**320\u2013469**). Continues **1043** (**470\u2013619**, EOF **619**).",
+        "auditSeams": "`GetStatisticsList`, `StatisticsEntry`, `time`/`localtime`, `FindLevelInfo`, `P_OpenMapData`, and thinker iteration remain host-injected; **1043** owns aggregation/save tail (**470+**); uncredited `VmStatisticsParser` / `VmOneLevelStats` model not re-credited.",
+        "auditRationale": "File-scoped UNCredited **`statistics.cpp`** **320\u2013469** (+150); excludes credited **470\u2013619** (**1043**). Hull ends **469** before **1043** aggregation loop.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/statistics.cpp --start 320 --end 469` and `--chunk 1044 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `LevelStatEntry` name/info/time (**325\u2013341**) | yes |\n| `STAT_StartNewGame` episode pick (**352\u2013367**) | yes |\n| `compare_level_names` / hub sort (**375\u2013381**, **421\u2013422**) | yes (case-insensitive ordering) |\n| `StoreLevelStats` guards + counters (**384\u2013419**) | yes |\n| `STAT_ChangeLevel` endseq + nextinfo (**432\u2013445**) | yes |\n| Episode save checkpoint (**447\u2013469**) | yes (through `validlevels` setup) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **298\u2013318** | `StatisticsEntry` date/skill host (**320** hull starts comments) |\n| **328\u2013332** | unused `time` locals in `LevelStatEntry` |\n| **411\u2013418** | thinker iterator host |\n| **442\u2013444** | `FindLevelInfo` / redirect host |\n| **453\u2013465** | `P_OpenMapData` / `GetStatisticsList` host |\n| **470\u2013619** | chunk **1043** |\n| `VmStatisticsEpisodeSave1043Slice` | episode totals/formatting \u2014 **470+** only |\n\n| Managed (`VmStatisticsLevelTrack1044Slice.cs`) | Native (`statistics.cpp`) |\n|--------------------------------------------------|---------------------------|\n| `BuildLevelStatEntry` | **334\u2013341** |\n| `ShouldAssignStartEpisodeOnNewGame` / `TryResolveStartEpisodeIndex` | **354\u2013366** |\n| `ShouldStoreLevelStatistics` / skip flag / find+apply counters | **388\u2013407** |\n| `ReconcileKillCountWhenNoLivingMonsters` | **419** |\n| `CompareLevelNamesNatural` / `SortLevelDataByName` | **375\u2013381**, **422** |\n| `IsEndSequenceMapTransition` / `ShouldResolveNextLevelInfo` | **440\u2013445** |\n| `ShouldPersistEpisodeStatistics` / `ReachedEpisodeStatisticsCheckpoint` | **447\u2013450** |\n| `BuildEpisodeStatisticsSectionKey` / `ResolveEpisodeNameForStatistics` | **460\u2013464** |\n| Band hull (exclusive slice, EOF **619**) | **320\u2013469** |\n\n### Chunk **1044** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1043** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Gamedata/VmStatisticsLevelTrack1044Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/statistics.cpp",
+            "symbol": "StoreLevelStats / STAT_ChangeLevel",
+            "start": 320,
+            "end": 469,
+            "tests": [
+              "VmStatisticsLevelTrack1044SliceTests.BuildLevelStatEntry_TruncatesNameAndInfo",
+              "VmStatisticsLevelTrack1044SliceTests.ShouldAssignStartEpisodeOnNewGame_SkipsDmAndMp",
+              "VmStatisticsLevelTrack1044SliceTests.FindOrReserveLevelIndex_CaseInsensitiveReuse",
+              "VmStatisticsLevelTrack1044SliceTests.ApplyLevelCounterSnapshot_CopiesCounters",
+              "VmStatisticsLevelTrack1044SliceTests.ReconcileKillCountWhenNoLivingMonsters_ForcesFullClear",
+              "VmStatisticsLevelTrack1044SliceTests.ShouldSkipLevelStatistics_WhenNoStatisticsFlag",
+              "VmStatisticsLevelTrack1044SliceTests.IsEndSequenceMapTransition_DetectsPrefix",
+              "VmStatisticsLevelTrack1044SliceTests.ReachedEpisodeStatisticsCheckpoint_EndGameOrMissingNext",
+              "VmStatisticsLevelTrack1044SliceTests.BuildEpisodeStatisticsSectionKey_Uppercases",
+              "VmStatisticsLevelTrack1044SliceTests.ResolveEpisodeNameForStatistics_LocalizesDollarPrefix",
+              "VmStatisticsLevelTrack1044SliceTests.SortLevelDataByName_OrdersAlphabetically",
+              "VmStatisticsLevelTrack1044SliceTests.ShouldPersistEpisodeStatistics_OnlyModeOne"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 114,
+        "conversionManagedCommit": "fca3cb0a98c809ef258a4a7331c73e07ca6903fb"
       }
     ],
     "behaviorNativeChecksum": 508086,
