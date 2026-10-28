@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 229022
+    "managedCSharpLoc": 229102
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 59237,
+    "convertedThisRunNative": 59387,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 86219,
+    "convertedThisRunManaged": 86299,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 429568,
+    "remainingNative": 429418,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 77764,
+    "convertedBehaviorNative": 77914,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 78518,
-    "convertedBehaviorManaged": 95890,
+    "combinedBehaviorNative": 78668,
+    "convertedBehaviorManaged": 95970,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -34509,6 +34509,38 @@
         "nativeLoc": 150,
         "managedLoc": 89,
         "conversionManagedCommit": "1c93933203da0c085bdaa9d0ae4325c94778628e"
+      },
+      {
+        "name": "p-acs-sound-string-chunk943",
+        "bucket": "conversion",
+        "note": "`ACSF_SoundVolume` through `ACSF_CheckFont` from `p_acs.cpp` (**6150\u20136299**). Retarget from **6000\u20136149** (overlaps recognition **66**/**76**); outside deferred **7366\u20137509**.",
+        "auditSeams": "`S_ChangeActorSoundVolume`, `LookupString`, `GlobalACSStrings`, `DoSpawnDecal`, `V_GetFont`, and `DecalLibrary` remain host seams.",
+        "auditRationale": "Honest **150**-line UNCredited band with zero tally overlap; exclusive `VmPAcsCallFuncSoundString943Slice.cs` (`AcsCallFunctions` handlers are not matrix credit).",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 6150 --end 6299` and `--chunk 943 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|----------------------|\n| chunk **943** hull | **6150\u20136299** |\n| `SoundVolumeUsesActivator` | `ACSF_SoundVolume` **6157\u20136169** |\n| `StringCompareSameIndex` | `strcmp`/`stricmp` fast path **6180\u20136182** |\n| `NullLookupToEmpty` | invalid strings **6188\u20136189** |\n| `StringCompareWithOptionalLength` | **6191\u20136199** |\n| `TrimSubstringLength` | `StrLeft`/`StrRight` **6215\u20136217** |\n| `StrMidPosClamped` / `StrMidLengthClamped` | `StrMid` **6236\u20136243** |\n| `GetWeaponReturnsNone` | **6249\u20136252** |\n| `SpawnDecalUsesActivator` | **6273\u20136278** |\n| `SpawnDecalZOffset` / `SpawnDecalDistance` | flags **6270\u20136271** |\n| `SpawnDecalTemplateMissing` | **6265\u20136266** |\n| `CheckFontFound` | `CheckFont` **6298** |\n| `MinArgCountMet` | `MIN_ARG_COUNT` throughout |\n| `ActivatorRequiredForSpawn` / `AccumulateSpawnDecalCount` | **6273\u20136288** |\n| `ResolveEmptyStringReturn` | empty `StrMid`/`StrLeft` **6208\u20136210** |\n\n### Chunk **943** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**942** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPAcsCallFuncSoundString943Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_SoundVolume",
+            "start": 6150,
+            "end": 6299,
+            "tests": [
+              "VmPAcsCallFuncSoundString943SliceTests.SoundVolumeUsesActivator_WhenTidZero",
+              "VmPAcsCallFuncSoundString943SliceTests.StringCompareSameIndex_ReturnsZeroWithoutLookup",
+              "VmPAcsCallFuncSoundString943SliceTests.TrimSubstringLength_ClampsToOldLen",
+              "VmPAcsCallFuncSoundString943SliceTests.StrMidPosClamped_ReturnsNegativeWhenPastEnd",
+              "VmPAcsCallFuncSoundString943SliceTests.SpawnDecalDistance_DefaultsToSixtyFour",
+              "VmPAcsCallFuncSoundString943SliceTests.GetWeaponReturnsNone_WhenActivatorMissing",
+              "VmPAcsCallFuncSoundString943SliceTests.NullLookupToEmpty_UsesEmptyString"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 80,
+        "conversionManagedCommit": "fd7c1bbf4375dc5fe0411aa199dfb78aa829447c"
       }
     ],
     "behaviorNativeChecksum": 508086,
