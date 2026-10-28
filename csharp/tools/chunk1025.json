@@ -1,0 +1,33 @@
+[
+  {
+    "name": "a-specialspot-spotstate-chunk1025",
+    "bucket": "conversion",
+    "note": "`DSpotState` list lookup, add/remove, getters, destroy reset, and savegame key policy from `a_specialspot.cpp` (**151–300**). Follows chunk **1024** (**1–150** `FSpotList`).",
+    "auditSeams": "`Super::OnDestroy`, `Super::Serialize`, `FSerializer`, `PClassActor`, and `AActor` remain native.",
+    "auditRationale": "Preflight `--band` + tally + recognition: **151–300** UNCredited; no live `VmASpecialSpot*` duplicate (retired chunk **874** off-tally only). Natural follow-on after **1024**.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/a_specialspot.cpp --start 151 --end 300` and `--chunk 1025 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `DSpotState::OnDestroy` reset (**198–202**) | yes |\n| `DSpotState::FindSpotList` (**220–228**) | yes |\n| `DSpotState::AddSpot` / `RemoveSpot` (**236–254**) | yes |\n| `DSpotState::Serialize` spots key (**262–266**) | yes (key gate only) |\n| `GetNextInList` / distance / random getters (**274–305**) | yes (delegates to chunk **1024** list ops) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **151–180** | `FSpotList::GetRandomSpot` tail + `Serialize(FSpotList)` on chunk **1024** |\n| **188–190**, **210–212** | empty ctor / empty `Tick` |\n| **301–305** | hull ends **300**; function body at EOF (5 lines, defer without padding) |\n\n| Managed (`VmASpecialSpotSpotState1025Slice.cs`) | Native (`a_specialspot.cpp`) |\n|-------------------------------------------------|------------------------------|\n| `OnDestroyNative` | **198–202** |\n| `FindSpotList` | **220–228** |\n| `AddSpotNative` / `RemoveSpotNative` | **236–254** |\n| `ShouldWriteSpotListsArchiveKey` | **265** |\n| `GetNextInListNative` | **274–279** |\n| `GetSpotWithMinMaxDistanceNative` | **287–292** |\n| `GetRandomSpotNative` | **300–305** (orchestration; body seam **301+**) |\n| Band hull (exclusive slice) | **151–300** |\n\n### Chunk **1025** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1024** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmASpecialSpotSpotState1025Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/a_specialspot.cpp",
+        "symbol": "DSpotState spot registry",
+        "start": 151,
+        "end": 300,
+        "tests": [
+          "VmASpecialSpotSpotState1025SliceTests.FindSpotList_CreatesListOnFirstUse",
+          "VmASpecialSpotSpotState1025SliceTests.FindSpotList_NullTypeReturnsNullWithoutInsert",
+          "VmASpecialSpotSpotState1025SliceTests.AddSpotNative_RegistersOnMatchingClassList",
+          "VmASpecialSpotSpotState1025SliceTests.RemoveSpotNative_DelegatesToList",
+          "VmASpecialSpotSpotState1025SliceTests.GetNextInListNative_ForwardsToListPolicy",
+          "VmASpecialSpotSpotState1025SliceTests.GetSpotWithMinMaxDistanceNative_ForwardsToList",
+          "VmASpecialSpotSpotState1025SliceTests.GetRandomSpotNative_IgnoresOnlyOnceLikeNativeList",
+          "VmASpecialSpotSpotState1025SliceTests.OnDestroyNative_ClearsSpotListsBeforeSuper",
+          "VmASpecialSpotSpotState1025SliceTests.ShouldWriteSpotListsArchiveKey_MatchesNativeKey"
+        ]
+      }
+    ]
+  }
+]
