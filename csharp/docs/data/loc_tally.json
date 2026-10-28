@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 83420,
+  "convertedThisRunNative": 83570,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 104831,
+  "convertedThisRunManaged": 104960,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 405452,
+  "remainingNative": 405302,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 101947,
+  "convertedBehaviorNative": 102097,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 102634,
-  "convertedBehaviorManaged": 114502,
+  "combinedBehaviorNative": 102784,
+  "convertedBehaviorManaged": 114631,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -39662,6 +39662,36 @@
       "nativeLoc": 150,
       "managedLoc": 94,
       "conversionManagedCommit": "d0064f3ee35d766f0f06c6b24d33312f3f36a8d5"
+    },
+    {
+      "name": "sound-engine-find-lookup-chunk1106",
+      "bucket": "conversion",
+      "note": "`FindSoundByResIDNoHash`, `FindSoundByLump`, `AddSoundLump`, `FindSoundTentative`, `CacheRandomSound`, and `GetMSLength` link branch from `s_sound.cpp` (**1501\u20131650**); follows **1105**.",
+      "auditSeams": "S_sfx mutation, `LoadSound`, `GSnd->GetMSLength`, and `CacheSound` host calls remain injected; **1651+** continues tail of `GetMSLength`.",
+      "auditRationale": "UNCredited **`s_sound.cpp`** **1501\u20131650** (+150); follows **1105** (**1351\u20131500**).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/common/audio/sound/s_sound.cpp --start 1501 --end 1650` and `--chunk 1106 --band` \u2192 UNCredited, exit 0.",
+      "auditManagedLocJustification": "Lookup scans and MS-length policy are explicit loops matching native control flow; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `FindSoundByResIDNoHash` scan (**1514\u20131521**) | yes |\n| `FindSoundByLump` (**1533\u20131541**) | yes |\n| `AddSoundLump` field assign (**1553\u20131563**) | yes (seam) |\n| `FindSoundTentative` create path (**1577\u20131583**) | yes |\n| `CacheRandomSound` choice loop (**1596\u20131604**) | yes (policy) |\n| `GetMSLength` random longest (**1627\u20131644**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1553\u20131562** | host sfx struct writes |\n| **1603** | host `CacheSound` |\n| **1652\u20131654** | host load/MS length outside hull |\n\n| Managed (`VmSoundEngineFindLookup1106Slice.cs`) | Native (`s_sound.cpp`) |\n|------------------------------------------------|-------------------------|\n| Find/add/cache/MS-length predicates | **1501\u20131650** |\n| Band hull (exclusive slice) | **1501\u20131650** |\n\n### Chunk **1106** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1105** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmSoundEngineFindLookup1106Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/audio/sound/s_sound.cpp",
+          "symbol": "SoundEngine find lookup MS length",
+          "start": 1501,
+          "end": 1650,
+          "tests": [
+            "VmSoundEngineFindLookup1106SliceTests.ScanFindByLump_ReturnsIndexWhenPresent",
+            "VmSoundEngineFindLookup1106SliceTests.ResolveFindSoundTentative_CreatesWhenMissing",
+            "VmSoundEngineFindLookup1106SliceTests.RunCacheRandomSound_InvokesCacheForEachChoice",
+            "VmSoundEngineFindLookup1106SliceTests.ResolveMsLength_PicksLongestRandomChoice"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 129,
+      "conversionManagedCommit": "15ff33c82ff25664c10b7f25eb450938fddafdb8"
     }
   ],
   "behaviorNativeChecksum": 508086,
