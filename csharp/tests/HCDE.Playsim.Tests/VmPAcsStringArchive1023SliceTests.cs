@@ -41,15 +41,18 @@ public class VmPAcsStringArchive1023SliceTests
     {
         var marks = new List<int>();
         VmPAcsStringArchive1023Slice.CollectGlobalStringsNative(
-            [0, 2, -5000],
+            [0, 2],
             (_, sp) => IntPtr.Zero,
             (_, sp) => marks.Add(sp),
             () => marks.Add(-1),
             () => marks.Add(-2),
             () => marks.Add(-3));
         Assert.Equal([2, -1, -2, -3], marks);
+
+        marks.Clear();
         VmPAcsStringArchive1023Slice.CollectGlobalStringsNative(
-            [-5000], (_, _) => IntPtr.Zero, (_, _) => { }, () => { }, () => { }, () => { });
+            [-5000], (_, _) => IntPtr.Zero, (_, sp) => marks.Add(sp), () => { }, () => { }, () => { });
+        Assert.Equal([-5000], marks);
     }
 
     [Fact]
