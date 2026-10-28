@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 235844
+    "managedCSharpLoc": 235926
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 68687,
+    "convertedThisRunNative": 68837,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 93041,
+    "convertedThisRunManaged": 93123,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 420118,
+    "remainingNative": 419968,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 87214,
+    "convertedBehaviorNative": 87364,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 87968,
-    "convertedBehaviorManaged": 102712,
+    "combinedBehaviorNative": 88118,
+    "convertedBehaviorManaged": 102794,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -36461,6 +36461,34 @@
         "nativeLoc": 150,
         "managedLoc": 84,
         "conversionManagedCommit": "e520d2543e569368efd08e82d1081b5d6f380e9f"
+      },
+      {
+        "name": "g-game-demo-playback-chunk1007",
+        "bucket": "conversion",
+        "note": "`G_DeferedPlayDemo`, `playdemo`/`timedemo` CCMD gates, and `G_ProcessIFFDemo` header loop from `g_game.cpp` (**3350\u20133499**); follows chunk **1006** (**3200\u20133349**).",
+        "auditSeams": "Demo file I/O, `Printf`, `G_TimeDemo`, chunk readers, and userinfo hosts remain injected.",
+        "auditRationale": "UNCredited **3350\u20133499** CLI band; disjoint from chunks **995\u20131006** and chunk **9** credited segments.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_game.cpp --start 3350 --end 3499` and `--chunk 1007 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `G_DeferedPlayDemo` gameaction (**3350\u20133351**) | yes |\n| `playdemo` reject/defer (**3356\u20133370**) | yes |\n| `timedemo` argc gate (**3375\u20133379**) | yes |\n| FORM length / ZDEM magic (**3399\u20133410**) | yes |\n| Chunk bounds + ZDHD version/map (**3419\u20133456**) | yes |\n| `UINF`/`NETD`/`BODY`/`COMP` cases (**3463\u20133488**) | yes |\n| Missing header gate (**3495\u20133498**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **3358\u20133364** | console print host |\n| **3460\u20133461** | `C_ReadCVars` host |\n| **3470** | `D_ReadUserInfoStrings` host |\n| **3478** | `P_ReadDemoWeaponsChunk` host |\n| **3500+** | no-players / no-body checks (next band) |\n\n| Managed (`VmGGameDemoPlayback1007Slice.cs`) | Native (`g_game.cpp`) |\n|---------------------------------------------|----------------------|\n| `ResolveDeferredPlayDemoGameAction` | **3351** |\n| `ResolvePlayDemoRejectReason` / argv gate | **3356\u20133370**, **3375\u20133379** |\n| FORM/ZDEM/chunk layout helpers | **3399\u20133423** |\n| ZDHD version/map/RNG gates | **3430\u20133456** |\n| Player/multiplayer/body chunk predicates | **3463\u20133488** |\n| `ResolveMissingDemoHeaderFailure` | **3495\u20133498** |\n| Band hull (exclusive slice) | **3350\u20133499** |\n\n### Chunk **1007** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1006** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmGGameDemoPlayback1007Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/g_game.cpp",
+            "symbol": "G_ProcessIFFDemo",
+            "start": 3350,
+            "end": 3499,
+            "tests": [
+              "VmGGameDemoPlayback1007SliceTests.DeferredPlayDemoAction",
+              "VmGGameDemoPlayback1007SliceTests.ProcessIffDemoHead",
+              "VmGGameDemoPlayback1007SliceTests.DemoHeaderChunks"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 82,
+        "conversionManagedCommit": "e16e064d298410f8f944099d8eb712c74167915d"
       }
     ],
     "behaviorNativeChecksum": 508086,
