@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 236251
+    "managedCSharpLoc": 236337
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 69437,
+    "convertedThisRunNative": 69587,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 93448,
+    "convertedThisRunManaged": 93534,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 419368,
+    "remainingNative": 419218,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 87964,
+    "convertedBehaviorNative": 88114,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 88718,
-    "convertedBehaviorManaged": 103119,
+    "combinedBehaviorNative": 88868,
+    "convertedBehaviorManaged": 103205,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -36601,6 +36601,34 @@
         "nativeLoc": 150,
         "managedLoc": 77,
         "conversionManagedCommit": "4b6b23925f9479b7937ce7462f8f59d918d973e4"
+      },
+      {
+        "name": "g-level-map-commands-chunk1012",
+        "bucket": "conversion",
+        "note": "`CCMD(map)`, `recordmap`, and `open` from `g_level.cpp` (**301\u2013450**); follows chunk **1011** (**151\u2013300**).",
+        "auditSeams": "`Printf`, `P_CheckMapData`, `G_DeferedInitNew`, recoverable-error print, and `G_NewInit` (**452+**) remain injected.",
+        "auditRationale": "UNCredited **301\u2013450** CLI band; disjoint from chunks **1010\u20131011**.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_level.cpp --start 301 --end 450` and `--chunk 1012 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `CCMD(map)` net/usage/map name (**305\u2013348**) | yes |\n| Coop/dm flags (**326\u2013335**, **376\u2013385**, **426\u2013435**) | yes |\n| `recordmap` (**356\u2013401**) | yes |\n| `open` (**409\u2013443**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **300\u2013304** | comment seam with **1011** |\n| **318\u2013343** | try/catch + `Printf` host |\n| **336\u2013337** | `G_DeferedInitNew` host call |\n| **387\u2013389** | demo name assignment host |\n| **452+** | `G_NewInit` (next band) |\n\n| Managed (`VmGLevelMapCommands1012Slice.cs`) | Native (`g_level.cpp`) |\n|---------------------------------------------|----------------------|\n| SP-only reject / argc gates | **307\u2013347**, **358\u2013400**, **411\u2013442** |\n| `ResolveMapNameArgument` | **316\u2013316**, **366\u2013366** |\n| Coop/dm flag resolution | **326\u2013335** etc. |\n| Record/open deferred setup | **386\u2013437** |\n| Band hull (exclusive slice) | **301\u2013450** |\n\n### Chunk **1012** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1011** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmGLevelMapCommands1012Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/g_level.cpp",
+            "symbol": "CCMD(map)",
+            "start": 301,
+            "end": 450,
+            "tests": [
+              "VmGLevelMapCommands1012SliceTests.MapCommand",
+              "VmGLevelMapCommands1012SliceTests.RecordMapCommand",
+              "VmGLevelMapCommands1012SliceTests.OpenCommand"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 86,
+        "conversionManagedCommit": "1a1277deecfd8163e871feb408b654ecec42aaf1"
       }
     ],
     "behaviorNativeChecksum": 508086,
