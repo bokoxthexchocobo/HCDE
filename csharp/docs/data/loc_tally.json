@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 62687,
+  "convertedThisRunNative": 62837,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 88609,
+  "convertedThisRunManaged": 88691,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 426118,
+  "remainingNative": 425968,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 81214,
+  "convertedBehaviorNative": 81364,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 81968,
-  "convertedBehaviorManaged": 98280,
+  "combinedBehaviorNative": 82118,
+  "convertedBehaviorManaged": 98362,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -35287,6 +35287,38 @@
       "nativeLoc": 150,
       "managedLoc": 94,
       "conversionManagedCommit": "1a194a937408cc53624f6fca3937b2156bb67242"
+    },
+    {
+      "name": "p-pspr-head-chunk967",
+      "bucket": "conversion",
+      "note": "`EWRF_Options`, `FGenericButtons` / `ButtonChecks`, and `DPSprite` field registration head from `p_pspr.cpp` (**1\u2013150**).",
+      "auditSeams": "`IMPLEMENT_*` / `DEFINE_FIELD*` macros, `CVAR`, and `NAME_*` tokens remain host seams; weapon-state routing still executed natively.",
+      "auditRationale": "First honest **150**-line UNCredited band in `p_pspr.cpp` with zero conversion/recognition overlap and no existing `VmPPSprite*` coverage (**163+** credited elsewhere).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_pspr.cpp --start 1 --end 150` and `--chunk 967 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `LOWERSPEED` / `EWRF_Options` (**50\u201376**) | yes |\n| `ButtonChecks[]` (**94\u2013102**) | yes |\n| `sv_fastweapons` server flag (**90**) | yes (policy constant) |\n| `IMPLEMENT_CLASS` / `DEFINE_FIELD*` hull (**112\u2013150**) | layout metadata only |\n| Copyright/includes (**1\u201348**) | layout only |\n\n| Managed (`VmPPsprHead967Slice.cs`) | Native (`p_pspr.cpp`) |\n|------------------------------------|----------------------|\n| `Wrf*` / `WrfNoFire` | **62\u201376** |\n| `ButtonChecks` / `FindButtonRowByReadyFlag` | **94\u2013102** |\n| `ReadyFlagAllowsButton` / `InputPressedForRow` | `CheckWeaponButtons` policy |\n| `Lowerspeed` | **50** |\n| `DpspritePointerFields` / scalar / flag names | **114\u2013155** (registration mirror) |\n| Band hull (exclusive slice) | **1\u2013150** |\n\n### Chunk **967** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**966** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPPsprHead967Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "FGenericButtons",
+          "start": 1,
+          "end": 150,
+          "tests": [
+            "VmPPsprHead967SliceTests.WrfNoFire_CombinesPrimaryAndSecondary",
+            "VmPPsprHead967SliceTests.FindButtonRowByReadyFlag_ReturnsReloadRow",
+            "VmPPsprHead967SliceTests.ReadyFlagAllowsButton_RequiresStateBit",
+            "VmPPsprHead967SliceTests.InputPressedForRow_DetectsButtonBit",
+            "VmPPsprHead967SliceTests.ButtonChecks_ContainsSixNativeRows",
+            "VmPPsprHead967SliceTests.DpspriteFlagBitNames_MatchesNativeRegistrationCount",
+            "VmPPsprHead967SliceTests.Lowerspeed_MatchesNativeMacro"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 82,
+      "conversionManagedCommit": "449d8be545eafc74b423694a735c44200e02ffcf"
     }
   ],
   "behaviorNativeChecksum": 508086,
