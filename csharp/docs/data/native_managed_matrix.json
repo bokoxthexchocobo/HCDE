@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 229635
+    "managedCSharpLoc": 229710
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 60287,
+    "convertedThisRunNative": 60437,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 86832,
+    "convertedThisRunManaged": 86907,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 428518,
+    "remainingNative": 428368,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 78814,
+    "convertedBehaviorNative": 78964,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 79568,
-    "convertedBehaviorManaged": 96503,
+    "combinedBehaviorNative": 79718,
+    "convertedBehaviorManaged": 96578,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -34744,6 +34744,40 @@
         "nativeLoc": 150,
         "managedLoc": 80,
         "conversionManagedCommit": "1819ec002d0c9d22bd1b8a8d1a82f3bfba727dc1"
+      },
+      {
+        "name": "p-acs-dlevelscript-ctor-defer-chunk950",
+        "bucket": "conversion",
+        "note": "`P_GetScriptGoing` tail, `DLevelScript` constructor, `SetScriptState`, `DoDeferedScripts`, and `addDefered` head from `p_acs.cpp` (**10800\u201310949**). Follows **949** (**\u226410799**); avoids **10050\u201310199** credited corridor.",
+        "auditSeams": "`Create<DLevelScript>`, thinker creation, `Behaviors.FindScript`, and map `deferred` storage remain host seams.",
+        "auditRationale": "Honest **150**-line UNCredited band with zero tally overlap; exclusive `VmPAcsDLevelScriptCtor950Slice.cs` (hosted `AcsVm` fibers are not matrix credit).",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 10800 --end 10949` and `--chunk 950 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `P_GetScriptGoing` resume/abort tail (**10800\u201310809**) | yes |\n| `DLevelScript::DLevelScript` (**10812\u201310866**) | yes |\n| `SetScriptState` (**10869\u201310883**) | yes |\n| `FLevelLocals::DoDeferedScripts` (**10885\u201310924**) | yes |\n| `addDefered` head (**10927\u201310949**) | yes |\n\n| Managed (`VmPAcsDLevelScriptCtor950Slice.cs`) | Native (`p_acs.cpp`) |\n|------------------------------------------------|---------------------|\n| `ResumeSuspendedToRunning` / `AlreadyRunningNonSuspended` | **10801\u201310807** |\n| `ShouldCreate*Thinker` / `LocalVarInitCount` | **10817\u201310839** |\n| `ActivationBackSide` / `ShouldTrackInRunningScripts` | **10844\u201310857** |\n| `ShouldPutLastForHexenHack` | **10861\u201310864** |\n| `TrySetScriptStateOnController` / defer states | **10869\u201310920** |\n| `FlagsForDeferredExecute` / `CopyDeferredArgs` / `ResolveDeferredPlayerNum` | **10901\u201310949** |\n\n### Chunk **950** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**949** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPAcsDLevelScriptCtor950Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript::DLevelScript",
+            "start": 10800,
+            "end": 10949,
+            "tests": [
+              "VmPAcsDLevelScriptCtor950SliceTests.AlreadyRunningNonSuspended_WhenRunning",
+              "VmPAcsDLevelScriptCtor950SliceTests.LocalVarInitCount_ClampsToArgCount",
+              "VmPAcsDLevelScriptCtor950SliceTests.ShouldTrackInRunningScripts_WhenNotAlways",
+              "VmPAcsDLevelScriptCtor950SliceTests.ActivationBackSide_ReadsFlag",
+              "VmPAcsDLevelScriptCtor950SliceTests.FlagsForDeferredExecuteAlways_SetsAlwaysBit",
+              "VmPAcsDLevelScriptCtor950SliceTests.CopyDeferredArgs_PadsWithZeros",
+              "VmPAcsDLevelScriptCtor950SliceTests.ResolveDeferredPlayerNum_MissingWhenNoPlayer",
+              "VmPAcsDLevelScriptCtor950SliceTests.ShouldPutLastForHexenHack_ServerMapOnly",
+              "VmPAcsDLevelScriptCtor950SliceTests.IsDeferredExecuteType_IncludesAlways"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 75,
+        "conversionManagedCommit": "80f5a16212044129dfcea0db7b34446abaa0a505"
       }
     ],
     "behaviorNativeChecksum": 508086,
