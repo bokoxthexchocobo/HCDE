@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 231494
+    "managedCSharpLoc": 231613
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 62837,
+    "convertedThisRunNative": 62987,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 88691,
+    "convertedThisRunManaged": 88810,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 425968,
+    "remainingNative": 425818,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 81364,
+    "convertedBehaviorNative": 81514,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 82118,
-    "convertedBehaviorManaged": 98362,
+    "combinedBehaviorNative": 82268,
+    "convertedBehaviorManaged": 98481,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -35335,6 +35335,35 @@
         "nativeLoc": 150,
         "managedLoc": 82,
         "conversionManagedCommit": "449d8be545eafc74b423694a735c44200e02ffcf"
+      },
+      {
+        "name": "p-acs-pcode-enum-chunk968",
+        "bucket": "conversion",
+        "note": "Baseline ACS P-code enum opcodes **0\u201369** (`PCD_NOP` \u2026 `PCD_RESTART`) from `p_acs.cpp` (**1\u2013150**).",
+        "auditSeams": "Include list and big-endian comment block remain host-only; interpreter dispatch for these opcodes lives in later `p_acs.cpp` bands.",
+        "auditRationale": "Primary **968** target `a_action.cpp` **1\u2013150** rejected (`VmAAction.cs` off-tally duplicate); `p_map` **6119\u20136268** rejected (`VmPMapRadiusDamage` **6130\u20136480**). First alternate UNCredited playsim band with zero conversion/recognition/Vm overlap.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 1 --end 150` and `--chunk 968 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| ACS P-code enum **0\u201369** (**78\u2013149**) | yes (constants + classification helpers) |\n| Copyright/includes (**1\u201376**) | layout only |\n| Comment `/* 70*/` line (**150**) | layout only (next opcode starts after band) |\n\n| Managed (`VmPAcsPcodeEnum968Slice.cs`) | Native (`p_acs.cpp`) |\n|----------------------------------------|---------------------|\n| `Pcd*` constants | **80\u2013149** |\n| `IsBaselineOpcode` / `IsLspec*` / `LspecArgCount` | enum structure |\n| `IsCompareOpcode` / `IsBinaryArithmeticOpcode` | **94\u2013124** clusters |\n| `BaselineOpcodeLabel` | symbolic names |\n| Band hull (exclusive slice) | **1\u2013150** |\n\n### Chunk **968** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**967** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPAcsPcodeEnum968Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_NOP",
+            "start": 1,
+            "end": 150,
+            "tests": [
+              "VmPAcsPcodeEnum968SliceTests.BaselineOpcodeMax_MatchesNativeRestart",
+              "VmPAcsPcodeEnum968SliceTests.LspecArgCount_StackAndDirect",
+              "VmPAcsPcodeEnum968SliceTests.CompareAndArithmeticRanges",
+              "VmPAcsPcodeEnum968SliceTests.BaselineOpcodeLabel_KnownNames"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 119,
+        "conversionManagedCommit": "f9c54c72e984b96e2e7faaac3d9bb9e4e77a7b5c"
       }
     ],
     "behaviorNativeChecksum": 508086,
