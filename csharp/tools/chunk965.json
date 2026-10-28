@@ -1,0 +1,33 @@
+[
+  {
+    "name": "p-acs-behavior-lookup-chunk965",
+    "bucket": "conversion",
+    "note": "`FBehavior::LookupString` Hexen localization tail, `StartTypedScripts`, `StopMyScripts`, and `DACSThinker` serialize head from `p_acs.cpp` (**3305–3454**).",
+    "auditSeams": "`GStrings.CheckString`, `P_GetScriptGoing`, `RunScript`, `DACSThinker::StopScriptsFor`, live `FSerializer`, and `IMPLEMENT_*` macros remain host seams.",
+    "auditRationale": "Honest **150**-line UNCredited band adjacent to chunk **964**; does not re-credit chunk **964** range gates (**3292–3304**) or off-tally `VmAcsLevelScriptList` (**3584–3672**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 3305 --end 3454` and `--chunk 965 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `FBehavior::LookupString` old pointer + Hexen `TXT_ACS_*` (**3305–3323**) | yes |\n| `FBehavior::LookupString` enhanced resolve (**3325–3332**) | yes |\n| `FBehaviorContainer::StartTypedScripts` (**3335–3363**) | yes (type name + module fan-out plan) |\n| `FBehavior::StartTypedScripts` (**3365–3383**) | yes (match type, flags, optional run-now) |\n| `FBehaviorContainer::StopMyScripts` (**3391–3405**) | yes |\n| `SavingRunningscript` + serialize helper (**3428–3443**) | yes |\n| `DACSThinker::Serialize` write head (**3445–3454**) | yes |\n| `IMPLEMENT_CLASS` / destructor / comment hull (**3408–3426**, **3334**, **3385–3389**) | layout only |\n\n| Managed (`VmPAcsBehaviorLookup965Slice.cs`) | Native (`p_acs.cpp`) |\n|---------------------------------------------|---------------------|\n| `OldFormatStringDataOffset` / `ResolveOldLookupString` | **3305–3323** |\n| `NormalizeHexenPrintToken` / `BuildHexenLocalizationLabel` | **3310–3318** |\n| `EnhancedFormatStringDataOffset` / `ResolveEnhancedLookupString` | **3325–3332** |\n| `ResolveTypedScriptTypeName` / `EnumerateModuleTypedScriptStarts` | **3335–3383** |\n| `CollectStopMyScriptThinkers` | **3391–3405** |\n| `SavingRunningscript` / `CollectRunningScriptsForWrite` | **3428–3443** |\n| `ShouldWriteRunningScriptsArray` / field keys | **3445–3454** |\n| Band hull (exclusive slice) | **3305–3454** |\n\n### Chunk **965** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**964** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPAcsBehaviorLookup965Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "FBehavior::LookupString",
+        "start": 3305,
+        "end": 3454,
+        "tests": [
+          "VmPAcsBehaviorLookup965SliceTests.NormalizeHexenPrintToken_StripsPunctuationAndSpaces",
+          "VmPAcsBehaviorLookup965SliceTests.BuildHexenLocalizationLabel_MatchesNativePattern",
+          "VmPAcsBehaviorLookup965SliceTests.ResolveOldLookupString_UsesTranslationWhenPresent",
+          "VmPAcsBehaviorLookup965SliceTests.ResolveEnhancedLookupString_ReadsRelativeOffset",
+          "VmPAcsBehaviorLookup965SliceTests.ResolveTypedScriptTypeName_FallsBackLikeNative",
+          "VmPAcsBehaviorLookup965SliceTests.EnumerateModuleTypedScriptStarts_MatchesTypeAndFlags",
+          "VmPAcsBehaviorLookup965SliceTests.CollectStopMyScriptThinkers_OrdersServerThenClient",
+          "VmPAcsBehaviorLookup965SliceTests.ShouldWriteRunningScriptsArray_OnlyWhenWritingWithEntries",
+          "VmPAcsBehaviorLookup965SliceTests.CollectRunningScriptsForWrite_SkipsNullValues"
+        ]
+      }
+    ]
+  }
+]
