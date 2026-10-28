@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 66137,
+  "convertedThisRunNative": 66287,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 91045,
+  "convertedThisRunManaged": 91251,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 422668,
+  "remainingNative": 422518,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 84664,
+  "convertedBehaviorNative": 84814,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 85418,
-  "convertedBehaviorManaged": 100716,
+  "combinedBehaviorNative": 85568,
+  "convertedBehaviorManaged": 100922,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -35969,6 +35969,34 @@
       "nativeLoc": 150,
       "managedLoc": 143,
       "conversionManagedCommit": "8be6b422786e16da69a4070157f9d6244a98f302"
+    },
+    {
+      "name": "p-states-parser-goto-chunk990",
+      "bucket": "conversion",
+      "note": "`ResolveGotoLabel` tail, `FixStatePointers`, `ResolveGotoLabels`, and `SetGotoLabel` from `p_states.cpp` (**751\u2013900**); follows chunk **989** (**601\u2013750**).",
+      "auditSeams": "`ValidateActor`, `PClass::FindClass`, `FindState`, `FindStateByString`, `FState::StaticFindStateOwner`, `FxAlloc.Strdup`, `I_Error`, and `Printf` host calls remain injected.",
+      "auditRationale": "UNCredited continuation of `p_states.cpp` parser band; disjoint from **985\u2013989**. Does not re-port **989** class-scope head (**743\u2013754**).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_states.cpp --start 751 --end 900` and `--chunk 990 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `ResolveGotoLabel` Super/class validation (**751\u2013776**) | yes (predicates) |\n| `ResolveGotoLabel` offset + lookup (**778\u2013826**) | yes |\n| `FixStatePointers` (**836\u2013851**) | yes |\n| `ResolveGotoLabels` (**861\u2013872**) | yes |\n| `SetGotoLabel` (**883\u2013905**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **751\u2013754** | `Super` / `::` scope head (**989**) |\n| **757\u2013762**, **808\u2013824** | `I_Error` / `Printf` host |\n| **828\u2013834**, **853\u2013859**, **875\u2013881**, **907+** | comment banners / outside hull |\n| **1\u2013750** | chunks **985\u2013989** |\n\n| Managed (`VmPStatesParser990Slice.cs`) | Native (`p_states.cpp`) |\n|----------------------------------------|----------------------|\n| `ClassifyGotoScopeResolution` | **751\u2013776** |\n| `TrySplitGotoLabelOffset` / `ResolveGotoLabelInActorType` / `TryApplyOwnedStateOffset` | **778\u2013819** |\n| `FixIndexedStatePointersInTree` | **836\u2013851** |\n| `ResolvePendingGotoLabelsInTree` | **861\u2013872** |\n| `TrySetGotoLabelOnParserSession` | **883\u2013905** |\n| Band hull (exclusive slice) | **751\u2013900** |\n\n### Chunk **990** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**989** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPStatesParser990Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/p_states.cpp",
+          "symbol": "FStateDefinitions::ResolveGotoLabel",
+          "start": 751,
+          "end": 900,
+          "tests": [
+            "VmPStatesParser990SliceTests.ResolveGotoLabelTail",
+            "VmPStatesParser990SliceTests.FixAndResolveGotoTree",
+            "VmPStatesParser990SliceTests.SetGotoLabelSession"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 206,
+      "conversionManagedCommit": "09c92329a2448d782b7fc8f0a88d28fcbea8ca94"
     }
   ],
   "behaviorNativeChecksum": 508086,
