@@ -53,12 +53,14 @@ public static class VmADynLightCollect957Slice
             DistToSegSquared(posX, posY, startX, startY, endX, endY),
             radiusSquared);
 
+    public static bool LineNeedsLightNode(int lineValidCount, int globalValidCount) =>
+        lineValidCount != globalValidCount;
+
     public static bool ProcessSideWhenLineFresh(
         object? linedef,
         int lineValidCount,
         int globalValidCount) =>
-        linedef is not null
-        && VmADynLightLink956Slice.LineNeedsLightNode(lineValidCount, globalValidCount);
+        linedef is not null && LineNeedsLightNode(lineValidCount, globalValidCount);
 
     public static bool ShouldAddWallLightNode(
         double posX,
@@ -77,12 +79,18 @@ public static class VmADynLightCollect957Slice
     public static bool LinkedPortalEligible(int? portalType) =>
         portalType == PortTypeLinked;
 
+    public static bool LinkedPortalLineNeedsVisit(int lineValidCount, int globalValidCount) =>
+        lineValidCount != globalValidCount;
+
     public static bool ShouldTraverseLinkedPortal(int lineValidCount, int globalValidCount) =>
-        VmADynLightLink956Slice.LinkedPortalLineNeedsVisit(lineValidCount, globalValidCount);
+        LinkedPortalLineNeedsVisit(lineValidCount, globalValidCount);
+
+    public static bool PartnerSectionNeedsCollection(int partnerValidCount, int dlValidCount) =>
+        partnerValidCount != dlValidCount;
 
     public static bool PartnerSectionEligible(int partnerValidCount, int dlValidCount) =>
-        VmADynLightLink956Slice.PartnerSectionNeedsCollection(partnerValidCount, dlValidCount);
+        PartnerSectionNeedsCollection(partnerValidCount, dlValidCount);
 
     public static bool OtherSectionEligible(int otherValidCount, int globalValidCount) =>
-        VmADynLightLink956Slice.LinkedPortalLineNeedsVisit(otherValidCount, globalValidCount);
+        LinkedPortalLineNeedsVisit(otherValidCount, globalValidCount);
 }
