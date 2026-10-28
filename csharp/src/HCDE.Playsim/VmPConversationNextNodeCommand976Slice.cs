@@ -35,10 +35,8 @@ public static class VmPConversationNextNodeCommand976Slice
     public static bool ShouldRestoreNpcAngleAfterReply(int npcFlags8) =>
         (npcFlags8 & Mf8Dontfacetalker) == 0;
 
-    public static bool ShouldClearConversationAfterReply(bool intermissionActive) =>
-        !intermissionActive;
-
-    public static bool ShouldRestoreConsoleMusicVolume(bool isConsole) => isConsole;
+    public static bool TeardownClearsPlayerConversation(bool intermissionActive, bool slideshowActive) =>
+        !intermissionActive && !slideshowActive;
 
     public static bool DemoPlaybackClosesConversationMenu(bool demoPlayback, bool menuIsConversationKind) =>
         demoPlayback && menuIsConversationKind;
@@ -91,7 +89,4 @@ public static class VmPConversationNextNodeCommand976Slice
             || ShouldStopNpcVoiceDuringIntermission(closeDialog, intermissionActive)
             || closeDialog;
     }
-
-    public static bool TeardownClearsPlayerConversation(bool intermissionActive, bool slideshowActive) =>
-        !intermissionActive && !slideshowActive;
 }
