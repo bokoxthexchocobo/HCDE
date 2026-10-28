@@ -57,7 +57,7 @@ public class VmGGameDemoRecord1006SliceTests
         Assert.Equal(2, VmGGameDemoRecord1006Slice.DemoHeaderMinVersionField());
         Assert.Equal(3, VmGGameDemoRecord1006Slice.DemoHeaderFormatSubField());
         Assert.Equal(
-            0x20010L,
+            0x21000L,
             VmGGameDemoRecord1006Slice.RelinkDemoBufferPointer(
                 pointerOffset: 0x1000,
                 newBase: 0x20000,
