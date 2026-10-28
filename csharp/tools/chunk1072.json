@@ -1,0 +1,37 @@
+[
+  {
+    "name": "v-font-getfont-chunk1072",
+    "bucket": "conversion",
+    "note": "`V_GetFont` lookup policy and `DEFAULT_LOG_COLOR` from `v_font.cpp` (**1–150**); precedes chunk **1058** FONTDEFS (**151–300**).",
+    "auditSeams": "`FFont::FindFont`, lump readers, `CreateSingleLumpFont` / `CreateSinglePicFont`, and folder `FFont` ctor remain host-injected; **1–49** license/includes are zero-behavior.",
+    "auditRationale": "UNCredited **`src/common/fonts/v_font.cpp`** **1–150** (+150); no overlap with **1058–1062** mid-file bands; **901–957** still deferred.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/common/fonts/v_font.cpp --start 1 --end 150` and `--chunk 1072 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `DEFAULT_LOG_COLOR` macro (**50**) | yes |\n| `V_GetFont` null/alias names (**85–88**) | yes |\n| BIGUPPER → BIGFONT fallback gate (**92–96**) | yes |\n| Folder vs lump container ordering (**105–114**) | yes |\n| Single-lump FON header detect (**116–122**) | yes |\n| Translation load gate (**126–127**, **144–145**) | yes |\n| Texture pic-font path (**130–139**) | yes |\n| Folder font instantiate gate (**141–146**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1–49** | license banner / includes / extern decls |\n| **68–73** | global pointer defs |\n| **89–90**, **94–95** | host `FindFont` |\n| **117–125**, **136–137** | host lump/texture create |\n| **143** | host `new FFont` |\n| **151+** | `V_InitCustomFonts` (**1058** seam) |\n\n| Managed (`VmVFontGetFont1072Slice.cs`) | Native (`v_font.cpp`) |\n|------------------------------------------|----------------------|\n| `DefaultLogPaletteEntry` | **50** |\n| `ResolveCanonicalFontLookupName` | **86–88** |\n| `ShouldTryBigUpperFallback` | **92–96** |\n| Folder/lump ordering predicates | **105–114** |\n| `IsRecognizedSingleLumpFontHeader` | **121–122** |\n| Pic/folder/translation gates | **126–145** |\n| Band hull (exclusive slice) | **1–150** |\n\n### Chunk **1072** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1071** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmVFontGetFont1072Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/fonts/v_font.cpp",
+        "symbol": "V_GetFont",
+        "start": 1,
+        "end": 150,
+        "tests": [
+          "VmVFontGetFont1072SliceTests.BuildFolderFontPath_MatchesNativePattern",
+          "VmVFontGetFont1072SliceTests.ResolveFontLumpLookupName_FallsBackToCanonicalName",
+          "VmVFontGetFont1072SliceTests.ResolveCanonicalFontLookupName_MapsLegacyAliases",
+          "VmVFontGetFont1072SliceTests.ShouldPreferSingleLumpOverFolder_RequiresContainerOrdering",
+          "VmVFontGetFont1072SliceTests.IsRecognizedSingleLumpFontHeader_AcceptsFonMagic",
+          "VmVFontGetFont1072SliceTests.ShouldCreatePicFontFromTexture_RequiresSourceLumpOrdering",
+          "VmVFontGetFont1072SliceTests.ShouldInstantiateFolderFont_WhenEntriesExist",
+          "VmVFontGetFont1072SliceTests.ResolveFolderContainerWhenPresent_ReturnsSentinelWhenMissing",
+          "VmVFontGetFont1072SliceTests.DefaultLogPaletteEntry_MatchesMacro",
+          "VmVFontGetFont1072SliceTests.ShouldTryBigUpperFallback_OnlyForAlias",
+          "VmVFontGetFont1072SliceTests.ShouldAbortFontLookup_WhenNameNull",
+          "VmVFontGetFont1072SliceTests.ShouldLoadTranslationsAfterFontCreate_WhenAlreadyLoaded",
+          "VmVFontGetFont1072SliceTests.ClassifyLegacyFontAlias_RecognizesConfont"
+        ]
+      }
+    ]
+  }
+]
