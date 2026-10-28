@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 81156,
+  "convertedThisRunNative": 81306,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 102905,
+  "convertedThisRunManaged": 103016,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 407716,
+  "remainingNative": 407566,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 99683,
+  "convertedBehaviorNative": 99833,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 100370,
-  "convertedBehaviorManaged": 112576,
+  "combinedBehaviorNative": 100520,
+  "convertedBehaviorManaged": 112687,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -39141,6 +39141,41 @@
       "nativeLoc": 150,
       "managedLoc": 166,
       "conversionManagedCommit": "f810ae60448187ededb9b2f046b06ac0b927af14"
+    },
+    {
+      "name": "sbarinfo-commands-drawbar-parse-tick-chunk1090",
+      "bucket": "conversion",
+      "note": "`CommandDrawBar::Parse` tail, `Reset`, and `Tick` value head from `sbarinfo_commands.cpp` (**2551\u20132700**); follows **1089** ammo validation seam (**2556**).",
+      "auditSeams": "**1089** owns ammo class validation (**2553\u20132556**) and clip math; **1090** starts at post-validation ammo tail and stat-keyword continuation. Host `PClass::FindActor`, `GetCoordinates`, and `FindInventory` excluded.",
+      "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **2551\u20132700** (+150); draw bar stat tail/powerup/inventory validation, orientation/flag/border parse, script interpolation override, reset, health/armor/ammo1/ammo2 tick value policy; hull ends at **AMMO2** max lookup (**2700**).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 2551 --end 2700` and `--chunk 1090 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Ammo parse paren close (**2559\u20132560**) | yes (shape gate) |\n| Stat keywords frags\u2026savepercent (**2561\u20132572**) | yes (via **1089** classifier at seam) |\n| `poweruptime` class validation (**2581\u20132585**) | yes |\n| Generic inventory validation (**2593\u20132596**) | yes |\n| Draw bar orientation (**2601\u20132604**) | yes |\n| Parse `reverse` / `interpolate` flags (**2608\u20132618**) | yes |\n| Flag list `|` vs `,` (**2619\u20132620**) | yes |\n| Border reverse flip (**2628\u20132630**) | yes |\n| Health/armor script interpolation (**2634\u20132637**) | yes |\n| `Reset` draw value (**2641**) | yes |\n| Health clamp + max policy (**2650\u20132665**) | yes |\n| Armor value/max (**2667\u20132680**) | yes |\n| Ammo1/ammo2 empty slot policy (**2682\u20132700**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2553\u20132556** | **1089** ammo validation seam |\n| **2506\u20132512**, **2487\u20132489** | **1089** clip helpers |\n| **2551\u20132552**, **2578\u20132580**, **2592** | host class lookup |\n| **2622**, **2645+** host switch scaffolding | host `GetCoordinates` / member reads |\n| **2701+** | `AMMO` tick body outside hull |\n\n| Managed (`VmSbarinfoCommandDrawBar1090Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|-----------------------------------------------------|----------------------------------|\n| Parse tail + reset + tick head | **2559\u20132700** |\n| Band hull (exclusive slice) | **2551\u20132700** |\n\n### Chunk **1090** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1089** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmSbarinfoCommandDrawBar1090Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/g_statusbar/sbarinfo_commands.cpp",
+          "symbol": "CommandDrawBar::Parse / Reset / Tick",
+          "start": 2551,
+          "end": 2700,
+          "tests": [
+            "VmSbarinfoCommandDrawBar1090SliceTests.TryClassifyDrawBarParseFlagKeyword_MapsInterpolate",
+            "VmSbarinfoCommandDrawBar1090SliceTests.ResolveDrawBarParseFlagListContinuation_ContinuesOnPipe",
+            "VmSbarinfoCommandDrawBar1090SliceTests.ShouldReplaceDrawBarPowerupGiverClass_WhenMissing",
+            "VmSbarinfoCommandDrawBar1090SliceTests.ApplyDrawBarReverseWhenBorderNonZero_FlipsReverse",
+            "VmSbarinfoCommandDrawBar1090SliceTests.ResolveDrawBarInterpolationSpeedForType_HealthUsesScriptSpeed",
+            "VmSbarinfoCommandDrawBar1090SliceTests.ApplyCommandDrawBarResetState_ClearsDrawValueOnly",
+            "VmSbarinfoCommandDrawBar1090SliceTests.ClampDrawBarDisplayedHealth_SuppressesNegative",
+            "VmSbarinfoCommandDrawBar1090SliceTests.ResolveDrawBarHealthTickMax_UsesClassMaxByDefault",
+            "VmSbarinfoCommandDrawBar1090SliceTests.ResolveDrawBarAmmoSlotTick_EmptyAmmoUsesMaxOne",
+            "VmSbarinfoCommandDrawBar1090SliceTests.ClassifyDrawBarOrientationKeyword_RejectsUnknown"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 111,
+      "conversionManagedCommit": "7d14aac3365b7160ff23b611ac9c0c73747bd717"
     }
   ],
   "behaviorNativeChecksum": 508086,
