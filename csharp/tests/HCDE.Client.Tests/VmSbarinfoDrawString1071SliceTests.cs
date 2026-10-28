@@ -67,7 +67,7 @@ public class VmSbarinfoDrawString1071SliceTests
     [Fact]
     public void IsTextColorEscape_RecognizesNativeEscape()
     {
-        Assert.True(VmSbarinfoDrawString1071Slice.IsTextColorEscape('\034'));
+        Assert.True(VmSbarinfoDrawString1071Slice.IsTextColorEscape(0x1c));
     }
 
     [Fact]
