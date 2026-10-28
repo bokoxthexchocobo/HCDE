@@ -31,6 +31,18 @@ public static class VmADynLightSpawn958Slice
     public static int ResolveUdmfShadowMinQuality(int udmfValue, int currentValue) =>
         udmfValue >= 0 ? udmfValue : currentValue;
 
+    public static (float SoftShadowRadius, float Linearity, int ShadowMinQuality) ApplyUdmfSpawnOverrides(
+        float softUdmf,
+        float softCurrent,
+        float linearUdmf,
+        float linearCurrent,
+        int qualityUdmf,
+        int qualityCurrent) =>
+        (
+            ResolveUdmfSoftShadowRadius(softUdmf, softCurrent),
+            ResolveUdmfLinearity(linearUdmf, linearCurrent),
+            ResolveUdmfShadowMinQuality(qualityUdmf, qualityCurrent));
+
     public static int ClearRecreateLightsFlag(int flags8) =>
         flags8 & ~VmADynLightAttach955Slice.Mf8RecreateLights;
 

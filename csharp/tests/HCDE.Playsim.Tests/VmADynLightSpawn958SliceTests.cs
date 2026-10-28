@@ -83,4 +83,13 @@ public class VmADynLightSpawn958SliceTests
     {
         Assert.True(VmADynLightSpawn958Slice.ShouldLinkPreviousLight(new object()));
     }
+
+    [Fact]
+    public void ApplyUdmfSpawnOverrides_UsesActorValuesWhenUdmfNegative()
+    {
+        var (_, linear, quality) = VmADynLightSpawn958Slice.ApplyUdmfSpawnOverrides(
+            -1f, 2f, -1f, 0.25f, -1, 4);
+        Assert.Equal(0.25f, linear);
+        Assert.Equal(4, quality);
+    }
 }
