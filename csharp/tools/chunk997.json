@@ -1,0 +1,28 @@
+[
+  {
+    "name": "g-game-input-chunk997",
+    "bucket": "conversion",
+    "note": "`turbo` movement scale, save rotation clamps, `HCDE_InputSmoothMouseDelta`, and `turnspeeds` CCMD fill rules from `g_game.cpp` (**375–524**); follows chunk **996** (**225–374**).",
+    "auditSeams": "`CCMD(turnspeeds)` `Printf` listing (**497–504**) and bare `CVAR` decls remain host-injected.",
+    "auditRationale": "UNCredited **375–524** CLI band; disjoint from chunks **995** / **996** and chunk **9** (**204–224**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_game.cpp --start 375 --end 524` and `--chunk 997 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `turbo` clamp + norm move scale (**388–407**) | yes |\n| `autosavecount` clamp (**419–423**) | yes |\n| `quicksaverotationcount` clamp (**428–432**) | yes |\n| `HCDE_InputSmoothMouseDelta` (**451–466**) | yes |\n| `turnspeeds` argv fill (**510–525**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **375–377** | `sv_gametype` close (chunk **996**) |\n| **379–384**, **409–411** | MSVC pragma workaround |\n| **413–417**, **425–426** | bare `CVAR` decls |\n| **434–449**, **468–491** | static globals / constants |\n| **495–505** | `Printf` host listing |\n| **529+** | `CCMD(slot)` (next band) |\n\n| Managed (`VmGGameInput997Slice.cs`) | Native (`g_game.cpp`) |\n|-------------------------------------|----------------------|\n| `ClampTurboPercent` / `ApplyTurboToMovementTables` | **390–406** |\n| `NormalizeAutosaveCount` | **421–422** |\n| `NormalizeQuicksaveRotationCount` | **430–431** |\n| `SmoothMouseDelta` | **451–466** |\n| `ApplyTurnspeedsConsoleArgs` | **510–525** |\n| Band hull (exclusive slice) | **375–524** |\n\n### Chunk **997** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**996** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmGGameInput997Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "HCDE_InputSmoothMouseDelta",
+        "start": 375,
+        "end": 524,
+        "tests": [
+          "VmGGameInput997SliceTests.TurboClampAndScale",
+          "VmGGameInput997SliceTests.SaveCountClamps",
+          "VmGGameInput997SliceTests.SmoothMouseDelta",
+          "VmGGameInput997SliceTests.TurnspeedsConsoleFillRules"
+        ]
+      }
+    ]
+  }
+]
