@@ -1,0 +1,30 @@
+[
+  {
+    "name": "p-ticker-clear-interpolation-chunk977",
+    "bucket": "conversion",
+    "note": "`P_ClearLevelInterpolation` tail and `P_Ticker` paused path, global freeze, time-freezer sound resume, and level think loop head from `p_tick.cpp` (**151–300**).",
+    "auditSeams": "`HCDERconPollListener`, `K8tiAgentPoll`, `HCDEAIDirectorTick`, `S_ResumeSound`, `P_PlayerThink`, `P_ThinkParticles`, `Level->Tick`, and thinker runs remain host-injected.",
+    "auditRationale": "First UNCredited `p_tick.cpp` conversion band; file EOF **309** so hull stays in-range. No overlap with `VmPMobjActorTick` (`p_mobj.cpp`).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_tick.cpp --start 151 --end 300` and `--chunk 977 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Actor/psprite interpolation clear (**151–170**) | yes (predicates) |\n| Status bar interpolation clear (**173–174**) | yes |\n| `P_Ticker` pause + `MF8_RECREATELIGHTS` (**205–221**) | yes |\n| Global freeze quarter-tic (**229–238**) | yes |\n| Time-freezer → resume sound scan (**245–252**) | yes |\n| Renderer interpolate toggle (**255–258**) | yes |\n| Level loop: think gate + clocks (**277–307**) | yes (predicates) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **172**, **184–187**, **190–202** | host poll / interpolator hooks |\n| **225**, **254**, **273–275**, **293–296** | host calls (`DPSprite::NewTick`, specials, particles, events) |\n| **177–179**, **652–659** | comment banners |\n\n| Managed (`VmPTicker977Slice.cs`) | Native (`p_tick.cpp`) |\n|----------------------------------|---------------------|\n| `ActorNeedsRecreateLights` / `ApplyRecreateLightsClear` | **215–218** |\n| `TickerPausedEarlyOut` | **205–206** |\n| `TryApplyGlobalFreezeChange` / `MergeGlobalFreezeIntoLevelState` | **229–238** |\n| `AllPlayersClearOfTimeFreezer` | **245–251** |\n| `RendererInterpolationAfterSightReset` | **255–258** |\n| `ShouldAdvancePspriteInterpolationReset` | **158–169** |\n| `ShouldClearStatusBarInterpolation` | **173–174** |\n| `SkipHcdeRuntimeJoinerPlayerThink` / `ShouldInvokePlayerThink` | **277–290** |\n| `ShouldUpdateSpecials` / `IncrementLevelClocks` | **299–307** |\n| Band hull (exclusive slice) | **151–300** |\n\n### Chunk **977** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**976** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPTicker977Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/p_tick.cpp",
+        "symbol": "P_Ticker",
+        "start": 151,
+        "end": 300,
+        "tests": [
+          "VmPTicker977SliceTests.RecreateLightsFlag_ClearsWhenSet",
+          "VmPTicker977SliceTests.GlobalFreeze_TogglesOnQuarterTics",
+          "VmPTicker977SliceTests.TimeFreezerScan_ResumesWhenAllClear",
+          "VmPTicker977SliceTests.TickerPauseAndInterpolation_Gates",
+          "VmPTicker977SliceTests.HcdeJoiner_SkipsPlayerThinkUntilAuthority",
+          "VmPTicker977SliceTests.LevelClocksAndSpecials"
+        ]
+      }
+    ]
+  }
+]
