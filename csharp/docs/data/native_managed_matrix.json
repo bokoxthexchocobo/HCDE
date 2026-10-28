@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 246485
+    "managedCSharpLoc": 246537
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 82206,
+    "convertedThisRunNative": 82220,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 103681,
+    "convertedThisRunManaged": 103733,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 406666,
+    "remainingNative": 406652,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 100733,
+    "convertedBehaviorNative": 100747,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 101420,
-    "convertedBehaviorManaged": 113352,
+    "combinedBehaviorNative": 101434,
+    "convertedBehaviorManaged": 113404,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -39403,6 +39403,38 @@
         "nativeLoc": 150,
         "managedLoc": 123,
         "conversionManagedCommit": "8d2d12d7f962078a2ec714e342d642aaa2bc3e42"
+      },
+      {
+        "name": "sbarinfo-commands-nextcommand-eof-chunk1097",
+        "bucket": "conversion",
+        "note": "`NextCommand` switch tail, unknown-command error, and flow-block close from `sbarinfo_commands.cpp` (**3601\u20133614**); EOF closeout after **1096** dispatch head (**3600**).",
+        "auditSeams": "**1096** owns `NextCommand` through **SBARINFO_ININVENTORY** (**3579\u20133600**); **1097** credits alpha/if* factory cases (**3601\u20133605**), switch fallthrough error (**3608\u20133609**), and closing-brace terminator (**3612\u20133613**). Host `new Command*` factories and `sc.ScriptError` formatting excluded.",
+        "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **3601\u20133614** (14); intentional short EOF band closing `NextCommand` after **1096** +150 hull.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 3601 --end 3614` and `--chunk 1097 --band` \u2192 UNCredited, exit 0.",
+        "auditFileEofTailException": true,
+        "auditManagedLocJustification": "EOF tail slice spells five enum-to-factory mappings, unknown-command policy, and absent-identifier close gate without duplicating **1096** name table or **3600** cases; managed surface is intentionally larger than 14 native lines for explicit test seams.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Switch cases alpha\u2192ifcvarint (**3601\u20133605**) | yes |\n| Unknown command error + null return (**3608\u20133609**) | yes (policy) |\n| Absent identifier `MustGetToken('}')` (**3612\u20133613**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **3545\u20133600** | **1096** command table + dispatch head |\n| **3574\u20133576** | **1096** identifier gate |\n| **3606\u20133607** | switch close brace only |\n| **3610\u20133611** | host `return NULL` after error |\n| **3614** | function closing brace |\n\n| Managed (`VmSbarinfoCommandFlowControlNextCommand1097Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|----------------------------------------------------------------|----------------------------------|\n| Tail dispatch band + factory mapping | **3601\u20133605** |\n| Unknown identifier outcome | **3608\u20133609** |\n| Flow block terminator | **3612\u20133613** |\n| Band hull (exclusive slice) | **3601\u20133614** |\n\n### Chunk **1097** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **14** |\n| **Net headline** | **+14** vs post-**1096** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Client/VmSbarinfoCommandFlowControlNextCommand1097Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/g_statusbar/sbarinfo_commands.cpp",
+            "symbol": "SBarInfoCommandFlowControl::NextCommand EOF tail",
+            "start": 3601,
+            "end": 3614,
+            "tests": [
+              "VmSbarinfoCommandFlowControlNextCommand1097SliceTests.IsNextCommandDispatchCaseWithinEofBand_IncludesTailCases",
+              "VmSbarinfoCommandFlowControlNextCommand1097SliceTests.IsNextCommandDispatchCaseWithinEofBand_ExcludesInInventoryHead",
+              "VmSbarinfoCommandFlowControlNextCommand1097SliceTests.TryResolveNextCommandTailFactoryKind_MapsIfCVarInt",
+              "VmSbarinfoCommandFlowControlNextCommand1097SliceTests.ResolveNextCommandUnknownIdentifierOutcome_FailsWhenSwitchMisses",
+              "VmSbarinfoCommandFlowControlNextCommand1097SliceTests.ResolveNextCommandWhenIdentifierAbsent_RequiresClosingBrace"
+            ]
+          }
+        ],
+        "nativeLoc": 14,
+        "managedLoc": 52,
+        "conversionManagedCommit": "825de530cd6e3c8a867eb64226da1596b1659c4e"
       }
     ],
     "behaviorNativeChecksum": 508086,
