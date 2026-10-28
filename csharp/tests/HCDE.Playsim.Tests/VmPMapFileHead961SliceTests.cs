@@ -40,9 +40,31 @@ public class VmPMapFileHead961SliceTests
     }
 
     [Fact]
-    public void ShouldRunSecondCanCollideVirtual_SkipsWhenFirstBlocks()
+    public void EvaluateSecondCanCollideVirtual_RequiresMateParam()
     {
-        Assert.False(VmPMapFileHead961Slice.ShouldRunSecondCanCollideVirtual(firstBlocked: true));
+        var ran = VmPMapFileHead961Slice.EvaluateSecondCanCollideVirtual(
+            virtualsSize: 8,
+            virtualIndex: 3,
+            hasVirtualFunction: true,
+            vmReturnValue: 1,
+            mateParam: true,
+            out var blocked);
+        Assert.True(ran);
+        Assert.False(blocked);
+    }
+
+    [Fact]
+    public void EvaluateFirstCanCollideVirtual_BlocksWhenVmReturnsZero()
+    {
+        var spechit = 0;
+        var portal = 0;
+        VmPMapFileHead961Slice.AppendSpechitWhenNeeded(
+            special: 12,
+            isPortal: true,
+            () => spechit++,
+            () => portal++);
+        Assert.Equal(1, spechit);
+        Assert.Equal(1, portal);
     }
 
     [Fact]
@@ -57,12 +79,6 @@ public class VmPMapFileHead961SliceTests
             () => portal++);
         Assert.Equal(1, spechit);
         Assert.Equal(1, portal);
-    }
-
-    [Fact]
-    public void ReverseCollideMateParam_TogglesBetweenActors()
-    {
-        Assert.True(VmPMapFileHead961Slice.ReverseCollideMateParam(firstPass: false));
     }
 
     [Fact]

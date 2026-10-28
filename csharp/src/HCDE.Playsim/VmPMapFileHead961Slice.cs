@@ -38,10 +38,6 @@ public static class VmPMapFileHead961Slice
     public static bool CollidePairAllowed(int firstActorResult, int secondActorResult) =>
         firstActorResult != 0 && secondActorResult != 0;
 
-    public static bool ReverseCollideMateParam(bool firstPass) => !firstPass;
-
-    public static bool ShouldRunSecondCanCollideVirtual(bool firstBlocked) => !firstBlocked;
-
     public static bool EvaluateFirstCanCollideVirtual(
         int virtualsSize,
         uint virtualIndex,
@@ -73,8 +69,6 @@ public static class VmPMapFileHead961Slice
 
     public static bool RecordSpecialLineHit(int special) => special != 0;
 
-    public static bool RecordPortalLineHit(bool isPortal) => isPortal;
-
     public static void AppendSpechitWhenNeeded(
         int special,
         bool isPortal,
@@ -83,7 +77,7 @@ public static class VmPMapFileHead961Slice
     {
         if (RecordSpecialLineHit(special))
             recordSpechit();
-        if (RecordPortalLineHit(isPortal))
+        if (isPortal)
             recordPortalhit();
     }
 }

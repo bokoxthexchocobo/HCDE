@@ -21,9 +21,8 @@
           "VmPMapFileHead961SliceTests.ResolveCanCollideVirtualIndex_CachesAfterFirstResolve",
           "VmPMapFileHead961SliceTests.ActorVirtualTableLargeEnough_MatchesNativeBoundsCheck",
           "VmPMapFileHead961SliceTests.CollidePairAllowed_BothVirtualCallsMustPass",
-          "VmPMapFileHead961SliceTests.ShouldRunSecondCanCollideVirtual_SkipsWhenFirstBlocks",
           "VmPMapFileHead961SliceTests.AppendSpechitWhenNeeded_RecordsPortalAndSpecialSeparately",
-          "VmPMapFileHead961SliceTests.ReverseCollideMateParam_TogglesBetweenActors",
+          "VmPMapFileHead961SliceTests.EvaluateSecondCanCollideVirtual_RequiresMateParam",
           "VmPMapFileHead961SliceTests.EvaluateFirstCanCollideVirtual_BlocksWhenVmReturnsZero",
           "VmPMapFileHead961SliceTests.DefaultCvarPolicy_MatchesNativeArchiveDefaults"
         ]
