@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 68537,
+  "convertedThisRunNative": 68687,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 92957,
+  "convertedThisRunManaged": 93041,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 420268,
+  "remainingNative": 420118,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 87064,
+  "convertedBehaviorNative": 87214,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 87818,
-  "convertedBehaviorManaged": 102628,
+  "combinedBehaviorNative": 87968,
+  "convertedBehaviorManaged": 102712,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -36389,7 +36389,7 @@
       ],
       "nativeLoc": 150,
       "managedLoc": 78,
-      "conversionManagedCommit": "c2ad47601776debdc5b8388870b86476cce09546"
+      "conversionManagedCommit": "1fce99671765d0218e33ad78ca11bd4ecd213d25"
     },
     {
       "name": "g-game-save-payload-chunk1005",
@@ -36416,7 +36416,35 @@
       ],
       "nativeLoc": 150,
       "managedLoc": 95,
-      "conversionManagedCommit": "83ce66fc6577f0127c2a1e9f7ded5e34098134f7"
+      "conversionManagedCommit": "1fce99671765d0218e33ad78ca11bd4ecd213d25"
+    },
+    {
+      "name": "g-game-demo-record-chunk1006",
+      "bucket": "conversion",
+      "note": "Demo net dispatch tail, `CCMD (stop)`, `G_WriteDemoTiccmd`, `G_RecordDemo`, and `G_BeginRecording` from `g_game.cpp` (**3200\u20133349**); follows chunk **1005** (**3050\u20133199**).",
+      "auditSeams": "`Net_DoCommand`, demo buffer host I/O, chunk writers, and `C_WriteCVars` remain injected.",
+      "auditRationale": "UNCredited **3200\u20133349** CLI band; disjoint from chunks **995\u20131005** and chunk **9** credited segments.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_game.cpp --start 3200 --end 3349` and `--chunk 1006 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `G_ReadDemoTiccmd` default (**3201\u20133203**) | yes |\n| `CCMD (stop)` / write stop gate (**3208\u20133225**) | yes |\n| Special ticcmd + buffer growth (**3229\u20133248**) | yes |\n| `G_RecordDemo` setup (**3257\u20133265**) | yes |\n| `G_BeginRecording` header (**3273\u20133338**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **3204\u20133206** | loop close host |\n| **3230\u20133233** | `WriteUserCmdMessage` host |\n| **3283\u20133296** | FORM chunk binary host |\n| **3303\u20133307** | userinfo string host |\n| **3321\u20133328** | cvar/weapon chunk host |\n| **3342+** | `G_DeferedPlayDemo` (next band) |\n\n| Managed (`VmGGameDemoRecord1006Slice.cs`) | Native (`g_game.cpp`) |\n|------------------------------------------|----------------------|\n| `RoutesUnhandledDemoCommandToNet` | **3201\u20133203** |\n| `ResolveDemoRecordingWriteGate` / full console trace | **3218\u20133224** |\n| `ShouldWriteSpecialDemoTics` / buffer expansion | **3229\u20133248** |\n| `AppendDefaultDemoExtensionIfMissing` | **3260\u20133263** |\n| `ResolveRecordingStartMap` / header chunk gates | **3277\u20133338** |\n| Band hull (exclusive slice) | **3200\u20133349** |\n\n### Chunk **1006** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1005** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmGGameDemoRecord1006Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/g_game.cpp",
+          "symbol": "G_WriteDemoTiccmd",
+          "start": 3200,
+          "end": 3349,
+          "tests": [
+            "VmGGameDemoRecord1006SliceTests.ReadDemoDefaultDispatch",
+            "VmGGameDemoRecord1006SliceTests.WriteDemoTiccmd",
+            "VmGGameDemoRecord1006SliceTests.RecordAndBeginDemo"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 84,
+      "conversionManagedCommit": "e520d2543e569368efd08e82d1081b5d6f380e9f"
     }
   ],
   "behaviorNativeChecksum": 508086,
