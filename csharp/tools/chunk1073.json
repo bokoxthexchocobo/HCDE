@@ -25,7 +25,8 @@
           "VmSbarinfoCommandDrawImage1073SliceTests.ResolveHexenArmorPiece_DefaultsUnknownToArmor",
           "VmSbarinfoCommandDrawImage1073SliceTests.ComputeFrameAlpha_MultipliesBlockAndCommandAlpha",
           "VmSbarinfoCommandDrawImage1073SliceTests.ResolveSpawnScaledDimensions_AppliesSpawnScales",
-          "VmSbarinfoCommandDrawImage1073SliceTests.ShouldRequireStringImageToken_MatchesGetImageGate",
+          "VmSbarinfoCommandDrawImage1073SliceTests.ShouldCloseHexenArmorParen_RequiresParenAndImageToken",
+          "VmSbarinfoCommandDrawImage1073SliceTests.ShouldUseDrawInBoxPath_DetectsDrawInBoxFlag",
           "VmSbarinfoCommandDrawImage1073SliceTests.ResolveInventoryImageIndex_UsesNativeSentinel"
         ]
       }

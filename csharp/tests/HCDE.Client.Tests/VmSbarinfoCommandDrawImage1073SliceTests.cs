@@ -86,10 +86,17 @@ public class VmSbarinfoCommandDrawImage1073SliceTests
     }
 
     [Fact]
-    public void ShouldRequireStringImageToken_MatchesGetImageGate()
+    public void ShouldCloseHexenArmorParen_RequiresParenAndImageToken()
     {
-        Assert.True(VmSbarinfoCommandDrawImage1073Slice.ShouldRequireStringImageToken(true));
-        Assert.False(VmSbarinfoCommandDrawImage1073Slice.ShouldRequireStringImageToken(false));
+        Assert.True(VmSbarinfoCommandDrawImage1073Slice.ShouldCloseHexenArmorParen(true, true));
+        Assert.False(VmSbarinfoCommandDrawImage1073Slice.ShouldCloseHexenArmorParen(false, true));
+    }
+
+    [Fact]
+    public void ShouldUseDrawInBoxPath_DetectsDrawInBoxFlag()
+    {
+        Assert.True(VmSbarinfoCommandDrawImage1073Slice.ShouldUseDrawInBoxPath(
+            VmSbarinfoCommandDrawImage1073Slice.DiDrawInBox));
     }
 
     [Fact]

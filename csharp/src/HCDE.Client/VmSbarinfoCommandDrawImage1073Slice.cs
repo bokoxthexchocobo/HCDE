@@ -29,8 +29,6 @@ public static class VmSbarinfoCommandDrawImage1073Slice
 
     public static bool ShouldInvokeParentDrawBeforeTexture(uint flags) => (flags & DiAlternateOnFail) != 0;
 
-    public static bool ShouldSkipDrawWhenTextureMissing(bool textureIsNull) => textureIsNull;
-
     public static double ComputeFrameAlpha(double blockAlpha, double commandAlpha) => blockAlpha * commandAlpha;
 
     public static (int Width, int Height) ComputeDrawInBoxDimensions(
@@ -111,8 +109,6 @@ public static class VmSbarinfoCommandDrawImage1073Slice
         (sawOpenParen, true);
 
     public static int ResolveInventoryImageIndex() => ForceDimensionUnset;
-
-    public static bool ShouldRequireStringImageToken(bool getImage) => getImage;
 
     public static bool ShouldCloseHexenArmorParen(bool parenthesized, bool sawImageToken) =>
         parenthesized && sawImageToken;
