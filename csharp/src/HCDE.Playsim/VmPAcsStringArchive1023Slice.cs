@@ -6,7 +6,7 @@ namespace HCDE.Playsim;
 /// </summary>
 public static class VmPAcsStringArchive1023Slice
 {
-    public const uint FreeEntry = uint.MaxValue;
+    public const uint FreeEntry = 0xFFFFFFFE;
     public const int StackSize = 4096;
     public const int NumWorldVars = 32;
     public const int NumGlobalVars = 64;

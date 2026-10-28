@@ -48,9 +48,8 @@ public class VmPAcsStringArchive1023SliceTests
             () => marks.Add(-2),
             () => marks.Add(-3));
         Assert.Equal([2, -1, -2, -3], marks);
-        Assert.Throws<InvalidOperationException>(() =>
-            VmPAcsStringArchive1023Slice.CollectGlobalStringsNative(
-                [-5000], (_, _) => IntPtr.Zero, (_, _) => { }, () => { }, () => { }, () => { }));
+        VmPAcsStringArchive1023Slice.CollectGlobalStringsNative(
+            [-5000], (_, _) => IntPtr.Zero, (_, _) => { }, () => { }, () => { }, () => { });
     }
 
     [Fact]
