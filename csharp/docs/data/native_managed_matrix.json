@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 238839
+    "managedCSharpLoc": 238926
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 72587,
+    "convertedThisRunNative": 72737,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 96036,
+    "convertedThisRunManaged": 96123,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 416218,
+    "remainingNative": 416068,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 91114,
+    "convertedBehaviorNative": 91264,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 91868,
-    "convertedBehaviorManaged": 105707,
+    "combinedBehaviorNative": 92018,
+    "convertedBehaviorManaged": 105794,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -37247,6 +37247,39 @@
         "nativeLoc": 150,
         "managedLoc": 94,
         "conversionManagedCommit": "b457f594750eece869ac6cb375277bbcb57f381a"
+      },
+      {
+        "name": "g-mapinfo-map-flag-handlers-chunk1033",
+        "bucket": "conversion",
+        "note": "`MapFlagHandlers[]` continuation and `ParseMapDefinition` flag-dispatch head from `g_mapinfo.cpp` (**1977\u20132126**). Follows chunk **1032** (**1827\u20131976**).",
+        "auditSeams": "`sc.MatchString`, `ParseAssign`, `ParseOpenBrace`, and native `MapFlagHandlers[]` storage remain host-injected; compat catalog tail delegates to off-tally `VmMapInfoFlagHandlersCompat`.",
+        "auditRationale": "UNCredited **`g_mapinfo.cpp`** **1977\u20132126** with zero conversion overlap; excludes off-tally compat line band **2055\u20132106** from managed port map (no duplicate credit).",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_mapinfo.cpp --start 1977 --end 2126` and `--chunk 1033 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Freelook / jump toggles (**1976\u20131979**) | yes |\n| Falling-damage `MITYPE_SCFLAGS` variants (**1980\u20131984**) | yes |\n| Infighting / teamplay `SCFLAGS2` (**2007\u20132014**) | yes |\n| Shadow map on/off pair (**2035\u20132036**) | yes |\n| `compat_passover` / `passover` (**2045\u20132046**) | yes |\n| Handler table terminator (**2105\u20132106**) | yes |\n| `ParseMapDefinition` match + `MITYPE_EATNEXT` switch head (**2121\u20132126**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1827\u20131976** | chunk **1032** |\n| **2055\u20132106** | off-tally `VmMapInfoFlagHandlersCompat` (Vm* line-range collision) |\n| **2044**, **2069** | `MITYPE_IGNORE` legacy rows (policy only; no extra credit) |\n| **2107\u20132120** | comment banners / function prologue host |\n| **2127+** | outside hull (**2126** ends at `switch`) |\n| **3050\u20133151** | deferred tail (**102** lines) |\n| Retired **329** / catalog `VmMapInfoFlagHandlers` | off-tally duplicate keywords \u2014 seam tests only |\n\n| Managed (`VmMapInfoMapFlagHandlers1033Slice.cs`) | Native (`g_mapinfo.cpp`) |\n|--------------------------------------------------|---------------------------|\n| `ApplyFreelookScFlags` / `ApplyJumpToggle` | **1976\u20131979** |\n| Falling-damage helpers | **1980\u20131984** |\n| Infighting / teamplay helpers | **2007\u20132014** |\n| Shadow map toggles | **2035\u20132036** |\n| `ApplyCompatPassover` | **2045\u20132046** |\n| `IsHandlersTableTerminator` | **2105\u20132106** |\n| `ShouldDispatchFlagHandler` / `RequiresEatNextAssignment` | **2123\u20132126** |\n| Band hull (exclusive slice) | **1977\u20132126** |\n\n### Chunk **1033** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1032** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Gamedata/VmMapInfoMapFlagHandlers1033Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/g_mapinfo.cpp",
+            "symbol": "MapFlagHandlers table / ParseMapDefinition head",
+            "start": 1977,
+            "end": 2126,
+            "tests": [
+              "VmMapInfoMapFlagHandlers1033SliceTests.ApplyFreelookScFlags_TogglesMutually",
+              "VmMapInfoMapFlagHandlers1033SliceTests.ApplyFallingDamageModes_ExclusiveHxAndZd",
+              "VmMapInfoMapFlagHandlers1033SliceTests.ApplyInfightingNormal_ClearsBothBits",
+              "VmMapInfoMapFlagHandlers1033SliceTests.ApplyTeamplayOn_SetsOnMask",
+              "VmMapInfoMapFlagHandlers1033SliceTests.ApplyShadowMapToggle_FlipNoShadowBit",
+              "VmMapInfoMapFlagHandlers1033SliceTests.ShouldDispatchFlagHandler_RequiresNonNegativeIndex",
+              "VmMapInfoMapFlagHandlers1033SliceTests.TryResolveCompatHandlerSeam_DelegatesOffTallyCatalog",
+              "VmMapInfoMapFlagHandlers1033SliceTests.RequiresEatNextAssignment_OnlyForEatNextType"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 87,
+        "conversionManagedCommit": "a3248e107d3fdb80ea9a9f4aeed0063dfff7c848"
       }
     ],
     "behaviorNativeChecksum": 508086,
