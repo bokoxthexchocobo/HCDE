@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 67037,
+  "convertedThisRunNative": 67187,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 91887,
+  "convertedThisRunManaged": 91969,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 421768,
+  "remainingNative": 421618,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 85564,
+  "convertedBehaviorNative": 85714,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 86318,
-  "convertedBehaviorManaged": 101558,
+  "combinedBehaviorNative": 86468,
+  "convertedBehaviorManaged": 101640,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -36137,6 +36137,34 @@
       "nativeLoc": 150,
       "managedLoc": 82,
       "conversionManagedCommit": "abc853499ecd865894473d423361ce3ec094e77c"
+    },
+    {
+      "name": "g-game-cvars-chunk996",
+      "bucket": "conversion",
+      "note": "`displaynametags`, session globals, and `sv_gametype` rule mapping from `g_game.cpp` (**225\u2013374**); follows chunk **995** (**1\u2013150**). Starts after chunk **9** (**204\u2013224**).",
+      "auditSeams": "`Printf`, `CVAR` registration macros, and `FARG` help text remain host-injected.",
+      "auditRationale": "UNCredited **225\u2013374** CLI band; disjoint from chunk **9** trace (**204\u2013224**) and chunk **995** head. Do not take **151\u2013300** (overlaps **204\u2013224**).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_game.cpp --start 225 --end 374` and `--chunk 996 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `displaynametags` clamp (**314\u2013319**) | yes |\n| `sv_gametype` validation (**341\u2013345**) | yes |\n| `sv_gametype` DM/team/CTF/invasion mapping (**347\u2013375**) | yes |\n| Session flag globals (**244\u2013248**) | yes (aggregate) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **204\u2013224** | chunk **9** `G_TraceSetGameState` |\n| **225\u2013313** | `EXTERN_CVAR` / globals / `FARG` banners |\n| **360\u2013363** | `Printf` host (CTF placeholder message) |\n| **322\u2013337**, **290\u2013298** | bare `CVAR` decls |\n| **1\u2013224** | chunks **995** / **9** |\n\n| Managed (`VmGGameCvars996Slice.cs`) | Native (`g_game.cpp`) |\n|-------------------------------------|----------------------|\n| `NormalizeDisplayNameTags` / `ShouldClampDisplayNameTags` | **316\u2013318** |\n| `ClampSvGameType` / `ShouldRejectSvGameType` | **341\u2013345** |\n| `ResolveMultiplayerRulesFromSvGameType` / helpers | **347\u2013375** |\n| `CollectGameSessionFlags` | **244\u2013248** |\n| Band hull (exclusive slice) | **225\u2013374** |\n\n### Chunk **996** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**995** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmGGameCvars996Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/g_game.cpp",
+          "symbol": "CUSTOM_CVAR(sv_gametype)",
+          "start": 225,
+          "end": 374,
+          "tests": [
+            "VmGGameCvars996SliceTests.DisplayNameTagsClamp",
+            "VmGGameCvars996SliceTests.SvGameTypeRules",
+            "VmGGameCvars996SliceTests.SessionFlags"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 82,
+      "conversionManagedCommit": "e3d6932738c404d075bd6d9f1151b061b1c563f2"
     }
   ],
   "behaviorNativeChecksum": 508086,
