@@ -27,10 +27,16 @@ public class VmSbarinfoCommandDrawInventoryBar1088SliceTests
     }
 
     [Fact]
-    public void ResolveInventoryBarCounterWhenNotZeroFlag_InvertsAlwaysShowCounter()
+    public void ResolveInventoryBarCounterDrawNumberInit_MatchesNativeCounterFields()
     {
-        Assert.True(VmSbarinfoCommandDrawInventoryBar1088Slice.ResolveInventoryBarCounterWhenNotZeroFlag(
-            alwaysShowCounter: false));
+        var (whenNotZero, kind, length) =
+            VmSbarinfoCommandDrawInventoryBar1088Slice.ResolveInventoryBarCounterDrawNumberInit(
+                alwaysShowCounter: false);
+        Assert.True(whenNotZero);
+        Assert.Equal(
+            VmSbarinfoCommandDrawString1079Slice.DrawNumberValueKind.Constant,
+            kind);
+        Assert.Equal(int.MaxValue, length);
     }
 
     [Fact]

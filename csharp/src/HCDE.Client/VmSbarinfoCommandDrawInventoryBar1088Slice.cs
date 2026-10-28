@@ -31,7 +31,14 @@ public static class VmSbarinfoCommandDrawInventoryBar1088Slice
         bool vertical) =>
         (counterX + (vertical ? 0 : spacing * slotIndex), counterY + (vertical ? spacing * slotIndex : 0));
 
-    public static bool ResolveInventoryBarCounterWhenNotZeroFlag(bool alwaysShowCounter) => !alwaysShowCounter;
+    public static (
+        bool WhenNotZero,
+        VmSbarinfoCommandDrawString1079Slice.DrawNumberValueKind ValueKind,
+        int Length) ResolveInventoryBarCounterDrawNumberInit(bool alwaysShowCounter) =>
+        (
+            !alwaysShowCounter,
+            VmSbarinfoCommandDrawString1079Slice.DrawNumberValueKind.Constant,
+            InventoryBarCounterLength);
 
     public static (int ShadowX, int ShadowY, bool ShadowEnabled) CopyInventoryBarShadowToCounter(
         bool shadowEnabled,
