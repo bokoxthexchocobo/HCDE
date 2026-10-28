@@ -62,7 +62,11 @@ public static class VmSbarinfoDsbarDraw1069Slice
     public static int SelectInventoryHudBarIndex(PrimaryDrawHudState state) =>
         state == PrimaryDrawHudState.StatusBar ? InventoryHudBarIndex : InventoryFullscreenHudBarIndex;
 
-    public static bool ShouldClearInventoryTics(bool inventoryBarHasCommands) => !inventoryBarHasCommands;
+    public static int ApplyInventoryTicsWhenBarEmpty(
+        int inventoryTics,
+        bool inventoryBarHasCommands,
+        bool inventoryDrawActive) =>
+        inventoryDrawActive && !inventoryBarHasCommands ? 0 : inventoryTics;
 
     public static int MapActivePopupToHudBarIndex(int currentPopup) => currentPopup switch
     {
