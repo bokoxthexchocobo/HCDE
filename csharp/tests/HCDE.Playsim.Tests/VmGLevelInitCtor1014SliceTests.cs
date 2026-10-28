@@ -7,8 +7,8 @@ public class VmGLevelInitCtor1014SliceTests
     {
         Assert.True(VmGLevelInitCtor1014Slice.ShouldWirePlayersArrayIndex(0));
         Assert.False(VmGLevelInitCtor1014Slice.ShouldWirePlayersArrayIndex(8));
-        Assert.True(VmGLevelInitCtor1014Slice.ShouldDeleteLocalEventManager(new object()));
-        Assert.False(VmGLevelInitCtor1014Slice.ShouldDeleteAabbTree(null));
+        Assert.Equal(2, VmGLevelInitCtor1014Slice.CountNonNullDestructorTargets(new object(), new object()));
+        Assert.Equal(1, VmGLevelInitCtor1014Slice.CountNonNullDestructorTargets(new object(), null));
 
         var reset = VmGLevelInitCtor1014Slice.CreateInitScalarReset(
             svGravity: 1f,

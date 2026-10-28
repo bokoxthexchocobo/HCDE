@@ -36,10 +36,15 @@ public static class VmGLevelInitCtor1014Slice
     public static bool ShouldWirePlayersArrayIndex(int playerIndex) =>
         playerIndex >= 0 && playerIndex < MaxPlayers;
 
-    public static bool ShouldDeleteLocalEventManager(object? localEventManager) =>
-        localEventManager is not null;
-
-    public static bool ShouldDeleteAabbTree(object? aabbTree) => aabbTree is not null;
+    public static int CountNonNullDestructorTargets(object? localEventManager, object? aabbTree)
+    {
+        var count = 0;
+        if (localEventManager is not null)
+            count++;
+        if (aabbTree is not null)
+            count++;
+        return count;
+    }
 
     public static InitScalarsSnapshot CreateInitScalarReset(float svGravity, float svAirControl, float globalTeamDamage) =>
         new()
