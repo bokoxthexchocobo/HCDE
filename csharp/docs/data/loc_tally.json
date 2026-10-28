@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 78756,
+  "convertedThisRunNative": 78906,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 100917,
+  "convertedThisRunManaged": 101018,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 410116,
+  "remainingNative": 409966,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 97283,
+  "convertedBehaviorNative": 97433,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 97970,
-  "convertedBehaviorManaged": 110588,
+  "combinedBehaviorNative": 98120,
+  "convertedBehaviorManaged": 110689,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -38597,6 +38597,42 @@
       "nativeLoc": 150,
       "managedLoc": 115,
       "conversionManagedCommit": "96717c4357a8662d402159ba32a78bf61f72db35"
+    },
+    {
+      "name": "sbarinfo-commands-drawimage-parse-tick-chunk1074",
+      "bucket": "conversion",
+      "note": "`CommandDrawImage` parse tail, `Tick` icon resolution, and `GetIcon` scale head from `sbarinfo_commands.cpp` (**151\u2013300**); follows **1073** (**1\u2013150**).",
+      "auditSeams": "`GetCoordinates`, `FScanner`, `TexMan`, `GetInventoryIcon`, and **151\u2013156** token I/O remain host; **1073** keyword head seam at **149\u2013150**.",
+      "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **151\u2013300** (+150); continues same class; zero tally overlap; no Vm* collision with **1073** hull.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 151 --end 300` and `--chunk 1074 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Max width/height \u2192 `DI_DRAWINBOX` (**177\u2013186**) | yes |\n| Alignment keywords (**166\u2013171**) | yes |\n| Draw-image flag OR list (**192\u2013211**) | yes |\n| `forcescale` gated on draw-in-box (**202\u2013205**) | yes |\n| Alternate-on-fail parse branch (**214\u2013217**) | yes |\n| Tick reset + applyscale clear (**223\u2013228**) | yes |\n| Ammo/armor/weapon tick gates (**232\u2013255**) | yes |\n| Hexen armor slot alpha (**262\u2013278**) | yes |\n| Image-table / alternate truth (**285\u2013290**) | yes |\n| `GetIcon` spawn scale (**296\u2013304**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **151\u2013156**, **157\u2013158** | host scanner / coordinates |\n| **215**, **221** | host flow-control calls |\n| **231**, **236\u2013286** | host texture lookup |\n| **294\u2013307** | host `GetInventoryIcon` / `TexMan` |\n| **309+** | `ImageType` enum outside hull |\n\n| Managed (`VmSbarinfoCommandDrawImage1074Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|------------------------------------------------------|----------------------------------|\n| Max dimension + draw-in-box flags | **177\u2013186** |\n| Alignment + parse flag keywords | **166\u2013211** |\n| Parse terminator policy | **214\u2013217** |\n| Tick reset + icon gates | **223\u2013255** |\n| Hexen armor alpha + abort | **262\u2013278** |\n| Alternate-on-fail truth | **288\u2013290** |\n| Inventory spawn scale | **300\u2013304** |\n| Band hull (exclusive slice) | **151\u2013300** |\n\n### Chunk **1074** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1073** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmSbarinfoCommandDrawImage1074Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/g_statusbar/sbarinfo_commands.cpp",
+          "symbol": "CommandDrawImage::Parse / Tick / GetIcon",
+          "start": 151,
+          "end": 300,
+          "tests": [
+            "VmSbarinfoCommandDrawImage1074SliceTests.ApplyParsedMaxWidth_SetsDrawInBoxWhenPositive",
+            "VmSbarinfoCommandDrawImage1074SliceTests.ApplyParsedMaxHeight_ClearsToSentinelWhenNonPositive",
+            "VmSbarinfoCommandDrawImage1074SliceTests.TryResolveDrawImageAlignment_MapsCenterKeywords",
+            "VmSbarinfoCommandDrawImage1074SliceTests.ApplyDrawImageParseFlag_ForceScaleRequiresDrawInBox",
+            "VmSbarinfoCommandDrawImage1074SliceTests.ApplyDrawImageParseFlag_ReportsUnknownKeywords",
+            "VmSbarinfoCommandDrawImage1074SliceTests.ShouldDelegateParseToFlowControl_MatchesAlternateOnFail",
+            "VmSbarinfoCommandDrawImage1074SliceTests.ResetTickDrawImageState_ClearsSpawnScaleWhenApplyScaleWasSet",
+            "VmSbarinfoCommandDrawImage1074SliceTests.ShouldResolveArmorTickIcon_RequiresNonZeroAmount",
+            "VmSbarinfoCommandDrawImage1074SliceTests.CombineHexenArmorFillAlpha_ScalesBySlotRatio",
+            "VmSbarinfoCommandDrawImage1074SliceTests.ResolveAlternateOnFailTruth_DetectsMissingOrInvalid",
+            "VmSbarinfoCommandDrawImage1074SliceTests.ApplyInventoryIconSpawnScale_CopiesItemScaleWhenRequested"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 101,
+      "conversionManagedCommit": "57d4a5b7d7d811d9e9ee4d87df3838e935bac2f9"
     }
   ],
   "behaviorNativeChecksum": 508086,
