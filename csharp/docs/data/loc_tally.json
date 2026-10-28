@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 74087,
+  "convertedThisRunNative": 74237,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 97279,
+  "convertedThisRunManaged": 97406,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 414718,
+  "remainingNative": 414568,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 92614,
+  "convertedBehaviorNative": 92764,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 93368,
-  "convertedBehaviorManaged": 106950,
+  "combinedBehaviorNative": 93518,
+  "convertedBehaviorManaged": 107077,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -37577,6 +37577,43 @@
       "nativeLoc": 150,
       "managedLoc": 103,
       "conversionManagedCommit": "11426aa7ce601d289177c6b1f34ffa289091c66a"
+    },
+    {
+      "name": "statistics-episode-save-chunk1043",
+      "bucket": "conversion",
+      "note": "Episode stat aggregation/save, `Serialize`/`STAT_Serialize`, `GetStatString`, CCMDs, and ADD_STAT tail from `statistics.cpp` (**470\u2013619**).",
+      "auditSeams": "`GetStatisticsList`, `StatisticsEntry`, `LevelStatEntry`, `SaveStatistics`, `FSerializer`, `StoreLevelStats`, `Net_WriteInt8`, and player/camera host objects remain injected; uncredited `VmStatisticsParser`, `VmStatisticsTimeFormat`, and `VmStatisticsConfig` are not re-credited.",
+      "auditRationale": "File-scoped UNCredited **`statistics.cpp`** **470\u2013619** (+150); retired chunk **244** had no surviving overlap at HEAD.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/statistics.cpp --start 470 --end 619` and `--chunk 1043 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Episode totals loop (**470\u2013478**) | yes |\n| Episode/level `infostring.Format` (**480\u2013488**) | yes |\n| `savestatistics == 2` stub (**495\u2013497**) | yes (mode detect) |\n| `STAT_Serialize` episode match (**533\u2013541**) | yes |\n| `STAT_EpisodeName` (**556\u2013560**) | yes |\n| `GetStatString` (**568\u2013579**) | yes |\n| `finishgame` guard (**590\u2013594**) | yes |\n| ADD_STAT velocity (**606\u2013617**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **450\u2013469** | section build / `GetStatisticsList` host (**470** hull start) |\n| **481\u2013492** | `StatisticsEntry` / `LevelStatEntry` / `SaveStatistics` host |\n| **507\u2013522** | `FSerializer` object seam |\n| **543\u2013551** | serializer read/write host |\n| **581\u2013585**, **600\u2013604** | CCMD/ADD_STAT host macros |\n| **597\u2013598** | `DEM_FINISHGAME` network seam |\n| `VmStatisticsParser` / `VmStatisticsTimeFormat` | uncredited helpers \u2014 time parse reused only |\n\n| Managed (`VmStatisticsEpisodeSave1043Slice.cs`) | Native (`statistics.cpp`) |\n|-------------------------------------------------|---------------------------|\n| `AccumulateEpisodeTotals` | **470\u2013478** |\n| `FormatEpisodeSummaryInfoLine` | **480** |\n| `FormatLevelStatInfoLine` | **487\u2013488** |\n| `IsSingleLevelStatisticsSaveMode` | **495\u2013497** |\n| `TryMatchStartEpisodeIndex` | **535\u2013541** |\n| `ResolveEpisodeNameForDisplay` | **556\u2013560** |\n| `FormatLevelStatDisplayLine` / `ComposeLevelStatReport` | **568\u2013579** |\n| `CanUseFinishGameCommand` / `FormatFinishGameBlockedMessage` | **590\u2013594** |\n| `ResolveVelocityStatCamera` / `FormatVelocityStatBlock` / `ShouldIncludeVelocityStat` | **608\u2013617** |\n| Band hull (exclusive slice) | **470\u2013619** |\n\n### Chunk **1043** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1042** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Gamedata/VmStatisticsEpisodeSave1043Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/statistics.cpp",
+          "symbol": "STAT_Serialize / GetStatString / ADD_STAT",
+          "start": 470,
+          "end": 619,
+          "tests": [
+            "VmStatisticsEpisodeSave1043SliceTests.AccumulateEpisodeTotals_SumsAllLevels",
+            "VmStatisticsEpisodeSave1043SliceTests.FormatEpisodeSummaryInfoLine_MatchesNativeShape",
+            "VmStatisticsEpisodeSave1043SliceTests.FormatLevelStatInfoLine_OmitsLevelCount",
+            "VmStatisticsEpisodeSave1043SliceTests.TryMatchStartEpisodeIndex_CaseInsensitive",
+            "VmStatisticsEpisodeSave1043SliceTests.FormatLevelStatDisplayLine_IncludesTime",
+            "VmStatisticsEpisodeSave1043SliceTests.ComposeLevelStatReport_ConcatenatesLevels",
+            "VmStatisticsEpisodeSave1043SliceTests.CanUseFinishGameCommand_LevelOrCutscene",
+            "VmStatisticsEpisodeSave1043SliceTests.IsSingleLevelStatisticsSaveMode_OnlyModeTwo",
+            "VmStatisticsEpisodeSave1043SliceTests.ResolveVelocityStatCamera_FallsBackToPlayerMob",
+            "VmStatisticsEpisodeSave1043SliceTests.FormatVelocityStatBlock_IncludesMapName",
+            "VmStatisticsEpisodeSave1043SliceTests.ResolveEpisodeNameForDisplay_EmptyWhenMissing",
+            "VmStatisticsEpisodeSave1043SliceTests.FormatFinishGameBlockedMessage_MentionsCommand"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 127,
+      "conversionManagedCommit": "d1dc88b3dfb21e69a8c5d661677d63d7849330f9"
     }
   ],
   "behaviorNativeChecksum": 508086,
