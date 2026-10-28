@@ -62,7 +62,7 @@ public static class VmPClassActorInfo1038Slice
         var repType = decorateReplacementType;
         if (lookSkill && skillReplaceName.Length > 0)
             repType = skillReplaceName;
-        return resolveRecursiveReplacement(repType, lookSkill: false);
+        return resolveRecursiveReplacement(repType, false);
     }
 
     public static string FinalizeReplacementClientSide(
@@ -135,7 +135,7 @@ public static class VmPClassActorInfo1038Slice
         var repType = savedReplaceeType;
         if (lookSkill && skillReplacedByName.Length > 0 && skillClassExists)
             repType = skillReplacedByName;
-        return resolveRecursiveReplacee(repType, lookSkill: false);
+        return resolveRecursiveReplacee(repType, false);
     }
 
     public static bool TryUpdateDamageFactor(IList<(string Type, double Factor)> factors, string type, double factor)
