@@ -1,0 +1,34 @@
+[
+  {
+    "name": "sbarinfo-commands-drawnumber-mugshot-chunk1083",
+    "bucket": "conversion",
+    "note": "`CommandDrawNumber::Tick` draw tail and `CommandDrawMugShot` parse head from `sbarinfo_commands.cpp` (**1501–1650**); follows **1082** through **`drawValue = num` (**1500**).",
+    "auditSeams": "**1082** owns interpolation (**1492–1500**); **1066** top-level `mugshot` flags are a different token set than **CommandDrawMugShot** `FMugShot::StateFlags`. Host `RealignString`, `GetFace`, `DrawGraphic`, and `GetCoordinates` excluded.",
+    "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **1501–1650** (+150); whenNotZero/translation/cap/format draw tail plus mugshot accuracy/flag parse through **`;` (**1650**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 1501 --end 1650` and `--chunk 1083 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| **whenNotZero** early exit (**1501–1505**) | yes |\n| Low/high translation bands (**1507–1511**) | yes |\n| Digit cap when `!dontCap` (**1514–1521**) | yes |\n| Modulo path when `dontCap` (**1523–1528**) | yes |\n| Fill-zero vs plain format (**1531–1534**) | yes |\n| **CommandDrawMugShot** ctor defaults (**1601–1603**) | yes |\n| Default face length gate (**1617–1618**) | yes |\n| Accuracy **1–9** validation (**1622–1624**) | yes |\n| Mugshot state flag OR merge (**1628–1641**) | yes |\n| Flag list `|` vs `,` (**1644–1645**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1492–1500** | **1082** interpolation seam |\n| **1536** | host `RealignString` |\n| **1538–1594** | `ValueType` enum + member field declarations (layout only) |\n| **1606–1611** | host `GetFace` / `DrawGraphic` |\n| **1648–1649** | host `GetCoordinates` / scanner `;` wiring |\n| **1651+** | `Reset` outside hull |\n\n| Managed (`VmSbarinfoCommandDrawNumber1083Slice.cs`, `VmSbarinfoCommandDrawMugShot1083Slice`) | Native (`sbarinfo_commands.cpp`) |\n|------------------------------------------------------------------------------------------------|----------------------------------|\n| Draw tail cap/format | **1501–1534** |\n| Mugshot defaults + parse flags | **1601–1646** |\n| Band hull (exclusive slice) | **1501–1650** |\n\n### Chunk **1083** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1082** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoCommandDrawNumber1083Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo_commands.cpp",
+        "symbol": "CommandDrawNumber::Tick / CommandDrawMugShot::Parse",
+        "start": 1501,
+        "end": 1650,
+        "tests": [
+          "VmSbarinfoCommandDrawNumber1083SliceTests.ResolveDrawNumberWhenNotZeroEarlyExit_ClearsStringAtZero",
+          "VmSbarinfoCommandDrawNumber1083SliceTests.ResolveDrawNumberTranslationBand_SelectsLowAndHigh",
+          "VmSbarinfoCommandDrawNumber1083SliceTests.ClampDrawNumberWhenDigitCapped_UsesFillZeroMin",
+          "VmSbarinfoCommandDrawNumber1083SliceTests.ApplyDrawNumberDontCapModulo_ForcesFillZerosAtLimit",
+          "VmSbarinfoCommandDrawNumber1083SliceTests.FormatDrawNumberDisplayString_ZeroPadsPositive",
+          "VmSbarinfoCommandDrawNumber1083SliceTests.CreateCommandDrawMugShotDefaults_MatchesNativeCtor",
+          "VmSbarinfoCommandDrawNumber1083SliceTests.IsCommandDrawMugShotDefaultFaceTooLong_EnforcesThreeChars",
+          "VmSbarinfoCommandDrawNumber1083SliceTests.IsCommandDrawMugShotAccuracyInRange_EnforcesOneThroughNine",
+          "VmSbarinfoCommandDrawNumber1083SliceTests.ApplyCommandDrawMugShotParseKeyword_StacksNativeBits",
+          "VmSbarinfoCommandDrawNumber1083SliceTests.ClassifyCommandDrawMugShotParseKeyword_RejectsUnknown"
+        ]
+      }
+    ]
+  }
+]
