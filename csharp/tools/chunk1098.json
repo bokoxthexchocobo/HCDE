@@ -1,0 +1,31 @@
+[
+  {
+    "name": "sbarinfo-file-head-chunk1098",
+    "bucket": "conversion",
+    "note": "HUD art index constants, `SBarInfoCoordinate` packing, `SBarInfoCommand::Offset` flags, and `GetCoordinates` loop prologue from `sbarinfo.cpp` (**1–150**); seam **150+** owned by chunk **1063**.",
+    "auditSeams": "Includes/host lines (**1–45**, **55–56**, **126–135**) excluded; band ends at **149** so **1063** retains signed-int + `center` parse (**150–163**). `FScanner` token reads remain host-injected.",
+    "auditRationale": "UNCredited **`sbarinfo.cpp`** **1–150** (+150); first eligible ≥150 band after **1097** EOF on `sbarinfo_commands.cpp`.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo.cpp --start 1 --end 150` and `--chunk 1098 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Status-bar art index enum (**46–53**) | yes |\n| `SBarInfoCoordinate` relCenter/value packing (**71–96**) | yes |\n| `SBarInfoCommand::Offset` bitmask (**112–124**) | yes |\n| `GetCoordinates` loop comma gate (**142–147**) | yes |\n| Loop per-axis reset defaults (**144–145**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1–45** | includes / forward decls |\n| **55–56** | `EXTERN_CVAR` host |\n| **126–135** | virtual draw/parse stubs |\n| **150–163** | chunk **1063** signed coordinate parse |\n| **151+** | remainder credited on **1063** / later bands |\n\n| Managed (`VmSbarinfoFileHead1098Slice.cs`) | Native (`sbarinfo.cpp`) |\n|---------------------------------------------|-------------------------|\n| Art indices + offset anchors | **46–53**, **112–124** |\n| Coordinate pack/unpack/add | **71–96** |\n| GetCoordinates loop prologue | **137–149** |\n| Band hull (exclusive slice) | **1–150** |\n\n### Chunk **1098** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1097** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoFileHead1098Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo.cpp",
+        "symbol": "SBarInfo file head / coordinates prologue",
+        "start": 1,
+        "end": 150,
+        "tests": [
+          "VmSbarinfoFileHead1098SliceTests.PackCoordinate_StoresRelativeCenterInSignBit",
+          "VmSbarinfoFileHead1098SliceTests.AddCoordinate_PreservesRelativeCenterFlag",
+          "VmSbarinfoFileHead1098SliceTests.DrawOffsetAnchor_MatchesNativeBitmask",
+          "VmSbarinfoFileHead1098SliceTests.StatusBarArtFlashOffset_MatchesArtiflashMacro",
+          "VmSbarinfoFileHead1098SliceTests.IsValidStatusBarArtIndex_AcceptsNativeRange",
+          "VmSbarinfoFileHead1098SliceTests.CombineOffsetAnchors_MergesVerticalAndHorizontal",
+          "VmSbarinfoFileHead1098SliceTests.GetCoordinatesLoopRequiresComma_OnlyAfterFirstAxis"
+        ]
+      }
+    ]
+  }
+]
