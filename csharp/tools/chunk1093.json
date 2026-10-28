@@ -1,0 +1,34 @@
+[
+  {
+    "name": "sbarinfo-commands-playertype-weaponpiece-drawgem-chunk1093",
+    "bucket": "conversion",
+    "note": "`CommandPlayerType` parse/tick tail, `CommandHasWeaponPiece`, and `CommandDrawGem` parse/draw head from `sbarinfo_commands.cpp` (**3001–3150**); follows **1092** player-type lookup seam (**3000**).",
+    "auditSeams": "**1092** owns player-type parse head and list comma advance; **1093** credits descendant tick and new commands only. Host `PClass::FindClass`, inventory walks, `SetTruth`, and `newImage` excluded.",
+    "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **3001–3150** (+150); player-type class list loop tail + `IsDescendantOf` truth, weapon-piece parse/tick mask, draw-gem ctor/draw offset/parse flags through signed right padding (**3150**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 3001 --end 3150` and `--chunk 1093 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Player-type list loop tokens (**3012**) | yes |\n| Player-type descendant tick truth (**3019–3030**) | yes |\n| **HasWeaponPiece** ctor default piece (**3042**) | yes |\n| Weapon class validation (**3051–3054**) | yes |\n| Piece number ≥ 1 gate (**3058–3060**) | yes |\n| Holder piece mask truth (**3072–3075**) | yes |\n| Missing holder false truth (**3079**) | yes (flow) |\n| **DrawGem** ctor defaults (**3091–3095**) | yes |\n| Chain draw skip + wiggle Y (**3102–3107**) | yes |\n| Chain horizontal offset modulo (**3108–3110**) | yes |\n| Parse flag keywords (**3118–3132**) | yes |\n| Flag list `|` vs `,` (**3135–3136**) | yes |\n| Signed left/right padding (**3144–3150**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2969–2977**, **2920** | **1092** player-class / is-selected truth helpers |\n| **2985–3000**, **3009–3010** | **1092** parse head + comma advance |\n| **3002–3003** | host `classes.Push` (count via **1092** helper only) |\n| **3067–3071**, **3110–3112** | host inventory / `DrawGraphic` |\n| **3138–3142** | host `newImage` |\n| **3151+** | chain size / coords outside hull |\n\n| Managed (`VmSbarinfoCommandPlayerType1093Slice.cs`, `VmSbarinfoCommandHasWeaponPiece1093Slice.cs`, `VmSbarinfoCommandDrawGem1093Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|----------------------------------------------------------------------------------------------------------------|----------------------------------|\n| PlayerType + HasWeaponPiece + DrawGem head | **3001–3150** |\n| Band hull (exclusive slice) | **3001–3150** |\n\n### Chunk **1093** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1092** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoCommandPlayerType1093Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo_commands.cpp",
+        "symbol": "CommandPlayerType / CommandHasWeaponPiece / CommandDrawGem",
+        "start": 3001,
+        "end": 3150,
+        "tests": [
+          "VmSbarinfoCommandPlayerType1093SliceTests.ResolvePlayerTypeClassListLoopContinues_WithStringOrIdentifier",
+          "VmSbarinfoCommandPlayerType1093SliceTests.ResolvePlayerTypeFlowControlTruthFromDescendants_RequiresDescendantMatch",
+          "VmSbarinfoCommandPlayerType1093SliceTests.ValidateHasWeaponPieceNumber_RejectsBelowOne",
+          "VmSbarinfoCommandPlayerType1093SliceTests.ResolveHasWeaponPieceFlowControlTruth_ChecksPieceMaskBit",
+          "VmSbarinfoCommandPlayerType1093SliceTests.CreateDrawGemCtorDefaults_MatchesNativeInit",
+          "VmSbarinfoCommandPlayerType1093SliceTests.ApplyDrawGemChainWiggleOffset_AddsWiggleWhenValuesDiffer",
+          "VmSbarinfoCommandPlayerType1093SliceTests.ComputeDrawGemChainHorizontalOffset_ModuloChainSize",
+          "VmSbarinfoCommandPlayerType1093SliceTests.TryClassifyDrawGemParseFlagKeyword_MapsInterpolate",
+          "VmSbarinfoCommandPlayerType1093SliceTests.ResolveDrawGemParseFlagListContinuation_EndsOnComma",
+          "VmSbarinfoCommandPlayerType1093SliceTests.ApplyDrawGemSignedPaddingToken_SupportsNegative"
+        ]
+      }
+    ]
+  }
+]
