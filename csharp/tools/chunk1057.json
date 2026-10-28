@@ -1,0 +1,32 @@
+[
+  {
+    "name": "g-mapinfo-options-tail-chunk1057",
+    "bucket": "conversion",
+    "note": "`DEFINE_MAP_OPTION` continuation from `g_mapinfo.cpp` (**1341–1490**). Follows **1028** (**1191–1340**).",
+    "auditSeams": "`DEFINE_MAP_OPTION` macro expansion, `parse.ParseAssign`, `P_FindLineSpecial`, `S_FindSound`, and `ParseNextMap` on **1491+** remain host-injected; **1028** `ClampWallShade` reused without re-crediting **1191–1340**.",
+    "auditRationale": "File-scoped UNCredited **`g_mapinfo.cpp`** **1341–1490** (+150); excludes **1191–1340** (**1028**). Hull ends at **`redirect` option opening** (**1490**); map/cvar redirect tail (**1491+**) deferred without padding.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_mapinfo.cpp --start 1341 --end 1490` and `--chunk 1057 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `horizwallshade` (**1342–1347**) | yes (via **1028** clamp seam) |\n| `gravity` / `nogravity` (**1349–1359**) | yes |\n| `aircontrol` / `airsupply` (**1361–1373**) | yes |\n| inter/exit/enter pic & anim (**1375–1408**) | yes |\n| `specialaction` (**1410–1433**) | yes (lookup fail + arg count) |\n| precache lists (**1435–1487**) | yes |\n| `redirect` head (**1489–1490**) | yes (type token only) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1191–1340** | chunk **1028** |\n| **1341** | blank separator |\n| **1491+** | `RedirectMapName` / `cvar_redirect` (**1498+**) |\n| **754–832** | ParseExit* denylist |\n| Retired **323** precache/redirect row | not re-tallied |\n\n| Managed (`VmMapInfoMapOptionsTail1057Slice.cs`) | Native (`g_mapinfo.cpp`) |\n|--------------------------------------------------|---------------------------|\n| `ApplyHorizWallShade` | **1342–1347** |\n| gravity / air helpers | **1349–1373** |\n| `StoreStringMapOption` | **1375–1408** |\n| `SpecialActionLookupFailed` / arg count | **1410–1433** |\n| precache push / comma list count | **1435–1487** |\n| `BeginRedirectOption` | **1489–1490** |\n| Band hull (exclusive slice) | **1341–1490** |\n\n### Chunk **1057** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1056** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmMapInfoMapOptionsTail1057Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "DEFINE_MAP_OPTION tail",
+        "start": 1341,
+        "end": 1490,
+        "tests": [
+          "VmMapInfoMapOptionsTail1057SliceTests.ApplyHorizWallShade_HalvesAndClamps",
+          "VmMapInfoMapOptionsTail1057SliceTests.ApplyNoGravity_UsesDblMaxMarker",
+          "VmMapInfoMapOptionsTail1057SliceTests.SpecialActionLookupFailed_RejectsZeroAction",
+          "VmMapInfoMapOptionsTail1057SliceTests.CountTrailingSpecialActionArgs_StopsAtFive",
+          "VmMapInfoMapOptionsTail1057SliceTests.ShouldPushPrecacheSound_SkipsNoSound",
+          "VmMapInfoMapOptionsTail1057SliceTests.CountCommaSeparatedEntries_CountsCommas",
+          "VmMapInfoMapOptionsTail1057SliceTests.ClassifyTailOptionKeyword_RecognizesPrecacheClasses",
+          "VmMapInfoMapOptionsTail1057SliceTests.BeginRedirectOption_StoresTypeToken"
+        ]
+      }
+    ]
+  }
+]
