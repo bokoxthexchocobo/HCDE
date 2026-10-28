@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 233032
+    "managedCSharpLoc": 233117
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 65087,
+    "convertedThisRunNative": 65237,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 90229,
+    "convertedThisRunManaged": 90314,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 423718,
+    "remainingNative": 423568,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 83614,
+    "convertedBehaviorNative": 83764,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 84368,
-    "convertedBehaviorManaged": 99900,
+    "combinedBehaviorNative": 84518,
+    "convertedBehaviorManaged": 99985,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -35789,6 +35789,34 @@
         "nativeLoc": 150,
         "managedLoc": 77,
         "conversionManagedCommit": "4e4730bbed2c00735ef7b289d022c120e315e0dd"
+      },
+      {
+        "name": "p-setup-finish-init-chunk983",
+        "bucket": "conversion",
+        "note": "`P_SetupLevel` finish, `P_Init`, `P_Shutdown`, and debug CCMD head from `p_setup.cpp` (**601\u2013750**); follows chunk **982** (**451\u2013600**). Last full \u2265150 hull before EOF tail **751\u2013788**.",
+        "auditSeams": "`PrecacheLevel`, `memcpy`, `AM_Create`, `SetDynamicLights`, `P_InitEffects`, and `Printf` CCMD bodies remain host-injected.",
+        "auditRationale": "UNCredited tail of `p_setup.cpp` main setup path; disjoint from **979\u2013982**. Lines **601\u2013603** precache calls are native in this hull (outside **982** `451\u2013600`).",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_setup.cpp --start 601 --end 750` and `--chunk 983 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Heightsec / 3D-floor scan (**612\u2013625**) | yes |\n| Load geometry snapshot (**630\u2013635**) | yes (predicates) |\n| Lightning (**642\u2013645**) | yes |\n| Dynamic light init (**647\u2013656**) | yes |\n| `P_Shutdown` player psprite destroy (**672\u2013684**) | yes (predicates) |\n| `dumpgeometry` / `listmapsections` head (**693\u2013750**) | yes (loop gates) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **601\u2013603** | host precache calls (seam only) |\n| **605\u2013608** | deathmatch announce \u2014 already on chunk **982** (`DeathmatchAnnounceFollowsPrecache`) |\n| **627\u2013629**, **637\u2013639**, **657\u2013660**, **662\u2013667**, **687\u2013691** | comments, automap host, `P_Init` host calls |\n| **631\u2013635** | `memcpy` host |\n| **751+** | outside hull (EOF tail deferred) |\n\n| Managed (`VmPSetupFinish983Slice.cs`) | Native (`p_setup.cpp`) |\n|---------------------------------------|----------------------|\n| `HeightsecIgnoreScanApplies` / `Rendered3dFloorIgnoresHeightsec` / `ApplyIgnoreHeightsecFlag` / `ScanSectorHeightsecIgnoreFlags` | **612\u2013622** |\n| `ShouldSnapshotLoadMapGeometry` / `ShouldEnableCompatLineOnSide` | **630\u2013635**, **639** |\n| `ShouldStartLightningForLevel` | **642\u2013645** |\n| `MarkDynamicLightsCreated` / `ShouldInitializeDynamicLightsForActor` | **650\u2013656** |\n| `ShutdownDestroysClientSideStatics` / `ShutdownClearsPlayerPsprites` | **674\u2013675**, **683\u2013684** |\n| `DumpGeometry*` / `MapsectionScanIndexValid` / `ListMapsectionsScansSubsectors` | **693\u2013750** |\n| Band hull (exclusive slice) | **601\u2013750** |\n\n### Chunk **983** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**982** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPSetupFinish983Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/p_setup.cpp",
+            "symbol": "P_SetupLevel",
+            "start": 601,
+            "end": 750,
+            "tests": [
+              "VmPSetupFinish983SliceTests.SetupFinish_HeightsecAndBackup",
+              "VmPSetupFinish983SliceTests.LightningAndDynamicLights",
+              "VmPSetupFinish983SliceTests.InitShutdownAndDebugCommands"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 85,
+        "conversionManagedCommit": "51201350d8c521250fa82c7d080e76c673998ab0"
       }
     ],
     "behaviorNativeChecksum": 508086,
