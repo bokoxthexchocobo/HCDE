@@ -1,0 +1,27 @@
+[
+  {
+    "name": "g-game-load-flow-chunk1002",
+    "bucket": "conversion",
+    "note": "`C_SerializeCVars` deserialize and `G_DoLoadGame` info.json validation from `g_game.cpp` (**2600–2749**); follows chunk **1001** (**2449–2598**).",
+    "auditSeams": "`arc()`, `FSerializer`, `G_TraceSetGameAction`, and `LoadGameError` string host remain injected.",
+    "auditRationale": "UNCredited **2600–2749** CLI band; disjoint from chunks **995–1001** and chunk **9** credited segments.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_game.cpp --start 2600 --end 2749` and `--chunk 1002 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| CVAR deserialize filter + apply (**2608–2618**) | yes |\n| Demo/console load head (**2632–2637**) | yes |\n| Save archive entry checks (**2640–2660**) | yes |\n| Engine / `AllowLoadIn` gate (**2685–2700**) | yes |\n| Save version range (**2703–2718**) | yes |\n| Map name + hide console (**2726–2737**) | yes |\n| `globals.json` open (**2741–2752**) partial | yes (through **2749** hull) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2628–2637** | `Net_ResetCommands` / trace host |\n| **2678–2684** | `LOAD_GZDOOM_4142_SAVES` compat host |\n| **2708–2717** | `GStrings` message host |\n| **2750+** | `G_SerializeHub` (next band) |\n\n| Managed (`VmGGameLoadFlow1002Slice.cs`) | Native (`g_game.cpp`) |\n|----------------------------------------|----------------------|\n| `ShouldDeserializeCvarFromSave` / `ShouldApplyLoadedCvarString` | **2608–2618** |\n| `ShouldStopDemoPlaybackForLoad` / `ShouldHideConsoleAfterLoadMenu` | **2632–2637** |\n| `IsSaveArchiveEntryMissing` | **2640–2646**, **2741–2745** |\n| `IsEngineSignatureAllowed` / `ResolveEngineCompatibilityReject` | **2685–2699** |\n| `IsSaveVersionSupported` / too old/new helpers | **2703–2718** |\n| `ShouldRejectEmptySaveMap` | **2726–2729** |\n| `ResolveGameStateAfterLoadHideRequest` | **2734–2737** |\n| Band hull (exclusive slice) | **2600–2749** |\n\n### Chunk **1002** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1001** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmGGameLoadFlow1002Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "G_DoLoadGame",
+        "start": 2600,
+        "end": 2749,
+        "tests": [
+          "VmGGameLoadFlow1002SliceTests.DeserializeCvarFilter",
+          "VmGGameLoadFlow1002SliceTests.DoLoadGameHeadGates",
+          "VmGGameLoadFlow1002SliceTests.EngineAndVersionChecks"
+        ]
+      }
+    ]
+  }
+]
