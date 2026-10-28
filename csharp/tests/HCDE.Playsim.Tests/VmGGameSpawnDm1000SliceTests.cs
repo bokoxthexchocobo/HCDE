@@ -21,7 +21,7 @@ public class VmGGameSpawnDm1000SliceTests
     public void CheckSpotAndRange()
     {
         Assert.True(VmGGameSpawnDm1000Slice.IsInvalidMapthingType(0));
-        Assert.Equal(64.0, VmGGameSpawnDm1000Slice.NearestLivingPlayerDistance(
+        Assert.Equal(5.0, VmGGameSpawnDm1000Slice.NearestLivingPlayerDistance(
             spotX: 0,
             spotY: 0,
             players: [(true, true, 1, 3.0, 4.0)]));
