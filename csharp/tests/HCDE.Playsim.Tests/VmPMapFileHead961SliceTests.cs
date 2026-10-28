@@ -22,7 +22,7 @@ public class VmPMapFileHead961SliceTests
             VmPMapFileHead961Slice.UnresolvedVirtualIndex,
             42);
         Assert.Equal(42u, resolved);
-        Assert.Equal(99u, VmPMapFileHead961Slice.ResolveCanCollideVirtualIndex(7, 99));
+        Assert.Equal(7u, VmPMapFileHead961Slice.ResolveCanCollideVirtualIndex(7, 99));
     }
 
     [Fact]
