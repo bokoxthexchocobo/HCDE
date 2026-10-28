@@ -1,0 +1,31 @@
+[
+  {
+    "name": "v-font-fontdefs-textcolo-chunk1059",
+    "bucket": "conversion",
+    "note": "Lump-map font tail and `V_InitFontColors` TEXTCOLO range head from `v_font.cpp` (**301–450**); follows chunk **1058** (**151–300**).",
+    "auditSeams": "`CreateSpecialFont`, `FFont` setters, `fileSystem.FindLump`, `FScanner`, and `V_GetColor` remain host-injected; **451+** continues TEXTCOLO block validation outside hull.",
+    "auditRationale": "UNCredited contiguous **`v_font.cpp`** **301–450** (+150); zero conversion/recognition overlap; no Vm* collision; same TU continuation after **1058**.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/common/fonts/v_font.cpp --start 301 --end 450` and `--chunk 1059 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Lump-map first/count scan (**299–315**) | yes |\n| Lump-map instantiate gate + spacewidth (**315–325**) | yes (predicates) |\n| Invalid property combo error tail (**327–334**) | seam (host `ScriptError`) |\n| TEXTCOLO name alias gate (**378–386**) | yes |\n| Console range switch (**396–405**) | yes |\n| RGB pair split (**415–425**) | yes |\n| Explicit range validation (**427–453**) | yes |\n| Implicit range fill (**455–462**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **301–298** | seam with **1058** scan head |\n| **317–324** | `CreateSpecialFont` / `FFont` host |\n| **329–331**, **367–369** | lump open / loop host |\n| **408–411** | `V_GetColor` host |\n| **467+** | parm length / untranslated tail outside hull |\n\n| Managed (`VmVFontFontDefsTextColo1059Slice.cs`) | Native (`v_font.cpp`) |\n|--------------------------------------------------|----------------------|\n| `ComputeLumpMapGlyphSpan` | **299–314** |\n| `ShouldInstantiateLumpMapFont` / `ShouldApplyExplicitSpaceWidth` | **315–321** |\n| `RejectsAliasForUntranslated` | **381–384** |\n| `TrySwitchToConsoleRange` | **398–401** |\n| `SplitRgb` | **416–425** |\n| `ValidateExplicitColorRange` | **430–453** |\n| `TryBuildImplicitColorRange` | **457–462** |\n| Band hull (exclusive slice) | **301–450** |\n\n### Chunk **1059** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1058** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmVFontFontDefsTextColo1059Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/fonts/v_font.cpp",
+        "symbol": "V_InitCustomFonts tail / V_InitFontColors",
+        "start": 301,
+        "end": 450,
+        "tests": [
+          "VmVFontFontDefsTextColo1059SliceTests.ComputeLumpMapGlyphSpan_FindsFirstAndCount",
+          "VmVFontFontDefsTextColo1059SliceTests.ComputeLumpMapGlyphSpan_EmptyReturnsZeroCount",
+          "VmVFontFontDefsTextColo1059SliceTests.RejectsAliasForUntranslated_WhenExtraNamesPresent",
+          "VmVFontFontDefsTextColo1059SliceTests.TrySwitchToConsoleRange_RejectsDuplicateConsoleBlock",
+          "VmVFontFontDefsTextColo1059SliceTests.ValidateExplicitColorRange_EnforcesNativeOrdering",
+          "VmVFontFontDefsTextColo1059SliceTests.TryBuildImplicitColorRange_MatchesNativeTail",
+          "VmVFontFontDefsTextColo1059SliceTests.SplitRgb_MatchesNativeParts"
+        ]
+      }
+    ]
+  }
+]
