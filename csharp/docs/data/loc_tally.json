@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 83870,
+  "convertedThisRunNative": 84020,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 105214,
+  "convertedThisRunManaged": 105326,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 405002,
+  "remainingNative": 404852,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102397,
+  "convertedBehaviorNative": 102547,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 103084,
-  "convertedBehaviorManaged": 114885,
+  "combinedBehaviorNative": 103234,
+  "convertedBehaviorManaged": 114997,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -39753,6 +39753,36 @@
       "nativeLoc": 150,
       "managedLoc": 116,
       "conversionManagedCommit": "ce02c36725b3d014fb3d0770700a8189ae971ec1"
+    },
+    {
+      "name": "pmobj-model-serialize-chunk1109",
+      "bucket": "conversion",
+      "note": "TRS/model override serializers, `ModelAnimFrame` type tags, `DActorModelData::OnDestroy`, and view-position keys from `p_mobj.cpp` (**1801\u20131950**); follows **1108** visibility band.",
+      "auditSeams": "`FSerializer` I/O and `SerializeModelID` remain host-injected; **1951+** continues `P_ExplodeMissile`.",
+      "auditRationale": "UNCredited **`p_mobj.cpp`** **1801\u20131950** (+150). Skips **1501\u20131685** (**734** Grind) and `s_sound` **601\u20131050** / **1801\u20131874**.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 1801 --end 1950` and `--chunk 1109 --band` \u2192 UNCredited, exit 0.",
+      "auditManagedLocJustification": "Frame-tag and destroy policy mirror native save branches without persisting IQM caches; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `AnimModelOverride` missing object (**1820\u20131823**) | yes |\n| `ModelAnimFrame` read tags (**1850\u20131883**) | yes |\n| Write `precalcIQM` as nullptr (**1901\u20131913**) | yes |\n| `DActorModelData::OnDestroy` resets (**1938\u20131943**) | yes |\n| View position keys (**1947\u20131949**) | yes (key list) |\n| TRS field keys (**1801\u20131804**) | yes (key list) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1801\u20131814**, **1834\u20131843** | host `arc()` field writes |\n| **1920\u20131934** | host serializer chain |\n| **1958+** | `P_ExplodeMissile` outside hull |\n\n| Managed (`VmPMobjModelSerialize1109Slice.cs`) | Native (`p_mobj.cpp`) |\n|----------------------------------------------|---------------------|\n| Frame tag + destroy + key lists | **1801\u20131950** |\n| Band hull (exclusive slice) | **1801\u20131950** |\n\n### Chunk **1109** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1108** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjModelSerialize1109Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "Model serialize and view position",
+          "start": 1801,
+          "end": 1950,
+          "tests": [
+            "VmPMobjModelSerialize1109SliceTests.ApplyAnimModelOverrideRead_SetsMissingId",
+            "VmPMobjModelSerialize1109SliceTests.ApplyModelAnimFrameRead_ClearsPrecalculatedIqm",
+            "VmPMobjModelSerialize1109SliceTests.FrameKindWriteTag_ArchivesPrecalcAsNull",
+            "VmPMobjModelSerialize1109SliceTests.RunModelDataDestroy_ZerosCollections"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 112,
+      "conversionManagedCommit": "b6bfb42ac164b13cc1f3ae74a6a2a894d282d15a"
     }
   ],
   "behaviorNativeChecksum": 508086,
