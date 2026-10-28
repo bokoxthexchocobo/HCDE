@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 81006,
+  "convertedThisRunNative": 80856,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 102739,
+  "convertedThisRunManaged": 102628,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 407866,
+  "remainingNative": 408016,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 99533,
+  "convertedBehaviorNative": 99383,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 100220,
-  "convertedBehaviorManaged": 112410,
+  "combinedBehaviorNative": 100070,
+  "convertedBehaviorManaged": 112299,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -39071,41 +39071,6 @@
       "nativeLoc": 150,
       "managedLoc": 180,
       "conversionManagedCommit": "2f1e6387afa3347ba17e478c29240cbd63f5acdc"
-    },
-    {
-      "name": "sbarinfo-commands-invbar-spacing-keybar-chunk1088",
-      "bucket": "conversion",
-      "note": "`CommandDrawInventoryBar` spacing tail + counter tick layout and `CommandDrawKeyBar` draw/parse head from `sbarinfo_commands.cpp` (**2251\u20132400**); follows **1087** spacing fallback (**2250**).",
-      "auditSeams": "**1087** owns null-box spacing **32** and parse/draw layout; **1088** completes live box spacing and counter slot math. Host `new CommandDrawNumber`, `DrawGraphic`, and inventory chain walks excluded.",
-      "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **2251\u20132400** (+150); GetCounterSpacing dimension branch, counter array layout flags, key bar ctor defaults + draw stride/row wrap; hull ends at key bar `number` parse (**2400**).",
-      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 2251 --end 2400` and `--chunk 1088 --band` \u2192 UNCredited, exit 0.",
-      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Live box width/height spacing (**2256\u20132264**) | yes (delegates **1087**) |\n| Counter slot coordinates (**2280\u20132281**) | yes |\n| Counter draw-number init (**2285\u20132287**) | yes |\n| Counter shadow copy (**2288\u20132290**) | yes |\n| Counter tick delegation loop (**2294\u20132295**) | yes (predicate) |\n| Key bar ctor defaults (**2335\u20132338**) | yes |\n| Key icon eligibility scan (**2351\u20132356**) | yes |\n| Key draw offset gate (**2357**) | yes |\n| Auto row width / slot stride (**2363\u20132377**) | yes |\n| Row wrap + `reverseRows` (**2382\u20132389**) | yes |\n| Key bar orientation parse head (**2403\u20132407**) | yes |\n| Key bar `number` token (**2400\u20132401**) | yes (constant default context) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2248\u20132250** | **1087** null-box fallback seam |\n| **2274\u20132278**, **2295** | host `new` / `Tick` delegate |\n| **2297\u20132328** | inventory bar member layout |\n| **2341\u20132362**, **2393\u20132396** | host `DrawGraphic` / inventory walk |\n| **2401+** | parse flag loop outside hull |\n\n| Managed (`VmSbarinfoCommandDrawInventoryBar1088Slice.cs`, `VmSbarinfoCommandDrawKeyBar1088Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|------------------------------------------------------------------------------------------------|----------------------------------|\n| Spacing + counter layout | **2252\u20132291** |\n| Key bar draw/parse head | **2335\u20132400** |\n| Band hull (exclusive slice) | **2251\u20132400** |\n\n### Chunk **1088** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1087** |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Client/VmSbarinfoCommandDrawInventoryBar1088Slice.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/g_statusbar/sbarinfo_commands.cpp",
-          "symbol": "CommandDrawInventoryBar::GetCounterSpacing / Tick / CommandDrawKeyBar",
-          "start": 2251,
-          "end": 2400,
-          "tests": [
-            "VmSbarinfoCommandDrawInventoryBar1088SliceTests.ComputeLiveInventoryBarCounterSpacing_UsesWidthWhenHorizontal",
-            "VmSbarinfoCommandDrawInventoryBar1088SliceTests.ResolveInventoryBarCounterSlotCoordinates_AdvancesVerticalSlots",
-            "VmSbarinfoCommandDrawInventoryBar1088SliceTests.ResolveInventoryBarCounterDrawNumberInit_MatchesNativeCounterFields",
-            "VmSbarinfoCommandDrawInventoryBar1088SliceTests.CreateDrawKeyBarCtorDefaults_MatchesNativeInit",
-            "VmSbarinfoCommandDrawInventoryBar1088SliceTests.IsKeyBarInventoryItemDrawable_RequiresValidKeyIcon",
-            "VmSbarinfoCommandDrawInventoryBar1088SliceTests.AdvanceKeyBarSlotOffset_ReversesStrideWhenRequested",
-            "VmSbarinfoCommandDrawInventoryBar1088SliceTests.ShouldWrapKeyBarRow_DetectsRowBoundary",
-            "VmSbarinfoCommandDrawInventoryBar1088SliceTests.AdvanceKeyBarRowOffset_SubtractsWhenReverseRows",
-            "VmSbarinfoCommandDrawInventoryBar1088SliceTests.ResolveKeyBarAutoSlotStride_AddsTwoPixelPadding",
-            "VmSbarinfoCommandDrawInventoryBar1088SliceTests.ClassifyKeyBarOrientationKeyword_MapsVertical"
-          ]
-        }
-      ],
-      "nativeLoc": 150,
-      "managedLoc": 111,
-      "conversionManagedCommit": "c3b2a2d02a0de61ab53ebd6535a1ab4691e9118b"
     }
   ],
   "behaviorNativeChecksum": 508086,
