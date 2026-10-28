@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 65387,
+  "convertedThisRunNative": 65537,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 90409,
+  "convertedThisRunManaged": 90510,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 423418,
+  "remainingNative": 423268,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 83914,
+  "convertedBehaviorNative": 84064,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 84668,
-  "convertedBehaviorManaged": 100080,
+  "combinedBehaviorNative": 84818,
+  "convertedBehaviorManaged": 100181,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -35829,6 +35829,34 @@
       "nativeLoc": 150,
       "managedLoc": 95,
       "conversionManagedCommit": "b5e021d6e61518d3702803dce806bcd705f0da0b"
+    },
+    {
+      "name": "p-states-head-chunk985",
+      "bucket": "conversion",
+      "note": "`GetSpriteTexture`, `StaticFindStateOwner`, `StaticGetStateName`, and `FindLabel` from `p_states.cpp` (**1\u2013150**); UNCredited head before later state-parser bands.",
+      "auditSeams": "`DEFINE_ACTION_FUNCTION` VM prologue, `SpriteFrames`/`Skins` tables, and `BinarySearch` helper remain host-injected.",
+      "auditRationale": "No existing `VmPStates*` managed slice; CLI UNCredited **1\u2013150** with EOF **1174**.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_states.cpp --start 1 --end 150` and `--chunk 985 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `GetSpriteTexture` sprite/frame pick + skin branch (**60\u201376**) | yes |\n| Return slot count cap (**77**) | yes |\n| `StaticFindStateOwner` all classes (**87\u201399**) | yes |\n| `StaticFindStateOwner` hierarchy (**108\u2013119**) | yes |\n| `StaticGetStateName` (**126\u2013139**) | yes |\n| `FindLabel` guard (**146\u2013149**) | yes (lookup enabled) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1\u201349**, **80\u201386**, **121\u2013125**, **141\u2013145** | includes / comments / banners |\n| **151+** | `FStateLabels::Destroy` outside hull |\n\n| Managed (`VmPStatesHead985Slice.cs`) | Native (`p_states.cpp`) |\n|----------------------------------------|----------------------|\n| `SelectEffectiveSprite` / `SelectEffectiveFrame` / `UsesAlternateSkinSprite` | **60\u201373** |\n| `CapSpriteTextureReturnCount` / `ShouldWrite*` / `SpriteFlipForRotation` | **74\u201377** |\n| `ScanAllActorClassesForStateOwner` | **87\u201399** |\n| `FindStateOwnerInHierarchy` | **108\u2013119** |\n| `ResolveStateDisplayName` / `Format*` / `ShouldFormatDehExtraStateName` | **126\u2013139** |\n| `StateLabelLookupEnabled` | **146\u2013149** |\n| Band hull (exclusive slice) | **1\u2013150** |\n\n### Chunk **985** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**984** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPStatesHead985Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/p_states.cpp",
+          "symbol": "FState::GetSpriteTexture",
+          "start": 1,
+          "end": 150,
+          "tests": [
+            "VmPStatesHead985SliceTests.GetSpriteTexture_SelectorsAndReturns",
+            "VmPStatesHead985SliceTests.FindStateOwner_ScansClassesAndHierarchy",
+            "VmPStatesHead985SliceTests.StateNamingAndLabels"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 101,
+      "conversionManagedCommit": "1db9ab271f304418acdc46547f2ed38244d559dc"
     }
   ],
   "behaviorNativeChecksum": 508086,
