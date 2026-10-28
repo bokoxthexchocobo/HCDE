@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 70487,
+  "convertedThisRunNative": 70637,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 94298,
+  "convertedThisRunManaged": 94375,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 418318,
+  "remainingNative": 418168,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 89014,
+  "convertedBehaviorNative": 89164,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 89768,
-  "convertedBehaviorManaged": 103969,
+  "combinedBehaviorNative": 89918,
+  "convertedBehaviorManaged": 104046,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -36782,6 +36782,35 @@
       "nativeLoc": 150,
       "managedLoc": 107,
       "conversionManagedCommit": "e0e68b0924d8805133dd129714e747c44840822f"
+    },
+    {
+      "name": "p-user-serialize-tail-playerinfo-fields-chunk1019",
+      "bucket": "conversion",
+      "note": "`player_t::Serialize` arc tail (**2545\u20132587**), `PlayerInfo` `DEFINE_FIELD` export block (**2623\u20132694**) from `p_user.cpp`. **Pivot:** chunk **1019** target **2395\u20132544** rejected \u2014 retired **510** `VmPUserUnpredictBoss` + off-tally `VmPUserSerializeFreeze` already map `P_UnPredictClient` / `Serialize` head; no re-port.",
+      "auditSeams": "`FSerializer`, `LastSafePos::Serialize`, `arc.Array`, and macro bodies remain native; post-serialize button/skin policy uses existing `VmPUserSerializeFreeze` without duplicate credit.",
+      "auditRationale": "First tally-clean **150** hull after **509** with exclusive managed slice; honest zero-credit exclusion for **2589\u20132615** already covered off-tally by retired **512** helpers in `VmPUserSerializeFreeze.cs`.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_user.cpp --start 2545 --end 2694` and `--chunk 1019 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `Serialize` morph/conversation/blend/crouch/poison/musinfo arc tail (**2545\u20132584**) | yes (arc key manifest) |\n| `LastSafePos` legacy `\"safepos\"` key (**2587**) | yes |\n| `PlayerInfo` `DEFINE_FIELD_X` exports (**2623\u20132694**) | yes (registration manifest) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2395\u20132544** | deferred target \u2014 `VmPUserUnpredictBoss` / `VmPUserSerializeFreeze` retired overlap |\n| **2589\u20132607** | `ShouldClearOldButtons` / skin / fullbright tail \u2014 **`VmPUserSerializeFreeze`** (retired **512**) |\n| **2609\u20132615** | `P_IsPlayerTotallyFrozen` \u2014 **`VmPUserSerializeFreeze`** |\n| **2617\u20132622** | comment banner |\n| **2695+** | next `DEFINE_FIELD` rows outside hull |\n\n| Managed (`VmPUserSerializeTail1019Slice.cs`) | Native (`p_user.cpp`) |\n|---------------------------------------------|---------------------|\n| `SerializeTailArcKeys` / `TryGetSerializeTailArcKey` | **2545\u20132584** |\n| `SafeposUsesLegacyKey` | **2587** |\n| `PlayerInfoVmExportNames` / `TryGetPlayerInfoVmExportName` | **2623\u20132694** |\n| Band hull (exclusive slice) | **2545\u20132694** |\n\n### Chunk **1019** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1018** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPUserSerializeTail1019Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "player_t::Serialize / PlayerInfo exports",
+          "start": 2545,
+          "end": 2694,
+          "tests": [
+            "VmPUserSerializeTail1019SliceTests.SafeposUsesLegacyKey_MatchesNativeAlias",
+            "VmPUserSerializeTail1019SliceTests.SerializeTailArcKeys_IncludesFragsAndPsprites",
+            "VmPUserSerializeTail1019SliceTests.PlayerInfoVmExportCount_MatchesNativeDefineBlock",
+            "VmPUserSerializeTail1019SliceTests.PlayerInfoExportUsesNamedAlias_FlagsInconsistent"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 77,
+      "conversionManagedCommit": "9ab9e825bd74863814409dec4faf62dd058b8fa2"
     }
   ],
   "behaviorNativeChecksum": 508086,
