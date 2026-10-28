@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 72887,
+  "convertedThisRunNative": 73037,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 96273,
+  "convertedThisRunManaged": 96414,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 415918,
+  "remainingNative": 415768,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 91414,
+  "convertedBehaviorNative": 91564,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 92168,
-  "convertedBehaviorManaged": 105944,
+  "combinedBehaviorNative": 92318,
+  "convertedBehaviorManaged": 106085,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -37299,6 +37299,40 @@
       "nativeLoc": 150,
       "managedLoc": 148,
       "conversionManagedCommit": "a4195118fb9e3111fbf5286db666f6cf77cf9f80"
+    },
+    {
+      "name": "g-mapinfo-parse-map-header-chunk1035",
+      "bucket": "conversion",
+      "note": "`ParseMapDefinition` close tail, `GetDefaultLevelNum`, and `ParseMapHeader` title/header head from `g_mapinfo.cpp` (**2277\u20132426**). Follows chunk **1034** (**2127\u20132276**).",
+      "auditSeams": "`CheckEndOfFile`, `FindWadLevelInfo`, `wadlevelinfos.Reserve`, `sc.CheckNumber` / `MustGetString`, `GStrings.MatchDefaultString`, and filesystem lookups remain host-injected; legacy helpers on uncredited `VmMapInfoParseMapHeader` / `VmEMapInfoParsePrimitives` are not re-credited.",
+      "auditRationale": "UNCredited **`g_mapinfo.cpp`** **2277\u20132426** with zero overlap on live conversion rows (**1827\u20132276**, **2600\u20133049**); hull stops before default `levelnum` assign (**2430+**).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_mapinfo.cpp --start 2277 --end 2426` and `--chunk 1035 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `ParseMapDefinition` else close / loop break (**2277\u20132280**) | yes |\n| `CheckEndOfFile(\"map\")` (**2284**) | seam (host) |\n| `GetDefaultLevelNum` MAP/E#M# (**2297\u20132319**) | yes |\n| `ParseMapHeader` numeric map token + Hexen hack (**2333\u20132346**) | yes |\n| Map name string path (**2348\u20132352**) | yes |\n| Wad level slot reserve (**2353\u20132357**) | yes |\n| Default copy + HexenHack defaults (**2358\u20132377**) | yes |\n| MapName store + upper (**2379\u20132380**) | yes |\n| `$` title prefix (**2382\u20132387**) | yes |\n| `lookup` keyword title (**2390\u20132395**) | yes |\n| IWAD default-string workaround (**2402\u20132406**) | yes |\n| Plain title + Hexen WAD key (**2409\u20132424**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2127\u20132276** | chunk **1034** |\n| **2281\u20132283** | loop/host close braces only |\n| **2288\u20132294** | comment banner |\n| **2322\u20132327** | `ParseMapHeader` comment banner |\n| **2430\u20132432** | `GetDefaultLevelNum` assign + SNDINFO outside hull (**2426** ends title block) |\n| **2600\u20133049** | prior mapinfo bands |\n| **3050\u20133151** | deferred tail (**102** lines) |\n| `VmMapInfoParseMapHeader` / `VmEMapInfoParsePrimitives` | uncredited shared helpers \u2014 seam only |\n\n| Managed (`VmMapInfoParseMapHeader1035Slice.cs`) | Native (`g_mapinfo.cpp`) |\n|--------------------------------------------------|---------------------------|\n| `ShouldExitMapDefinitionAfterCloseBrace` | **2277\u20132280** |\n| `GetDefaultLevelNum` | **2297\u20132319** |\n| `ResolveMapNameToken` | **2333\u20132346** |\n| `ShouldReserveWadLevelSlot` | **2353\u20132357** |\n| `ApplyHexenHackDefaults` | **2360\u20132375** |\n| `StoreMapName` | **2379\u20132380** |\n| `TryApplyDollarLevelTitle` | **2382\u20132387** |\n| `TryApplyLookupKeywordTitle` | **2390\u20132395** |\n| `TryApplyIwadDefaultStringTitle` | **2402\u20132406** |\n| `TryApplyHexenWadTitleKey` / `BuildHexenTitleLookupKey` | **2411\u20132424** |\n| `ApplyPlainLevelTitle` | **2409** |\n| Band hull (exclusive slice) | **2277\u20132426** |\n\n### Chunk **1035** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1034** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Gamedata/VmMapInfoParseMapHeader1035Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "GetDefaultLevelNum / ParseMapHeader head",
+          "start": 2277,
+          "end": 2426,
+          "tests": [
+            "VmMapInfoParseMapHeader1035SliceTests.GetDefaultLevelNum_ParsesMap01",
+            "VmMapInfoParseMapHeader1035SliceTests.GetDefaultLevelNum_E1M2_ReturnsEpisodeFormula",
+            "VmMapInfoParseMapHeader1035SliceTests.GetDefaultLevelNum_E1M10_SetsId24Only",
+            "VmMapInfoParseMapHeader1035SliceTests.ResolveMapNameToken_OldFormatNumberSetsHexenHack",
+            "VmMapInfoParseMapHeader1035SliceTests.ApplyHexenHackDefaults_ClearsWallLightAndSetsFlags",
+            "VmMapInfoParseMapHeader1035SliceTests.TryApplyDollarLevelTitle_SetsLookup",
+            "VmMapInfoParseMapHeader1035SliceTests.TryApplyLookupKeywordTitle_RequiresSecondToken",
+            "VmMapInfoParseMapHeader1035SliceTests.TryApplyHexenWadTitleKey_UsesTxtKey",
+            "VmMapInfoParseMapHeader1035SliceTests.ShouldExitMapDefinitionAfterCloseBrace_MirrorsElseBreak"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 141,
+      "conversionManagedCommit": "d53f6a134c5e321eb352476a1fde77cd54860a77"
     }
   ],
   "behaviorNativeChecksum": 508086,
