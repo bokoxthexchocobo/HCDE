@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 76356,
+  "convertedThisRunNative": 76506,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 99237,
+  "convertedThisRunManaged": 99313,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 412516,
+  "remainingNative": 412366,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 94883,
+  "convertedBehaviorNative": 95033,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 95570,
-  "convertedBehaviorManaged": 108908,
+  "combinedBehaviorNative": 95720,
+  "convertedBehaviorManaged": 108984,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -38045,6 +38045,37 @@
       "nativeLoc": 150,
       "managedLoc": 132,
       "conversionManagedCommit": "81f9a76c028f7d0e404390473786ffdb4d3beb93"
+    },
+    {
+      "name": "v-font-fontdefs-chunk1058",
+      "bucket": "conversion",
+      "note": "`V_InitCustomFonts` FONTDEFS parser policy from `v_font.cpp` (**151\u2013300**). Pivot off blocked `g_mapinfo` OPTIONS corridor (**1029** / chunk **1057** tail).",
+      "auditSeams": "`fileSystem.FindLump`, `FScanner`, `TexMan.CheckForTexture`, and `FFont` construction remain host-injected; hull ends inside lump-map first-glyph scan (**300**).",
+      "auditRationale": "UNCredited **`src/common/fonts/v_font.cpp`** **151\u2013300** (+150); zero conversion/recognition overlap and no existing `Vm*` line-range collision on the band.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/common/fonts/v_font.cpp --start 151 --end 300` and `--chunk 1058 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| FONTDEFS per-block defaults (**187\u2013192**) | yes |\n| TEMPLATE/BASE/FIRST/COUNT format-1 path (**198\u2013225**) | yes (format conflict policy) |\n| CURSOR/SPACEWIDTH/DONTTRANSLATE toggles (**226\u2013239**) | yes |\n| NOTRANSLATION index marks (**240\u2013248**) | yes |\n| KERNING/ignoreoffsets/luminosity clamps (**250\u2013268**) | yes |\n| Lump-map glyph key escape (**271\u2013274**) | yes |\n| Missing-texture message gate (**282\u2013286**) | yes (predicate) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **151\u2013158** | comment banner / prior function tail |\n| **178\u2013180** | lump open host |\n| **277\u2013281** | `TexMan` texture resolve host |\n| **290\u2013300** | `FFont` ctor / first-glyph scan (seam past hull) |\n| **301+** | remainder of `V_InitCustomFonts` outside band |\n\n| Managed (`VmVFontFontDefs1058Slice.cs`) | Native (`v_font.cpp`) |\n|-------------------------------------------|----------------------|\n| `CreateDefaults` / format conflict | **187\u2013225**, **240\u2013248** |\n| `TryMarkNoTranslation` | **245\u2013246** |\n| `ClampLuminosity` | **262**, **267** |\n| `NormalizeFontGlyphKey` | **273\u2013274** |\n| `ShouldEmitMissingTextureMessage` | **282\u2013286** |\n| Band hull (exclusive slice) | **151\u2013300** |\n\n### Chunk **1058** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1057** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmVFontFontDefs1058Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/fonts/v_font.cpp",
+          "symbol": "V_InitCustomFonts",
+          "start": 151,
+          "end": 300,
+          "tests": [
+            "VmVFontFontDefs1058SliceTests.CreateDefaults_MatchesNativeInitializers",
+            "VmVFontFontDefs1058SliceTests.FormatConflict_RejectsMixedTemplateAndLumpMap",
+            "VmVFontFontDefs1058SliceTests.TryMarkNoTranslation_OnlyValidCodePoints",
+            "VmVFontFontDefs1058SliceTests.ClampLuminosity_ClampsToByteRange",
+            "VmVFontFontDefs1058SliceTests.NormalizeFontGlyphKey_UnescapesBraces",
+            "VmVFontFontDefs1058SliceTests.ShouldEmitMissingTextureMessage_OnlyForNonIwadContainers"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 76,
+      "conversionManagedCommit": "6a6237bb5793dc99eb5f74b47e501991d34412eb"
     }
   ],
   "behaviorNativeChecksum": 508086,
