@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 76506,
+  "convertedThisRunNative": 76656,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 99313,
+  "convertedThisRunManaged": 99423,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 412366,
+  "remainingNative": 412216,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 95033,
+  "convertedBehaviorNative": 95183,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 95720,
-  "convertedBehaviorManaged": 108984,
+  "combinedBehaviorNative": 95870,
+  "convertedBehaviorManaged": 109094,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -38076,6 +38076,38 @@
       "nativeLoc": 150,
       "managedLoc": 76,
       "conversionManagedCommit": "6a6237bb5793dc99eb5f74b47e501991d34412eb"
+    },
+    {
+      "name": "v-font-fontdefs-textcolo-chunk1059",
+      "bucket": "conversion",
+      "note": "Lump-map font tail and `V_InitFontColors` TEXTCOLO range head from `v_font.cpp` (**301\u2013450**); follows chunk **1058** (**151\u2013300**).",
+      "auditSeams": "`CreateSpecialFont`, `FFont` setters, `fileSystem.FindLump`, `FScanner`, and `V_GetColor` remain host-injected; **451+** continues TEXTCOLO block validation outside hull.",
+      "auditRationale": "UNCredited contiguous **`v_font.cpp`** **301\u2013450** (+150); zero conversion/recognition overlap; no Vm* collision; same TU continuation after **1058**.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/common/fonts/v_font.cpp --start 301 --end 450` and `--chunk 1059 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Lump-map first/count scan (**299\u2013315**) | yes |\n| Lump-map instantiate gate + spacewidth (**315\u2013325**) | yes (predicates) |\n| Invalid property combo error tail (**327\u2013334**) | seam (host `ScriptError`) |\n| TEXTCOLO name alias gate (**378\u2013386**) | yes |\n| Console range switch (**396\u2013405**) | yes |\n| RGB pair split (**415\u2013425**) | yes |\n| Explicit range validation (**427\u2013453**) | yes |\n| Implicit range fill (**455\u2013462**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **301\u2013298** | seam with **1058** scan head |\n| **317\u2013324** | `CreateSpecialFont` / `FFont` host |\n| **329\u2013331**, **367\u2013369** | lump open / loop host |\n| **408\u2013411** | `V_GetColor` host |\n| **467+** | parm length / untranslated tail outside hull |\n\n| Managed (`VmVFontFontDefsTextColo1059Slice.cs`) | Native (`v_font.cpp`) |\n|--------------------------------------------------|----------------------|\n| `ComputeLumpMapGlyphSpan` | **299\u2013314** |\n| `ShouldInstantiateLumpMapFont` / `ShouldApplyExplicitSpaceWidth` | **315\u2013321** |\n| `RejectsAliasForUntranslated` | **381\u2013384** |\n| `TrySwitchToConsoleRange` | **398\u2013401** |\n| `SplitRgb` | **416\u2013425** |\n| `ValidateExplicitColorRange` | **430\u2013453** |\n| `TryBuildImplicitColorRange` | **457\u2013462** |\n| Band hull (exclusive slice) | **301\u2013450** |\n\n### Chunk **1059** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1058** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmVFontFontDefsTextColo1059Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/fonts/v_font.cpp",
+          "symbol": "V_InitCustomFonts tail / V_InitFontColors",
+          "start": 301,
+          "end": 450,
+          "tests": [
+            "VmVFontFontDefsTextColo1059SliceTests.ComputeLumpMapGlyphSpan_FindsFirstAndCount",
+            "VmVFontFontDefsTextColo1059SliceTests.ComputeLumpMapGlyphSpan_EmptyReturnsZeroCount",
+            "VmVFontFontDefsTextColo1059SliceTests.RejectsAliasForUntranslated_WhenExtraNamesPresent",
+            "VmVFontFontDefsTextColo1059SliceTests.TrySwitchToConsoleRange_RejectsDuplicateConsoleBlock",
+            "VmVFontFontDefsTextColo1059SliceTests.ValidateExplicitColorRange_EnforcesNativeOrdering",
+            "VmVFontFontDefsTextColo1059SliceTests.TryBuildImplicitColorRange_MatchesNativeTail",
+            "VmVFontFontDefsTextColo1059SliceTests.SplitRgb_MatchesNativeParts"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 110,
+      "conversionManagedCommit": "6a21259f435f6f7497440efc6fa095b6963ab9dc"
     }
   ],
   "behaviorNativeChecksum": 508086,
