@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 66587,
+  "convertedThisRunNative": 66437,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 91516,
+  "convertedThisRunManaged": 91411,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 422218,
+  "remainingNative": 422368,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 85114,
+  "convertedBehaviorNative": 84964,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 85868,
-  "convertedBehaviorManaged": 101187,
+  "combinedBehaviorNative": 85718,
+  "convertedBehaviorManaged": 101082,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -36025,34 +36025,6 @@
       "nativeLoc": 150,
       "managedLoc": 160,
       "conversionManagedCommit": "24844368fb3ce69e6d0880c9cc00bdbd875e9884"
-    },
-    {
-      "name": "p-openmap-head-chunk992",
-      "bucket": "conversion",
-      "note": "`GetMapIndex`, `P_IsBuildMap`, and `P_OpenMapData` head from `p_openmap.cpp` (**1\u2013150**); first UNCredited band in this TU (EOF **404**).",
-      "auditSeams": "`I_Error`, `FileExists`, `FResourceFile::OpenResourceFile`, `fileSystem`, `strncpy`, and `P_IsBuildMap` host probe remain injected.",
-      "auditRationale": "No existing `VmPOpenMap*` managed slice; CLI UNCredited **1\u2013150**. `P_OpenMapData` is named in **982** seams only (not credited).",
-      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_openmap.cpp --start 1 --end 150` and `--chunk 992 --band` \u2192 UNCredited, exit 0.",
-      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `P_IsBuildMap` (**37\u201340**) | yes (probe policy) |\n| `GetMapIndex` lump walk (**56\u201394**) | yes |\n| `P_OpenMapData` external `file:` branch head (**108\u2013118**) | yes (predicates) |\n| Classic short-name vs `maps/*.wad` / `*.map` pick (**129\u2013150**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1\u201336**, **42\u201348**, **96\u2013100** | license / includes / banners |\n| **87\u201388** | `I_Error` host |\n| **111\u2013116**, **117\u2013118** | `FileExists` / resource open host |\n| **146\u2013147** | `ReopenFileReader` host |\n| **151+** | outside hull |\n\n| Managed (`VmPOpenMapHead992Slice.cs`) | Native (`p_openmap.cpp`) |\n|---------------------------------------|-------------------------|\n| `MapLumpTable` / `MapLumpNameMatches` / `ScanMapLumpIndex` | **58\u201394** |\n| `IsBuildMapProbeAlwaysFalse` / `ShouldAbortStandaloneNonBuildMap` | **37\u201340**, **147\u2013150** |\n| `IsExternalFileMapName` / `StripExternalFileMapPrefix` | **106\u2013110** |\n| `UsesClassicShortMapName` / `FormatMaps*` / `ShouldPreferShortNameLump` | **129\u2013135** |\n| `IsLumpFromDifferentContainer` | **142\u2013150** |\n| Band hull (exclusive slice) | **1\u2013150** |\n\n### Chunk **992** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**991** |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPOpenMapHead992Slice.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/p_openmap.cpp",
-          "symbol": "P_OpenMapData",
-          "start": 1,
-          "end": 150,
-          "tests": [
-            "VmPOpenMapHead992SliceTests.ScanMapLumpIndex_MatchesAndRequiredGaps",
-            "VmPOpenMapHead992SliceTests.ExternalAndClassicMapPaths",
-            "VmPOpenMapHead992SliceTests.ShortNameLumpSelectionAndBuildProbe"
-          ]
-        }
-      ],
-      "nativeLoc": 150,
-      "managedLoc": 105,
-      "conversionManagedCommit": "37eed3ea398bb94a029d2334fe26b90f5e9dbbb2"
     }
   ],
   "behaviorNativeChecksum": 508086,

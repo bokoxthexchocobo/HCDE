@@ -22,8 +22,8 @@ public class VmPOpenMapHead992SliceTests
         Assert.Equal(VmPOpenMapHead992Slice.RequiredMissingIndex, index);
 
         result = VmPOpenMapHead992Slice.ScanMapLumpIndex(
-            "LIGHTMAP",
-            lastIndex: 11,
+            "PAST_END",
+            lastIndex: 12,
             needRequired: false,
             out index);
         Assert.Equal(VmPOpenMapHead992Slice.MapLumpScanResult.EndOfMap, result);
