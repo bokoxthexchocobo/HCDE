@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 61787,
+  "convertedThisRunNative": 61937,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 87765,
+  "convertedThisRunManaged": 87840,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 427018,
+  "remainingNative": 426868,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 80314,
+  "convertedBehaviorNative": 80464,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 81068,
-  "convertedBehaviorManaged": 97436,
+  "combinedBehaviorNative": 81218,
+  "convertedBehaviorManaged": 97511,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -35072,6 +35072,40 @@
       "nativeLoc": 150,
       "managedLoc": 109,
       "conversionManagedCommit": "28c3d3b6ba9216e4f25b782083e41851f7277589"
+    },
+    {
+      "name": "p-mobj-file-head-chunk960",
+      "bucket": "conversion",
+      "note": "Water sink macros, `sv_gravity` CUSTOM_CVAR, client CVAR defaults, and `AActor` GC pointer registration head from `p_mobj.cpp` (**1\u2013150**).",
+      "auditSeams": "Includes, `FRandom` stream objects, `IMPLEMENT_CLASS`, and `PlayerLandedOnThing` prototype remain host seams.",
+      "auditRationale": "Honest **150**-line UNCredited band with zero tally overlap; exclusive `VmPMobjFileHead960Slice.cs` (before serialize **210+** and tick **728**).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 1 --end 150` and `--chunk 960 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `WATER_*` / `Z_UNDERFLOW` macros (**78\u201382**) | yes |\n| `CUSTOM_CVAR sv_gravity` NaN/INF guard + level loop (**122\u2013132**) | yes |\n| `cl_*` archive defaults (**134\u2013137**) | yes (default policy) |\n| `IMPLEMENT_POINTER` through `LastLookActor` (**145\u2013150**) | yes (field registry) |\n| Static `FRandom` / `IMPLEMENT_CLASS` (**97\u2013142**) | seam |\n\n| Managed (`VmPMobjFileHead960Slice.cs`) | Native (`p_mobj.cpp`) |\n|----------------------------------------|---------------------|\n| Water sink / jump constants | **78\u201382** |\n| `IsNonFiniteGravity` / `SanitizeSvGravity` / `ApplySvGravityToAllLevels` | **125\u2013131** |\n| Client cvar default helpers | **134\u2013137** |\n| `RegistersAActorGcPointer` / registration order | **145\u2013150** |\n| Band hull (exclusive slice) | **1\u2013150** |\n\n### Chunk **960** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**959** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjFileHead960Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "CUSTOM_CVAR",
+          "start": 1,
+          "end": 150,
+          "tests": [
+            "VmPMobjFileHead960SliceTests.SanitizeSvGravity_ReplacesNaNWithDefault",
+            "VmPMobjFileHead960SliceTests.SanitizeSvGravity_PreservesFiniteValue",
+            "VmPMobjFileHead960SliceTests.ApplySvGravityToAllLevels_UpdatesEachLevel",
+            "VmPMobjFileHead960SliceTests.AdvanceWaterSink_UsesSmallFactorWhenRequested",
+            "VmPMobjFileHead960SliceTests.WaterJumpVelocity_ScalesMultiplier",
+            "VmPMobjFileHead960SliceTests.RegistersAActorGcPointer_MatchesImplementPointerBand",
+            "VmPMobjFileHead960SliceTests.GcPointerRegistrationOrder_MatchesNativeSequence",
+            "VmPMobjFileHead960SliceTests.ResolveSvGravityCvar_SanitizesAndApplies",
+            "VmPMobjFileHead960SliceTests.ClampsBelowZUnderflow_DetectsUnderflowConstant"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 75,
+      "conversionManagedCommit": "4a77d2d0546fe1c92e247784bd2cb703facda9e4"
     }
   ],
   "behaviorNativeChecksum": 508086,
