@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 242717
+    "managedCSharpLoc": 242849
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 77406,
+    "convertedThisRunNative": 77556,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 99913,
+    "convertedThisRunManaged": 100045,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 411466,
+    "remainingNative": 411316,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 95933,
+    "convertedBehaviorNative": 96083,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 96620,
-    "convertedBehaviorManaged": 109584,
+    "combinedBehaviorNative": 96770,
+    "convertedBehaviorManaged": 109716,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -38289,6 +38289,44 @@
         "nativeLoc": 150,
         "managedLoc": 121,
         "conversionManagedCommit": "167f8aac2e2e6ae8abc3562d5275051d7d9e96de"
+      },
+      {
+        "name": "sbarinfo-parse-toplevel-chunk1065",
+        "bucket": "conversion",
+        "note": "Custom `FindLump` scan tail and `ParseSBarInfo` top-level commands through `monospacefonts` alignment from `sbarinfo.cpp` (**451\u2013600**); follows **1064** load head.",
+        "auditSeams": "Custom/default slot create vs parse uses **1064** `ResolveScriptSlotAction`; `FScanner`, `fileSystem`, recursive `ParseSBarInfo`, and **601+** statement terminators remain host-injected.",
+        "auditRationale": "UNCredited **`sbarinfo.cpp`** **451\u2013600** (+150); zero overlap with **1064** load predicates (**432\u2013450**) except delegated slot policy.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo.cpp --start 451 --end 600` and `--chunk 1065 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Custom lump `FindLump` loop continuation (**452\u2013458**) | yes (scan policy; slot action via **1064** seam) |\n| `ParseSBarInfo` include + main loop entry (**463\u2013483**) | yes |\n| `base` game name + standard lump policy (**485\u2013520**) | yes |\n| `height` assignment (**523\u2013526**) | yes |\n| `interpolatehealth` / `interpolatearmor` bool + speed (**528\u2013560**) | yes |\n| `completeborder` bool (**562\u2013571**) | yes |\n| `monospacefonts` spacing + alignment (**574\u2013600**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **454\u2013457** | **1064** slot create/parse (delegated only) |\n| **467\u2013468**, **474\u2013477**, **519** | host scanner / lump I/O / recurse |\n| **601+** | trailing `;` and **`lowerhealthcap`** outside hull |\n| **603+** | commands past band end |\n\n| Managed (`VmSbarinfoParseTopLevel1065Slice.cs`) | Native (`sbarinfo.cpp`) |\n|--------------------------------------------------|-------------------------|\n| `ShouldContinueCustomLumpScan` / `ResolveCustomSlotAction` | **452\u2013458** |\n| Include + top-level token gates | **469\u2013483** |\n| `ClassifyBaseGameName` / standard base paths | **489\u2013520** |\n| `MergeStatusBarHeight` | **524\u2013525** |\n| `BuildInterpolateHealthState` / armor twin | **528\u2013560** |\n| `ResolveCompleteBorder` | **562\u2013571** |\n| Monospace spacing + alignment | **574\u2013600** |\n| Band hull (exclusive slice) | **451\u2013600** |\n\n### Chunk **1065** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1064** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Client/VmSbarinfoParseTopLevel1065Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/g_statusbar/sbarinfo.cpp",
+            "symbol": "SBarInfo::Load / ParseSBarInfo",
+            "start": 451,
+            "end": 600,
+            "tests": [
+              "VmSbarinfoParseTopLevel1065SliceTests.ClassifyBaseGameName_RecognizesStandardAndOverrideNames",
+              "VmSbarinfoParseTopLevel1065SliceTests.StandardBaseRelativePath_MapsDoomHereticHexen",
+              "VmSbarinfoParseTopLevel1065SliceTests.ResolveGameTypeOverride_MatchesNativeStrifeAndNone",
+              "VmSbarinfoParseTopLevel1065SliceTests.ShouldLoadStandardBaseAfterLookup_UsesUnsetSentinel",
+              "VmSbarinfoParseTopLevel1065SliceTests.BuildInterpolateHealthState_HonorsTrueAndOptionalSpeed",
+              "VmSbarinfoParseTopLevel1065SliceTests.ResolveTopLevelBool_AcceptsFalsePath",
+              "VmSbarinfoParseTopLevel1065SliceTests.MergeStatusBarHeight_ReplacesWhenIntPresent",
+              "VmSbarinfoParseTopLevel1065SliceTests.ResolveMonospaceSpacingCharacter_ClearsOnFalseBranch",
+              "VmSbarinfoParseTopLevel1065SliceTests.TryClassifySpacingAlignment_RecognizesNativeKeywords",
+              "VmSbarinfoParseTopLevel1065SliceTests.ResolveCustomSlotAction_DelegatesTo1064",
+              "VmSbarinfoParseTopLevel1065SliceTests.ShouldRecurseParsedInclude_RequiresValidLump",
+              "VmSbarinfoParseTopLevel1065SliceTests.TryParseOptionalSpacingAlignment_SkipsWhenNoComma",
+              "VmSbarinfoParseTopLevel1065SliceTests.ShouldContinueCustomLumpScan_StopsOnMissingLump"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 132,
+        "conversionManagedCommit": "6079683f318f4f6b9feef2f6f69998435233aebb"
       }
     ],
     "behaviorNativeChecksum": 508086,
