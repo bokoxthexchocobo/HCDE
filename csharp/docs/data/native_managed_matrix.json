@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 246011
+    "managedCSharpLoc": 246152
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 81606,
+    "convertedThisRunNative": 81756,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 103207,
+    "convertedThisRunManaged": 103348,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 407266,
+    "remainingNative": 407116,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 100133,
+    "convertedBehaviorNative": 100283,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 100820,
-    "convertedBehaviorManaged": 112878,
+    "combinedBehaviorNative": 100970,
+    "convertedBehaviorManaged": 113019,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -39262,6 +39262,41 @@
         "nativeLoc": 150,
         "managedLoc": 85,
         "conversionManagedCommit": "97925315d119c52ad2003963b6c02ffe31fa0dd1"
+      },
+      {
+        "name": "sbarinfo-commands-playertype-weaponpiece-drawgem-chunk1093",
+        "bucket": "conversion",
+        "note": "`CommandPlayerType` parse/tick tail, `CommandHasWeaponPiece`, and `CommandDrawGem` parse/draw head from `sbarinfo_commands.cpp` (**3001\u20133150**); follows **1092** player-type lookup seam (**3000**).",
+        "auditSeams": "**1092** owns player-type parse head and list comma advance; **1093** credits descendant tick and new commands only. Host `PClass::FindClass`, inventory walks, `SetTruth`, and `newImage` excluded.",
+        "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **3001\u20133150** (+150); player-type class list loop tail + `IsDescendantOf` truth, weapon-piece parse/tick mask, draw-gem ctor/draw offset/parse flags through signed right padding (**3150**).",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 3001 --end 3150` and `--chunk 1093 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Player-type list loop tokens (**3012**) | yes |\n| Player-type descendant tick truth (**3019\u20133030**) | yes |\n| **HasWeaponPiece** ctor default piece (**3042**) | yes |\n| Weapon class validation (**3051\u20133054**) | yes |\n| Piece number \u2265 1 gate (**3058\u20133060**) | yes |\n| Holder piece mask truth (**3072\u20133075**) | yes |\n| Missing holder false truth (**3079**) | yes (flow) |\n| **DrawGem** ctor defaults (**3091\u20133095**) | yes |\n| Chain draw skip + wiggle Y (**3102\u20133107**) | yes |\n| Chain horizontal offset modulo (**3108\u20133110**) | yes |\n| Parse flag keywords (**3118\u20133132**) | yes |\n| Flag list `|` vs `,` (**3135\u20133136**) | yes |\n| Signed left/right padding (**3144\u20133150**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2969\u20132977**, **2920** | **1092** player-class / is-selected truth helpers |\n| **2985\u20133000**, **3009\u20133010** | **1092** parse head + comma advance |\n| **3002\u20133003** | host `classes.Push` (count via **1092** helper only) |\n| **3067\u20133071**, **3110\u20133112** | host inventory / `DrawGraphic` |\n| **3138\u20133142** | host `newImage` |\n| **3151+** | chain size / coords outside hull |\n\n| Managed (`VmSbarinfoCommandPlayerType1093Slice.cs`, `VmSbarinfoCommandHasWeaponPiece1093Slice.cs`, `VmSbarinfoCommandDrawGem1093Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|----------------------------------------------------------------------------------------------------------------|----------------------------------|\n| PlayerType + HasWeaponPiece + DrawGem head | **3001\u20133150** |\n| Band hull (exclusive slice) | **3001\u20133150** |\n\n### Chunk **1093** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1092** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Client/VmSbarinfoCommandPlayerType1093Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/g_statusbar/sbarinfo_commands.cpp",
+            "symbol": "CommandPlayerType / CommandHasWeaponPiece / CommandDrawGem",
+            "start": 3001,
+            "end": 3150,
+            "tests": [
+              "VmSbarinfoCommandPlayerType1093SliceTests.ResolvePlayerTypeClassListLoopContinues_WithStringOrIdentifier",
+              "VmSbarinfoCommandPlayerType1093SliceTests.ResolvePlayerTypeFlowControlTruthFromDescendants_RequiresDescendantMatch",
+              "VmSbarinfoCommandPlayerType1093SliceTests.ValidateHasWeaponPieceNumber_RejectsBelowOne",
+              "VmSbarinfoCommandPlayerType1093SliceTests.ResolveHasWeaponPieceFlowControlTruth_ChecksPieceMaskBit",
+              "VmSbarinfoCommandPlayerType1093SliceTests.CreateDrawGemCtorDefaults_MatchesNativeInit",
+              "VmSbarinfoCommandPlayerType1093SliceTests.ApplyDrawGemChainWiggleOffset_AddsWiggleWhenValuesDiffer",
+              "VmSbarinfoCommandPlayerType1093SliceTests.ComputeDrawGemChainHorizontalOffset_ModuloChainSize",
+              "VmSbarinfoCommandPlayerType1093SliceTests.TryClassifyDrawGemParseFlagKeyword_MapsInterpolate",
+              "VmSbarinfoCommandPlayerType1093SliceTests.ResolveDrawGemParseFlagListContinuation_EndsOnComma",
+              "VmSbarinfoCommandPlayerType1093SliceTests.ApplyDrawGemSignedPaddingToken_SupportsNegative"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 141,
+        "conversionManagedCommit": "91bfadded693d4c64ad3097ce0e204e40748977f"
       }
     ],
     "behaviorNativeChecksum": 508086,
