@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 68387,
+  "convertedThisRunNative": 68537,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 92862,
+  "convertedThisRunManaged": 92957,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 420418,
+  "remainingNative": 420268,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 86914,
+  "convertedBehaviorNative": 87064,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 87668,
-  "convertedBehaviorManaged": 102533,
+  "combinedBehaviorNative": 87818,
+  "convertedBehaviorManaged": 102628,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -36390,6 +36390,33 @@
       "nativeLoc": 150,
       "managedLoc": 78,
       "conversionManagedCommit": "c2ad47601776debdc5b8388870b86476cce09546"
+    },
+    {
+      "name": "g-game-save-payload-chunk1005",
+      "bucket": "conversion",
+      "note": "`G_DoSaveGame` zip payload, success path, cleanup, and `G_ReadDemoTiccmd` head from `g_game.cpp` (**3050\u20133199**); follows chunk **1004** (**2900\u20133049**).",
+      "auditSeams": "Serializer writers, `WriteZip`, `FResourceFile`, `G_WriteSnapshots`, and demo unpack host remain injected.",
+      "auditRationale": "UNCredited **3050\u20133199** CLI band; disjoint from chunks **995\u20131004** and chunk **9** credited segments.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_game.cpp --start 3050 --end 3199` and `--chunk 1005 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `AllowLoadIn` array gate (**3062\u20133070**) | yes |\n| Globals ticrate/leveltime (**3079\u20133084**) | yes |\n| `nextskill` optional (**3097\u20133100**) | yes |\n| Zip verify + notify (**3118\u20133136**) | yes |\n| JSON buffer cleanup indices (**3145\u20133146**) | yes |\n| Save completion / time unfreeze (**3151\u20133154**) | yes |\n| `G_ReadDemoTiccmd` loop head (**3165\u20133198**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **3050\u20133058** | PNG finish / info fields (seam with **1004**) |\n| **3072\u20133077** | `PutSaveWads` / hub / cvar host |\n| **3090\u20133094** | STAT/RNG/ACS host |\n| **3102\u20133111** | buffer compression host |\n| **3118\u20133124** | resource file open host |\n\n| Managed (`VmGGameSavePayload1005Slice.cs`) | Native (`g_game.cpp`) |\n|-------------------------------------------|----------------------|\n| `ShouldSerializeAllowLoadInPorts` | **3062\u20133070** |\n| `ShouldIncludeLevelTimingInGlobals` / `ShouldSerializeNextSkillGlobal` | **3079\u20133100** |\n| `ConfirmsSavedArchiveIntegrity` / notification style | **3118\u20133136** |\n| `JsonContentCleanupIndices` / completion cleanup | **3145\u20133154** |\n| Demo command predicates | **3165\u20133198** |\n| Band hull (exclusive slice) | **3050\u20133199** |\n\n### Chunk **1005** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1004** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmGGameSavePayload1005Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/g_game.cpp",
+          "symbol": "G_DoSaveGame",
+          "start": 3050,
+          "end": 3199,
+          "tests": [
+            "VmGGameSavePayload1005SliceTests.SaveGlobalsAndArchive",
+            "VmGGameSavePayload1005SliceTests.DemoTiccmdHead"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 95,
+      "conversionManagedCommit": "83ce66fc6577f0127c2a1e9f7ded5e34098134f7"
     }
   ],
   "behaviorNativeChecksum": 508086,
