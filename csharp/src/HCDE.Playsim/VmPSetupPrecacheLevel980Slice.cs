@@ -46,10 +46,11 @@ public static class VmPSetupPrecacheLevel980Slice
     public static bool DefaultSkyPortalUsesSkyFlatOnly(int portalIndex, int portalCount) =>
         portalCount >= 2 && (portalIndex == 0 || portalIndex == 1);
 
-    public static bool ShouldReleaseSubsectorPortalCoverage(object? coverageArray) =>
-        coverageArray is not null;
+    public static bool ShouldReleaseSubsectorPortalCoverage(Array? coverageArray) =>
+        coverageArray is not null && coverageArray.Length > 0;
 
-    public static bool ShouldDeletePortalGroupEntry(object? portalGroup) => portalGroup is not null;
+    public static bool ShouldDeletePortalGroupEntry(object? portalGroup, bool portalGroupsNonEmpty) =>
+        portalGroupsNonEmpty && portalGroup is not null;
 
     public static (int TotalMonsters, int TotalItems, int TotalSecrets, int Killed, int FoundItems, int FoundSecrets)
         ResetLevelStatistics()
@@ -71,12 +72,14 @@ public static class VmPSetupPrecacheLevel980Slice
 
     public static bool ClearLevelDataScrubsNativePointers(bool probeNotNull, int nativeFieldCount) =>
         probeNotNull && nativeFieldCount > 0;
+
+    public static bool TryMergePrecacheClassEntry(
         Dictionary<object, bool> actorHitlist,
         object? actorClass,
         out bool added)
     {
         added = false;
-        if (!ShouldTrackResolvedPrecacheClass(actorClass))
+        if (!ShouldTrackResolvedPrecacheClass(actorClass, lookupSucceeded: true))
             return false;
 
         if (actorHitlist.ContainsKey(actorClass!))
