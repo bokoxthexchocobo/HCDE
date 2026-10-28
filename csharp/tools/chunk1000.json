@@ -1,0 +1,27 @@
+[
+  {
+    "name": "g-game-spawn-dm-chunk1000",
+    "bucket": "conversion",
+    "note": "`G_SpawnPlayer` bot tail, `CheckSpot`, deathmatch start selection, and `PickDeathmatchStart` from `g_game.cpp` (**2021–2170**); follows chunk **999** (**1101–1250**). Orphan `VmGGameSpawnSpot*` / `VmGGamePickDeathmatch` not listed.",
+    "auditSeams": "`P_CheckPosition`, `IFVIRTUAL` inventory, and `pr_dmspawn` RNG remain host-injected.",
+    "auditRationale": "UNCredited **2021–2170** CLI band; disjoint from chunks **995–999** and chunk **9** credited segments.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_game.cpp --start 2021 --end 2170` and `--chunk 1000 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Bot reinit tail (**2023–2030**) | yes |\n| `CheckSpot` (**2040–2081**) | yes (predicates + overlap) |\n| `PlayersRangeFromSpot` (**2092–2109**) | yes |\n| `SelectFarthestDeathmatchSpot` (**2113–2130**) | yes |\n| `SelectRandomDeathmatchSpot` (**2134–2148**) | yes |\n| `PickDeathmatchStart` (**2151–2178**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2012–2020** | `IFVIRTUAL GiveDefaultInventory` host |\n| **2074–2077** | `MF_SOLID` / `P_CheckPosition` host |\n| **1–2020** | upstream `G_SpawnPlayer` body |\n| Orphan spawn/pick managed | not re-credited |\n\n| Managed (`VmGGameSpawnDm1000Slice.cs`) | Native (`g_game.cpp`) |\n|----------------------------------------|----------------------|\n| `ShouldSyncReadyWeaponAfterInventory` / `AssignReadyFromPending` | **2012–2020** |\n| `ShouldReinitializeBot` / `CaptureBotSkill` | **2024–2029** |\n| `IsInvalidMapthingType` / spot Z helpers / `AnotherLivingPlayerAtSpot` | **2046–2061** |\n| `NearestLivingPlayerDistance` | **2094–2109** |\n| `SelectFarthestDeathmatchIndex` | **2119–2127** |\n| `SelectRandomOpenDeathmatchIndex` | **2138–2148** |\n| `ResolvePickDeathmatchStart` / `CountPickDeathmatchReturns` | **2157–2178** |\n| Band hull (exclusive slice) | **2021–2170** |\n\n### Chunk **1000** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**999** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmGGameSpawnDm1000Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "FLevelLocals::CheckSpot",
+        "start": 2021,
+        "end": 2170,
+        "tests": [
+          "VmGGameSpawnDm1000SliceTests.SpawnPlayerBotTail",
+          "VmGGameSpawnDm1000SliceTests.CheckSpotAndRange",
+          "VmGGameSpawnDm1000SliceTests.DeathmatchSelection"
+        ]
+      }
+    ]
+  }
+]
