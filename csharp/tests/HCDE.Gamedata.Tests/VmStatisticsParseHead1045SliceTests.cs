@@ -72,8 +72,25 @@ public class VmStatisticsParseHead1045SliceTests
     }
 
     [Fact]
-    public void OneLevelCounterFieldCount_MatchesStruct()
+    public void TryBuildSessionDraft_ValidatesTokens()
     {
-        Assert.Equal(6, VmStatisticsParseHead1045Slice.OneLevelCounterFieldCount);
+        Assert.False(VmStatisticsParseHead1045Slice.TryBuildSessionDraft(
+            "a", "", "info", "0:0:1", 1, out _));
+        Assert.True(VmStatisticsParseHead1045Slice.TryBuildSessionDraft(
+            "a", "b", "info", "0:0:1", 1, out var draft));
+        Assert.Equal("b", draft.Name);
+    }
+
+    [Fact]
+    public void ShouldParseAnotherSessionEntry_UntilCloseBrace()
+    {
+        Assert.True(VmStatisticsParseHead1045Slice.ShouldParseAnotherSessionEntry(episodeSectionCloseMatched: false));
+        Assert.False(VmStatisticsParseHead1045Slice.ShouldParseAnotherSessionEntry(episodeSectionCloseMatched: true));
+    }
+
+    [Fact]
+    public void TakePendingLevelInfoToken_Truncates()
+    {
+        Assert.Equal(60, VmStatisticsParseHead1045Slice.TakePendingLevelInfoToken(new string('Z', 100)).Length);
     }
 }

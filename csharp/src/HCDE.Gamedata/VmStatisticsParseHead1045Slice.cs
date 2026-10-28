@@ -18,7 +18,27 @@ public static class VmStatisticsParseHead1045Slice
         int TimeNeededTics,
         int Skill);
 
+    public readonly record struct StatisticsLevelNameDraft(string Name);
+
+    public static IReadOnlyList<string> OneLevelCounterNames { get; } =
+    [
+        "totalkills",
+        "killcount",
+        "totalitems",
+        "itemcount",
+        "totalsecrets",
+        "secretcount",
+    ];
+
     public static bool ShouldSkipParseWhenFileUnavailable(bool fileOpened) => !fileOpened;
+
+    public static bool ShouldConsumeAnotherEpisodeEntry(bool scannerReturnedString) => scannerReturnedString;
+
+    public static bool ShouldParseAnotherSessionEntry(bool episodeSectionCloseMatched) =>
+        !episodeSectionCloseMatched;
+
+    public static bool ShouldParseAnotherNestedLevelEntry(bool levelSectionCloseMatched) =>
+        !levelSectionCloseMatched;
 
     public static StatisticsEpisodeDraft BuildEpisodeDraft(string headerToken, string nameToken) =>
         new(headerToken, nameToken);
@@ -48,11 +68,34 @@ public static class VmStatisticsParseHead1045Slice
         return new StatisticsSessionDraft(name, info, tics, skill);
     }
 
+    public static bool TryBuildSessionDraft(
+        string firstToken,
+        string secondToken,
+        string infoToken,
+        string durationToken,
+        int skill,
+        out StatisticsSessionDraft draft)
+    {
+        draft = default;
+        if (string.IsNullOrEmpty(secondToken) || string.IsNullOrEmpty(infoToken))
+            return false;
+        if (!durationToken.Contains(':', StringComparison.Ordinal))
+            return false;
+        draft = BuildSessionDraft(firstToken, secondToken, infoToken, durationToken, skill);
+        return true;
+    }
+
     public static bool ShouldBeginSessionLevelBlock(string token) =>
         IsStatisticsBlockOpenToken(token);
 
+    public static StatisticsLevelNameDraft BeginNestedLevelStatEntry(string levelNameToken) =>
+        new(ParseLevelStatNameFromToken(levelNameToken));
+
     public static string ParseLevelStatNameFromToken(string levelNameToken) =>
         TruncateStatField(levelNameToken, StatNameFieldLen);
+
+    public static string TakePendingLevelInfoToken(string infoToken) =>
+        TruncateStatInfoField(infoToken);
 
     public static string DefaultStatFileName() => VmStatisticsConfig.StatFileDefault;
 

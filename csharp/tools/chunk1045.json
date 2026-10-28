@@ -26,7 +26,10 @@
           "VmStatisticsParseHead1045SliceTests.ParseLevelStatNameFromToken_Truncates",
           "VmStatisticsParseHead1045SliceTests.ShouldBeginSessionLevelBlock_MatchesOpenBrace",
           "VmStatisticsParseHead1045SliceTests.DefaultConfig_MatchesCvarDefaults",
-          "VmStatisticsParseHead1045SliceTests.OneLevelCounterFieldCount_MatchesStruct"
+          "VmStatisticsParseHead1045SliceTests.OneLevelCounterFieldCount_MatchesStruct",
+          "VmStatisticsParseHead1045SliceTests.TryBuildSessionDraft_ValidatesTokens",
+          "VmStatisticsParseHead1045SliceTests.ShouldParseAnotherSessionEntry_UntilCloseBrace",
+          "VmStatisticsParseHead1045SliceTests.TakePendingLevelInfoToken_Truncates"
         ]
       }
     ]
