@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 233705
+    "managedCSharpLoc": 233848
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 65987,
+    "convertedThisRunNative": 66137,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 90902,
+    "convertedThisRunManaged": 91045,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 422818,
+    "remainingNative": 422668,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 84514,
+    "convertedBehaviorNative": 84664,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 85268,
-    "convertedBehaviorManaged": 100573,
+    "combinedBehaviorNative": 85418,
+    "convertedBehaviorManaged": 100716,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -35957,6 +35957,34 @@
         "nativeLoc": 150,
         "managedLoc": 101,
         "conversionManagedCommit": "bc7915da00fe023ec1d95aeb35d085c9fe164c41"
+      },
+      {
+        "name": "p-states-parser-goto-chunk989",
+        "bucket": "conversion",
+        "note": "`InstallStates` cache tail, `MakeStateList`/`MakeStateDefines`, `AddStateDefines`, retarget helpers, and `ResolveGotoLabel` head from `p_states.cpp` (**601\u2013750**); follows chunk **988** (**451\u2013600**).",
+        "auditSeams": "`CreateStateLabelList`, `FindState`, `FxAlloc.Strdup`, `I_Error`, and `strstr` host calls remain injected.",
+        "auditRationale": "UNCredited parser/dehacked band; disjoint from **985\u2013988**. Does not re-port **988** install head (**579\u2013600**).",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_states.cpp --start 601 --end 750` and `--chunk 989 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `InstallStates` default cache (**603\u2013609**) | yes |\n| `MakeStateList` / `MakeStateDefines` (**621\u2013654**) | yes |\n| `AddStateDefines` flat merge (**664\u2013681**) | yes |\n| `RetargetStatePointers` (**696\u2013718**) | yes |\n| `ResolveGotoLabel` class scope head (**734\u2013750**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **601\u2013602** | `CreateStateLabelList` assign (**988** seam continuation) |\n| **612\u2013619**, **656\u2013662**, **683\u2013694**, **726\u2013732**, **751+** | comment banners / outside hull |\n| **709**, **757\u2013762** | host string alloc / `I_Error` |\n| **1\u2013600** | chunks **985\u2013988** |\n\n| Managed (`VmPStatesParser989Slice.cs`) | Native (`p_states.cpp`) |\n|---------------------------------------|----------------------|\n| `CacheInstalledDefaultStates` | **604\u2013609** |\n| `ImportStateLabelTree` / `ResetStateDefineSession` / `ShouldRebuildStateDefinesFromClass` | **621\u2013654** |\n| `ShouldMergeFlatStateDefine` | **668\u2013678** |\n| `RetargetIndexedDefinesInTree` / `ApplyRetarget*` | **698\u2013716** |\n| `GotoLabelHasClassScope` / `GotoClassScopeIsSuper` / `ExtractGotoLabelAfterScope` | **743\u2013754** |\n| Band hull (exclusive slice) | **601\u2013750** |\n\n### Chunk **989** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**988** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPStatesParser989Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/p_states.cpp",
+            "symbol": "FStateDefinitions::ResolveGotoLabel",
+            "start": 601,
+            "end": 750,
+            "tests": [
+              "VmPStatesParser989SliceTests.InstallCacheAndImport",
+              "VmPStatesParser989SliceTests.RetargetIndexedDefines",
+              "VmPStatesParser989SliceTests.ResolveGotoLabelHead"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 143,
+        "conversionManagedCommit": "8be6b422786e16da69a4070157f9d6244a98f302"
       }
     ],
     "behaviorNativeChecksum": 508086,
