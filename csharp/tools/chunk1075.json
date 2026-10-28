@@ -1,0 +1,31 @@
+[
+  {
+    "name": "sbarinfo-commands-switchable-chunk1075",
+    "bucket": "conversion",
+    "note": "`CommandDrawSwitchableImage` compare operators and condition parse head from `sbarinfo_commands.cpp` (**301–450**); follows **1074** `GetIcon` tail seam.",
+    "auditSeams": "**1074** owns spawn-scale tail (**300–304**); `LookupKeySpecies`, `FScanner`, and **451+** `armortype` body remain outside hull or host.",
+    "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **301–450** (+150); introduces switchable-image policy; no tally overlap with **1074** except excluded seam.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 301 --end 450` and `--chunk 1075 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `GetOperation` token dispatch (**364–383**) | yes |\n| Default `GREATER` / value 0 (**377–380**) | yes |\n| `EvaluateOperation` switch (**387–402**) | yes |\n| Switchable ctor field init (**424–426**) | yes |\n| `weaponslot` / `invulnerable` / `keyslot` parse (**434–449**) | yes |\n| Inventory string-const path gate (**459** predicate via **430–432**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **301–304** | **1074** `ApplyInventoryIconSpawnScale` seam |\n| **306–307**, **405–418** | host `TexMan` / actor scan |\n| **309–345** | `ImageType` enum + member fields |\n| **428–431**, **437–449** | host scanner tokens |\n| **451+** | `armortype` parse outside hull |\n\n| Managed (`VmSbarinfoCommandDrawSwitchable1075Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|-----------------------------------------------------------|----------------------------------|\n| Compare operator parse + default | **362–383** |\n| `EvaluateOperation` | **385–403** |\n| Ctor sentinel init | **424–426** |\n| Condition keyword classification | **434–447** |\n| Inventory / slot parse gates | **428–459** |\n| Band hull (exclusive slice) | **301–450** |\n\n### Chunk **1075** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1074** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoCommandDrawSwitchable1075Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo_commands.cpp",
+        "symbol": "CommandDrawSwitchableImage::GetOperation / Parse",
+        "start": 301,
+        "end": 450,
+        "tests": [
+          "VmSbarinfoCommandDrawSwitchable1075SliceTests.ResolveCompareOperationFromTokens_DefaultsToGreaterZero",
+          "VmSbarinfoCommandDrawSwitchable1075SliceTests.EvaluateSwitchableCompare_CoversNativeOperators",
+          "VmSbarinfoCommandDrawSwitchable1075SliceTests.TryClassifySwitchableConditionKeyword_MapsParseHeadKeywords",
+          "VmSbarinfoCommandDrawSwitchable1075SliceTests.InitializeSwitchableImageFields_MatchesNativeCtorSentinels",
+          "VmSbarinfoCommandDrawSwitchable1075SliceTests.ShouldParseInventoryConditionString_DetectsStringConstPath",
+          "VmSbarinfoCommandDrawSwitchable1075SliceTests.ShouldParseWeaponSlotIndex_OnlyForWeaponSlotCondition",
+          "VmSbarinfoCommandDrawSwitchable1075SliceTests.ShouldParseArmorTypeIdentifier_DetectsArmorTypeBranch"
+        ]
+      }
+    ]
+  }
+]
