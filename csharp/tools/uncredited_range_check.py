@@ -138,7 +138,7 @@ def main() -> int:
         for cf, cs, ce, name in credited:
             if self_chunk_name and name == self_chunk_name:
                 continue
-            if not (cf.endswith(base) or norm in cf):
+            if cf.replace("\\", "/") != norm:
                 continue
             if overlaps(start, end, cs, ce):
                 hits.append(f"{name} {cf} {cs}-{ce}")

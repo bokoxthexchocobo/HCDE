@@ -1,0 +1,33 @@
+[
+  {
+    "name": "info-damage-type-definition-chunk1039",
+    "bucket": "conversion",
+    "note": "Global `DamageTypeDefinition`, `GetMobjDamageFactor`, and `ParseDamageDefinition` from `info.cpp` (**894–1043**). **Pivot:** primary **983–1132** aborted (EOF **1043**; **983–1043** = **61** lines). Follows **1038** (**650–799**).",
+    "auditSeams": "`GlobalDamageDefinitions`, `FMapInfoParser` scanner, `ParseOpenBrace`, and `DEFINE_ACTION_FUNCTION` remain host-injected; uncredited `VmDamageTypeDefinitionRuntime` is a parallel catalog — not re-credited.",
+    "auditRationale": "File-scoped UNCredited **`info.cpp`** **894–1043** (+150 to EOF); excludes **500–799** (**1037–1038**). `uncredited_range_check.py` now matches credited ranges by exact file path (fixes false *info.cpp* collision with `g_mapinfo.cpp` **833–982**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/info.cpp --start 894 --end 1043` and `--chunk 1039 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `DamageTypeDefinition::Apply` global insert (**898–901**) | yes |\n| `Get` / `IgnoreArmor` (**903–913**) | yes |\n| `GetObituary` (**922–927**) | yes |\n| `GetMobjDamageFactor` (**945–990**) | yes |\n| `ApplyMobjDamageFactor` (**993–997**) | yes |\n| `ParseDamageDefinition` property loop (**1005–1042**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **500–799** | chunks **1037–1038** |\n| **800–893** | `DmgFactors::Apply`, `SummonActor`, CCMDs outside hull (**894** starts globals) |\n| **915–920** | `DEFINE_ACTION_FUNCTION` host macro |\n| **983–1132** (primary target) | past EOF **1043** / sub-150 without padding |\n| **800–982** | deferred (sub-bands) until file-scoped preflight only |\n| `VmDamageTypeDefinitionRuntime` | uncredited helper — seam only |\n\n| Managed (`VmInfoDamageType1039Slice.cs`) | Native (`info.cpp`) |\n|-------------------------------------------|---------------------|\n| `RegisterGlobalDamageType` | **898–901** |\n| `GlobalIgnoresArmor` | **908–913** |\n| `ResolveGlobalObituary` | **922–927** |\n| `ResolveMobjDamageFactor` | **945–990** |\n| `ApplyMobjDamageFactor` | **993–997** |\n| `ClassifyDamageDefinitionProperty` / apply helpers | **1015–1035** |\n| Band hull (exclusive slice, EOF **1043**) | **894–1043** |\n\n### Chunk **1039** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1038** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmInfoDamageType1039Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/info.cpp",
+        "symbol": "DamageTypeDefinition / ParseDamageDefinition",
+        "start": 894,
+        "end": 1043,
+        "tests": [
+          "VmInfoDamageType1039SliceTests.ResolveMobjDamageFactor_UsesTypedActorFactor",
+          "VmInfoDamageType1039SliceTests.ResolveMobjDamageFactor_ReplaceFactorOverridesUntyped",
+          "VmInfoDamageType1039SliceTests.ApplyMobjDamageFactor_ScalesDamage",
+          "VmInfoDamageType1039SliceTests.GlobalIgnoresArmor_ReadsFlag",
+          "VmInfoDamageType1039SliceTests.ApplyFactorProperty_ZeroSetsReplace",
+          "VmInfoDamageType1039SliceTests.ClassifyDamageDefinitionProperty_RecognizesNoArmor",
+          "VmInfoDamageType1039SliceTests.RegisterGlobalDamageType_StoresDraft",
+          "VmInfoDamageType1039SliceTests.ResolveGlobalObituary_ReturnsEmptyWhenMissing",
+          "VmInfoDamageType1039SliceTests.ResolveMobjDamageFactor_NoneWithoutFactors_ReturnsOne"
+        ]
+      }
+    ]
+  }
+]
