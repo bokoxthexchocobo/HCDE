@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 77556,
+  "convertedThisRunNative": 77706,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 100045,
+  "convertedThisRunManaged": 100187,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 411316,
+  "remainingNative": 411166,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 96083,
+  "convertedBehaviorNative": 96233,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 96770,
-  "convertedBehaviorManaged": 109716,
+  "combinedBehaviorNative": 96920,
+  "convertedBehaviorManaged": 109858,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -38311,6 +38311,41 @@
       "nativeLoc": 150,
       "managedLoc": 132,
       "conversionManagedCommit": "6079683f318f4f6b9feef2f6f69998435233aebb"
+    },
+    {
+      "name": "sbarinfo-parse-toplevel-chunk1066",
+      "bucket": "conversion",
+      "note": "`ParseSBarInfo` top-level commands from `lowerhealthcap` through `protrusion` loop head in `sbarinfo.cpp` (**601\u2013750**); follows **1065**.",
+      "auditSeams": "Status-bar type names use **1064** `MatchStatusBarTypeName`; `FScanner`, `new`/`delete` HUD blocks, `ParseMugShotBlock`, `popup.init`, and **751+** loop tail remain host-injected.",
+      "auditRationale": "UNCredited **`sbarinfo.cpp`** **601\u2013750** (+150); no tally overlap with **1065** monospace body (**574\u2013600**).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo.cpp --start 601 --end 750` and `--chunk 1066 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `lowerhealthcap` false-first bool (**603\u2013613**) | yes |\n| `resolution` width/height (**615\u2013621**) | yes |\n| `statusbar` / `appendstatusbar` policy (**623\u2013651**) | yes |\n| `mugshot` flag list (**654\u2013682**) | yes |\n| `createpopup` kind/size/transition (**685\u2013736**) | yes |\n| `protrusion` ascending factor pairs (**739\u2013750**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **601\u2013602** | **1065** monospace statement tail (host `;`) |\n| **632**, **639\u2013641**, **651** | host `MustMatchString` / alloc / `Parse` |\n| **676** | `ParseMugShotBlock` host |\n| **735** | `popup.init` host |\n| **751+** | protrusion loop tail + switch close outside hull |\n\n| Managed (`VmSbarinfoParseTopLevel1066Slice.cs`) | Native (`sbarinfo.cpp`) |\n|--------------------------------------------------|-------------------------|\n| `ResolveLowerHealthCap` | **603\u2013612** |\n| `MergeResolution` | **616\u2013620** |\n| HUD append/create + automap | **626\u2013650** |\n| `ApplyMugShotStateFlag` / replace index | **662\u2013682** |\n| Popup kind/transition/fade speeds | **688\u2013730** |\n| Protrusion order + pair build | **741\u2013750** |\n| Band hull (exclusive slice) | **601\u2013750** |\n\n### Chunk **1066** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1065** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmSbarinfoParseTopLevel1066Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/g_statusbar/sbarinfo.cpp",
+          "symbol": "SBarInfo::ParseSBarInfo",
+          "start": 601,
+          "end": 750,
+          "tests": [
+            "VmSbarinfoParseTopLevel1066SliceTests.ResolveLowerHealthCap_PrefersFalseBranchFirst",
+            "VmSbarinfoParseTopLevel1066SliceTests.ResolveImplicitGameTypeWhenBaseUnset_MatchesNative",
+            "VmSbarinfoParseTopLevel1066SliceTests.StatusBarHudPolicy_HandlesAppendVsCreate",
+            "VmSbarinfoParseTopLevel1066SliceTests.ApplyMugShotStateFlag_StacksHealth2Flags",
+            "VmSbarinfoParseTopLevel1066SliceTests.ClassifyPopupKind_MapsLogKeysStatus",
+            "VmSbarinfoParseTopLevel1066SliceTests.ComputeFadePopupSpeed_UsesTicRate",
+            "VmSbarinfoParseTopLevel1066SliceTests.BuildFadePopupSpeeds_PairsBothFloats",
+            "VmSbarinfoParseTopLevel1066SliceTests.IsProtrusionFactorAscending_EnforcesStrictIncrease",
+            "VmSbarinfoParseTopLevel1066SliceTests.ClassifyPopupTransition_RecognizesSlideAndFade",
+            "VmSbarinfoParseTopLevel1066SliceTests.MergeResolution_ReplacesWhenCommandActive"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 142,
+      "conversionManagedCommit": "999931fd9fa768bbf00bc880ce8e264ce24fb5b5"
     }
   ],
   "behaviorNativeChecksum": 508086,
