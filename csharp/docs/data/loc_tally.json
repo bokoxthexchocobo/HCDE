@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 59237,
+  "convertedThisRunNative": 59387,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 86219,
+  "convertedThisRunManaged": 86300,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 429568,
+  "remainingNative": 429418,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 77764,
+  "convertedBehaviorNative": 77914,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 78518,
-  "convertedBehaviorManaged": 95890,
+  "combinedBehaviorNative": 78668,
+  "convertedBehaviorManaged": 95971,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -34493,6 +34493,38 @@
       "nativeLoc": 150,
       "managedLoc": 89,
       "conversionManagedCommit": "1c93933203da0c085bdaa9d0ae4325c94778628e"
+    },
+    {
+      "name": "p-lnspec-thing-hate-chunk943",
+      "bucket": "conversion",
+      "note": "`LS_Thing_Hate` from `p_lnspec.cpp` (**1565\u20131714**). Planned **3983\u20134132** corridor is absent (`p_lnspec.cpp` EOF **3982**); pivoted to next clean **150** avoiding deferred **2869\u20132910**, **3019\u20133129**, **3905\u20133982**.",
+      "auditSeams": "`GetActorIterator`, `SeeState`, inventory, and `SetState` remain host seams.",
+      "auditRationale": "Honest in-repo **150**-line UNCredited band; exclusive `VmPLnspecThingHate943Slice.cs` (live `VmPLnspecThingHate` / retired **417** are not matrix credit for these lines).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 1565 --end 1714` and `--chunk 943 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| chunk **943** hull | **1565\u20131714** |\n| `HateeCandidateValid` | hatee scan **1577\u20131579** |\n| `NothingToHateWhenTidNonZero` | **1584\u20131587** |\n| `RejectPlayerAsHater` | player hater guard **1592\u20131596** |\n| `HaterIteratorCandidate` | hater pick **1606\u20131608** |\n| `ShouldRecordTidToHate` / `ShouldClearTargetForTid` | group TID **1620\u20131636** |\n| `BuildHateAttitude` | `MF3`/`MF4` modes **1651\u20131674** |\n| `CanChaseAfterHate` | target assign **1697\u20131707** |\n| `HateeScanContinue` | group hatee loop **1690\u20131694** |\n| `ShouldWakeSeeState` | `SetState(SeeState)` **1704\u20131706** |\n| `ContinueHaterIterator` | iterator **1710\u20131718** |\n| `AssignActivatorAsHatee` | **1676\u20131678** |\n| `UsesGroupHateMode` | **1620** |\n| `ShouldStoreLastEnemyBeforeRetarget` | **1699\u20131701** |\n| `HasSeeStateForHate` | `SeeState` gate **1615** |\n| `ShouldBreakHaterLoop` | hater iterator exit **1720\u20131723** |\n\n### Chunk **943** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**942** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPLnspecThingHate943Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_Thing_Hate",
+          "start": 1565,
+          "end": 1714,
+          "tests": [
+            "VmPLnspecThingHate943SliceTests.HateeCandidateValid_RequiresShootableAliveAwake",
+            "VmPLnspecThingHate943SliceTests.NothingToHateWhenTidNonZero_DetectsMissingHatee",
+            "VmPLnspecThingHate943SliceTests.RejectPlayerAsHater_BlocksActivatorPlayer",
+            "VmPLnspecThingHate943SliceTests.BuildHateAttitude_SetsNoSightForMode2",
+            "VmPLnspecThingHate943SliceTests.CanChaseAfterHate_RejectsSelf",
+            "VmPLnspecThingHate943SliceTests.HateeScanContinue_StopsOnDormant",
+            "VmPLnspecThingHate943SliceTests.ShouldWakeSeeState_RequiresPositiveHealth"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 81,
+      "conversionManagedCommit": "4e16723b04b209bddfcebebb0b111ec431c431be"
     }
   ],
   "behaviorNativeChecksum": 508086,
