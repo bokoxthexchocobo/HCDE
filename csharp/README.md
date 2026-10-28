@@ -21,9 +21,11 @@ Failed snapshot writes now preserve pending state; armor/pitch replicate;
 buffered Doom weapon selection and flat-sector weapon noise are implemented.
 The continuation converts fractional sector planes, classic ceilings/crushers
 and Doom stair chains, with backward-compatible v6 pose archives including actor pitch.
-**6,493 tests pass; gameplay phases 1–3 remain incomplete.** The audit gives the
+**21,957+ tests pass on Release builds; gameplay phases 1–3 remain incomplete.** The audit gives the
 remaining completion gates. Historical phase numbers below refer to narrower
 tools/protocol/server milestones, not full gameplay conversion.
+
+Support matrix: [native-to-managed inventory (2026-10-19)](docs/HCDE_NATIVE_MANAGED_MATRIX.md). Regenerate with `dotnet run --project src/HCDE.ConversionInventory -- ../..` from `csharp/`.
 
 Current review: [full conversion status, 2026-10-04](docs/HCDE_CSHARP_STATUS_2026_10_04.md).
 

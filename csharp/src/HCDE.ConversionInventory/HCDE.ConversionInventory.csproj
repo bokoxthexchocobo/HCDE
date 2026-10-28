@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>HCDE.ConversionInventory</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HCDE.MapLoader\HCDE.MapLoader.csproj" />
+    <ProjectReference Include="..\HCDE.Scripting\HCDE.Scripting.csproj" />
+  </ItemGroup>
+
+</Project>
