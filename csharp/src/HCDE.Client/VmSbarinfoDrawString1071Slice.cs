@@ -6,7 +6,7 @@ namespace HCDE.Client;
 /// </summary>
 public static class VmSbarinfoDrawString1071Slice
 {
-    public const int TextColorEscape = '\034';
+    public const int TextColorEscape = 0x1c;
     public const int GameRavenMask = 2 | 4;
     public const int UndefinedColorRange = int.MinValue;
     public const double HereticShadowAlphaFactor = 0x6800 / 65536.0;
