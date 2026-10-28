@@ -1,0 +1,30 @@
+[
+  {
+    "name": "sbarinfo-commands-drawstring-realign-number-chunk1079",
+    "bucket": "conversion",
+    "note": "`RealignString`, `SetStringToTag`, and `CommandDrawNumber` parse head from `sbarinfo_commands.cpp` (**901–1050**); follows **1078** dynamic tick seam.",
+    "auditSeams": "**1078** owns TIME formatting (**905–907**); **1077** owns drawstring alignment parse keywords. Member fields **967–983** excluded.",
+    "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **901–1050** (+150); horizontal realign math + tag cache + drawnumber value head; not `v_font.cpp` **901–957**.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 901 --end 1050` and `--chunk 1079 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `LOGTEXT` / default tick tail (**909–915**) | yes (realign gate on default) |\n| `RealignString` reset + alignment (**928–944**) | yes |\n| Proportional vs monospace width (**934–943**) | yes |\n| `SetStringToTag` cache policy (**988–1000**) | yes |\n| `CommandDrawNumber` length/font (**1021–1031**) | yes |\n| Constant int value path (**1035–1039**) | yes |\n| Draw-number stat keywords (**1048–1050** hull) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **901–902**, **900** | **1078** global-array tick tail / host `RealignString` |\n| **903–907** | **1078** TIME format |\n| **910**, **913–914** | host string lookup |\n| **919–965**, **967–983** | enums / member declarations |\n| **994**, **1000** | host `RealignString` call |\n| **1051+** | drawnumber keywords outside hull |\n\n| Managed (`VmSbarinfoCommandDrawString1079Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|----------------------------------------------------|----------------------------------|\n| Realign X for L/R/C + spacing modes | **928–944** |\n| Tag string cache update/clear | **988–1000** |\n| DrawNumber length/value parse head | **1021–1050** |\n| Band hull (exclusive slice) | **901–1050** |\n\n### Chunk **1079** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1078** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoCommandDrawString1079Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo_commands.cpp",
+        "symbol": "CommandDrawString::RealignString / SetStringToTag / CommandDrawNumber::Parse",
+        "start": 901,
+        "end": 1050,
+        "tests": [
+          "VmSbarinfoCommandDrawString1079SliceTests.ResolveDrawStringXAfterRealign_CenterHalvesMonospaceWidth",
+          "VmSbarinfoCommandDrawString1079SliceTests.ResolveDrawStringXAfterRealign_RightUsesProportionalWidth",
+          "VmSbarinfoCommandDrawString1079SliceTests.ResolveTagStringWhenActorPresent_RealignsOnClassChange",
+          "VmSbarinfoCommandDrawString1079SliceTests.ResolveTagStringWhenActorMissing_ClearsCacheAndText",
+          "VmSbarinfoCommandDrawString1079SliceTests.TryClassifyDrawNumberValueKeyword_MapsHealthArmorAmmo",
+          "VmSbarinfoCommandDrawString1079SliceTests.ResolveDrawNumberValueSource_DistinguishesConstantInt"
+        ]
+      }
+    ]
+  }
+]
