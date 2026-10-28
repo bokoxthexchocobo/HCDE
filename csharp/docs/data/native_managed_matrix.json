@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 237676
+    "managedCSharpLoc": 237807
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 71237,
+    "convertedThisRunNative": 71387,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 94873,
+    "convertedThisRunManaged": 95004,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 417568,
+    "remainingNative": 417418,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 89764,
+    "convertedBehaviorNative": 89914,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 90518,
-    "convertedBehaviorManaged": 104544,
+    "combinedBehaviorNative": 90668,
+    "convertedBehaviorManaged": 104675,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -36952,6 +36952,38 @@
         "nativeLoc": 150,
         "managedLoc": 134,
         "conversionManagedCommit": "ba9522420377109e43bc73675b09239d9c15f93d"
+      },
+      {
+        "name": "a-specialspot-spotlist-chunk1024",
+        "bucket": "conversion",
+        "note": "`FSpotList` add/remove/selection and serialize field bundle from `a_specialspot.cpp` (**1\u2013150**). Primary **1024** target `p_floor.cpp` **1\u2013150** rejected (file absent; `mapthinkers/a_floor.cpp` **1\u2013150** overlaps chunk **917**).",
+        "auditSeams": "`pr_spot`, `IMPLEMENT_CLASS`, `DSpotState` host lookup, and `AActor`/`PClassActor` types remain native.",
+        "auditRationale": "Preflight `--band`: `p_floor.cpp` **1\u2013150** tally-UNCredited by basename only (no source file). Real floor head **`a_floor.cpp` **1\u2013150**** OVERLAP chunk **917**; off-tally `VmAFloor*` duplicates same span. First clean \u2265150: **`a_specialspot.cpp` **1\u2013150**** (zero conversion rows, zero recognition overlap, no `VmASpecialSpot*` yet).",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/a_specialspot.cpp --start 1 --end 150` and `--chunk 1024 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `FSpotList::Add` (**67\u201375**) | yes |\n| `FSpotList::Remove` + index fixup (**83\u201395**) | yes |\n| `FSpotList::GetNextInList` (**103\u2013115**) | yes |\n| `FSpotList::GetSpotWithMinMaxDistance` (**123\u2013142**) | yes |\n| `FSpotList::GetRandomSpot` (**150\u2013159**) | yes (param `onlyfirst` unused in native body) |\n| `Serialize(FSpotList)` field bundle (**168\u2013179**) | yes (index/skip/numcalls) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1\u201340**, **49\u201359**, **161\u2013167** | includes / empty ctor / comment banners |\n| **188\u2013150** gap | `DSpotState` methods deferred next band |\n\n| Managed (`VmASpecialSpotSpotList1024Slice.cs`) | Native (`a_specialspot.cpp`) |\n|------------------------------------------------|------------------------------|\n| `TryAddSpot` | **67\u201375** |\n| `TryRemoveSpot` | **83\u201395** |\n| `GetNextInList` | **103\u2013115** |\n| `GetSpotWithMinMaxDistance` | **123\u2013142** |\n| `GetRandomSpot` | **150\u2013159** |\n| `CaptureSerializeFields` / `ApplySerializeFields` | **172\u2013176** |\n| Band hull (exclusive slice) | **1\u2013150** |\n\n### Chunk **1024** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1023** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmASpecialSpotSpotList1024Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "FSpotList spot registry",
+            "start": 1,
+            "end": 150,
+            "tests": [
+              "VmASpecialSpotSpotList1024SliceTests.TryAddSpot_RejectsDuplicateReference",
+              "VmASpecialSpotSpotList1024SliceTests.TryRemoveSpot_AdjustsIndexWhenRemovingEarlierEntry",
+              "VmASpecialSpotSpotList1024SliceTests.GetNextInList_RoundsRobinAfterSkipCounter",
+              "VmASpecialSpotSpotList1024SliceTests.GetSpotWithMinMaxDistance_SearchesCircularOrder",
+              "VmASpecialSpotSpotList1024SliceTests.GetSpotWithMinMaxDistance_ReturnsNullWhenNoMatch",
+              "VmASpecialSpotSpotList1024SliceTests.GetRandomSpot_OnlyOnceBeforeNumCalls",
+              "VmASpecialSpotSpotList1024SliceTests.SerializeBundle_RoundTripsIndexFields"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 131,
+        "conversionManagedCommit": "55d2659f521c8ad337a68b3849798f251688f392"
       }
     ],
     "behaviorNativeChecksum": 508086,
