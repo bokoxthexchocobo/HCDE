@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 80106,
+  "convertedThisRunNative": 80256,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 101882,
+  "convertedThisRunManaged": 102076,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 408766,
+  "remainingNative": 408616,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 98633,
+  "convertedBehaviorNative": 98783,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 99320,
-  "convertedBehaviorManaged": 111553,
+  "combinedBehaviorNative": 99470,
+  "convertedBehaviorManaged": 111747,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -38898,6 +38898,41 @@
       "nativeLoc": 150,
       "managedLoc": 115,
       "conversionManagedCommit": "9fa9bd9bab9aa7fe25c35a4203809279a00c284f"
+    },
+    {
+      "name": "sbarinfo-commands-drawnumber-mugshot-chunk1083",
+      "bucket": "conversion",
+      "note": "`CommandDrawNumber::Tick` draw tail and `CommandDrawMugShot` parse head from `sbarinfo_commands.cpp` (**1501\u20131650**); follows **1082** through **`drawValue = num` (**1500**).",
+      "auditSeams": "**1082** owns interpolation (**1492\u20131500**); **1066** top-level `mugshot` flags are a different token set than **CommandDrawMugShot** `FMugShot::StateFlags`. Host `RealignString`, `GetFace`, `DrawGraphic`, and `GetCoordinates` excluded.",
+      "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **1501\u20131650** (+150); whenNotZero/translation/cap/format draw tail plus mugshot accuracy/flag parse through **`;` (**1650**).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 1501 --end 1650` and `--chunk 1083 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| **whenNotZero** early exit (**1501\u20131505**) | yes |\n| Low/high translation bands (**1507\u20131511**) | yes |\n| Digit cap when `!dontCap` (**1514\u20131521**) | yes |\n| Modulo path when `dontCap` (**1523\u20131528**) | yes |\n| Fill-zero vs plain format (**1531\u20131534**) | yes |\n| **CommandDrawMugShot** ctor defaults (**1601\u20131603**) | yes |\n| Default face length gate (**1617\u20131618**) | yes |\n| Accuracy **1\u20139** validation (**1622\u20131624**) | yes |\n| Mugshot state flag OR merge (**1628\u20131641**) | yes |\n| Flag list `|` vs `,` (**1644\u20131645**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1492\u20131500** | **1082** interpolation seam |\n| **1536** | host `RealignString` |\n| **1538\u20131594** | `ValueType` enum + member field declarations (layout only) |\n| **1606\u20131611** | host `GetFace` / `DrawGraphic` |\n| **1648\u20131649** | host `GetCoordinates` / scanner `;` wiring |\n| **1651+** | `Reset` outside hull |\n\n| Managed (`VmSbarinfoCommandDrawNumber1083Slice.cs`, `VmSbarinfoCommandDrawMugShot1083Slice`) | Native (`sbarinfo_commands.cpp`) |\n|------------------------------------------------------------------------------------------------|----------------------------------|\n| Draw tail cap/format | **1501\u20131534** |\n| Mugshot defaults + parse flags | **1601\u20131646** |\n| Band hull (exclusive slice) | **1501\u20131650** |\n\n### Chunk **1083** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1082** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmSbarinfoCommandDrawNumber1083Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/g_statusbar/sbarinfo_commands.cpp",
+          "symbol": "CommandDrawNumber::Tick / CommandDrawMugShot::Parse",
+          "start": 1501,
+          "end": 1650,
+          "tests": [
+            "VmSbarinfoCommandDrawNumber1083SliceTests.ResolveDrawNumberWhenNotZeroEarlyExit_ClearsStringAtZero",
+            "VmSbarinfoCommandDrawNumber1083SliceTests.ResolveDrawNumberTranslationBand_SelectsLowAndHigh",
+            "VmSbarinfoCommandDrawNumber1083SliceTests.ClampDrawNumberWhenDigitCapped_UsesFillZeroMin",
+            "VmSbarinfoCommandDrawNumber1083SliceTests.ApplyDrawNumberDontCapModulo_ForcesFillZerosAtLimit",
+            "VmSbarinfoCommandDrawNumber1083SliceTests.FormatDrawNumberDisplayString_ZeroPadsPositive",
+            "VmSbarinfoCommandDrawNumber1083SliceTests.CreateCommandDrawMugShotDefaults_MatchesNativeCtor",
+            "VmSbarinfoCommandDrawNumber1083SliceTests.IsCommandDrawMugShotDefaultFaceTooLong_EnforcesThreeChars",
+            "VmSbarinfoCommandDrawNumber1083SliceTests.IsCommandDrawMugShotAccuracyInRange_EnforcesOneThroughNine",
+            "VmSbarinfoCommandDrawNumber1083SliceTests.ApplyCommandDrawMugShotParseKeyword_StacksNativeBits",
+            "VmSbarinfoCommandDrawNumber1083SliceTests.ClassifyCommandDrawMugShotParseKeyword_RejectsUnknown"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 194,
+      "conversionManagedCommit": "b3a84cbf1a067ae3aad69827f8d84d8dea704a0b"
     }
   ],
   "behaviorNativeChecksum": 508086,
