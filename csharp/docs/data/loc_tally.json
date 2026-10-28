@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 84320,
+  "convertedThisRunNative": 84470,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 105677,
+  "convertedThisRunManaged": 105825,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404552,
+  "remainingNative": 404402,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102847,
+  "convertedBehaviorNative": 102997,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 103534,
-  "convertedBehaviorManaged": 115348,
+  "combinedBehaviorNative": 103684,
+  "convertedBehaviorManaged": 115496,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -39843,6 +39843,37 @@
       "nativeLoc": 150,
       "managedLoc": 197,
       "conversionManagedCommit": "c38073f0d1551d3ef21becbd810bf2034697bea2"
+    },
+    {
+      "name": "pmobj-seeker-missile-chunk1112",
+      "bucket": "conversion",
+      "note": "Floor-bounce MBF rest, `P_FaceMobj`, `CanSeek`, and `P_SeekerMissile` turn/aim from `p_mobj.cpp` (**2251\u20132400**); follows **1111**.",
+      "auditSeams": "`AngleTo`, `VelFromAngle`, and `Vel3DFromAngle` remain host-injected; `P_XYMovement` at **2421** is credited on **724**.",
+      "auditRationale": "UNCredited **`p_mobj.cpp`** **2251\u20132400** (+150); follows **1111** (**2101\u20132250**).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 2251 --end 2400` and `--chunk 1112 --band` \u2192 UNCredited, exit 0.",
+      "auditManagedLocJustification": "Seek turn clamping and visibility gates match native control flow; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| MBF rest / AutoOff clear (**2259\u20132272**) | yes |\n| `P_FaceMobj` clockwise sign (**2290\u20132300**) | yes |\n| `CanSeek` invisible gate (**2313\u20132321**) | yes |\n| Seeker dead/zero-speed (**2349\u20132360**) | yes |\n| Threshold halve and turn max (**2363\u20132378**) | yes |\n| Imprecise vertical seek vs precise aim height (**2380\u20132406**) | yes (policy) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2324\u20132329** | VM thunk |\n| **2382**, **2407** | host velocity writers |\n| **2413+** | `P_XYMovement` outside hull |\n\n| Managed (`VmPMobjSeekerMissile1112Slice.cs`) | Native (`p_mobj.cpp`) |\n|---------------------------------------------|---------------------|\n| Bounce rest + seeker policy | **2251\u20132400** |\n| Band hull (exclusive slice) | **2251\u20132400** |\n\n### Chunk **1112** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1111** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjSeekerMissile1112Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "FaceMobj CanSeek SeekerMissile",
+          "start": 2251,
+          "end": 2400,
+          "tests": [
+            "VmPMobjSeekerMissile1112SliceTests.ShouldZeroMbfVerticalSpeed_WhenBelowMassGravity",
+            "VmPMobjSeekerMissile1112SliceTests.FaceMobjDirection_ClockwiseWhenDeltaPositive",
+            "VmPMobjSeekerMissile1112SliceTests.CanSeek_RejectsInvisibleWhenFlagged",
+            "VmPMobjSeekerMissile1112SliceTests.RunSeekerMissile_HalvesDeltaAboveThreshold",
+            "VmPMobjSeekerMissile1112SliceTests.PreciseAimHeight_UsesViewZForPlayers"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 148,
+      "conversionManagedCommit": "7cfcd086d2d8e6c43720dea797d24a0b80853822"
     }
   ],
   "behaviorNativeChecksum": 508086,
