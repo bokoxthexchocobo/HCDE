@@ -1,0 +1,32 @@
+[
+  {
+    "name": "p-mobj-setstate-inventory-chunk962",
+    "bucket": "conversion",
+    "note": "`AActor::SetState` tail, static `DestroyAllInventory`, and `UseInventory` header from `p_mobj.cpp` (**872–1021**).",
+    "auditSeams": "`CallAction`, `GetTics`, `FState::StaticGetStateName`, `Destroy`, and VM DEFINE exports remain host seams.",
+    "auditRationale": "Honest **150**-line UNCredited band; exclusive `VmPMobjSetStateInventory962Slice.cs` (retired **737** row; off-tally `VmPMobjSetStateUse` not credited).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 872 --end 1021` and `--chunk 962 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `SetState` null-state destroy (**872–876**) | yes |\n| Sprite/frame/skin branch (**880–930**) | yes |\n| Action jump / zero-tics loop (**933–953**) | yes |\n| Dynamic light recreate flags (**955–959**) | yes |\n| `AActor::SetState` export (**963–969**) | seam |\n| `DestroyAllInventory` two-stage delete (**978–1005**) | yes |\n| `DestroyAllInventory` export (**1007–1012**) | seam |\n| `UseInventory` comment header (**1014–1021**) | seam (body **1024+**) |\n\n| Managed (`VmPMobjSetStateInventory962Slice.cs`) | Native (`p_mobj.cpp`) |\n|------------------------------------------------|---------------------|\n| `StateLoopExhausted` / null-state destroy gates | **865–876** (hull **872+**) |\n| `ResolveSpriteAfterStateChange` / skin rules | **899–929** |\n| `ShouldAbortSetStateAfterAction` / zero-tic loop | **940–953** |\n| `ShouldMarkRecreateLights` / `ApplyRecreateLightsFlags` | **955–958** |\n| `CollectInventoryForDestruction` / `DestroyPendingInventory` | **988–1003** |\n| Band hull (exclusive slice) | **872–1021** |\n\n### Chunk **962** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**961** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjSetStateInventory962Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::SetState",
+        "start": 872,
+        "end": 1021,
+        "tests": [
+          "VmPMobjSetStateInventory962SliceTests.StateLoopExhausted_MatchesNativeGuard",
+          "VmPMobjSetStateInventory962SliceTests.ResolveSpriteAfterStateChange_UsesSkinWhenEligible",
+          "VmPMobjSetStateInventory962SliceTests.ResolveSpriteAfterStateChange_KeepsSpriteWhenNoSkinAndSameBodySprite",
+          "VmPMobjSetStateInventory962SliceTests.ShouldMarkRecreateLights_WhenAnyLightAssociationOrStateLight",
+          "VmPMobjSetStateInventory962SliceTests.ApplyRecreateLightsFlags_SetsMf8Bit",
+          "VmPMobjSetStateInventory962SliceTests.CollectInventoryForDestruction_UnlinksChain",
+          "VmPMobjSetStateInventory962SliceTests.DestroyPendingInventory_SkipsEuthanizedItems",
+          "VmPMobjSetStateInventory962SliceTests.ShouldAbortSetStateAfterAction_WhenEuthanizing"
+        ]
+      }
+    ]
+  }
+]
