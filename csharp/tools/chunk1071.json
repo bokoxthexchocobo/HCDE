@@ -1,0 +1,34 @@
+[
+  {
+    "name": "sbarinfo-drawstring-chunk1071",
+    "bucket": "conversion",
+    "note": "`DSBarInfo::DrawString`, translation helpers, and `AmmoType` from `sbarinfo.cpp` (**1351–1500**); follows **1070** `DrawGraphic`.",
+    "auditSeams": "`V_ParseFontColor`, `GetCharFromString`, `DrawChar`, and **1489–1504** member declarations remain host; fullscreen rel-center uses **1068**/**1070** at call sites.",
+    "auditRationale": "UNCredited **`sbarinfo.cpp`** **1351–1500** (+150); no overlap with **1070** `DrawGraphic` (**1201–1348**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo.cpp --start 1351 --end 1500` and `--chunk 1071 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| DrawString spacing + bold translation (**1352–1360**) | yes |\n| HUD scale + string loop space/escape (**1362–1387**) | yes (escape gate) |\n| Glyph metrics + monospace alignment (**1390–1425**) | yes |\n| Statusbar vs fullscreen char coords (**1427–1446**) | yes |\n| Shadow alpha/offset + cursor advance (**1447–1467**) | yes |\n| `GetTranslation` / `GetTranslationIndex` (**1471–1481**) | yes |\n| `AmmoType` slot select (**1483–1487**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1384–1386** | host `V_ParseFontColor` |\n| **1429**, **1452–1463** | host coord transform + `DrawChar` |\n| **1489–1504** | class member fields / closing brace |\n| **1507+** | `DrawAux` outside hull |\n\n| Managed (`VmSbarinfoDrawString1071Slice.cs`) | Native (`sbarinfo.cpp`) |\n|--------------------------------------------------|-------------------------|\n| Spacing/bold/HUD scale helpers | **1352–1370** |\n| Space advance + glyph width policy | **1374–1394** |\n| Monospace alignment + draw rect | **1402–1425** |\n| Fullscreen scale/anchor + shadow | **1434–1451** |\n| Cursor advance after glyph | **1464–1467** |\n| Translation + ammo type policy | **1471–1487** |\n| Band hull (exclusive slice) | **1351–1500** |\n\n### Chunk **1071** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1070** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoDrawString1071Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo.cpp",
+        "symbol": "DSBarInfo::DrawString / GetTranslation",
+        "start": 1351,
+        "end": 1500,
+        "tests": [
+          "VmSbarinfoDrawString1071SliceTests.ResolveBoldTranslationRange_MatchesNativeFallback",
+          "VmSbarinfoDrawString1071SliceTests.AdvanceDrawStringForSpace_UsesSpacingCharacterWhenSet",
+          "VmSbarinfoDrawString1071SliceTests.ApplyMonospaceAlignmentX_CentersWithinSpacingCell",
+          "VmSbarinfoDrawString1071SliceTests.ComputeDrawStringShadowAlpha_UsesHereticShadowFactor",
+          "VmSbarinfoDrawString1071SliceTests.AdvanceDrawStringCursorAfterGlyph_DiffersForMonospace",
+          "VmSbarinfoDrawString1071SliceTests.ShouldUseRavenExtraPlayerTranslation_DetectsRavenMask",
+          "VmSbarinfoDrawString1071SliceTests.ResolveTranslationIndex_GatesOnTranslateFlag",
+          "VmSbarinfoDrawString1071SliceTests.AnchorNegativeFullscreenGlyph_AddsViewSize",
+          "VmSbarinfoDrawString1071SliceTests.IsTextColorEscape_RecognizesNativeEscape",
+          "VmSbarinfoDrawString1071SliceTests.SelectAmmoTypeFieldIndex_MapsSlotOneAndTwo"
+        ]
+      }
+    ]
+  }
+]
