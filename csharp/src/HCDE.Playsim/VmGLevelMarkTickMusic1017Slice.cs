@@ -69,7 +69,8 @@ public static class VmGLevelMarkTickMusic1017Slice
 
     public static bool ShouldResizeScrollCarryArray(int currentScrollCount) => currentScrollCount == 0;
 
-    public static int ResolveScrollCarryCapacity(int sectorCount) => sectorCount;
+    public static int ResolveScrollCarryCapacity(int sectorCount, int currentScrollCount) =>
+        ShouldResizeScrollCarryArray(currentScrollCount) ? sectorCount : currentScrollCount;
 
     public static InterMusicChoice ResolveInterMusic(
         bool hasMapInterMusicEntry,

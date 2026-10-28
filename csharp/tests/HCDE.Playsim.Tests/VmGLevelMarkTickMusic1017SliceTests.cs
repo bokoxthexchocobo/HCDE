@@ -34,7 +34,8 @@ public class VmGLevelMarkTickMusic1017SliceTests
         Assert.Equal(2, VmGLevelMarkTickMusic1017Slice.CountLocalEventHandlerMarkTargets(hasLocalEventManager: true));
         Assert.True(VmGLevelMarkTickMusic1017Slice.IsInvalidScrollerSector(-1));
         Assert.True(VmGLevelMarkTickMusic1017Slice.ShouldResizeScrollCarryArray(currentScrollCount: 0));
-        Assert.Equal(128, VmGLevelMarkTickMusic1017Slice.ResolveScrollCarryCapacity(sectorCount: 128));
+        Assert.Equal(128, VmGLevelMarkTickMusic1017Slice.ResolveScrollCarryCapacity(sectorCount: 128, currentScrollCount: 0));
+        Assert.Equal(64, VmGLevelMarkTickMusic1017Slice.ResolveScrollCarryCapacity(sectorCount: 128, currentScrollCount: 64));
     }
 
     [Fact]
