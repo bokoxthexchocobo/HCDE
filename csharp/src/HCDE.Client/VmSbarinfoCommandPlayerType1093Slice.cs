@@ -85,6 +85,8 @@ public static class VmSbarinfoCommandDrawGem1093Slice
         chainImageMissing
             ? (DrawChain: false, DrawGemOverlay: false)
             : (DrawChain: true, DrawGemOverlay: gemImagePresent);
+
+    public static int ApplyDrawGemChainWiggleOffset(
         bool wiggleEnabled,
         double drawValue,
         int goalValue,
