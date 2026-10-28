@@ -1,0 +1,27 @@
+[
+  {
+    "name": "g-game-save-load-chunk1003",
+    "bucket": "conversion",
+    "note": "Load globals tail, `G_SaveGame` gates, and `G_DoAutoSave` rotation from `g_game.cpp` (**2750–2899**); follows chunk **1002** (**2600–2749**).",
+    "auditSeams": "`G_SerializeHub`, `G_ReadSnapshots`, `G_InitNew`, `G_DoSaveGame`, and `arc()` I/O remain host-injected.",
+    "auditRationale": "UNCredited **2750–2899** CLI band; disjoint from chunks **995–1002** and chunk **9** credited segments.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_game.cpp --start 2750 --end 2899` and `--chunk 1003 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Important CVAR blob vs server serialize (**2765–2773**) | yes |\n| Level time scale from save ticrate (**2777–2783**) | yes |\n| `G_SaveGame` validation (**2824–2859**) | yes |\n| `G_DoAutoSave` net/slot/hint rotation (**2872–2900**) | yes (through **2899** hull) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2750–2753** | `LoadGameError` host (seam with **1002**) |\n| **2757–2760**, **2785–2813** | hub/read/init/GC host |\n| **2862–2867** | `CCMD(opensaves)` shell host |\n| **2903–2905** | `G_DoSaveGame` host tail |\n\n| Managed (`VmGGameSaveLoad1003Slice.cs`) | Native (`g_game.cpp`) |\n|---------------------------------------|----------------------|\n| `ShouldLoadImportantCvarsFromBlob` | **2765–2773** |\n| `ScaleLevelTimeFromSaveTicks` | **2783** |\n| `ResolveSaveGameRejectReason` / `ResolveSaveGameCommandEffect` | **2824–2859** |\n| Autosave helpers | **2872–2900** |\n| Band hull (exclusive slice) | **2750–2899** |\n\n### Chunk **1003** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1002** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmGGameSaveLoad1003Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "G_SaveGame",
+        "start": 2750,
+        "end": 2899,
+        "tests": [
+          "VmGGameSaveLoad1003SliceTests.LoadGlobalsTail",
+          "VmGGameSaveLoad1003SliceTests.SaveGameGates",
+          "VmGGameSaveLoad1003SliceTests.AutosaveRotation"
+        ]
+      }
+    ]
+  }
+]
