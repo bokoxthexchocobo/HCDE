@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 71237,
+  "convertedThisRunNative": 71087,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 94848,
+  "convertedThisRunManaged": 94739,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 417568,
+  "remainingNative": 417718,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 89764,
+  "convertedBehaviorNative": 89614,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 90518,
-  "convertedBehaviorManaged": 104519,
+  "combinedBehaviorNative": 90368,
+  "convertedBehaviorManaged": 104410,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -36905,38 +36905,6 @@
       "nativeLoc": 150,
       "managedLoc": 148,
       "conversionManagedCommit": "9bf2616caa3ff33d7040e5946f6069b75ab09e09"
-    },
-    {
-      "name": "p-acs-callfunc-gameplay-chunk1023",
-      "bucket": "conversion",
-      "note": "`DLevelScript::CallFunction` ACSF named-script through `ACSF_PlaySound`/`PlayActorSound` heads from `p_acs.cpp` (**5965\u20136114**). Follows chunk **1022** (**4728\u20134877**); stops before chunk **943** (**6150+**).",
-      "auditSeams": "`P_ExecuteSpecial`, `DoGetCVar`/`SetCVar`, `HCDE_ResolveACSPlayer`, `P_LineAttack`, `S_FindSound`/`S_PlaySound`, and `GetActorSound` remain host seams.",
-      "auditRationale": "Primary **1023** target `p_map.cpp` **6161\u20136310** rejected (`VmPMapRadiusDamage` **6130\u20136480** off-tally duplicate). Alternate **4878\u20135027** rejected (tally overlap chunk **10**/**58**/**54**; no 150-line conversion-clean hull). First UNCredited **150**-line `CallFunction` band before **943** with dedicated slice (recognition **66**/**76** slivers are zero-credit markers only).",
-      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 5965 --end 6114` and `--chunk 1023 --band` \u2192 UNCredited, exit 0.",
-      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `ACSF_ACS_NamedExecute*` arg packing (**5954\u20135963**) | yes (`NamedExecuteScriptIndex` / optional args) |\n| `ACSF_UniqueTID` / `ACSF_IsTIDUsed` (**5967\u20135972**) | yes |\n| `ACSF_Sqrt` / `FixedSqrt` / `VectorLength` (**5974\u20135984**) | yes |\n| `ACSF_SetHUDClipRect` / `SetHUDWrapWidth` (**5986\u20135997**) | yes |\n| `ACSF_GetCVarString` \u2026 `SetUserCVarString` min-arg gates (**5999\u20136035**) | yes |\n| `ACSF_LineAttack` FH flag map + activator TID (**6038\u20136077**) | yes |\n| `ACSF_PlaySound` / `PlayActorSound` default args (**6079\u20136104**) | yes |\n\n| Managed (`VmPAcsCallfuncGameplay1023Slice.cs`) | Native (`p_acs.cpp`) |\n|------------------------------------------------|---------------------|\n| `NamedExecuteScriptIndex` / `NamedExecuteOptionalArg` | **5956\u20135960** |\n| `UniqueTidStartArg` / `UniqueTidMinInUseArg` | **5968** policy |\n| `IsTidUsedMeetsMinArgs` | **5971** |\n| `IntegerSqrtRoundDown` | **5976** |\n| `FixedSqrtFromAcs` / `VectorLengthFixed` | **5980**, **5984** |\n| `BuildHudClipRect` / `HudWrapWidth` | **5987\u20135996** |\n| `SetCvarMeetsMinArgs` / user CVar gates | **6000\u20136035** |\n| `LineAttackFhFlags` / `LineAttackUsesActivator` | **6050\u20136054** |\n| `BuildPlaySoundArgs` / `PlaySoundUsesActivator` | **6099\u20136103** |\n| Band hull (exclusive slice) | **5965\u20136114** |\n\n### Chunk **1023** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1022** |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPAcsCallfuncGameplay1023Slice.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_acs.cpp",
-          "symbol": "DLevelScript::CallFunction mid band",
-          "start": 5965,
-          "end": 6114,
-          "tests": [
-            "VmPAcsCallfuncGameplay1023SliceTests.NamedExecuteScriptIndex_NegatesValidNameIndex",
-            "VmPAcsCallfuncGameplay1023SliceTests.UniqueTidStartArg_DefaultsWhenEmpty",
-            "VmPAcsCallfuncGameplay1023SliceTests.IntegerSqrtRoundDown_MatchesNativeRoundDown",
-            "VmPAcsCallfuncGameplay1023SliceTests.FixedSqrtAndVectorLength_Use65536Scale",
-            "VmPAcsCallfuncGameplay1023SliceTests.BuildHudClipRect_DefaultsHandleAspectTrue",
-            "VmPAcsCallfuncGameplay1023SliceTests.LineAttackFhFlags_MapsNativeBits",
-            "VmPAcsCallfuncGameplay1023SliceTests.BuildPlaySoundArgs_DefaultChannelAndVolume"
-          ]
-        }
-      ],
-      "nativeLoc": 150,
-      "managedLoc": 109,
-      "conversionManagedCommit": "aeae10a859a80cbd4136525b5ba59214326f5f06"
     }
   ],
   "behaviorNativeChecksum": 508086,
