@@ -349,6 +349,7 @@ def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
     num = chunk_number(name)
 
     oversize_ok = bool(ch.get("auditSingleFunctionOversizeException"))
+    eof_tail_ok = bool(ch.get("auditFileEofTailException"))
     if not oversize_ok and num is not None:
         path = TOOLS / f"chunk{num}.json"
         if path.is_file():
@@ -356,11 +357,12 @@ def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
             if isinstance(data, list):
                 data = data[0]
             oversize_ok = bool(data.get("auditSingleFunctionOversizeException"))
+            eof_tail_ok = eof_tail_ok or bool(data.get("auditFileEofTailException"))
 
     def append_native_bounds(native: int, source: str, modern: bool) -> None:
         if native <= 0:
             return
-        if native < NATIVE_LOC_FLOOR:
+        if native < NATIVE_LOC_FLOOR and not eof_tail_ok:
             entry = {
                 "kind": "nativeLoc_below_floor",
                 "nativeLoc": native,
