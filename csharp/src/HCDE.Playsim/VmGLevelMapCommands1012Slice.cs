@@ -33,7 +33,7 @@ public static class VmGLevelMapCommands1012Slice
 
     public readonly struct OpenMapDeferredSetup
     {
-        public string MapName { get; init; } = "";
+        public string MapName { get; init; }
         public int Skill { get; init; }
         public int TraceGameAction { get; init; }
     }
