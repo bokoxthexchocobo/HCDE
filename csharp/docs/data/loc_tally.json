@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 73337,
+  "convertedThisRunNative": 73487,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 96668,
+  "convertedThisRunManaged": 96839,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 415468,
+  "remainingNative": 415318,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 91864,
+  "convertedBehaviorNative": 92014,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 92618,
-  "convertedBehaviorManaged": 106339,
+  "combinedBehaviorNative": 92768,
+  "convertedBehaviorManaged": 106510,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -37401,6 +37401,40 @@
       "nativeLoc": 150,
       "managedLoc": 126,
       "conversionManagedCommit": "6afc71dbedce6b21d375d477a62637011c46d17b"
+    },
+    {
+      "name": "info-pclass-get-replacement-chunk1038",
+      "bucket": "conversion",
+      "note": "`GetReplacement` / `GetReplacee` chains and `SetDamageFactor` / `SetPainChance` head from `info.cpp` (**650\u2013799**). Follows chunk **1037** (**500\u2013649**).",
+      "auditSeams": "`Level->localEventManager`, `PClass::FindActor` / `FindClass`, `ActorInfo()` field mutation, `Printf`, and recursive native calls remain host-injected; uncredited `VmActorClassRegistry.SetDamageFactor` / `SetPainChance` are seams only.",
+      "auditRationale": "UNCredited **`info.cpp`** **650\u2013799** abutting **1037** at skill-failure clear (**649**); no overlap with credited **500\u2013649** row (exclusive hull). Identity one-liner `ShouldSkipReplacementWhenLevelNull` omitted (reaudit padding policy).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/info.cpp --start 650 --end 799` and `--chunk 1038 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Skill failure clear tail (**650\u2013651**) | yes |\n| ZScript `CheckReplacement` final return (**654\u2013662**) | yes |\n| Early return when no replacement (**663\u2013666**) | yes |\n| Temp NULL + skill then DECORATE chain (**667\u2013684**) | yes |\n| Decorate client-side finalize (**684\u2013690**) | yes |\n| `GetReplacee` skill `GetReplacedBy` validate (**703\u2013732**) | yes |\n| ZScript `CheckReplacee` (**735\u2013744**) | yes |\n| Replacee chain + client-side gate (**745\u2013765**) | yes |\n| `SetDamageFactor` update/push (**774\u2013785**) | yes |\n| `SetPainChance` update head (**793\u2013799**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **500\u2013649** | chunk **1037** |\n| **652\u2013653**, **692\u2013697** | closing braces / comment banners |\n| **767\u2013773**, **787\u2013792** | comment banners |\n| **800+** | `SetPainChance` push tail outside hull (**799** ends update branch) |\n| `VmActorClassRegistry` | uncredited helper \u2014 seam only |\n| `VmPClassActorInfo1037Slice.VerifyClientSideReplacement` | shared predicate \u2014 seam, no duplicate lines |\n\n| Managed (`VmPClassActorInfo1038Slice.cs`) | Native (`info.cpp`) |\n|---------------------------------------------|---------------------|\n| `ClearSkillReplacementNamesAfterFailure` | **650\u2013651** |\n| `ResolveEventHandlerReplacement` | **658\u2013661** |\n| `ShouldReturnSelfWithoutReplacement` | **663\u2013666** |\n| `ResolveSkillThenDecorateReplacement` | **675\u2013681** |\n| `FinalizeReplacementClientSide` | **684\u2013690** |\n| `EvaluateSkillReplacedBy` / `ApplySkillReplacedByFailureClear` | **705\u2013731** |\n| `ResolveEventHandlerReplacee` | **740\u2013743** |\n| `ResolveReplaceeChain` | **753\u2013757** |\n| `TryUpdateDamageFactor` / `AddDamageFactor` | **776\u2013784** |\n| `TryUpdatePainChance` / `ClampPainChance` / `ShouldPushPainChance` | **795\u2013799** |\n| Band hull (exclusive slice) | **650\u2013799** |\n\n### Chunk **1038** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1037** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Gamedata/VmPClassActorInfo1038Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/info.cpp",
+          "symbol": "GetReplacement / GetReplacee / damage+pain setters",
+          "start": 650,
+          "end": 799,
+          "tests": [
+            "VmPClassActorInfo1038SliceTests.ResolveEventHandlerReplacement_ReturnsSelfWhenMismatch",
+            "VmPClassActorInfo1038SliceTests.ShouldReturnSelfWithoutReplacement_WhenBothMissing",
+            "VmPClassActorInfo1038SliceTests.ResolveSkillThenDecorateReplacement_PrefersSkillName",
+            "VmPClassActorInfo1038SliceTests.EvaluateSkillReplacedBy_FailsWhenClassMissing",
+            "VmPClassActorInfo1038SliceTests.TryUpdateDamageFactor_UpdatesExisting",
+            "VmPClassActorInfo1038SliceTests.TryUpdatePainChance_ClampsTo256",
+            "VmPClassActorInfo1038SliceTests.ShouldPushPainChance_RejectsNegative",
+            "VmPClassActorInfo1038SliceTests.FinalizeReplacementClientSide_RejectsMismatch",
+            "VmPClassActorInfo1038SliceTests.ClearSkillReplacementNamesAfterFailure_ClearsFlags"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 171,
+      "conversionManagedCommit": "bc2f315a2eb78534fa58dfd46733a0c4a3eb9191"
     }
   ],
   "behaviorNativeChecksum": 508086,
