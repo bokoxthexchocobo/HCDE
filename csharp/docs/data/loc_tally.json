@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 69887,
+  "convertedThisRunNative": 70037,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 93849,
+  "convertedThisRunManaged": 93962,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 418918,
+  "remainingNative": 418768,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 88414,
+  "convertedBehaviorNative": 88564,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 89168,
-  "convertedBehaviorManaged": 103520,
+  "combinedBehaviorNative": 89318,
+  "convertedBehaviorManaged": 103633,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -36669,6 +36669,34 @@
       "nativeLoc": 150,
       "managedLoc": 122,
       "conversionManagedCommit": "27e88a9450c7db6d0d267857a725c93b600e2162"
+    },
+    {
+      "name": "g-level-snapshot-persist-chunk1015",
+      "bucket": "conversion",
+      "note": "`AirControlChanged`, `G_WriteSnapshots`, `G_WriteVisited`, `G_ReadSnapshots`, and `G_ReadVisited` head from `g_level.cpp` (**2109\u20132258**); follows chunk **1014** (**1959\u20132108**).",
+      "auditSeams": "`TArray` push, `FSerializer`/`FResourceFile`, `FindLevelInfo`, `G_ClearSnapshots`, and `UpdatePlayerClass` remain injected.",
+      "auditRationale": "UNCredited **2109\u20132258**; disjoint from chunk **8** headless-flow and **1014** Init/`CalcMapName`.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_level.cpp --start 2109 --end 2258` and `--chunk 1015 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `AirControlChanged` (**2115\u20132125**) | yes |\n| `G_WriteSnapshots` (**2133\u20132155**) | yes |\n| `G_WriteVisited` (**2162\u20132195**) | yes |\n| `G_ReadSnapshots` (**2202\u20132234**) | yes |\n| `G_ReadVisited` head (**2241\u20132258**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2109\u20132114** | comment seam after **1014** `CalcMapName` |\n| **2164\u20132174**, **2243\u20132253** | serializer host calls |\n| **2207**, **2220**, **2230** | resource read host |\n| **2259+** | `G_ReadVisited` playerclass body (**1016** follow-on) |\n\n| Managed (`VmGLevelSnapshotPersist1015Slice.cs`) | Native (`g_level.cpp`) |\n|------------------------------------------------|----------------------|\n| Air friction linear branch | **2117\u20132124** |\n| Snapshot filename rules | **2140\u20132153**, **2212\u20132230** |\n| Visited / random class gates | **2169\u20132180** |\n| Player class key/index gates | **2185\u20132191** |\n| Band hull (exclusive slice) | **2109\u20132258** |\n\n### Chunk **1015** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1014** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmGLevelSnapshotPersist1015Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/g_level.cpp",
+          "symbol": "G_WriteSnapshots",
+          "start": 2109,
+          "end": 2258,
+          "tests": [
+            "VmGLevelSnapshotPersist1015SliceTests.AirControlFriction",
+            "VmGLevelSnapshotPersist1015SliceTests.SnapshotWritePaths",
+            "VmGLevelSnapshotPersist1015SliceTests.VisitedAndPlayerClassPersistence"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 113,
+      "conversionManagedCommit": "037e7ce39917078378c882c8f0bbaa4ec160c8ef"
     }
   ],
   "behaviorNativeChecksum": 508086,
