@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 235482
+    "managedCSharpLoc": 235587
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 68087,
+    "convertedThisRunNative": 68237,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 92679,
+    "convertedThisRunManaged": 92784,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 420718,
+    "remainingNative": 420568,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 86614,
+    "convertedBehaviorNative": 86764,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 87368,
-    "convertedBehaviorManaged": 102350,
+    "combinedBehaviorNative": 87518,
+    "convertedBehaviorManaged": 102455,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -36350,6 +36350,34 @@
         "nativeLoc": 150,
         "managedLoc": 93,
         "conversionManagedCommit": "a6bd33e6e6ec6bb7aa04a2cc5bccb6d3d541aec7"
+      },
+      {
+        "name": "g-game-save-load-chunk1003",
+        "bucket": "conversion",
+        "note": "Load globals tail, `G_SaveGame` gates, and `G_DoAutoSave` rotation from `g_game.cpp` (**2750\u20132899**); follows chunk **1002** (**2600\u20132749**).",
+        "auditSeams": "`G_SerializeHub`, `G_ReadSnapshots`, `G_InitNew`, `G_DoSaveGame`, and `arc()` I/O remain host-injected.",
+        "auditRationale": "UNCredited **2750\u20132899** CLI band; disjoint from chunks **995\u20131002** and chunk **9** credited segments.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_game.cpp --start 2750 --end 2899` and `--chunk 1003 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Important CVAR blob vs server serialize (**2765\u20132773**) | yes |\n| Level time scale from save ticrate (**2777\u20132783**) | yes |\n| `G_SaveGame` validation (**2824\u20132859**) | yes |\n| `G_DoAutoSave` net/slot/hint rotation (**2872\u20132900**) | yes (through **2899** hull) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2750\u20132753** | `LoadGameError` host (seam with **1002**) |\n| **2757\u20132760**, **2785\u20132813** | hub/read/init/GC host |\n| **2862\u20132867** | `CCMD(opensaves)` shell host |\n| **2903\u20132905** | `G_DoSaveGame` host tail |\n\n| Managed (`VmGGameSaveLoad1003Slice.cs`) | Native (`g_game.cpp`) |\n|---------------------------------------|----------------------|\n| `ShouldLoadImportantCvarsFromBlob` | **2765\u20132773** |\n| `ScaleLevelTimeFromSaveTicks` | **2783** |\n| `ResolveSaveGameRejectReason` / `ResolveSaveGameCommandEffect` | **2824\u20132859** |\n| Autosave helpers | **2872\u20132900** |\n| Band hull (exclusive slice) | **2750\u20132899** |\n\n### Chunk **1003** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1002** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmGGameSaveLoad1003Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/g_game.cpp",
+            "symbol": "G_SaveGame",
+            "start": 2750,
+            "end": 2899,
+            "tests": [
+              "VmGGameSaveLoad1003SliceTests.LoadGlobalsTail",
+              "VmGGameSaveLoad1003SliceTests.SaveGameGates",
+              "VmGGameSaveLoad1003SliceTests.AutosaveRotation"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 105,
+        "conversionManagedCommit": "86743252f611bca2296b8610e1925adbc1e72198"
       }
     ],
     "behaviorNativeChecksum": 508086,
