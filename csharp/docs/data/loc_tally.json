@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 81456,
+  "convertedThisRunNative": 81606,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 103122,
+  "convertedThisRunManaged": 103197,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 407416,
+  "remainingNative": 407266,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 99983,
+  "convertedBehaviorNative": 100133,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 100670,
-  "convertedBehaviorManaged": 112793,
+  "combinedBehaviorNative": 100820,
+  "convertedBehaviorManaged": 112868,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -39211,6 +39211,41 @@
       "nativeLoc": 150,
       "managedLoc": 106,
       "conversionManagedCommit": "0629b2824fdb1d40d03ad4491f0f4e46cd57ce91"
+    },
+    {
+      "name": "sbarinfo-commands-isselected-playerclass-type-chunk1092",
+      "bucket": "conversion",
+      "note": "`CommandIsSelected`, `CommandPlayerClass`, and `CommandPlayerType` parse/tick head from `sbarinfo_commands.cpp` (**2851\u20133000**); follows **1091** `AdditionalData` ctor (**2854**).",
+      "auditSeams": "**1091** owns **`AdditionalData`** ctor (**2852\u20132854**) and draw-bar interpolation (**2784\u20132805**); **1092** credits flow-control commands only. Host `PClass::FindClass`, `PlayerClasses`, `SetTruth`, and draw-bar member layout excluded.",
+      "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **2851\u20133000** (+150); weapon-selected flow parse/tick, player-class display-name list parse/tick, player-type class list parse head through successful lookup (**3000**).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 2851 --end 3000` and `--chunk 1092 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| **CommandIsSelected** ctor null weapons (**2887\u20132888**) | yes |\n| Weapon class validation (**2898\u20132901**) | yes |\n| Second weapon comma/token (**2904\u20132910**) | yes |\n| Ready-weapon truth OR (**2917\u20132920**) | yes |\n| **CommandPlayerClass** display-name match (**2944\u20132947**) | yes |\n| Class list comma loop (**2955\u20132958**) | yes |\n| Missing player class abort (**2965\u20132966**) | yes |\n| Spawn class list scan truth (**2969\u20132977**) | yes |\n| **CommandPlayerType** parse token head (**2994\u20132995**) | yes |\n| Register class when lookup succeeds (**3000\u20133003**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2852\u20132854** | **1091** `AdditionalData` ctor seam |\n| **2857\u20132878** | draw-bar member / union layout |\n| **2831\u20132847** | `ValueType` enum (before hull) |\n| **2897**, **2901**, **2999** | host `FindClass` |\n| **2942\u20132943** | host `PlayerClasses` registry walk |\n| **2915**, **2963**, **3013+** | host flow-control base calls outside hull tail |\n\n| Managed (`VmSbarinfoCommandIsSelected1092Slice.cs`, `VmSbarinfoCommandPlayerClass1092Slice.cs`, `VmSbarinfoCommandPlayerType1092Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|----------------------------------------------------------------------------------------------------------------|----------------------------------|\n| IsSelected + PlayerClass + PlayerType | **2882\u20133000** |\n| Band hull (exclusive slice) | **2851\u20133000** |\n\n### Chunk **1092** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1091** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmSbarinfoCommandIsSelected1092Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/g_statusbar/sbarinfo_commands.cpp",
+          "symbol": "CommandIsSelected / CommandPlayerClass / CommandPlayerType",
+          "start": 2851,
+          "end": 3000,
+          "tests": [
+            "VmSbarinfoCommandIsSelected1092SliceTests.ShouldReplaceIsSelectedWeaponClass_WhenNotWeaponKind",
+            "VmSbarinfoCommandIsSelected1092SliceTests.ResolveIsSelectedSecondWeaponParse_RequiresComma",
+            "VmSbarinfoCommandIsSelected1092SliceTests.ResolveIsSelectedFlowControlTruth_MatchesSecondSlot",
+            "VmSbarinfoCommandIsSelected1092SliceTests.TryMatchPlayerClassDisplayName_IsCaseInsensitive",
+            "VmSbarinfoCommandIsSelected1092SliceTests.ResolvePlayerClassFlowControlTruthFromScan_AbortsWhenClassMissing",
+            "VmSbarinfoCommandIsSelected1092SliceTests.ResolvePlayerClassFlowControlTruthFromScan_FindsSpawnClass",
+            "VmSbarinfoCommandIsSelected1092SliceTests.ResolvePlayerClassParseListAdvance_StopsWithoutComma",
+            "VmSbarinfoCommandIsSelected1092SliceTests.ResolvePlayerTypeParseHeadToken_AcceptsStringConst",
+            "VmSbarinfoCommandIsSelected1092SliceTests.ResolvePlayerTypeClassListCountAfterLookup_IncrementsWhenFound",
+            "VmSbarinfoCommandIsSelected1092SliceTests.CreateIsSelectedWeaponSlotDefaults_NullsBothSlots"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 75,
+      "conversionManagedCommit": "97925315d119c52ad2003963b6c02ffe31fa0dd1"
     }
   ],
   "behaviorNativeChecksum": 508086,
