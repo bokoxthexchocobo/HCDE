@@ -1,0 +1,34 @@
+[
+  {
+    "name": "sbarinfo-commands-keybar-parse-drawbar-chunk1089",
+    "bucket": "conversion",
+    "note": "`CommandDrawKeyBar::Parse` tail and `CommandDrawBar` ctor/draw clip/parse head from `sbarinfo_commands.cpp` (**2401–2550**); follows **1088** orientation/number seam (**2407**).",
+    "auditSeams": "**1088** owns **2400–2407** (`number`, direction keywords); **1089** starts at post-orientation comma (**2408**). Host `GetCoordinates`, `newImage`, `DrawGraphic`, and `PClass::FindActor` excluded.",
+    "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **2401–2550** (+150); key bar flag/icon/optional row parse tail, **CommandDrawBar** ctor defaults, draw skip/invert/clip index policy, stat keyword head through ammo class validation (**2550** hull).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 2401 --end 2550` and `--chunk 1089 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Key bar `reverse` / `reverserows` flags (**2411–2416**) | yes |\n| Flag list `|` vs `,` (**2417–2418**) | yes |\n| Icon size `auto` vs int (**2420–2425**) | yes |\n| Optional key offset / row layout (**2429–2447**) | yes (clause gates + row icon auto) |\n| Parse terminating `;` (**2450**) | yes (host seam marker) |\n| **CommandDrawBar** ctor defaults (**2470–2474**) | yes |\n| Draw early-out (**2479–2480**) | yes |\n| Border draw value invert (**2487–2489**) | yes |\n| Matching bg dimensions gate (**2497–2498**) | yes |\n| Clip fill remaining (**2506–2507**) | yes |\n| Clip component index (**2507**) | yes |\n| Border clip inset (**2509–2512**) | yes |\n| Stat keywords health/armor/ammo* (**2531–2545**) | yes |\n| Generic `ammo` inventory validation (**2553–2556**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2400–2407** | **1088** number/orientation seam |\n| **2428**, **2622+** | host `GetCoordinates` |\n| **2452–2463** | key bar member field layout |\n| **2477–2505**, **2514–2520** | host `DrawGraphic` |\n| **2524–2528** | host `newImage` |\n| **2547–2552** | scanner token I/O outside pure policy |\n\n| Managed (`VmSbarinfoCommandDrawKeyBar1089Slice.cs`, `VmSbarinfoCommandDrawBar1089Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|------------------------------------------------------------------------------------------------|----------------------------------|\n| Key bar parse tail | **2408–2451** |\n| Draw bar draw/parse head | **2470–2550** |\n| Band hull (exclusive slice) | **2401–2550** |\n\n### Chunk **1089** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1088** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoCommandDrawKeyBar1089Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo_commands.cpp",
+        "symbol": "CommandDrawKeyBar::Parse / CommandDrawBar",
+        "start": 2401,
+        "end": 2550,
+        "tests": [
+          "VmSbarinfoCommandDrawKeyBar1089SliceTests.TryClassifyKeyBarParseFlagKeyword_MapsReverseRows",
+          "VmSbarinfoCommandDrawKeyBar1089SliceTests.RequiresKeyBarFlagListCommaAfterFlag_WhenNotPipe",
+          "VmSbarinfoCommandDrawKeyBar1089SliceTests.ResolveKeyBarIconSizeFromParse_AutoUsesNegativeOne",
+          "VmSbarinfoCommandDrawKeyBar1089SliceTests.ShouldParseKeyBarRowLayoutClause_RequiresSecondComma",
+          "VmSbarinfoCommandDrawKeyBar1089SliceTests.CreateDrawBarCtorDefaults_MatchesNativeInit",
+          "VmSbarinfoCommandDrawKeyBar1089SliceTests.InvertNormalizedDrawValueForBorderDraw_FlipsWhenBorderNonZero",
+          "VmSbarinfoCommandDrawKeyBar1089SliceTests.ComputeDrawBarClipFillRemaining_ScalesByValue",
+          "VmSbarinfoCommandDrawKeyBar1089SliceTests.ResolveDrawBarClipComponentIndex_VerticalReverseUsesIndexThree",
+          "VmSbarinfoCommandDrawKeyBar1089SliceTests.TryClassifyDrawBarStatKeyword_HealthUsesComparator",
+          "VmSbarinfoCommandDrawKeyBar1089SliceTests.ShouldReplaceDrawBarAmmoClass_WhenNotAmmoKind"
+        ]
+      }
+    ]
+  }
+]
