@@ -1,0 +1,36 @@
+[
+  {
+    "name": "info-actor-state-callaction-chunk1041",
+    "bucket": "conversion",
+    "note": "`FState::CheckCallerType`, `FState::CallAction`, and `GetSpriteIndex` hull from `info.cpp` (**151–300**). Continues **1040** (**1–150**).",
+    "auditSeams": "`VMCallAction`, `ThrowAbortException`, `CVMAbortException`, `ActionCycles`, and global `sprites` remain host-injected; uncredited `VmSpriteCatalog` / `VmActorStateRuntime` are not re-credited.",
+    "auditRationale": "File-scoped UNCredited **`info.cpp`** **151–300**; excludes **1–150** (**1040**), **500–799** (**1037–1038**), deferred **800–893**, and **894–1043** (**1039**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/info.cpp --start 151 --end 300` and `--chunk 1041 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `FState::CheckCallerType` (**151–174**) | yes |\n| `FState::CallAction` param / return setup (**178–233**) | yes (policy; `VMCallAction` seam) |\n| `CallAction` abort stacktrace (**235–252**) | yes |\n| `CallAction` no-action path (**260–263**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1–150** | chunk **1040** |\n| **176–177** | global `actionParams` decl |\n| **234**, **254–259** | host VM invoke / cycle counters |\n| **271–300** | `GetSpriteIndex` — uncredited `VmSpriteCatalog` seam only |\n| **500–799** | chunks **1037–1038** |\n| **800–893** | deferred (**94** lines) |\n| **894–1043** | chunk **1039** |\n| `VmActorStateRuntime` | uncredited helper — seam only |\n\n| Managed (`VmInfoActorState1041Slice.cs`) | Native (`info.cpp`) |\n|------------------------------------------|---------------------|\n| `EvaluateCheckCallerType` / format helpers | **151–174** |\n| `PrepareStateReturnPlan` | **187–196** |\n| `ShouldUseDefaultArgsPath` / `ResolveVmCallParamCount` / `FillImplicitActionParams` | **207–232** |\n| `SelectPspriteCallInfoPrefix` / `FormatCallActionAbortStackTrace` | **239–252** |\n| `ShouldInvokeCallAction` | **180–181**, **260–263** |\n| Band hull (exclusive slice) | **151–300** |\n\n### Chunk **1041** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1040** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmInfoActorState1041Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/info.cpp",
+        "symbol": "FState CheckCallerType / CallAction",
+        "start": 151,
+        "end": 300,
+        "tests": [
+          "VmInfoActorState1041SliceTests.EvaluateCheckCallerType_SkipsWhenNoImplicitArgs",
+          "VmInfoActorState1041SliceTests.EvaluateCheckCallerType_BadPrototypeWhenFirstArgNotObjectPointer",
+          "VmInfoActorState1041SliceTests.EvaluateCheckCallerType_OkWhenMatches",
+          "VmInfoActorState1041SliceTests.EvaluateCheckCallerType_NullCallerWhenSelfMissing",
+          "VmInfoActorState1041SliceTests.EvaluateCheckCallerType_InvalidClassWhenKindMismatch",
+          "VmInfoActorState1041SliceTests.FormatCheckCallerMessages_MatchNativeTemplates",
+          "VmInfoActorState1041SliceTests.PrepareStateReturnPlan_TracksPointerOnlyForStateReturn",
+          "VmInfoActorState1041SliceTests.ResolveVmCallParamCount_PicksDefaultOrImplicitPath",
+          "VmInfoActorState1041SliceTests.FillImplicitActionParams_WritesThreeSlotLayout",
+          "VmInfoActorState1041SliceTests.SelectPspriteCallInfoPrefix_WeaponVsOverlay",
+          "VmInfoActorState1041SliceTests.FormatCallActionAbortStackTrace_WithAndWithoutOwner",
+          "VmInfoActorState1041SliceTests.ShouldInvokeCallAction_RequiresBinding"
+        ]
+      }
+    ]
+  }
+]
