@@ -1,0 +1,32 @@
+[
+  {
+    "name": "a-keys-init-check-chunk1026",
+    "bucket": "conversion",
+    "note": "`ClearLocks`, sorted key list, `P_InitKeyMessages` orchestration, and `P_CheckKeys` head from `a_keys.cpp` (**344–493**). **Pivot:** primary **1026** target `p_sight.cpp` **1–150** aborted (`VmPSightInit` **126–145**, `VmPSightPtrSightTraverse` **73–76** / chunk **663** adjacency). Playsim scan had no other EOF-safe ≥150 band without off-tally duplicate (`VmPThingsRaiseRemoveWarpProximity`, `VmPEnemyChaseRandom`, etc.).",
+    "auditSeams": "`FScanner`, `fileSystem.FindLump`, `PClassActor::AllActorClasses`, `GetDefaultByType`, `qsort`, `PrintMessage`, and sound playback past **493** remain native.",
+    "auditRationale": "UNCredited tail after chunk **173** (`ParseLock` **164–343**); chunk **238** retire left `OneKey`/`Lock` check uncredited. No overlap with `VmLockDefParser` parse body or off-tally `VmActorKeyCheck` tally rows.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/a_keys.cpp --start 344 --end 493` and `--chunk 1026 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `ClearLocks` (**352–369**) | yes |\n| `ktcmp` / `CreateSortedKeyList` (**380–415**) | yes |\n| `P_InitKeyMessages` lump loop + `CLEARLOCKS` (**423–454**) | yes (delegates `ParseLock` to chunk **173** / `VmLockDefParser`) |\n| `P_CheckKeys` gates + lock lookup + `lock->check` (**466–493**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **344–351**, **417–421**, **456–465** | comment banners |\n| **237–343** | chunk **173** `ParseLock` / `ParseKeygroup` |\n| **1–150**, **151–300** | `OneKey`/`Lock` check structs — off-tally `VmActorKeyCheck` duplicate (retired **238**) |\n| **494+** | message/sound tail outside hull |\n\n| Managed (`VmAKeysInitCheck1026Slice.cs`) | Native (`a_keys.cpp`) |\n|---------------------------------------------|---------------------------|\n| `ClearLocks` / `ApplyKeyNumbersFromDatabase` | **352–369** |\n| `CompareKeyNumbers` / `CreateSortedKeyList` | **380–415** |\n| `TryInitializeFromLockDefTexts` | **423–454** |\n| `TryEvaluateCheckKeysHead` / `LockCheck` | **466–493** |\n| Band hull (exclusive slice) | **344–493** |\n\n### Chunk **1026** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1025** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmAKeysInitCheck1026Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/a_keys.cpp",
+        "symbol": "P_InitKeyMessages and P_CheckKeys head",
+        "start": 344,
+        "end": 493,
+        "tests": [
+          "VmAKeysInitCheck1026SliceTests.ClearLocks_ResetsKeyNumbersAndDatabase",
+          "VmAKeysInitCheck1026SliceTests.CreateSortedKeyList_OrdersAssignedThenUnassigned",
+          "VmAKeysInitCheck1026SliceTests.TryInitializeFromLockDefTexts_BuildsLocksAndSortedList",
+          "VmAKeysInitCheck1026SliceTests.TryEvaluateCheckKeysHead_AllowsNonPositiveKeyNum",
+          "VmAKeysInitCheck1026SliceTests.TryEvaluateCheckKeysHead_RejectsNullOwner",
+          "VmAKeysInitCheck1026SliceTests.TryEvaluateCheckKeysHead_MissingLockUsesSharewareText",
+          "VmAKeysInitCheck1026SliceTests.TryEvaluateCheckKeysHead_SucceedsWhenLockMatchesInventory",
+          "VmAKeysInitCheck1026SliceTests.TryEvaluateCheckKeysHead_FailureUsesRemoteMessageWhenRequested"
+        ]
+      }
+    ]
+  }
+]
