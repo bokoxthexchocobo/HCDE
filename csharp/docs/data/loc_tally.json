@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 70937,
+  "convertedThisRunNative": 71087,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 94591,
+  "convertedThisRunManaged": 94739,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 417868,
+  "remainingNative": 417718,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 89464,
+  "convertedBehaviorNative": 89614,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 90218,
-  "convertedBehaviorManaged": 104262,
+  "combinedBehaviorNative": 90368,
+  "convertedBehaviorManaged": 104410,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -36875,6 +36875,36 @@
       "nativeLoc": 150,
       "managedLoc": 119,
       "conversionManagedCommit": "eab97a9ca1a79f67c4ccb8937e6f383ef91cd2dc"
+    },
+    {
+      "name": "p-acs-callfunc-enum-chunk1022",
+      "bucket": "conversion",
+      "note": "`SOUND_*` enum, `EACSFunctions` head through `ACSF_Floor` from `p_acs.cpp` (**4728\u20134877**). **Zero credit:** `GetActorSound` (**4740\u20134757**) on `VmAcsActorPropertySound`; SOUND slot ids duplicate that helper.",
+      "auditSeams": "Full `CallFunction` dispatch and Eternity/OpenGL enum tails (**4888+**) remain native.",
+      "auditRationale": "Fresh wide-scan band: tally+recognition clean; avoids post-947 HUD/953 corridor, **9091\u20139240**, and recognition **6000\u20136149** / **943** tail.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 4728 --end 4877` and `--chunk 1022 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `EACSFunctions` implicit ordinals (**4761\u20134859**, **4870\u20134877**) | yes (const mirrors) |\n| Zandronum reserved gap (**100\u2013199** policy) | yes |\n| HUD/CVar/LineAttack/PlayActorSound routing predicates | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **4727\u20134738** | `SOUND_*` anonymous enum \u2014 **`VmAcsActorPropertySound`** |\n| **4740\u20134757** | `GetActorSound` switch \u2014 **`VmAcsActorPropertySound.GetActorSoundNative`** |\n| **4860\u20134868** | Zandronum comment block (no symbols) |\n\n| Managed (`VmPAcsCallfuncEnum1022Slice.cs`) | Native (`p_acs.cpp`) |\n|-------------------------------------------|---------------------|\n| `Acsf*` constants / `IsPrimaryCallFunctionIndex` | **4761\u20134859** |\n| `AcsfCheckClass` \u2026 `AcsfFloor` | **4870\u20134877** |\n| `IsReservedZandronumGap` | **4860\u20134868** policy |\n| `UsesHudOrCvarStack` / `UsesLineAttackStack` | **4811\u20134822**, **4837\u20134838** |\n| Band hull (exclusive slice) | **4728\u20134877** |\n\n### Chunk **1022** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1021** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPAcsCallfuncEnum1022Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "EACSFunctions enum head",
+          "start": 4728,
+          "end": 4877,
+          "tests": [
+            "VmPAcsCallfuncEnum1022SliceTests.PrimaryEnum_AnchorsMatchNative",
+            "VmPAcsCallfuncEnum1022SliceTests.ExtendedEnum_AnchorsMatchNative",
+            "VmPAcsCallfuncEnum1022SliceTests.IsReservedZandronumGap_Blocks100Through199",
+            "VmPAcsCallfuncEnum1022SliceTests.UsesHudOrCvarStack_FlagsCvarCluster",
+            "VmPAcsCallfuncEnum1022SliceTests.ResolvePlayActorSoundSlot_DelegatesToExistingSoundMapper"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 148,
+      "conversionManagedCommit": "9bf2616caa3ff33d7040e5946f6069b75ab09e09"
     }
   ],
   "behaviorNativeChecksum": 508086,
