@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 80256,
+  "convertedThisRunNative": 80406,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 102076,
+  "convertedThisRunManaged": 102206,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 408616,
+  "remainingNative": 408466,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 98783,
+  "convertedBehaviorNative": 98933,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 99470,
-  "convertedBehaviorManaged": 111747,
+  "combinedBehaviorNative": 99620,
+  "convertedBehaviorManaged": 111877,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -38933,6 +38933,41 @@
       "nativeLoc": 150,
       "managedLoc": 194,
       "conversionManagedCommit": "b3a84cbf1a067ae3aad69827f8d84d8dea704a0b"
+    },
+    {
+      "name": "sbarinfo-commands-selectedinventory-gamemode-chunk1084",
+      "bucket": "conversion",
+      "note": "`CommandDrawSelectedInventory` draw/parse/tick and `CommandGameMode` ctor head from `sbarinfo_commands.cpp` (**1651\u20131800**); follows **1083** mugshot parse **`;` (**1650**).",
+      "auditSeams": "**1083** owns **CommandDrawMugShot** parse through **1650**; **1082** owns selected-inventory tick amount optional update. Host `DrawGraphic`, `V_GetFont`, `GetCoordinates`, and `SetTruth` wiring excluded.",
+      "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **1651\u20131800** (+150); selected-inventory bar/flash/counter policy + parse flags + flow-control truth; hull ends at **CommandGameMode** ctor init (**1800**).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 1651 --end 1800` and `--chunk 1084 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Selected inventory ctor defaults + `INT_MAX` length (**1669\u20131674**) | yes |\n| Draw visibility gate (**1681**) | yes |\n| Artiflash branch + image index (**1683\u20131686**) | yes |\n| Itemflash alpha + cursor path (**1690\u20131694**) | yes |\n| Counter draw when amount \u2260 1 (**1698\u20131699**) | yes |\n| Parse flag keywords + font loop exit (**1713\u20131740**) | yes |\n| `center` / `centerbottom` offsets (**1721\u20131724**) | yes |\n| Default counter coords (**1756\u20131758**) | yes |\n| `alternateOnEmpty` parse tail vs `;` (**1772\u20131775**) | yes |\n| Flow-control truth on tick (**1781**) | yes |\n| **CommandGameMode** ctor `modes=0` (**1799\u20131800**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1651\u20131662** | empty **Reset** + mugshot member layout |\n| **1678\u20131679**, **1696\u20131699** | host flow/image/number draw delegates |\n| **1743\u20131748**, **1761\u20131768** | host font lookup / translations |\n| **1787\u20131791** | selected-inventory member fields |\n| **1801+** | **CommandGameMode** parse outside hull |\n\n| Managed (`VmSbarinfoCommandDrawSelectedInventory1084Slice.cs`, `VmSbarinfoCommandGameMode1084Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|------------------------------------------------------------------------------------------------|----------------------------------|\n| Draw + parse + tick policy | **1676\u20131785** |\n| GameMode ctor default | **1799\u20131800** |\n| Band hull (exclusive slice) | **1651\u20131800** |\n\n### Chunk **1084** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1083** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmSbarinfoCommandDrawSelectedInventory1084Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/g_statusbar/sbarinfo_commands.cpp",
+          "symbol": "CommandDrawSelectedInventory / CommandGameMode",
+          "start": 1651,
+          "end": 1800,
+          "tests": [
+            "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.CreateSelectedInventoryCtorDefaults_MatchesNativeInit",
+            "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.ShouldDrawSelectedInventoryBar_RequiresSelectionAndBarAllowed",
+            "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.ComputeArtiflashImageIndex_MatchesNativeMacro",
+            "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.ShouldApplyItemFlashCursor_RequiresNonZeroFade",
+            "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.ShouldDrawSelectedInventoryAmountCounter_HidesSingletonUnlessForced",
+            "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.ResolveSelectedInventoryImageOffset_MapsCenterBottomBits",
+            "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.ShouldTreatSelectedInventoryTokenAsFont_WhenUnknownIdentifier",
+            "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.ResolveSelectedInventoryDefaultCounterPosition_Applies3030And24",
+            "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.ResolveSelectedInventoryParseTail_SelectsFlowControlOrSemicolon",
+            "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.ApplyCommandGameModeFlagBit_StacksFromCtorZero"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 130,
+      "conversionManagedCommit": "ed9a5fafb43626447b12e69638df099fd72aab34"
     }
   ],
   "behaviorNativeChecksum": 508086,
