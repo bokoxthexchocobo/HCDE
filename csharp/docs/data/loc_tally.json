@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 72737,
+  "convertedThisRunNative": 72887,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 96125,
+  "convertedThisRunManaged": 96273,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 416068,
+  "remainingNative": 415918,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 91264,
+  "convertedBehaviorNative": 91414,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 92018,
-  "convertedBehaviorManaged": 105796,
+  "combinedBehaviorNative": 92168,
+  "convertedBehaviorManaged": 105944,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -37265,6 +37265,40 @@
       "nativeLoc": 150,
       "managedLoc": 89,
       "conversionManagedCommit": "ea1e65d2772806a70ffb4b1ea92aefb27baa74c0"
+    },
+    {
+      "name": "g-mapinfo-parse-map-definition-chunk1034",
+      "bucket": "conversion",
+      "note": "`ParseMapDefinition` flag-handler switch body and registered-option / unknown-property fallback from `g_mapinfo.cpp` (**2127\u20132276**). Follows chunk **1033** (**1977\u20132126**).",
+      "auditSeams": "`ParseAssign`, `CheckAssign`, `sc.MustGet*`, `ParseCloseBrace`, `SkipToNext`, and `MapInfoOptions` handler invocation remain host-injected; flag bit merges delegate to uncredited `VmMapInfoFlagApply`.",
+      "auditRationale": "UNCredited **`g_mapinfo.cpp`** **2127\u20132276** with zero conversion overlap; excludes **1977\u20132126** (**1033**) and retired **2123\u20132125** dispatch seam (no re-credit).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_mapinfo.cpp --start 2127 --end 2276` and `--chunk 1034 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `MITYPE_EATNEXT` arm (**2128\u20132131**) | yes (host seam; slice documents flow) |\n| `MITYPE_IGNORE` (**2133\u20132134**) | yes |\n| `MITYPE_SETFLAG` / `CLRFLAG` / `SCFLAGS` (**2136\u20132157**) | yes |\n| `MITYPE_SETFLAG2` / `CLRFLAG2` / `SCFLAGS2` (**2159\u20132180**) | yes |\n| `MITYPE_SETFLAG3` / `CLRFLAG3` / `SCFLAGS3` (**2182\u20132203**) | yes |\n| `MITYPE_CLRCOMPATFLAG` (**2205\u20132210**) | yes |\n| `MITYPE_COMPATFLAG` assign + apply (**2212\u20132241**) | yes |\n| `default` assert arm (**2243\u20132246**) | seam (unreachable) |\n| `MapInfoOptions` scan + new-format gate (**2253\u20132267**) | yes |\n| Unknown property / close-brace break (**2269\u20132276**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1977\u20132126** | chunk **1033** |\n| **2123\u20132125** | retired **280** option-dispatch seam |\n| **2121\u20132126** | match / switch head (**1033**) |\n| **2277\u20132285** | `CheckEndOfFile` / function close outside hull |\n| `VmMapInfoFlagApply` | shared helpers \u2014 seam only, no duplicate native lines |\n| **3050\u20133151** | deferred tail (**102** lines) |\n\n| Managed (`VmMapInfoParseMapDefinition1034Slice.cs`) | Native (`g_mapinfo.cpp`) |\n|-----------------------------------------------------|---------------------------|\n| `HandlerTypeIsIgnore` | **2133\u20132134** |\n| `DispatchMapFlagHandler` (SET/CLR/SC flag arms) | **2136\u20132203** |\n| `ApplyClearFlag3` / `ApplyScFlags3` | **2196\u20132203** |\n| `ApplyClearCompat` via `DispatchMapFlagHandler` | **2205\u20132210** |\n| `ResolveCompatSetValue` / `ApplyCompatHandler` | **2214\u20132240** |\n| `ShouldFatalOnOldFormatOption` / `TryDispatchRegisteredOption` | **2257\u20132267** |\n| `ShouldBreakMapBodyLoop` / `ShouldEmitUnknownPropertyMessage` | **2271\u20132276** |\n| Band hull (exclusive slice) | **2127\u20132276** |\n\n### Chunk **1034** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1033** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Gamedata/VmMapInfoParseMapDefinition1034Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "ParseMapDefinition flag switch / option fallback",
+          "start": 2127,
+          "end": 2276,
+          "tests": [
+            "VmMapInfoParseMapDefinition1034SliceTests.DispatchSetFlag_ClearsBitWhenAssignZero",
+            "VmMapInfoParseMapDefinition1034SliceTests.DispatchScFlags2_MergesHandlerMasks",
+            "VmMapInfoParseMapDefinition1034SliceTests.ApplyClearFlag3_AndScFlags3_MirrorNativeArms",
+            "VmMapInfoParseMapDefinition1034SliceTests.ResolveCompatSetValue_OldFormatUsesCheckNumber",
+            "VmMapInfoParseMapDefinition1034SliceTests.ApplyCompatHandler_ClearsWhenSetZero",
+            "VmMapInfoParseMapDefinition1034SliceTests.TryDispatchRegisteredOption_RejectsOldFormatOnlyOption",
+            "VmMapInfoParseMapDefinition1034SliceTests.TryDispatchRegisteredOption_MatchesKnownToken",
+            "VmMapInfoParseMapDefinition1034SliceTests.ShouldBreakMapBodyLoop_WhenCloseBraceSeen",
+            "VmMapInfoParseMapDefinition1034SliceTests.HandlerTypeIsIgnore_SkipsMutation"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 148,
+      "conversionManagedCommit": "a4195118fb9e3111fbf5286db666f6cf77cf9f80"
     }
   ],
   "behaviorNativeChecksum": 508086,
