@@ -74,6 +74,9 @@ public class VmGLevelExitIntermission1013SliceTests
             VmGLevelExitIntermission1013Slice.ExitTextDefined.Text);
         Assert.True(plan.ShouldLaunch);
         Assert.True(VmGLevelExitIntermission1013Slice.ShouldReturnEarlyAfterMapExitFinale(plan));
-        Assert.True(VmGLevelExitIntermission1013Slice.ShouldEnterNonDeathmatchIntermissionBranch(deathmatch: false));
+        Assert.True(VmGLevelExitIntermission1013Slice.ShouldRunMapExitIntermission(deathmatch: false, levelFlags: 0));
+        Assert.False(VmGLevelExitIntermission1013Slice.ShouldRunMapExitIntermission(
+            deathmatch: false,
+            VmGLevelExitIntermission1013Slice.LevelChangeMapCheat));
     }
 }

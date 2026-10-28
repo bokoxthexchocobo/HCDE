@@ -159,7 +159,8 @@ public static class VmGLevelExitIntermission1013Slice
     public static bool HasDefinedExitText(ExitTextDefined defined) =>
         (defined & ExitTextDefined.Text) != 0;
 
-    public static bool ShouldEnterNonDeathmatchIntermissionBranch(bool deathmatch) => !deathmatch;
+    public static bool ShouldRunMapExitIntermission(bool deathmatch, uint levelFlags) =>
+        !deathmatch && !ShouldSkipCreateIntermissionForCheat(levelFlags);
 
     public static FinaleLaunchPlan PlanEndgameFinaleFromExitText(
         uint flags3,
