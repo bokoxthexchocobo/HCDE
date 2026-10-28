@@ -1,0 +1,34 @@
+[
+  {
+    "name": "sbarinfo-commands-drawbar-tick-comparator-chunk1091",
+    "bucket": "conversion",
+    "note": "`CommandDrawBar::Tick` stat tail, fill normalization/interpolation, `ParseComparator`, and `AdditionalData` ctor from `sbarinfo_commands.cpp` (**2701–2850**); follows **1090** ammo2 max seam (**2700**).",
+    "auditSeams": "**1090** owns ammo1/ammo2 empty-bar policy (**2684–2700**); **1091** starts at parameterized **AMMO** inventory tick (**2702+**). Host `FindInventory`, `VMCall`, and `PClass::FindActor` excluded.",
+    "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **2701–2850** (+150); draw bar stat dispatch tail, normalized fill ratio, percentage interpolation pixel step, comparator max-constant path, `AdditionalData` default flags; hull ends at struct open (**2850**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 2701 --end 2850` and `--chunk 1091 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Parameterized ammo/inventory tick (**2704–2711**, **2732–2739**) | yes |\n| Frags/level stat pairs (**2714–2728**) | yes |\n| Airtime clamp (**2742–2744**) | yes |\n| Powerup display tick bump (**2758–2759**) | yes |\n| Save percent sum (**2764–2778**) | yes |\n| Fill ratio normalize (**2784–2789**) | yes |\n| Interpolation gate + pixel step (**2790–2796**) | yes |\n| Draw value ease (**2797–2805**) | yes |\n| Comparator inventory validation (**2815–2818**) | yes |\n| Comparator max constant (**2821–2824**) | yes |\n| `AdditionalData` ctor default (**2852–2854**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2682–2700** | **1090** ammo slot empty rules |\n| **2750–2757** | host `VMCall` / `FindFunction` |\n| **2814**, **2818** | host `FindActor` |\n| **2831–2847** | `ValueType` enum layout |\n| **2851+** | member field declarations outside hull |\n\n| Managed (`VmSbarinfoCommandDrawBar1091Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|--------------------------------------------------|----------------------------------|\n| Tick tail + interpolation | **2702–2805** |\n| ParseComparator + data defaults | **2808–2854** |\n| Band hull (exclusive slice) | **2701–2850** |\n\n### Chunk **1091** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1090** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoCommandDrawBar1091Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo_commands.cpp",
+        "symbol": "CommandDrawBar::Tick / ParseComparator / AdditionalData",
+        "start": 2701,
+        "end": 2850,
+        "tests": [
+          "VmSbarinfoCommandDrawBar1091SliceTests.ResolveDrawBarInventoryItemTick_MissingItemZeroesValue",
+          "VmSbarinfoCommandDrawBar1091SliceTests.NormalizeDrawBarFillRatio_ClampsToOne",
+          "VmSbarinfoCommandDrawBar1091SliceTests.ApplyDrawBarPowerupEffectDisplayTicks_IncrementsBoth",
+          "VmSbarinfoCommandDrawBar1091SliceTests.ComputeDrawBarSavePercentTick_AddsBasicArmor",
+          "VmSbarinfoCommandDrawBar1091SliceTests.ClampDrawBarAirtimeRemaining_NeverNegative",
+          "VmSbarinfoCommandDrawBar1091SliceTests.StepDrawBarDrawValueInterpolation_SnapsWithinPixelThreshold",
+          "VmSbarinfoCommandDrawBar1091SliceTests.ResolveDrawBarTickDrawValue_SkipsInterpolationWhenDisabled",
+          "VmSbarinfoCommandDrawBar1091SliceTests.ShouldReplaceDrawBarComparatorInventoryClass_WhenNotInventory",
+          "VmSbarinfoCommandDrawBar1091SliceTests.TryApplyDrawBarComparatorMaximumConstant_RequiresExtendedInt",
+          "VmSbarinfoCommandDrawBar1091SliceTests.CreateDrawBarAdditionalDataDefaults_MatchesNativeInit"
+        ]
+      }
+    ]
+  }
+]
