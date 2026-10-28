@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 234054
+    "managedCSharpLoc": 234214
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 66287,
+    "convertedThisRunNative": 66437,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 91251,
+    "convertedThisRunManaged": 91411,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 422518,
+    "remainingNative": 422368,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 84814,
+    "convertedBehaviorNative": 84964,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 85568,
-    "convertedBehaviorManaged": 100922,
+    "combinedBehaviorNative": 85718,
+    "convertedBehaviorManaged": 101082,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -36013,6 +36013,34 @@
         "nativeLoc": 150,
         "managedLoc": 206,
         "conversionManagedCommit": "09c92329a2448d782b7fc8f0a88d28fcbea8ca94"
+      },
+      {
+        "name": "p-states-parser-frames-chunk991",
+        "bucket": "conversion",
+        "note": "`SetStop`, `SetWait`, `SetLoop`, `AddStates`, and `FinishStates` head from `p_states.cpp` (**901\u20131050**); follows chunk **990** (**751\u2013900**).",
+        "auditSeams": "`RetargetStates`, `ClassDataAllocator`, `memcpy`, `SaveStateSourceLines`, and per-state `switch` bodies (**1051+**) remain host-injected.",
+        "auditRationale": "UNCredited parser continuation; disjoint from **985\u2013990**. Does not re-port **990** `SetGotoLabel` (**883\u2013905**) or tree fix helpers.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_states.cpp --start 901 --end 1050` and `--chunk 991 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `SetStop` (**915\u2013934**) | yes |\n| `SetWait` (**944\u2013953**) | yes |\n| `SetLoop` (**963\u2013973**) | yes |\n| `AddStates` frame walk (**984\u20131020**) | yes |\n| `FinishStates` materialize + label fix order (**1029\u20131048**) | yes |\n| Per-state resolve loop entry (**1050**) | yes (gate only) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **901\u2013905** | `SetGotoLabel` tail (**990**) |\n| **907\u2013913**, **936\u2013942**, **955\u2013961**, **975\u2013982**, **1022\u20131027** | comment banners |\n| **1045\u20131048** | calls **990** `FixStatePointers` / `ResolveGotoLabels` helpers (orchestration only) |\n| **1051+** | `switch` define resolve outside hull |\n| **1\u2013900** | chunks **985\u2013990** |\n\n| Managed (`VmPStatesParser991Slice.cs`) | Native (`p_states.cpp`) |\n|----------------------------------------|----------------------|\n| `TrySetStopOnParserSession` | **915\u2013934** |\n| `TrySetWaitOnParserSession` | **944\u2013953** |\n| `TrySetLoopOnParserSession` | **963\u2013973** |\n| `TryDecodeFrameCharacter` / `ApplyFrameToState` / `AddStatesFromFrameCharacters` | **988\u20131019** |\n| `ShouldMaterializeOwnedStates` / `RunFinishStatesLabelFixPipeline` / `ShouldEnterPerStateDefineResolveLoop` | **1031\u20131050** |\n| Band hull (exclusive slice) | **901\u20131050** |\n\n### Chunk **991** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**990** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPStatesParser991Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/p_states.cpp",
+            "symbol": "FStateDefinitions::AddStates",
+            "start": 901,
+            "end": 1050,
+            "tests": [
+              "VmPStatesParser991SliceTests.SetStopWaitLoopSession",
+              "VmPStatesParser991SliceTests.AddStatesFrameDecode",
+              "VmPStatesParser991SliceTests.FinishStatesHeadPipeline"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 160,
+        "conversionManagedCommit": "24844368fb3ce69e6d0880c9cc00bdbd875e9884"
       }
     ],
     "behaviorNativeChecksum": 508086,
