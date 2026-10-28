@@ -17,9 +17,10 @@ public class VmSbarinfoMainBlockLoad1064SliceTests
     }
 
     [Fact]
-    public void StoreMainBlockAlpha_PreservesParsedFloat()
+    public void ResolveMainBlockAlphaAfterFlagList_UsesFloatWhenRead()
     {
-        Assert.Equal(0.75, VmSbarinfoMainBlockLoad1064Slice.StoreMainBlockAlpha(0.75));
+        Assert.Equal(0.75, VmSbarinfoMainBlockLoad1064Slice.ResolveMainBlockAlphaAfterFlagList(1.0, 0.75, readFloatConst: true));
+        Assert.Equal(1.0, VmSbarinfoMainBlockLoad1064Slice.ResolveMainBlockAlphaAfterFlagList(1.0, 0.75, false));
     }
 
     [Fact]
@@ -54,10 +55,12 @@ public class VmSbarinfoMainBlockLoad1064SliceTests
     }
 
     [Fact]
-    public void ShouldEmitParseBanner_SkipsBatchRun()
+    public void ShouldEmitLoadBanners_RequireNonBatchAndValidLump()
     {
-        Assert.False(VmSbarinfoMainBlockLoad1064Slice.ShouldEmitParseBanner(batchRun: true));
-        Assert.True(VmSbarinfoMainBlockLoad1064Slice.ShouldEmitParseBanner(false));
+        Assert.False(VmSbarinfoMainBlockLoad1064Slice.ShouldEmitDefaultLoadBanner(batchRun: true, true, true));
+        Assert.False(VmSbarinfoMainBlockLoad1064Slice.ShouldEmitDefaultLoadBanner(false, false, true));
+        Assert.True(VmSbarinfoMainBlockLoad1064Slice.ShouldEmitDefaultLoadBanner(false, true, true));
+        Assert.True(VmSbarinfoMainBlockLoad1064Slice.ShouldEmitCustomLoadBanner(false, customLumpExists: true));
     }
 
     [Fact]

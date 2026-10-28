@@ -19,12 +19,12 @@
         "tests": [
           "VmSbarinfoMainBlockLoad1064SliceTests.ApplyDrawAlpha_DelegatesTo1063Combine",
           "VmSbarinfoMainBlockLoad1064SliceTests.ShouldParseFlowAfterFlagList_WhenSeparatorsEnd",
-          "VmSbarinfoMainBlockLoad1064SliceTests.StoreMainBlockAlpha_PreservesParsedFloat",
+          "VmSbarinfoMainBlockLoad1064SliceTests.ResolveMainBlockAlphaAfterFlagList_UsesFloatWhenRead",
           "VmSbarinfoMainBlockLoad1064SliceTests.ResolveScriptSlotAction_ChoosesCreateOrParse",
           "VmSbarinfoMainBlockLoad1064SliceTests.MatchTopLevelKeyword_FindsAppendStatusBar",
           "VmSbarinfoMainBlockLoad1064SliceTests.MatchStatusBarTypeName_RecognizesInventoryFullscreen",
           "VmSbarinfoMainBlockLoad1064SliceTests.ShouldLoadDefaultFromGameInfo_RequiresName",
-          "VmSbarinfoMainBlockLoad1064SliceTests.ShouldEmitParseBanner_SkipsBatchRun",
+          "VmSbarinfoMainBlockLoad1064SliceTests.ShouldEmitLoadBanners_RequireNonBatchAndValidLump",
           "VmSbarinfoMainBlockLoad1064SliceTests.ScriptSlotConstants_MatchNativeHeaders"
         ]
       }

@@ -71,7 +71,9 @@ public static class VmSbarinfoMainBlockLoad1064Slice
     public static bool ShouldContinueMainBlockFlagTokens(bool hasPipeSeparator, bool hasCommaSeparator) =>
         hasPipeSeparator || hasCommaSeparator;
 
-    public static double StoreMainBlockAlpha(double parsedFloat) => parsedFloat;
+    /// <summary>After the optional comma-flag list, native assigns <c>alpha = sc.Float</c> when the float token was read (**336–337**).</summary>
+    public static double ResolveMainBlockAlphaAfterFlagList(double currentAlpha, double floatConst, bool readFloatConst) =>
+        readFloatConst ? floatConst : currentAlpha;
 
     public static bool ShouldFreeScriptSlot(object? slot) => slot != null;
 
@@ -86,7 +88,11 @@ public static class VmSbarinfoMainBlockLoad1064Slice
     public static bool ShouldIterateCustomSbarinfoLumps(int firstLumpCheckResult) =>
         firstLumpCheckResult != -1;
 
-    public static bool ShouldEmitParseBanner(bool batchRun) => !batchRun;
+    public static bool ShouldEmitDefaultLoadBanner(bool batchRun, bool statusBarNamePresent, bool lumpValid) =>
+        !batchRun && statusBarNamePresent && lumpValid;
+
+    public static bool ShouldEmitCustomLoadBanner(bool batchRun, bool customLumpExists) =>
+        !batchRun && customLumpExists;
 
     public static int MatchTopLevelKeyword(string token)
     {
