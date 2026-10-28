@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 230726
+    "managedCSharpLoc": 230932
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 62087,
+    "convertedThisRunNative": 62237,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 87923,
+    "convertedThisRunManaged": 88129,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 426718,
+    "remainingNative": 426568,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 80614,
+    "convertedBehaviorNative": 80764,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 81368,
-    "convertedBehaviorManaged": 97594,
+    "combinedBehaviorNative": 81518,
+    "convertedBehaviorManaged": 97800,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -35171,6 +35171,38 @@
         "conversionManagedCommit": "f50b7bca8a0547578a40004be7805ae4065cbff4",
         "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
         "retired": true
+      },
+      {
+        "name": "p-acs-behavior-string-validate-chunk963",
+        "bucket": "conversion",
+        "note": "`FBehavior::SortScripts`, `UnencryptStrings`, `UnescapeStringTable`, `IsGood`, and `FindScript` from `p_acs.cpp` (**2993\u20133142**).",
+        "auditSeams": "`FindChunk`, `NextChunk`, `qsort`, `I_Error`, `Printf`, and `BinarySearch` template remain host seams; `VmPAcsBehaviorInit` still injects native string hooks during `Init`.",
+        "auditRationale": "Honest **150**-line UNCredited band with zero tally overlap; exclusive `VmPAcsBehaviorStringValidate963Slice.cs` (does not re-credit chunk **515** directory load or **752**-class init orchestration).",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 2993 --end 3142` and `--chunk 963 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `FBehavior::SortScripts` (**2993\u20132998**) | yes |\n| `FBehavior::UnencryptStrings` (**3008\u20133034**) | yes |\n| `FBehavior::UnescapeStringTable` (**3048\u20133078**) | yes |\n| `FBehavior::IsGood` (**3086\u20133122**) | yes |\n| `FBehavior::FindScript` / container scan head (**3124\u20133142**) | yes |\n| Comment/separator lines (**3000\u20133007**, **3036\u20133047**, **3080\u20133085**, **3123**) | layout only |\n\n| Managed (`VmPAcsBehaviorStringValidate963Slice.cs`) | Native (`p_acs.cpp`) |\n|-----------------------------------------------------|---------------------|\n| `CompareScriptNumbers` / `SortScriptsComparison` | **2993\u20132998** |\n| `UnencryptStringChunks` | **3008\u20133034** |\n| `UnescapeStringTable` / `UnescapeStrBinInPlace` | **3048\u20133078** |\n| `IsGood` | **3086\u20133122** |\n| `FindScriptIndex` / `FindScriptModuleIndex` | **3124\u20133152** (hull through container loop head) |\n| Band hull (exclusive slice) | **2993\u20133142** |\n\n### Chunk **963** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**962** (retired) |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPAcsBehaviorStringValidate963Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "FBehavior::SortScripts",
+            "start": 2993,
+            "end": 3142,
+            "tests": [
+              "VmPAcsBehaviorStringValidate963SliceTests.CompareScriptNumbers_OrdersAscending",
+              "VmPAcsBehaviorStringValidate963SliceTests.UnencryptStringChunks_RetagsStreToStrl",
+              "VmPAcsBehaviorStringValidate963SliceTests.UnescapeStringTable_UnpaddedTableDecodesEscapes",
+              "VmPAcsBehaviorStringValidate963SliceTests.IsGood_RejectsUnknownFormat",
+              "VmPAcsBehaviorStringValidate963SliceTests.IsGood_RejectsMissingImport",
+              "VmPAcsBehaviorStringValidate963SliceTests.FindScriptIndex_PrefersEarlierDuplicate",
+              "VmPAcsBehaviorStringValidate963SliceTests.FindScriptModuleIndex_ScansModulesInOrder"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 206,
+        "conversionManagedCommit": "0810e58f8a9fe2d20bb9ea7f003a515b8bc0786b"
       }
     ],
     "behaviorNativeChecksum": 508086,
