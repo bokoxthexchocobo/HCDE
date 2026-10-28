@@ -23,7 +23,7 @@ public static class VmSbarinfoDrawGraphic1070Slice
         double leftOffset,
         int forceWidth)
     {
-        if (forceWidth < ForceUseTextureDimension)
+        if (forceWidth < 0)
             return dx - (textureWidth / 2.0) + leftOffset;
         var textureWidthSafe = textureWidth <= 0 ? 1.0 : textureWidth;
         return dx - forceWidth * (0.5 - leftOffset / textureWidthSafe);
@@ -35,7 +35,7 @@ public static class VmSbarinfoDrawGraphic1070Slice
         double topOffset,
         int forceHeight)
     {
-        if (forceHeight < ForceUseTextureDimension)
+        if (forceHeight < 0)
             return dy - (textureHeight / 2.0) + topOffset;
         var textureHeightSafe = textureHeight <= 0 ? 1.0 : textureHeight;
         return dy - forceHeight * (0.5 - topOffset / textureHeightSafe);
@@ -49,8 +49,8 @@ public static class VmSbarinfoDrawGraphic1070Slice
         int forceHeight,
         double textureWidth,
         double textureHeight) =>
-        (forceWidth < ForceUseTextureDimension ? textureWidth : forceWidth,
-            forceHeight < ForceUseTextureDimension ? textureHeight : forceHeight);
+        (forceWidth < 0 ? textureWidth : forceWidth,
+            forceHeight < 0 ? textureHeight : forceHeight);
 
     public static double ComputeStatusbarClipLeft(double dx, double clipLeft, double leftOffset, bool clipDisabled) =>
         clipDisabled ? 0 : dx + clipLeft - leftOffset;
