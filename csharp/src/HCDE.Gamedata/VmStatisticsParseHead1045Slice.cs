@@ -32,13 +32,7 @@ public static class VmStatisticsParseHead1045Slice
 
     public static bool ShouldSkipParseWhenFileUnavailable(bool fileOpened) => !fileOpened;
 
-    public static bool ShouldConsumeAnotherEpisodeEntry(bool scannerReturnedString) => scannerReturnedString;
-
-    public static bool ShouldParseAnotherSessionEntry(bool episodeSectionCloseMatched) =>
-        !episodeSectionCloseMatched;
-
-    public static bool ShouldParseAnotherNestedLevelEntry(bool levelSectionCloseMatched) =>
-        !levelSectionCloseMatched;
+    public static string NormalizeEpisodeHeaderToken(string header) => header.Trim();
 
     public static StatisticsEpisodeDraft BuildEpisodeDraft(string headerToken, string nameToken) =>
         new(headerToken, nameToken);
@@ -54,6 +48,15 @@ public static class VmStatisticsParseHead1045Slice
 
     public static int ParseColonDurationToTics(string colonTime) =>
         VmStatisticsParser.ParseTimeToTics(colonTime);
+
+    public static bool SessionDurationHasValidShape(string durationToken)
+    {
+        var parts = durationToken.Split(':');
+        return parts.Length == 3
+            && int.TryParse(parts[0], out _)
+            && int.TryParse(parts[1], out _)
+            && int.TryParse(parts[2], out _);
+    }
 
     public static StatisticsSessionDraft BuildSessionDraft(
         string firstToken,
@@ -79,7 +82,7 @@ public static class VmStatisticsParseHead1045Slice
         draft = default;
         if (string.IsNullOrEmpty(secondToken) || string.IsNullOrEmpty(infoToken))
             return false;
-        if (!durationToken.Contains(':', StringComparison.Ordinal))
+        if (!SessionDurationHasValidShape(durationToken))
             return false;
         draft = BuildSessionDraft(firstToken, secondToken, infoToken, durationToken, skill);
         return true;

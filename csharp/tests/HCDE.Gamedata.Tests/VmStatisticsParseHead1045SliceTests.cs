@@ -72,6 +72,26 @@ public class VmStatisticsParseHead1045SliceTests
     }
 
     [Fact]
+    public void OneLevelCounterFieldCount_MatchesStruct()
+    {
+        Assert.Equal(6, VmStatisticsParseHead1045Slice.OneLevelCounterFieldCount);
+        Assert.Equal(6, VmStatisticsParseHead1045Slice.OneLevelCounterNames.Count);
+    }
+
+    [Fact]
+    public void SessionDurationHasValidShape_RejectsMalformed()
+    {
+        Assert.True(VmStatisticsParseHead1045Slice.SessionDurationHasValidShape("1:02:03"));
+        Assert.False(VmStatisticsParseHead1045Slice.SessionDurationHasValidShape("bad"));
+    }
+
+    [Fact]
+    public void NormalizeEpisodeHeaderToken_Trims()
+    {
+        Assert.Equal("DOOM2.E1", VmStatisticsParseHead1045Slice.NormalizeEpisodeHeaderToken("  DOOM2.E1 "));
+    }
+
+    [Fact]
     public void TryBuildSessionDraft_ValidatesTokens()
     {
         Assert.False(VmStatisticsParseHead1045Slice.TryBuildSessionDraft(
@@ -79,13 +99,6 @@ public class VmStatisticsParseHead1045SliceTests
         Assert.True(VmStatisticsParseHead1045Slice.TryBuildSessionDraft(
             "a", "b", "info", "0:0:1", 1, out var draft));
         Assert.Equal("b", draft.Name);
-    }
-
-    [Fact]
-    public void ShouldParseAnotherSessionEntry_UntilCloseBrace()
-    {
-        Assert.True(VmStatisticsParseHead1045Slice.ShouldParseAnotherSessionEntry(episodeSectionCloseMatched: false));
-        Assert.False(VmStatisticsParseHead1045Slice.ShouldParseAnotherSessionEntry(episodeSectionCloseMatched: true));
     }
 
     [Fact]
