@@ -1,0 +1,27 @@
+[
+  {
+    "name": "g-game-save-flow-chunk1004",
+    "bucket": "conversion",
+    "note": "`G_DoQuickSave`, save comment/pic helpers, and `G_DoSaveGame` head from `g_game.cpp` (**2900–3049**); follows chunk **1003** (**2750–2899**).",
+    "auditSeams": "`G_DoSaveGame` writers, `PutSaveWads`, PNG/screenshot host, and `G_SaveGame` call remain injected.",
+    "auditRationale": "UNCredited **2900–3049** CLI band; disjoint from chunks **995–1003** and chunk **9** credited segments.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_game.cpp --start 2900 --end 3049` and `--chunk 1004 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `G_DoAutoSave` hint clear tail (**2900–2901**) | seam with **1003** (zero duplicate credit) |\n| `G_DoQuickSave` rotation (**2908–2937**) | yes |\n| `PutSaveComment` elapsed time (**2967–2968**) | yes |\n| `PutSavePic` dummy gate (**2976–2978**) | yes |\n| `G_DoSaveGame` guards/failure head (**2998–3034**) | yes |\n| Save version header (**3043**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2903–2905** | `myasctime` / `G_DoSaveGame` host call |\n| **2941–2952** | `PutSaveWads` filesystem host |\n| **2982–2985** | `WriteSavePic` render host |\n| **3036–3042** | serializer open host |\n| **3044+** | PNG append / info fields (next band) |\n\n| Managed (`VmGGameSaveFlow1004Slice.cs`) | Native (`g_game.cpp`) |\n|----------------------------------------|----------------------|\n| `ResolveQuicksaveSkipReason` / rotation helpers | **2911–2933** |\n| `ShouldAbortSaveWithoutLevel` / demo redirect | **2998–3006** |\n| `ResolveRecoverableSnapshotFailure` | **3018–3026** |\n| `ShouldWriteDummySavePic` | **2976–2978** |\n| `FormatElapsedLevelTime` | **2967–2968** |\n| `ResolveSaveVersionHeader` | **3043** |\n| Band hull (exclusive slice) | **2900–3049** |\n\n### Chunk **1004** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1003** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmGGameSaveFlow1004Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "G_DoQuickSave",
+        "start": 2900,
+        "end": 3049,
+        "tests": [
+          "VmGGameSaveFlow1004SliceTests.QuicksaveRotation",
+          "VmGGameSaveFlow1004SliceTests.DoSaveGameHead",
+          "VmGGameSaveFlow1004SliceTests.SavePicAndComment"
+        ]
+      }
+    ]
+  }
+]
