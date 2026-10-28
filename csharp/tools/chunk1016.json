@@ -1,0 +1,27 @@
+[
+  {
+    "name": "g-level-deferred-gc-chunk1016",
+    "bucket": "conversion",
+    "note": "`G_ReadVisited` tail, `P_WriteACSDefereds`, `P_ReadACSDefereds`, and `DSectorMarker::PropagateMark` head from `g_level.cpp` (**2259–2408**); follows chunk **1015** (**2109–2258**).",
+    "auditSeams": "`FSerializer`, `FindLevelInfo`, `I_Error`, `UpdatePlayerClass`, `P_RemoveDefereds`, and `GC::Mark` remain injected.",
+    "auditRationale": "UNCredited **2259–2408**; disjoint from chunk **8**, **1015** snapshot band (seam **2259** continues read path), and other files' unrelated `PropagateMark` symbols.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_level.cpp --start 2259 --end 2408` and `--chunk 1016 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `G_ReadVisited` playerclasses (**2259–2267**) | yes |\n| `P_WriteACSDefereds` (**2276–2302**) | yes |\n| `P_ReadACSDefereds` (**2310–2330**) | yes |\n| `DSectorMarker` step constants (**2344–2348**) | yes |\n| `PropagateMark` sector/poly batches (**2371–2407**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2255** | `randomclasses` array (**1015** seam) |\n| **2289–2300**, **2316–2329** | serializer host |\n| **2360**, **2410+** | `IMPLEMENT_CLASS` / sidedef loop body (**1017** follow-on) |\n| Other `PropagateMark` | **773** / **778** / **816** / **836** (different symbols) |\n\n| Managed (`VmGLevelDeferredGc1016Slice.cs`) | Native (`g_level.cpp`) |\n|-------------------------------------------|----------------------|\n| Player class key fallback | **2261–2265** |\n| Deferred presence / per-map write | **2281–2298** |\n| Unknown map guard | **2323–2325** |\n| Sector/poly/side step sizes | **2344–2348**, **2378–2405** |\n| Band hull (exclusive slice) | **2259–2408** |\n\n### Chunk **1016** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1015** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmGLevelDeferredGc1016Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_level.cpp",
+        "symbol": "P_WriteACSDefereds",
+        "start": 2259,
+        "end": 2408,
+        "tests": [
+          "VmGLevelDeferredGc1016SliceTests.ReadVisitedPlayerClasses",
+          "VmGLevelDeferredGc1016SliceTests.AcsDeferredSaveLoadGates",
+          "VmGLevelDeferredGc1016SliceTests.SectorMarkerPropagateSteps"
+        ]
+      }
+    ]
+  }
+]
