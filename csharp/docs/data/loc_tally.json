@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 61937,
+  "convertedThisRunNative": 62087,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 87840,
+  "convertedThisRunManaged": 87923,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 426868,
+  "remainingNative": 426718,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 80464,
+  "convertedBehaviorNative": 80614,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 81218,
-  "convertedBehaviorManaged": 97511,
+  "combinedBehaviorNative": 81368,
+  "convertedBehaviorManaged": 97594,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -35106,6 +35106,39 @@
       "nativeLoc": 150,
       "managedLoc": 75,
       "conversionManagedCommit": "4a77d2d0546fe1c92e247784bd2cb703facda9e4"
+    },
+    {
+      "name": "p-map-file-head-chunk961",
+      "bucket": "conversion",
+      "note": "Map CVAR defaults, `P_ShouldPassThroughPlayer`, and `P_CanCollideWith` virtual head from `p_map.cpp` (**1\u2013150**).",
+      "auditSeams": "Includes, `FRandom` streams, `spechit`/`portalhit` globals, VM export wrapper, and `P_CollidedWith` tail remain host seams.",
+      "auditRationale": "Honest **150**-line UNCredited band; exclusive `VmPMapFileHead961Slice.cs` (before later credited map bands **704+**).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_map.cpp --start 1 --end 150` and `--chunk 961 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Client/server CVAR defaults (**68\u201371**) | yes |\n| `P_ShouldPassThroughPlayer` (**98\u2013103**) | yes |\n| `AActor::ShouldPassThroughPlayer` export (**105\u2013110**) | seam (VM export) |\n| `P_CanCollideWith` virtual dispatch head (**120\u2013150**) | yes |\n| Static protos / `FRandom` (**73\u201380**) | seam |\n\n| Managed (`VmPMapFileHead961Slice.cs`) | Native (`p_map.cpp`) |\n|---------------------------------------|---------------------|\n| `NoPlayerClipEnabled` / `ShouldPassThroughPlayer` | **100\u2013103** |\n| `ResolveCanCollideVirtualIndex` / table bounds | **122\u2013136** |\n| `VmCollideCallBlocked` / `CollidePairAllowed` / mate pass | **139\u2013150** |\n| `AppendSpechitWhenNeeded` | **84\u201385** deferral policy (special vs portal) |\n| CVAR default constants | **68\u201371** |\n| Band hull (exclusive slice) | **1\u2013150** |\n\n### Chunk **961** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**960** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMapFileHead961Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_ShouldPassThroughPlayer",
+          "start": 1,
+          "end": 150,
+          "tests": [
+            "VmPMapFileHead961SliceTests.ShouldPassThroughPlayer_RequiresFlagFriendAndPlayerMo",
+            "VmPMapFileHead961SliceTests.ResolveCanCollideVirtualIndex_CachesAfterFirstResolve",
+            "VmPMapFileHead961SliceTests.ActorVirtualTableLargeEnough_MatchesNativeBoundsCheck",
+            "VmPMapFileHead961SliceTests.CollidePairAllowed_BothVirtualCallsMustPass",
+            "VmPMapFileHead961SliceTests.AppendSpechitWhenNeeded_RecordsPortalAndSpecialSeparately",
+            "VmPMapFileHead961SliceTests.EvaluateSecondCanCollideVirtual_RequiresMateParam",
+            "VmPMapFileHead961SliceTests.EvaluateFirstCanCollideVirtual_BlocksWhenVmReturnsZero",
+            "VmPMapFileHead961SliceTests.DefaultCvarPolicy_MatchesNativeArchiveDefaults"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 83,
+      "conversionManagedCommit": "34bd514eb300e41cdae7e2c83f402d52e089df66"
     }
   ],
   "behaviorNativeChecksum": 508086,
