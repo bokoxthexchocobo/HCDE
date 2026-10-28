@@ -19,7 +19,8 @@ public class VmSbarinfoParseTopLevel1066SliceTests
     [Fact]
     public void StatusBarHudPolicy_HandlesAppendVsCreate()
     {
-        Assert.True(VmSbarinfoParseTopLevel1066Slice.ShouldAllocateNewHudBlock(isAppendCommand: false));
+        Assert.Equal(VmSbarinfoParseTopLevel1066Slice.StatusBarHudAction.CreateNewBlock,
+            VmSbarinfoParseTopLevel1066Slice.ResolveStatusBarHudAction(isAppendCommand: false, hudIsNull: true));
         Assert.True(VmSbarinfoParseTopLevel1066Slice.ShouldRejectAppendToMissingHud(true, hudIsNull: true));
         Assert.True(VmSbarinfoParseTopLevel1066Slice.ShouldMarkAutomapBar(
             VmSbarinfoMainBlockLoad1064Slice.MatchStatusBarTypeName("automap")));

@@ -57,13 +57,27 @@ public static class VmSbarinfoParseTopLevel1066Slice
     public static bool IsAppendStatusBarCommand(int topLevelCommandIndex) =>
         topLevelCommandIndex == (int)VmSbarinfoMainBlockLoad1064Slice.TopLevelKeywordId.AppendStatusBar;
 
+    public enum StatusBarHudAction
+    {
+        CreateNewBlock,
+        ParseExistingBlock,
+        RejectAppendMissing
+    }
+
+    public static StatusBarHudAction ResolveStatusBarHudAction(bool isAppendCommand, bool hudIsNull)
+    {
+        if (isAppendCommand && hudIsNull)
+            return StatusBarHudAction.RejectAppendMissing;
+        if (isAppendCommand)
+            return StatusBarHudAction.ParseExistingBlock;
+        return StatusBarHudAction.CreateNewBlock;
+    }
+
     public static bool ShouldReplaceExistingHud(bool isAppendCommand, bool hudSlotOccupied) =>
         !isAppendCommand && hudSlotOccupied;
 
-    public static bool ShouldAllocateNewHudBlock(bool isAppendCommand) => !isAppendCommand;
-
     public static bool ShouldRejectAppendToMissingHud(bool isAppendCommand, bool hudIsNull) =>
-        isAppendCommand && hudIsNull;
+        ResolveStatusBarHudAction(isAppendCommand, hudIsNull) == StatusBarHudAction.RejectAppendMissing;
 
     public static bool ShouldMarkAutomapBar(int barIndex) => barIndex == AutomapBarTypeIndex;
 
