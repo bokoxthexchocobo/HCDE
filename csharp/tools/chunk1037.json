@@ -1,0 +1,33 @@
+[
+  {
+    "name": "info-pclass-actor-defaults-ids-chunk1037",
+    "bucket": "conversion",
+    "note": "`PClassActor::InitializeDefaults` tail, `RegisterIDs`, and `GetReplacement` skill-validation head from `info.cpp` (**500–649**).",
+    "auditSeams": "`ConstructNative`, `GC::Root`, `M_Malloc`, `PClass::FindActor`, `Printf`, `StrifeTypes` / `SpawnableThings` / `DoomEdMap` tables, and `AllSkills` mutation remain host-injected; uncredited `VmActorClassRegistry` is not re-credited.",
+    "auditRationale": "First tally-clean **150**-line hull on **`info.cpp`** at **500–649** with zero conversion overlap (gamedata pivot off deferred `g_mapinfo` gaps).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/info.cpp --start 500 --end 649` and `--chunk 1037 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Parent defaults `memcpy` + zero extend (**500–504**) | yes |\n| Transferrable `ObjectFlags` copy (**506**) | yes |\n| No-parent defaults zero (**508–511**) | yes |\n| Meta malloc + parent copy + zero extend (**514–530**) | yes |\n| `RegisterIDs` conversation id (**567–574**) | yes (policy) |\n| Game-filtered spawn / doom ed (**575–603**) | yes |\n| Decorate doom-ed duplicate warn (**589–593**) | yes |\n| `VerifyClientSideReplacement` (**613–616**) | yes |\n| Skill replacement validate + clear (**622–649**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **483–499** | `InitializeDefaults` prologue / GC unlink outside hull |\n| **536–537** | `PClass::InitializeDefaults` host call |\n| **539–566** | comment + `FindActor` host |\n| **605** | function close only |\n| **650+** | ZScript replacement chain outside hull (**649** ends failure clear) |\n| `VmActorClassRegistry` | uncredited StaticInit helper — seam only |\n\n| Managed (`VmPClassActorInfo1037Slice.cs`) | Native (`info.cpp`) |\n|---------------------------------------------|---------------------|\n| `CopyParentDefaultsBlock` / `ExtendedDefaultsZeroLength` | **500–504** |\n| `TransferrableObjectFlags` | **506** |\n| `ZeroDefaultsTail` | **510–511** |\n| `CopyMetaBlock` | **518–530** |\n| `ShouldRegisterConversationId` | **567–574** |\n| `ShouldRegisterSpawnOrDoomEd` / spawn + doom ed predicates | **575–603** |\n| `CreateDecorateDoomEdEntry` / `IsDuplicateDecorateDoomEdEntry` | **589–598** |\n| `VerifyClientSideReplacement` | **613–616** |\n| `EvaluateSkillReplacement` / `ApplySkillReplacementFailureClear` | **622–649** |\n| Band hull (exclusive slice) | **500–649** |\n\n### Chunk **1037** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1036** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmPClassActorInfo1037Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/info.cpp",
+        "symbol": "PClassActor defaults / RegisterIDs / GetReplacement head",
+        "start": 500,
+        "end": 649,
+        "tests": [
+          "VmPClassActorInfo1037SliceTests.CopyParentDefaultsBlock_CopiesAndZeroExtends",
+          "VmPClassActorInfo1037SliceTests.TransferrableObjectFlags_MasksToTransferBits",
+          "VmPClassActorInfo1037SliceTests.ShouldRegisterSpawnOrDoomEd_RespectsGameFilter",
+          "VmPClassActorInfo1037SliceTests.CreateDecorateDoomEdEntry_UsesSpecialMinusTwo",
+          "VmPClassActorInfo1037SliceTests.EvaluateSkillReplacement_FailsWhenClassMissing",
+          "VmPClassActorInfo1037SliceTests.EvaluateSkillReplacement_FailsOnClientSideMismatch",
+          "VmPClassActorInfo1037SliceTests.ApplySkillReplacementFailureClear_ClearsLookSkill",
+          "VmPClassActorInfo1037SliceTests.IsDuplicateDecorateDoomEdEntry_DetectsDecorateMarker",
+          "VmPClassActorInfo1037SliceTests.CopyMetaBlock_ZeroFillsExtension"
+        ]
+      }
+    ]
+  }
+]
