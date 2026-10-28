@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 239980
+    "managedCSharpLoc": 240083
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 73937,
+    "convertedThisRunNative": 74087,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 97176,
+    "convertedThisRunManaged": 97279,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 414868,
+    "remainingNative": 414718,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 92464,
+    "convertedBehaviorNative": 92614,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 93218,
-    "convertedBehaviorManaged": 106847,
+    "combinedBehaviorNative": 93368,
+    "convertedBehaviorManaged": 106950,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -37556,6 +37556,43 @@
         "nativeLoc": 150,
         "managedLoc": 131,
         "conversionManagedCommit": "e51740f8678d2638f88de1eac2a4f9030b93fb2c"
+      },
+      {
+        "name": "info-loadalthud-staticinit-chunk1042",
+        "bucket": "conversion",
+        "note": "`GetSpriteIndex` push tail, `LoadAltHudStuff`, and `PClassActor::StaticInit` / `StaticSetActorNums` head from `info.cpp` (**301\u2013450**). Continues **1041** (**151\u2013300**).",
+        "auditSeams": "`TexMan`, `fileSystem.FindLump`, `FScanner`, `LoadActors`, `InitBotStuff`, and `staticEventManager` remain host-injected; uncredited `VmSpriteCatalog` (lookup/add) and `VmAltHudLoader` (partial defaults) are not re-credited.",
+        "auditRationale": "File-scoped UNCredited **`info.cpp`** **301\u2013450**; excludes **1\u2013300** (**1040\u20131041**), **500\u2013799** (**1037\u20131038**), deferred **800\u2013893**, and **894\u20131043** (**1039**).",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/info.cpp --start 301 --end 450` and `--chunk 1042 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `GetSpriteIndex` push (**301\u2013306**) | yes (`CreateSpriteDefDraft`; host/`VmSpriteCatalog` seam for list push) |\n| `LoadAltHudStuff` game switch (**319\u2013336**) | yes (`ResolveDefaultAltHudPicNames`) |\n| `LoadAltHudStuff` ALTHUDCF loop (**338\u2013379**) | yes (classify / inventory validation / icon tokens) |\n| `PClassActor::StaticInit` sprite seed (**391\u2013409**) | yes |\n| `StaticInit` actor registry collect (**417\u2013423**) | yes |\n| post-load call order (**425\u2013429**) | yes (step list) |\n| `StaticSetActorNums` (**440\u2013446**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1\u2013300** | chunks **1040\u20131041** |\n| **271\u2013306** lookup/cache | uncredited `VmSpriteCatalog` seam (push draft only credited **301\u2013306**) |\n| **319\u2013336** partial overlap | `VmAltHudLoader.GetDefaultHudPics` seam \u2014 not double-counted |\n| **411\u2013415**, **387**, **428\u2013429** host calls | `LoadActors`, `InitServices`, event manager |\n| **448\u2013450** | comment header before `SetReplacement` (**456+**) |\n| **500\u2013799** | chunks **1037\u20131038** |\n| **800\u2013893** | deferred (**94** lines) |\n| **894\u20131043** | chunk **1039** |\n| `VmActorClassRegistry.TrySetReplacement` | uncredited \u2014 outside hull |\n\n| Managed (`VmInfoLoadAltHud1042Slice.cs`) | Native (`info.cpp`) |\n|-------------------------------------------|---------------------|\n| `CreateSpriteDefDraft` | **301\u2013305** |\n| `ResolveDefaultAltHudPicNames` | **319\u2013336** |\n| `ClassifyAltHudKeyword` / null texture / inventory apply | **343\u2013377** |\n| Format helpers | **360**, **364** |\n| `NeedsDefaultSpriteSeed` / `DefaultSpriteSeedNames` | **391\u2013409** |\n| `ShouldAddActorClassToRegistry` | **417\u2013423** |\n| `StaticInitPostActorLoadSteps` | **425\u2013429** |\n| `RunRegisterIdsForAllActorClasses` | **440\u2013446** |\n| Band hull (exclusive slice) | **301\u2013450** |\n\n### Chunk **1042** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1041** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Gamedata/VmInfoLoadAltHud1042Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/info.cpp",
+            "symbol": "LoadAltHudStuff / PClassActor StaticInit",
+            "start": 301,
+            "end": 450,
+            "tests": [
+              "VmInfoLoadAltHud1042SliceTests.CreateSpriteDefDraft_ZeroFrames",
+              "VmInfoLoadAltHud1042SliceTests.ClassifyAltHudKeyword_HealthBerserkOrItem",
+              "VmInfoLoadAltHud1042SliceTests.ResolveDefaultAltHudPicNames_MatchesGameTypeSwitch",
+              "VmInfoLoadAltHud1042SliceTests.IsExplicitNullAltHudTextureToken_RecognizesSentinels",
+              "VmInfoLoadAltHud1042SliceTests.EvaluateAltHudInventoryClass_UnknownOrNotInventory",
+              "VmInfoLoadAltHud1042SliceTests.BuildAltHudInventoryApply_NullTokenClearsIcon",
+              "VmInfoLoadAltHud1042SliceTests.FormatAltHudClassMessages_IncludeClassName",
+              "VmInfoLoadAltHud1042SliceTests.NeedsDefaultSpriteSeed_OnlyWhenEmpty",
+              "VmInfoLoadAltHud1042SliceTests.DefaultSpriteSeedNames_MatchesStaticInit",
+              "VmInfoLoadAltHud1042SliceTests.RunRegisterIdsForAllActorClasses_InvokesEach",
+              "VmInfoLoadAltHud1042SliceTests.StaticInitPostActorLoadSteps_IncludesAltHud",
+              "VmInfoLoadAltHud1042SliceTests.ShouldAddActorClassToRegistry_RequiresActorDescendant"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 103,
+        "conversionManagedCommit": "11426aa7ce601d289177c6b1f34ffa289091c66a"
       }
     ],
     "behaviorNativeChecksum": 508086,
