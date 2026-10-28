@@ -1,0 +1,34 @@
+[
+  {
+    "name": "sbarinfo-commands-inventorybar-draw-parse-chunk1087",
+    "bucket": "conversion",
+    "note": "`CommandDrawInventoryBar::Draw`, `Parse`, and `GetCounterSpacing` null fallback from `sbarinfo_commands.cpp` (**2101–2250**); follows **1086** through **`Draw` `{` (**2100**).",
+    "auditSeams": "**1086** owns inventory bar ctor defaults; **1087** owns draw/layout/parse/spacing policy. Host `DrawGraphic`, `TexMan`, `V_GetFont`, and `ValidateInvFirst` excluded.",
+    "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **2101–2250** (+150); inventory bar draw gates, style-specific selection/arrow math, parse flags/style, counter coords, spacing fallback **32**; hull ends before box dimension read (**2251+**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 2101 --end 2250` and `--chunk 1087 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Translucent background alpha (**2104–2105**) | yes |\n| Draw bar when empty + slot layout (**2112–2117**) | yes |\n| Strife vs pre-selection icon order (**2121–2137**) | yes |\n| Style-specific selection overlay (**2125–2134**) | yes |\n| Per-item counter gate (**2138–2141**) | yes |\n| Trailing empty artibox slots (**2144–2145**) | yes |\n| Left/right arrow placement (**2148–2159**) | yes |\n| Style keyword parse (**2166–2177**) | yes |\n| Parse flag keywords (**2182–2210**) | yes |\n| Default counter coords (**2226–2227**) | yes |\n| Missing box spacing fallback (**2248–2250**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2100** | **1086** `Draw` entry `{` seam |\n| **2101**, **2111**, **2140–2141** | host spacing lookup / counter draw |\n| **2118–2137**, **2145**, **2152–2159** | host `DrawGraphic` / texture |\n| **2217–2221**, **2230–2237** | host font + translation scanner |\n| **2252+** | live box width/height spacing tail outside hull |\n\n| Managed (`VmSbarinfoCommandDrawInventoryBar1087Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|-----------------------------------------------------------|----------------------------------|\n| Draw layout + arrows | **2103–2160** |\n| Parse style/flags/coords | **2163–2241** |\n| Spacing fallback | **2243–2250** |\n| Band hull (exclusive slice) | **2101–2250** |\n\n### Chunk **1087** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1086** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoCommandDrawInventoryBar1087Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo_commands.cpp",
+        "symbol": "CommandDrawInventoryBar::Draw / Parse / GetCounterSpacing",
+        "start": 2101,
+        "end": 2250,
+        "tests": [
+          "VmSbarinfoCommandDrawInventoryBar1087SliceTests.ApplyInventoryBarTranslucentBackgroundAlpha_ScalesWithHexenShadow",
+          "VmSbarinfoCommandDrawInventoryBar1087SliceTests.ComputeInventoryBarSlotOrigin_AdvancesHorizontalSlots",
+          "VmSbarinfoCommandDrawInventoryBar1087SliceTests.ResolveInventorySelectionOverlay_MapsHereticSelectBox",
+          "VmSbarinfoCommandDrawInventoryBar1087SliceTests.ResolveInventoryBarRightArrowPlacement_UsesStrifeFormula",
+          "VmSbarinfoCommandDrawInventoryBar1087SliceTests.TryParseInventoryBarStyleKeyword_PrefersHexenStrictBeforeHexen",
+          "VmSbarinfoCommandDrawInventoryBar1087SliceTests.ClassifyInventoryBarParseKeyword_MapsTranslucent",
+          "VmSbarinfoCommandDrawInventoryBar1087SliceTests.ResolveInventoryBarDefaultCounterPosition_Applies2622Offsets",
+          "VmSbarinfoCommandDrawInventoryBar1087SliceTests.ResolveInventoryBarCounterSpacingFromBoxDimension_AdjustsForStrife",
+          "VmSbarinfoCommandDrawInventoryBar1087SliceTests.ShouldDrawInventoryBarLeftArrow_RequiresPrevItem",
+          "VmSbarinfoCommandDrawInventoryBar1087SliceTests.MissingArtiboxSpacingFallback_MatchesNativeNullBox"
+        ]
+      }
+    ]
+  }
+]
