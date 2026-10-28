@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 62987,
+  "convertedThisRunNative": 63137,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 88810,
+  "convertedThisRunManaged": 88990,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 425818,
+  "remainingNative": 425668,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 81514,
+  "convertedBehaviorNative": 81664,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 82268,
-  "convertedBehaviorManaged": 98481,
+  "combinedBehaviorNative": 82418,
+  "convertedBehaviorManaged": 98661,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -35348,6 +35348,35 @@
       "nativeLoc": 150,
       "managedLoc": 119,
       "conversionManagedCommit": "f9c54c72e984b96e2e7faaac3d9bb9e4e77a7b5c"
+    },
+    {
+      "name": "p-acs-pcode-enum-continued-chunk969",
+      "bucket": "conversion",
+      "note": "Continued ACS P-code enum opcodes **71\u2013220** from `p_acs.cpp` (**151\u2013300**); follows chunk **968** (**\u2264150**).",
+      "auditSeams": "Interpreter bodies for these opcodes remain in later `p_acs.cpp` bands; this row credits enum/constants only.",
+      "auditRationale": "Primary **969** target `p_trace.cpp` **945\u20131094** rejected (`VmPTraceThingPlaneEdit` **CheckPlane**/**EditTraceResult** duplicate). Alternate `p_destructible` **822\u2013971** rejected (`VmPDestructibleSerializeScript` off-tally duplicate). UNCredited `p_acs` continuation with zero tally/Vm overlap.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 151 --end 300` and `--chunk 969 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| P-code enum **71\u2013220** (**151\u2013300**) | yes (constants + cluster classifiers) |\n| Comment markers (`/* 70*/` \u2026 `/*220*/`) | layout only |\n\n| Managed (`VmPAcsPcodeEnumContinued969Slice.cs`) | Native (`p_acs.cpp`) |\n|--------------------------------------------------|---------------------|\n| `Pcd*` constants | **151\u2013300** |\n| `IsContinuedOpcode` / logical / print / inventory / stack / call helpers | enum clusters |\n| Band hull (exclusive slice) | **151\u2013300** |\n\n### Chunk **969** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**968** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPAcsPcodeEnumContinued969Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "PCD_ORLOGICAL",
+          "start": 151,
+          "end": 300,
+          "tests": [
+            "VmPAcsPcodeEnumContinued969SliceTests.ContinuedRange_SpansOneFiftyOpcodes",
+            "VmPAcsPcodeEnumContinued969SliceTests.IsPrintClusterOpcode_MatchesNativeBand",
+            "VmPAcsPcodeEnumContinued969SliceTests.IsInventoryOpcode_CoversSpawnHead",
+            "VmPAcsPcodeEnumContinued969SliceTests.StackAndCallHelpers"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 180,
+      "conversionManagedCommit": "2f477650d90c89ed098de6536bed438122c843ea"
     }
   ],
   "behaviorNativeChecksum": 508086,
