@@ -1,0 +1,34 @@
+[
+  {
+    "name": "sbarinfo-commands-selectedinventory-gamemode-chunk1084",
+    "bucket": "conversion",
+    "note": "`CommandDrawSelectedInventory` draw/parse/tick and `CommandGameMode` ctor head from `sbarinfo_commands.cpp` (**1651–1800**); follows **1083** mugshot parse **`;` (**1650**).",
+    "auditSeams": "**1083** owns **CommandDrawMugShot** parse through **1650**; **1082** owns selected-inventory tick amount optional update. Host `DrawGraphic`, `V_GetFont`, `GetCoordinates`, and `SetTruth` wiring excluded.",
+    "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **1651–1800** (+150); selected-inventory bar/flash/counter policy + parse flags + flow-control truth; hull ends at **CommandGameMode** ctor init (**1800**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 1651 --end 1800` and `--chunk 1084 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Selected inventory ctor defaults + `INT_MAX` length (**1669–1674**) | yes |\n| Draw visibility gate (**1681**) | yes |\n| Artiflash branch + image index (**1683–1686**) | yes |\n| Itemflash alpha + cursor path (**1690–1694**) | yes |\n| Counter draw when amount ≠ 1 (**1698–1699**) | yes |\n| Parse flag keywords + font loop exit (**1713–1740**) | yes |\n| `center` / `centerbottom` offsets (**1721–1724**) | yes |\n| Default counter coords (**1756–1758**) | yes |\n| `alternateOnEmpty` parse tail vs `;` (**1772–1775**) | yes |\n| Flow-control truth on tick (**1781**) | yes |\n| **CommandGameMode** ctor `modes=0` (**1799–1800**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1651–1662** | empty **Reset** + mugshot member layout |\n| **1678–1679**, **1696–1699** | host flow/image/number draw delegates |\n| **1743–1748**, **1761–1768** | host font lookup / translations |\n| **1787–1791** | selected-inventory member fields |\n| **1801+** | **CommandGameMode** parse outside hull |\n\n| Managed (`VmSbarinfoCommandDrawSelectedInventory1084Slice.cs`, `VmSbarinfoCommandGameMode1084Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|------------------------------------------------------------------------------------------------|----------------------------------|\n| Draw + parse + tick policy | **1676–1785** |\n| GameMode ctor default | **1799–1800** |\n| Band hull (exclusive slice) | **1651–1800** |\n\n### Chunk **1084** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1083** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoCommandDrawSelectedInventory1084Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo_commands.cpp",
+        "symbol": "CommandDrawSelectedInventory / CommandGameMode",
+        "start": 1651,
+        "end": 1800,
+        "tests": [
+          "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.CreateSelectedInventoryCtorDefaults_MatchesNativeInit",
+          "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.ShouldDrawSelectedInventoryBar_RequiresSelectionAndBarAllowed",
+          "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.ComputeArtiflashImageIndex_MatchesNativeMacro",
+          "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.ShouldApplyItemFlashCursor_RequiresNonZeroFade",
+          "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.ShouldDrawSelectedInventoryAmountCounter_HidesSingletonUnlessForced",
+          "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.ResolveSelectedInventoryImageOffset_MapsCenterBottomBits",
+          "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.ShouldTreatSelectedInventoryTokenAsFont_WhenUnknownIdentifier",
+          "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.ResolveSelectedInventoryDefaultCounterPosition_Applies3030And24",
+          "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.ResolveSelectedInventoryParseTail_SelectsFlowControlOrSemicolon",
+          "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.ApplyCommandGameModeFlagBit_StacksFromCtorZero"
+        ]
+      }
+    ]
+  }
+]
