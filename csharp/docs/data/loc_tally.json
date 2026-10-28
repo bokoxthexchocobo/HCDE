@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 78456,
+  "convertedThisRunNative": 78606,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 100719,
+  "convertedThisRunManaged": 100802,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 410416,
+  "remainingNative": 410266,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 96983,
+  "convertedBehaviorNative": 97133,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 97670,
-  "convertedBehaviorManaged": 110390,
+  "combinedBehaviorNative": 97820,
+  "convertedBehaviorManaged": 110473,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -38523,6 +38523,44 @@
       "nativeLoc": 150,
       "managedLoc": 111,
       "conversionManagedCommit": "5c32afc529531f834d1d4230a14379d96c7fdbc0"
+    },
+    {
+      "name": "v-font-getfont-chunk1072",
+      "bucket": "conversion",
+      "note": "`V_GetFont` lookup policy and `DEFAULT_LOG_COLOR` from `v_font.cpp` (**1\u2013150**); precedes chunk **1058** FONTDEFS (**151\u2013300**).",
+      "auditSeams": "`FFont::FindFont`, lump readers, `CreateSingleLumpFont` / `CreateSinglePicFont`, and folder `FFont` ctor remain host-injected; **1\u201349** license/includes are zero-behavior.",
+      "auditRationale": "UNCredited **`src/common/fonts/v_font.cpp`** **1\u2013150** (+150); no overlap with **1058\u20131062** mid-file bands; **901\u2013957** still deferred.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/common/fonts/v_font.cpp --start 1 --end 150` and `--chunk 1072 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `DEFAULT_LOG_COLOR` macro (**50**) | yes |\n| `V_GetFont` null/alias names (**85\u201388**) | yes |\n| BIGUPPER \u2192 BIGFONT fallback gate (**92\u201396**) | yes |\n| Folder vs lump container ordering (**105\u2013114**) | yes |\n| Single-lump FON header detect (**116\u2013122**) | yes |\n| Translation load gate (**126\u2013127**, **144\u2013145**) | yes |\n| Texture pic-font path (**130\u2013139**) | yes |\n| Folder font instantiate gate (**141\u2013146**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1\u201349** | license banner / includes / extern decls |\n| **68\u201373** | global pointer defs |\n| **89\u201390**, **94\u201395** | host `FindFont` |\n| **117\u2013125**, **136\u2013137** | host lump/texture create |\n| **143** | host `new FFont` |\n| **151+** | `V_InitCustomFonts` (**1058** seam) |\n\n| Managed (`VmVFontGetFont1072Slice.cs`) | Native (`v_font.cpp`) |\n|------------------------------------------|----------------------|\n| `DefaultLogPaletteEntry` | **50** |\n| `ResolveCanonicalFontLookupName` | **86\u201388** |\n| `ShouldTryBigUpperFallback` | **92\u201396** |\n| Folder/lump ordering predicates | **105\u2013114** |\n| `IsRecognizedSingleLumpFontHeader` | **121\u2013122** |\n| Pic/folder/translation gates | **126\u2013145** |\n| Band hull (exclusive slice) | **1\u2013150** |\n\n### Chunk **1072** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1071** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmVFontGetFont1072Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/fonts/v_font.cpp",
+          "symbol": "V_GetFont",
+          "start": 1,
+          "end": 150,
+          "tests": [
+            "VmVFontGetFont1072SliceTests.BuildFolderFontPath_MatchesNativePattern",
+            "VmVFontGetFont1072SliceTests.ResolveFontLumpLookupName_FallsBackToCanonicalName",
+            "VmVFontGetFont1072SliceTests.ResolveCanonicalFontLookupName_MapsLegacyAliases",
+            "VmVFontGetFont1072SliceTests.ShouldPreferSingleLumpOverFolder_RequiresContainerOrdering",
+            "VmVFontGetFont1072SliceTests.IsRecognizedSingleLumpFontHeader_AcceptsFonMagic",
+            "VmVFontGetFont1072SliceTests.ShouldCreatePicFontFromTexture_RequiresSourceLumpOrdering",
+            "VmVFontGetFont1072SliceTests.ShouldInstantiateFolderFont_WhenEntriesExist",
+            "VmVFontGetFont1072SliceTests.ResolveFolderContainerWhenPresent_ReturnsSentinelWhenMissing",
+            "VmVFontGetFont1072SliceTests.DefaultLogPaletteEntry_MatchesMacro",
+            "VmVFontGetFont1072SliceTests.ShouldTryBigUpperFallback_OnlyForAlias",
+            "VmVFontGetFont1072SliceTests.ShouldAbortFontLookup_WhenNameNull",
+            "VmVFontGetFont1072SliceTests.ShouldLoadTranslationsAfterFontCreate_WhenAlreadyLoaded",
+            "VmVFontGetFont1072SliceTests.ClassifyLegacyFontAlias_RecognizesConfont"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 83,
+      "conversionManagedCommit": "724d129960bf6cb00c5e7c98d332853c89330482"
     }
   ],
   "behaviorNativeChecksum": 508086,
