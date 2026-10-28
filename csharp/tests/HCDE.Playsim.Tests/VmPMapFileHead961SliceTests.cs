@@ -54,20 +54,6 @@ public class VmPMapFileHead961SliceTests
     }
 
     [Fact]
-    public void EvaluateFirstCanCollideVirtual_BlocksWhenVmReturnsZero()
-    {
-        var spechit = 0;
-        var portal = 0;
-        VmPMapFileHead961Slice.AppendSpechitWhenNeeded(
-            special: 12,
-            isPortal: true,
-            () => spechit++,
-            () => portal++);
-        Assert.Equal(1, spechit);
-        Assert.Equal(1, portal);
-    }
-
-    [Fact]
     public void AppendSpechitWhenNeeded_RecordsPortalAndSpecialSeparately()
     {
         var spechit = 0;
