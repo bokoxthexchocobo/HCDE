@@ -73,7 +73,7 @@ public static class VmPAcsVmOpcode948Slice
         secnum >= 0 ? lightLevel : -1;
 
     public static bool IsCeilingPlaneWatcher(int opcode) =>
-        opcode == (int)HCDE.MapLoader.AcsPcode.SetCeilingTrigger;
+        opcode == SetCeilingTriggerOpcode;
 
     public static void ApplyPlaneWatcherStackPop(ref int sp) => sp -= PlaneWatcherStackPop;
 
