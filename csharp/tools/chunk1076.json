@@ -1,0 +1,32 @@
+[
+  {
+    "name": "sbarinfo-commands-switchable-parse-tick-chunk1076",
+    "bucket": "conversion",
+    "note": "`CommandDrawSwitchableImage` parse tail (`&&`, conditional images) and `Tick` draw-alt policy from `sbarinfo_commands.cpp` (**451–600**); follows **1075** parse head.",
+    "auditSeams": "**1075** owns compare parse/eval helpers and keyword head (**434–450**); host `LookupKeySpecies`, scanner, and **607+** inventory tick remain outside hull.",
+    "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **451–600** (+150); continues switchable command; zero overlap except **1075**-excluded seams.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 451 --end 600` and `--chunk 1076 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `armortype` parse branch (**451–456**) | yes (gate; compare via **1075**) |\n| Inventory compare parse (**459–467**) | yes (gate) |\n| `&&` parse w/ invuln exclusion (**469–496**) | yes |\n| Conditional image loop bound (**498–503**) | yes |\n| Weapon slot `drawAlt` (**516–531**) | yes |\n| Invulnerability cheat `drawAlt` (**533–538**) | yes |\n| Key slot match + `drawAlt` table (**542–582**) | yes |\n| Armor type match + `drawAlt` (**586–601**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **454–456**, **467**, **483–494** | host scanner / **1075** `GetOperation` |\n| **477**, **449** | host `LookupKeySpecies` |\n| **500–505** | host `newImage` / `CommandDrawImage::Parse` |\n| **519–527**, **546–566** | host inventory/weapon scans |\n| **607+** | inventory `drawAlt` outside hull |\n\n| Managed (`VmSbarinfoCommandDrawSwitchable1076Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|-----------------------------------------------------------|----------------------------------|\n| `&&` + image count policy | **469–503** |\n| Weapon / invuln draw-alt | **516–538** |\n| Key slot match + draw-alt | **551–582** |\n| Armor match + draw-alt | **589–601** |\n| Band hull (exclusive slice) | **451–600** |\n\n### Chunk **1076** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1075** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoCommandDrawSwitchable1076Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo_commands.cpp",
+        "symbol": "CommandDrawSwitchableImage::Parse / Tick",
+        "start": 451,
+        "end": 600,
+        "tests": [
+          "VmSbarinfoCommandDrawSwitchable1076SliceTests.ShouldEnableConditionAndParse_BlocksInvulnerability",
+          "VmSbarinfoCommandDrawSwitchable1076SliceTests.CountConditionalImagesToLoad_MatchesNativeLoopBound",
+          "VmSbarinfoCommandDrawSwitchable1076SliceTests.ResolveKeySlotDrawAlt_MatchesDualKeyTable",
+          "VmSbarinfoCommandDrawSwitchable1076SliceTests.ApplyKeySlotNumberMatch_UpdatesExpectedSlots",
+          "VmSbarinfoCommandDrawSwitchable1076SliceTests.ResolveWeaponSlotDrawAlt_TogglesOnOwnedWeapon",
+          "VmSbarinfoCommandDrawSwitchable1076SliceTests.ResolveInvulnerabilityDrawAlt_DetectsGodModeCheats",
+          "VmSbarinfoCommandDrawSwitchable1076SliceTests.EvaluateArmorTypeMatch_Uses1075Compare",
+          "VmSbarinfoCommandDrawSwitchable1076SliceTests.ResolveArmorTypeDrawAlt_MatchesNativePriority"
+        ]
+      }
+    ]
+  }
+]
