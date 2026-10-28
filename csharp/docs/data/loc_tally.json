@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 83720,
+  "convertedThisRunNative": 83870,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 105098,
+  "convertedThisRunManaged": 105214,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 405152,
+  "remainingNative": 405002,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102247,
+  "convertedBehaviorNative": 102397,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 102934,
-  "convertedBehaviorManaged": 114769,
+  "combinedBehaviorNative": 103084,
+  "convertedBehaviorManaged": 114885,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -39723,6 +39723,36 @@
       "nativeLoc": 150,
       "managedLoc": 138,
       "conversionManagedCommit": "e40e7f90c45300ef483159f8aa1ca13f9839d804"
+    },
+    {
+      "name": "pmobj-visibility-chunk1108",
+      "bucket": "conversion",
+      "note": "`DisableLocalRendering`, `ShouldRenderLocally`, `IsInsideVisibleAngles`, and `IsVisibleToPlayer` from `p_mobj.cpp` (**1351\u20131500**); pivot after `s_sound.cpp` seam (**1107**).",
+      "auditSeams": "VM `DEFINE_ACTION_FUNCTION` thunks, portal displacement, and `Level->GetConsolePlayer` remain host-injected; **1501+** continues `ConversationAnimation`.",
+      "auditRationale": "UNCredited **`p_mobj.cpp`** **1351\u20131500** (+150); `s_sound.cpp` EOF **1801\u20131874** sub-150; `v_font`/**sbarinfo** post-defer bands are past physical EOF.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 1351 --end 1500` and `--chunk 1108 --band` \u2192 UNCredited, exit 0.",
+      "auditManagedLocJustification": "Visibility predicates encode native angle swap, mask flags, team/class gates; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `DisableLocalRendering` console gate (**1353\u20131354**) | yes |\n| `ShouldRenderLocally` (**1374**) | yes |\n| `IsInsideVisibleAngles` swap + cone test (**1400\u20131449**) | yes |\n| `IsVisibleToPlayer` team/class scan (**1469\u20131494**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1334\u20131348**, **1362\u20131387** | VM native thunks |\n| **1432\u20131433** | portal displacement host |\n| **1501+** | conversation anim outside hull |\n\n| Managed (`VmPMobjVisibility1108Slice.cs`) | Native (`p_mobj.cpp`) |\n|----------------------------------------|---------------------|\n| Local render + visibility predicates | **1351\u20131500** |\n| Band hull (exclusive slice) | **1351\u20131500** |\n\n### Chunk **1108** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1107** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjVisibility1108Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor visibility and local render",
+          "start": 1351,
+          "end": 1500,
+          "tests": [
+            "VmPMobjVisibility1108SliceTests.RunDisableLocalRendering_OnlyAffectsConsolePlayer",
+            "VmPMobjVisibility1108SliceTests.IsInsideVisibleAngles_SkipsWhenMaskDisabled",
+            "VmPMobjVisibility1108SliceTests.IsVisibleToPlayer_RequiresTeamMatchInTeamplay",
+            "VmPMobjVisibility1108SliceTests.IsVisibleToPlayer_AllowsWhenClassListMatches"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 116,
+      "conversionManagedCommit": "ce02c36725b3d014fb3d0770700a8189ae971ec1"
     }
   ],
   "behaviorNativeChecksum": 508086,
