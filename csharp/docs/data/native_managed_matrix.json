@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 246362
+    "managedCSharpLoc": 246485
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 82056,
+    "convertedThisRunNative": 82206,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 103558,
+    "convertedThisRunManaged": 103681,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 406816,
+    "remainingNative": 406666,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 100583,
+    "convertedBehaviorNative": 100733,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 101270,
-    "convertedBehaviorManaged": 113229,
+    "combinedBehaviorNative": 101420,
+    "convertedBehaviorManaged": 113352,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -39368,6 +39368,41 @@
         "nativeLoc": 150,
         "managedLoc": 96,
         "conversionManagedCommit": "8f51f5d72d8f6f9e71f37805008b1f08749fc9bd"
+      },
+      {
+        "name": "sbarinfo-commands-ifwater-ifcvar-nextcommand-chunk1096",
+        "bucket": "conversion",
+        "note": "`CommandIfWaterLevel` parse/tick, `CommandIfCVarInt`, and `NextCommand` dispatch head from `sbarinfo_commands.cpp` (**3451\u20133600**); follows **1095** water-level hull (**3450**).",
+        "auditSeams": "**1095** owns inventory OR/AND, amount/truth, if-health percent compare, invulnerable tick, and water-level hull defaults (**3449\u20133450**); **1096** credits water-level threshold parse/tick, full if-cvar-int, command-name table ordinals, and switch cases through **SBARINFO_ININVENTORY** (**3600**). Host `FindCVar`, `GetCVar`, `SetTruth`, and `new Command*` factories excluded.",
+        "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **3451\u20133600** (+150); if-water-level (**3456\u20133468**), if-cvar-int parse/tick (**3476\u20133541**), `SBarInfoCommandNames` + enum + `NextCommand` through in-inventory case (**3545\u20133600**).",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 3451 --end 3600` and `--chunk 1096 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| IfWaterLevel parse threshold (**3458\u20133459**) | yes |\n| IfWaterLevel tick compare (**3465**) | yes |\n| IfCVarInt ctor equalcomp false (**3477**) | yes |\n| CVar bool/int threshold parse (**3495\u20133508**) | yes |\n| IfCVarInt tick == vs >= (**3530\u20133531**) | yes |\n| Command name table ordinals (**3545\u20133556**) | yes |\n| Enum ordering (**3559\u20133570**) | yes |\n| NextCommand identifier gate (**3574\u20133576**) | yes |\n| Switch cases drawimage\u2192ininventory (**3579\u20133600**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **3304\u20133450** | **1095** inventory/alpha/if-health/invulnerable + water hull |\n| **3452\u20133454** | empty ctor (host base only) |\n| **3489**, **3526** | host `FindCVar` / `GetCVar` |\n| **3463**, **3523** | host negatable base `Tick` |\n| **3601\u20133605** | alpha/if* cases outside hull |\n| **3608\u20133613** | unknown-command error + closing brace tail outside hull |\n\n| Managed (`VmSbarinfoCommandFlowControl1096Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|------------------------------------------------------|----------------------------------|\n| IfWaterLevel + IfCVarInt + NextCommand head | **3456\u20133600** |\n| Band hull (exclusive slice) | **3451\u20133600** |\n\n### Chunk **1096** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1095** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Client/VmSbarinfoCommandFlowControl1096Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/g_statusbar/sbarinfo_commands.cpp",
+            "symbol": "CommandIfWaterLevel / CommandIfCVarInt / NextCommand",
+            "start": 3451,
+            "end": 3600,
+            "tests": [
+              "VmSbarinfoCommandFlowControl1096SliceTests.ResolveIfWaterLevelFlowTruth_RequiresMinimumLevel",
+              "VmSbarinfoCommandFlowControl1096SliceTests.ResolveIfWaterLevelParseNegatableThreshold_StoresToken",
+              "VmSbarinfoCommandFlowControl1096SliceTests.ClassifyIfCVarIntSupportedType_RejectsUnsupported",
+              "VmSbarinfoCommandFlowControl1096SliceTests.ResolveIfCVarIntParseThresholdFields_EnablesEqualComparison",
+              "VmSbarinfoCommandFlowControl1096SliceTests.ResolveIfCVarIntFlowTruthFromLiveValue_UsesGreaterOrEqualByDefault",
+              "VmSbarinfoCommandFlowControl1096SliceTests.ResolveIfCVarIntFlowTruthFromLiveValue_MissingCVarIsFalse",
+              "VmSbarinfoCommandFlowControl1096SliceTests.TryResolveSBarInfoFlowCommandKind_MapsIfCVarIntOrdinal",
+              "VmSbarinfoCommandFlowControl1096SliceTests.IsNextCommandDispatchCaseWithinBand3600_StopsAtInInventory",
+              "VmSbarinfoCommandFlowControl1096SliceTests.ResolveNextCommandWhenIdentifierMissing_ClosesBlock",
+              "VmSbarinfoCommandFlowControl1096SliceTests.TryResolveSBarInfoFlowCommandKind_MapsWeaponAmmo"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 123,
+        "conversionManagedCommit": "8d2d12d7f962078a2ec714e342d642aaa2bc3e42"
       }
     ],
     "behaviorNativeChecksum": 508086,
