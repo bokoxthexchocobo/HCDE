@@ -19,8 +19,11 @@ public class VmPLnspecThingHate943SliceTests
         Assert.NotEqual(0, VmPLnspecThingHate943Slice.BuildHateAttitude(0, 0, 2).Flags3 & VmPLnspecThingHate943Slice.Mf3NoSightCheck);
 
     [Fact]
-    public void CanChaseAfterHate_RejectsSelf() =>
-        Assert.False(VmPLnspecThingHate943Slice.CanChaseAfterHate(new object(), new object(), null, null, 0));
+    public void CanChaseAfterHate_RejectsSelf()
+    {
+        var actor = new object();
+        Assert.False(VmPLnspecThingHate943Slice.CanChaseAfterHate(actor, actor, null, null, 0));
+    }
 
     [Fact]
     public void HateeScanContinue_StopsOnDormant() =>
