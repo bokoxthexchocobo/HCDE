@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 239643
+    "managedCSharpLoc": 239766
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 73487,
+    "convertedThisRunNative": 73637,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 96839,
+    "convertedThisRunManaged": 96962,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 415318,
+    "remainingNative": 415168,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 92014,
+    "convertedBehaviorNative": 92164,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 92768,
-    "convertedBehaviorManaged": 106510,
+    "combinedBehaviorNative": 92918,
+    "convertedBehaviorManaged": 106633,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -37451,6 +37451,40 @@
         "nativeLoc": 150,
         "managedLoc": 171,
         "conversionManagedCommit": "bc2f315a2eb78534fa58dfd46733a0c4a3eb9191"
+      },
+      {
+        "name": "info-damage-type-definition-chunk1039",
+        "bucket": "conversion",
+        "note": "Global `DamageTypeDefinition`, `GetMobjDamageFactor`, and `ParseDamageDefinition` from `info.cpp` (**894\u20131043**). **Pivot:** primary **983\u20131132** aborted (EOF **1043**; **983\u20131043** = **61** lines). Follows **1038** (**650\u2013799**).",
+        "auditSeams": "`GlobalDamageDefinitions`, `FMapInfoParser` scanner, `ParseOpenBrace`, and `DEFINE_ACTION_FUNCTION` remain host-injected; uncredited `VmDamageTypeDefinitionRuntime` is a parallel catalog \u2014 not re-credited.",
+        "auditRationale": "File-scoped UNCredited **`info.cpp`** **894\u20131043** (+150 to EOF); excludes **500\u2013799** (**1037\u20131038**). `uncredited_range_check.py` now matches credited ranges by exact file path (fixes false *info.cpp* collision with `g_mapinfo.cpp` **833\u2013982**).",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/info.cpp --start 894 --end 1043` and `--chunk 1039 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `DamageTypeDefinition::Apply` global insert (**898\u2013901**) | yes |\n| `Get` / `IgnoreArmor` (**903\u2013913**) | yes |\n| `GetObituary` (**922\u2013927**) | yes |\n| `GetMobjDamageFactor` (**945\u2013990**) | yes |\n| `ApplyMobjDamageFactor` (**993\u2013997**) | yes |\n| `ParseDamageDefinition` property loop (**1005\u20131042**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **500\u2013799** | chunks **1037\u20131038** |\n| **800\u2013893** | `DmgFactors::Apply`, `SummonActor`, CCMDs outside hull (**894** starts globals) |\n| **915\u2013920** | `DEFINE_ACTION_FUNCTION` host macro |\n| **983\u20131132** (primary target) | past EOF **1043** / sub-150 without padding |\n| **800\u2013982** | deferred (sub-bands) until file-scoped preflight only |\n| `VmDamageTypeDefinitionRuntime` | uncredited helper \u2014 seam only |\n\n| Managed (`VmInfoDamageType1039Slice.cs`) | Native (`info.cpp`) |\n|-------------------------------------------|---------------------|\n| `RegisterGlobalDamageType` | **898\u2013901** |\n| `GlobalIgnoresArmor` | **908\u2013913** |\n| `ResolveGlobalObituary` | **922\u2013927** |\n| `ResolveMobjDamageFactor` | **945\u2013990** |\n| `ApplyMobjDamageFactor` | **993\u2013997** |\n| `ClassifyDamageDefinitionProperty` / apply helpers | **1015\u20131035** |\n| Band hull (exclusive slice, EOF **1043**) | **894\u20131043** |\n\n### Chunk **1039** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1038** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Gamedata/VmInfoDamageType1039Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/info.cpp",
+            "symbol": "DamageTypeDefinition / ParseDamageDefinition",
+            "start": 894,
+            "end": 1043,
+            "tests": [
+              "VmInfoDamageType1039SliceTests.ResolveMobjDamageFactor_UsesTypedActorFactor",
+              "VmInfoDamageType1039SliceTests.ResolveMobjDamageFactor_ReplaceFactorOverridesUntyped",
+              "VmInfoDamageType1039SliceTests.ApplyMobjDamageFactor_ScalesDamage",
+              "VmInfoDamageType1039SliceTests.GlobalIgnoresArmor_ReadsFlag",
+              "VmInfoDamageType1039SliceTests.ApplyFactorProperty_ZeroSetsReplace",
+              "VmInfoDamageType1039SliceTests.ClassifyDamageDefinitionProperty_RecognizesNoArmor",
+              "VmInfoDamageType1039SliceTests.RegisterGlobalDamageType_StoresDraft",
+              "VmInfoDamageType1039SliceTests.ResolveGlobalObituary_ReturnsEmptyWhenMissing",
+              "VmInfoDamageType1039SliceTests.ResolveMobjDamageFactor_NoneWithoutFactors_ReturnsOne"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 123,
+        "conversionManagedCommit": "35e50b20a6623678c6ea0ff3ac7973a166e61999"
       }
     ],
     "behaviorNativeChecksum": 508086,
