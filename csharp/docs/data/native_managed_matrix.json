@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 232626
+    "managedCSharpLoc": 232707
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 64337,
+    "convertedThisRunNative": 64487,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 89823,
+    "convertedThisRunManaged": 89904,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 424468,
+    "remainingNative": 424318,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 82864,
+    "convertedBehaviorNative": 83014,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 83618,
-    "convertedBehaviorManaged": 99494,
+    "combinedBehaviorNative": 83768,
+    "convertedBehaviorManaged": 99575,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -35641,6 +35641,36 @@
         "nativeLoc": 150,
         "managedLoc": 84,
         "conversionManagedCommit": "4473e7f8e9c1a9db70df0b01d6529b9553badccb"
+      },
+      {
+        "name": "p-ticker-clientside-pause-chunk978",
+        "bucket": "conversion",
+        "note": "`P_RunClientSideLogic`, `P_CheckTickerPaused`, and `P_ClearLevelInterpolation` head from `p_tick.cpp` (**1\u2013150**); adjacent to chunk **977** (**151\u2013300**).",
+        "auditSeams": "`C_Ticker`, `M_Ticker`, `UiTick`, `RunClientSideThinkers`, `StatusBar->CallTick`, `automap->Ticker`, `D_RunCutscene`, `PostUiTick`, `S_PauseSound`, and thinker iteration remain host-injected.",
+        "auditRationale": "UNCredited head of `p_tick.cpp`; chunk **977** credits **151+** only. No `VmPTicker977Slice` overlap on native lines **1\u2013150**.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_tick.cpp --start 1 --end 150` and `--chunk 978 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Dedicated early out (**63\u201366**) | yes |\n| Level/title client tick (**74\u2013103**) | yes (predicates) |\n| Cutscene branch (**104\u2013107**) | yes |\n| `P_CheckTickerPaused` (**126\u2013137**) | yes |\n| `P_ClearLevelInterpolation` head (**142\u2013150**) | yes (gate) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1\u201348**, **49\u201358**, **113\u2013121** | header / comment banners |\n| **68\u201372**, **95\u201396**, **98**, **102**, **110** | host calls |\n\n| Managed (`VmPTicker978Slice.cs`) | Native (`p_tick.cpp`) |\n|----------------------------------|---------------------|\n| `DedicatedServerSkipsClientSideLogic` | **63\u201366** |\n| `GameStateRunsLevelClientSideTick` | **74\u201375** |\n| `ShouldDecrementPlayerInventoryTics` / `DecrementInventoryTics` / `TryDecrementInventoryTicsForPlayer` | **78\u201382** |\n| `ShouldClearClientSideActorInterpolation` | **89\u201392** |\n| `ShouldTickAutomapOnLevel` | **101\u2013102** |\n| `ShouldRunCutsceneTicker` | **104\u2013107** |\n| `MenuActivePausesTicker` / `ConsoleStatePausesTicker` | **128\u2013129** |\n| `CheckTickerPausedGate` / `PauseMusicWhenMenusPauseSound` | **126\u2013136** |\n| `ShouldUpdateLevelInterpolatorBeforeActorClear` | **142\u2013146** |\n| Band hull (exclusive slice) | **1\u2013150** |\n\n### Chunk **978** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**977** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPTicker978Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/p_tick.cpp",
+            "symbol": "P_RunClientSideLogic",
+            "start": 1,
+            "end": 150,
+            "tests": [
+              "VmPTicker978SliceTests.DedicatedServer_SkipsClientSideLogic",
+              "VmPTicker978SliceTests.ClientSideLevelTick_InventoryAndThinkers",
+              "VmPTicker978SliceTests.CutsceneBranch_AndMenuPause",
+              "VmPTicker978SliceTests.CheckTickerPausedGate_MatchesNativePredicate",
+              "VmPTicker978SliceTests.ClearLevelInterpolation_HeadPredicates"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 81,
+        "conversionManagedCommit": "73c64ac2c15a2e8f025af2a63b766a7bb7abd834"
       }
     ],
     "behaviorNativeChecksum": 508086,
