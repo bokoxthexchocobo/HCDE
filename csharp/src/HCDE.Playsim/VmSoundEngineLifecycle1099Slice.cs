@@ -74,8 +74,8 @@ public static class VmSoundEngineLifecycle1099Slice
             ctx.ActiveHead = ctx.ReturnChannel?.Invoke(head);
         }
 
-        if (InitShouldMoveSoundCurve(ctx.IncomingCurve is { Count: > 0 }))
-            ctx.AssignCurve?.Invoke(ctx.IncomingCurve!);
+        if (ctx.IncomingCurve is { Count: > 0 })
+            ctx.AssignCurve?.Invoke(ctx.IncomingCurve);
     }
 
     public static int CountShutdownDeletes(object? freeHead, Func<object?, object?>? next, Action<object>? delete)
