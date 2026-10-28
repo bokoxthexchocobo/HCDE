@@ -85,7 +85,12 @@ tally_commits_in_range() {
   local local_sha="$2"
   local range
   if [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
-    range="$local_sha"
+    base="$(git -C "$REPO_ROOT" merge-base origin/main "$local_sha" 2>/dev/null || true)"
+    if [ -n "$base" ]; then
+      range="${base}..${local_sha}"
+    else
+      range="$local_sha"
+    fi
   else
     range="${remote_sha}..${local_sha}"
   fi
