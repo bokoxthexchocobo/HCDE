@@ -49,9 +49,9 @@ public class VmMapInfoClusterParse1027SliceTests
     {
         var cluster = new VmMapInfoClusterParse1027Slice.ClusterDef { Cluster = 1 };
         Assert.True(VmMapInfoClusterParse1027Slice.ApplyClusterProperty(
-            cluster, "hub", "", false, 0, false, null, static (_, _) => false));
+            cluster, "hub", "", false, 0, null, static (_, _) => false));
         Assert.True(VmMapInfoClusterParse1027Slice.ApplyClusterProperty(
-            cluster, "allowintermission", "", false, 0, false, null, static (_, _) => false));
+            cluster, "allowintermission", "", false, 0, null, static (_, _) => false));
         Assert.True((cluster.Flags & VmMapInfoClusterParse1027Slice.ClusterHub) != 0);
         Assert.True((cluster.Flags & VmMapInfoClusterParse1027Slice.ClusterAllowIntermission) != 0);
     }
@@ -61,13 +61,13 @@ public class VmMapInfoClusterParse1027SliceTests
     {
         var cluster = new VmMapInfoClusterParse1027Slice.ClusterDef { Cluster = 2 };
         Assert.True(VmMapInfoClusterParse1027Slice.ApplyClusterProperty(
-            cluster, "pic", "CREDIT", false, 0, true, null, static (_, _) => false));
+            cluster, "pic", "CREDIT", false, 0, null, static (_, _) => false));
         Assert.Equal("CREDIT", cluster.FinaleFlat);
         Assert.True((cluster.Flags & VmMapInfoClusterParse1027Slice.ClusterFinalePic) != 0);
     }
 
     [Fact]
-    public void BeginClusterParse_ResetsPriorFields()
+    public void CreateFreshCluster_StartsEmpty()
     {
         var cluster = new VmMapInfoClusterParse1027Slice.ClusterDef
         {
@@ -75,9 +75,10 @@ public class VmMapInfoClusterParse1027SliceTests
             EnterText = "old",
             Flags = VmMapInfoClusterParse1027Slice.ClusterHub,
         };
-        VmMapInfoClusterParse1027Slice.BeginClusterParse(3, cluster);
-        Assert.Equal(3, cluster.Cluster);
-        Assert.Equal("", cluster.EnterText);
-        Assert.Equal(0, cluster.Flags);
+        var fresh = VmMapInfoClusterParse1027Slice.CreateFreshCluster(3);
+        Assert.Equal(3, fresh.Cluster);
+        Assert.Equal("", fresh.EnterText);
+        Assert.Equal(0, fresh.Flags);
+        Assert.NotEqual(cluster.EnterText, fresh.EnterText);
     }
 }

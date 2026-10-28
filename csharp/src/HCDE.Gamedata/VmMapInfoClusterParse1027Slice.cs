@@ -2,7 +2,6 @@ namespace HCDE.Gamedata;
 
 /// <summary>
 /// `ParseMusic`, `ParseCutscene`, and `ParseCluster` head from <c>g_mapinfo.cpp</c> (**833–982**).
-/// Chunk **1027**; avoids ParseExit* merge band **754–832** (`VmMapInfoMapOptionsExitEnvironment`) and Hexen remap **1008+** (`VmMapInfoClusterExitTextRemap`).
 /// </summary>
 public static class VmMapInfoClusterParse1027Slice
 {
@@ -39,25 +38,6 @@ public static class VmMapInfoClusterParse1027Slice
         public CutsceneDef Intro { get; } = new();
         public CutsceneDef Outro { get; } = new();
         public CutsceneDef Gameover { get; } = new();
-
-        public void Reset()
-        {
-            Flags = 0;
-            ClusterName = "";
-            EnterText = "";
-            ExitText = "";
-            MessageMusic = "";
-            MusicOrder = 0;
-            FinaleFlat = "";
-            CdTrack = 0;
-            CdId = 0;
-            Intro.Video = Intro.Function = Intro.SoundName = "";
-            Intro.SoundId = Intro.FramesPerSec = 0;
-            Outro.Video = Outro.Function = Outro.SoundName = "";
-            Outro.SoundId = Outro.FramesPerSec = 0;
-            Gameover.Video = Gameover.Function = Gameover.SoundName = "";
-            Gameover.SoundId = Gameover.FramesPerSec = 0;
-        }
     }
 
     public static void ParseMusicToken(string token, bool hasTrailingNumber, int trailingNumber, out string name, out int order)
@@ -66,225 +46,142 @@ public static class VmMapInfoClusterParse1027Slice
         var colon = token.IndexOf(':');
         if (colon >= 0)
         {
-            order = int.Parse(token.AsSpan(colon + 1), System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture);
+            order = int.Parse(token.AsSpan(colon + 1));
             name = token[..colon];
             return;
         }
 
         name = token;
-        if (hasTrailingNumber)
-            order = trailingNumber;
+        if (hasTrailingNumber) order = trailingNumber;
     }
 
-    public static bool TryParseCdIdHex(string token, out uint cdId)
-    {
-        cdId = 0;
-        if (string.IsNullOrWhiteSpace(token))
-            return false;
-        return uint.TryParse(token, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture, out cdId);
-    }
+    public static bool TryParseCdIdHex(string token, out uint cdId) =>
+        uint.TryParse(token, System.Globalization.NumberStyles.HexNumber, null, out cdId);
 
     public static bool TryApplyDefaultClusterStringLabel(
-        int clusterNumber,
-        string prefix,
-        string currentText,
-        Func<string, string, bool> matchesDefaultString,
-        out string resolvedText,
-        out int lookupFlag)
+        int clusterNumber, string prefix, string currentText, Func<string, string, bool> matchesDefaultString,
+        out string resolvedText, out int lookupFlag)
     {
         resolvedText = currentText;
         lookupFlag = 0;
         var testLabel = $"{prefix}{clusterNumber}";
-        if (!matchesDefaultString(testLabel, currentText))
-            return false;
+        if (!matchesDefaultString(testLabel, currentText)) return false;
         resolvedText = testLabel;
-        lookupFlag = prefix.StartsWith("CLUSTERENTER", StringComparison.Ordinal)
-            ? ClusterLookupEnterText
-            : ClusterLookupExitText;
+        lookupFlag = prefix.StartsWith("CLUSTERENTER", StringComparison.Ordinal) ? ClusterLookupEnterText : ClusterLookupExitText;
+        return true;
+    }
+
+    public static ClusterDef CreateFreshCluster(int clusterNumber) => new() { Cluster = clusterNumber };
+
+    public static bool ApplyClusterTextProperty(
+        ClusterDef cluster, bool enterText, string text, bool lookupName, Func<string, string, bool> matchesDefaultString)
+    {
+        if (enterText) cluster.EnterText = text;
+        else cluster.ExitText = text;
+        if (lookupName)
+        {
+            cluster.Flags |= enterText ? ClusterLookupEnterText : ClusterLookupExitText;
+            return true;
+        }
+
+        var prefix = enterText ? "CLUSTERENTER" : "CLUSTEREXIT";
+        if (!TryApplyDefaultClusterStringLabel(cluster.Cluster, prefix, text, matchesDefaultString, out var resolved, out var flag))
+            return true;
+        if (enterText) cluster.EnterText = resolved;
+        else cluster.ExitText = resolved;
+        cluster.Flags |= flag;
         return true;
     }
 
     public static bool ApplyClusterProperty(
-        ClusterDef cluster,
-        string keyword,
-        string stringValue,
-        bool lookupName,
-        int musicOrder,
-        bool finaleIsPic,
-        CutsceneDef? cutscenePayload,
-        Func<string, string, bool> matchesDefaultString)
+        ClusterDef cluster, string keyword, string stringValue, bool lookupName, int musicOrder,
+        CutsceneDef? cutscenePayload, Func<string, string, bool> matchesDefaultString)
     {
-        if (keyword.Equals("name", StringComparison.OrdinalIgnoreCase))
+        switch (keyword.ToLowerInvariant())
         {
-            cluster.ClusterName = stringValue;
-            if (lookupName)
-                cluster.Flags |= ClusterLookupClusterName;
-            return true;
+            case "name":
+                cluster.ClusterName = stringValue;
+                if (lookupName) cluster.Flags |= ClusterLookupClusterName;
+                return true;
+            case "entertext":
+                return ApplyClusterTextProperty(cluster, enterText: true, stringValue, lookupName, matchesDefaultString);
+            case "exittext":
+                return ApplyClusterTextProperty(cluster, enterText: false, stringValue, lookupName, matchesDefaultString);
+            case "music":
+                cluster.MessageMusic = stringValue;
+                cluster.MusicOrder = musicOrder;
+                return true;
+            case "flat":
+                cluster.FinaleFlat = stringValue;
+                return true;
+            case "pic":
+                cluster.FinaleFlat = stringValue;
+                cluster.Flags |= ClusterFinalePic;
+                return true;
+            case "hub":
+                cluster.Flags |= ClusterHub;
+                return true;
+            case "allowintermission":
+                cluster.Flags |= ClusterAllowIntermission;
+                return true;
+            case "cdtrack":
+                cluster.CdTrack = int.Parse(stringValue);
+                return true;
+            case "cdid":
+                if (TryParseCdIdHex(stringValue, out var id)) cluster.CdId = id;
+                return true;
+            case "entertextislump":
+                cluster.Flags |= ClusterEnterTextInLump;
+                return true;
+            case "exittextislump":
+                cluster.Flags |= ClusterExitTextInLump;
+                return true;
+            case "intro" when cutscenePayload is not null:
+                CopyCutscene(cluster.Intro, cutscenePayload);
+                return true;
+            case "outro" when cutscenePayload is not null:
+                CopyCutscene(cluster.Outro, cutscenePayload);
+                return true;
+            case "gameover" when cutscenePayload is not null:
+                CopyCutscene(cluster.Gameover, cutscenePayload);
+                return true;
+            default:
+                return false;
         }
-
-        if (keyword.Equals("entertext", StringComparison.OrdinalIgnoreCase))
-        {
-            cluster.EnterText = stringValue;
-            if (lookupName)
-                cluster.Flags |= ClusterLookupEnterText;
-            else if (TryApplyDefaultClusterStringLabel(cluster.Cluster, "CLUSTERENTER", stringValue, matchesDefaultString,
-                         out var resolved, out var flag))
-            {
-                cluster.EnterText = resolved;
-                cluster.Flags |= flag;
-            }
-
-            return true;
-        }
-
-        if (keyword.Equals("exittext", StringComparison.OrdinalIgnoreCase))
-        {
-            cluster.ExitText = stringValue;
-            if (lookupName)
-                cluster.Flags |= ClusterLookupExitText;
-            else if (TryApplyDefaultClusterStringLabel(cluster.Cluster, "CLUSTEREXIT", stringValue, matchesDefaultString,
-                         out var resolved, out var flag))
-            {
-                cluster.ExitText = resolved;
-                cluster.Flags |= flag;
-            }
-
-            return true;
-        }
-
-        if (keyword.Equals("music", StringComparison.OrdinalIgnoreCase))
-        {
-            cluster.MessageMusic = stringValue;
-            cluster.MusicOrder = musicOrder;
-            return true;
-        }
-
-        if (keyword.Equals("flat", StringComparison.OrdinalIgnoreCase))
-        {
-            cluster.FinaleFlat = stringValue;
-            return true;
-        }
-
-        if (keyword.Equals("pic", StringComparison.OrdinalIgnoreCase))
-        {
-            cluster.FinaleFlat = stringValue;
-            cluster.Flags |= ClusterFinalePic;
-            return true;
-        }
-
-        if (keyword.Equals("hub", StringComparison.OrdinalIgnoreCase))
-        {
-            cluster.Flags |= ClusterHub;
-            return true;
-        }
-
-        if (keyword.Equals("allowintermission", StringComparison.OrdinalIgnoreCase))
-        {
-            cluster.Flags |= ClusterAllowIntermission;
-            return true;
-        }
-
-        if (keyword.Equals("cdtrack", StringComparison.OrdinalIgnoreCase))
-        {
-            cluster.CdTrack = int.Parse(stringValue, System.Globalization.CultureInfo.InvariantCulture);
-            return true;
-        }
-
-        if (keyword.Equals("cdid", StringComparison.OrdinalIgnoreCase))
-        {
-            if (TryParseCdIdHex(stringValue, out var id))
-                cluster.CdId = id;
-            return true;
-        }
-
-        if (keyword.Equals("entertextislump", StringComparison.OrdinalIgnoreCase))
-        {
-            cluster.Flags |= ClusterEnterTextInLump;
-            return true;
-        }
-
-        if (keyword.Equals("exittextislump", StringComparison.OrdinalIgnoreCase))
-        {
-            cluster.Flags |= ClusterExitTextInLump;
-            return true;
-        }
-
-        if (keyword.Equals("intro", StringComparison.OrdinalIgnoreCase) && cutscenePayload is not null)
-        {
-            CopyCutscene(cluster.Intro, cutscenePayload);
-            return true;
-        }
-
-        if (keyword.Equals("outro", StringComparison.OrdinalIgnoreCase) && cutscenePayload is not null)
-        {
-            CopyCutscene(cluster.Outro, cutscenePayload);
-            return true;
-        }
-
-        if (keyword.Equals("gameover", StringComparison.OrdinalIgnoreCase) && cutscenePayload is not null)
-        {
-            CopyCutscene(cluster.Gameover, cutscenePayload);
-            return true;
-        }
-
-        return false;
     }
 
-    public static bool ApplyCutsceneKeyword(CutsceneDef cutscene, string keyword, string value, int numericValue, bool allowFunction)
+    public static bool ApplyCutsceneKeyword(CutsceneDef c, string keyword, string value, int numericValue, bool allowFunction)
     {
-        if (keyword.Equals("video", StringComparison.OrdinalIgnoreCase))
+        switch (keyword.ToLowerInvariant())
         {
-            cutscene.Video = value;
-            cutscene.Function = "";
-            return true;
+            case "video":
+                c.Video = value;
+                c.Function = "";
+                return true;
+            case "function" when allowFunction:
+                c.Function = value;
+                c.Video = "";
+                return true;
+            case "sound":
+                c.SoundName = value;
+                return true;
+            case "soundid":
+                c.SoundId = numericValue;
+                return true;
+            case "fps":
+                c.FramesPerSec = numericValue;
+                return true;
+            case "delete":
+                c.Function = "none";
+                c.Video = "";
+                return true;
+            case "clear":
+                c.Video = c.Function = c.SoundName = "";
+                c.SoundId = c.FramesPerSec = 0;
+                return true;
+            default:
+                return false;
         }
-
-        if (keyword.Equals("function", StringComparison.OrdinalIgnoreCase) && allowFunction)
-        {
-            cutscene.Function = value;
-            cutscene.Video = "";
-            return true;
-        }
-
-        if (keyword.Equals("sound", StringComparison.OrdinalIgnoreCase))
-        {
-            cutscene.SoundName = value;
-            return true;
-        }
-
-        if (keyword.Equals("soundid", StringComparison.OrdinalIgnoreCase))
-        {
-            cutscene.SoundId = numericValue;
-            return true;
-        }
-
-        if (keyword.Equals("fps", StringComparison.OrdinalIgnoreCase))
-        {
-            cutscene.FramesPerSec = numericValue;
-            return true;
-        }
-
-        if (keyword.Equals("delete", StringComparison.OrdinalIgnoreCase))
-        {
-            cutscene.Function = "none";
-            cutscene.Video = "";
-            return true;
-        }
-
-        if (keyword.Equals("clear", StringComparison.OrdinalIgnoreCase))
-        {
-            cutscene.Video = cutscene.Function = cutscene.SoundName = "";
-            cutscene.SoundId = cutscene.FramesPerSec = 0;
-            return true;
-        }
-
-        return false;
-    }
-
-    public static void BeginClusterParse(int clusterNumber, ClusterDef target)
-    {
-        target.Reset();
-        target.Cluster = clusterNumber;
     }
 
     private static void CopyCutscene(CutsceneDef dest, CutsceneDef src)

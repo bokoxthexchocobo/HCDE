@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 71687,
+  "convertedThisRunNative": 71837,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 95236,
+  "convertedThisRunManaged": 95534,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 417118,
+  "remainingNative": 416968,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 90214,
+  "convertedBehaviorNative": 90364,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 90968,
-  "convertedBehaviorManaged": 104907,
+  "combinedBehaviorNative": 91118,
+  "convertedBehaviorManaged": 105205,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -37035,6 +37035,39 @@
       "nativeLoc": 150,
       "managedLoc": 142,
       "conversionManagedCommit": "5f0ab768cc93253408de4c289ce8f31e363aa011"
+    },
+    {
+      "name": "g-mapinfo-cluster-parse-chunk1027",
+      "bucket": "conversion",
+      "note": "`ParseMusic`, `ParseCutscene`, and `ParseCluster` property head from `g_mapinfo.cpp` (**833\u2013982**). **Pivot:** `p_sight.cpp` **1\u2013150** and playsim mid-file windows remain Vm-blocked; band avoids ParseExit* **754\u2013832** (`VmMapInfoMapOptionsExitEnvironment` merge duplicate) and Hexen exit remap **1008+** (`VmMapInfoClusterExitTextRemap`).",
+      "auditSeams": "`FScanner`, `FindWadClusterInfo`, `GStrings`, `fileSystem`, and `CheckEndOfFile` remain native; `ParseLookupName` multiline body stays on `VmMapInfoParseLookupName` (**676\u2013735**).",
+      "auditRationale": "First tally-clean **150**-line `g_mapinfo.cpp` hull after wide scan with no conversion/recognition overlap and no Vm* line-range collision on **833\u2013982**.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_mapinfo.cpp --start 833 --end 982` and `--chunk 1027 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `ParseMusic` colon/trailing order (**839\u2013855**) | yes |\n| `ParseCutscene` keyword dispatch (**863\u2013879**) | yes |\n| `ParseCluster` reset + property switch head (**888\u2013982**) | yes (name/entertext/exittext/music/flat/pic/hub/flags/cd*/cutscenes) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **754\u2013832** | ParseExit* merge policy already off-tally in `VmMapInfoMapOptionsExitEnvironment` |\n| **676\u2013735** | `VmMapInfoParseLookupName` |\n| **833\u2013838**, **880\u2013887**, **983+** | comment banners / outside hull |\n| **1008\u20131027** | outside hull; `VmMapInfoClusterExitTextRemap` |\n\n| Managed (`VmMapInfoClusterParse1027Slice.cs`) | Native (`g_mapinfo.cpp`) |\n|------------------------------------------------|---------------------------|\n| `ParseMusicToken` | **839\u2013855** |\n| `ApplyCutsceneKeyword` | **863\u2013879** |\n| `BeginClusterParse` / `ApplyClusterProperty` / `TryApplyDefaultClusterStringLabel` | **888\u2013982** |\n| `TryParseCdIdHex` | **971\u2013975** |\n| Band hull (exclusive slice) | **833\u2013982** |\n\n### Chunk **1027** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1026** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Gamedata/VmMapInfoClusterParse1027Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "ParseCluster head",
+          "start": 833,
+          "end": 982,
+          "tests": [
+            "VmMapInfoClusterParse1027SliceTests.ParseMusicToken_SplitsColonOrder",
+            "VmMapInfoClusterParse1027SliceTests.ParseMusicToken_UsesTrailingNumberWhenNoColon",
+            "VmMapInfoClusterParse1027SliceTests.TryParseCdIdHex_ParsesHexString",
+            "VmMapInfoClusterParse1027SliceTests.ApplyCutsceneKeyword_DeleteClearsVideo",
+            "VmMapInfoClusterParse1027SliceTests.TryApplyDefaultClusterStringLabel_MatchesEnterDefault",
+            "VmMapInfoClusterParse1027SliceTests.ApplyClusterProperty_SetsHubAndAllowIntermissionFlags",
+            "VmMapInfoClusterParse1027SliceTests.ApplyClusterProperty_PicSetsFinalePicFlag",
+            "VmMapInfoClusterParse1027SliceTests.BeginClusterParse_ResetsPriorFields"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 298,
+      "conversionManagedCommit": "b71817f3d18baf2eab3ce2b1342d7fce373bb0a3"
     }
   ],
   "behaviorNativeChecksum": 508086,
