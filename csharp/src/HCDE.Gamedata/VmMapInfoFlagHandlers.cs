@@ -12,6 +12,7 @@ public enum VmMapInfoFlagHandlerType
     SetScFlags2,
     SetFlag3,
     ClearFlag3,
+    SetScFlags3,
     CompatFlag,
     ClearCompatFlag
 }
