@@ -1,0 +1,34 @@
+[
+  {
+    "name": "sbarinfo-commands-drawnumber-tick-chunk1082",
+    "bucket": "conversion",
+    "note": "`CommandDrawNumber::Tick` stat dispatch tail and draw-value interpolation from `sbarinfo_commands.cpp` (**1351–1500**); follows **1081** through **AMMO1CAPACITY** null-check (**1350**).",
+    "auditSeams": "**1081** owns missing-ammo abort through **1350** `{`; **1080** owns `IntCVarAcceptedType` and level-stat keyword kinds. Host `FindInventory`, `GetDefaultByType`, `GetCVar`, and `VMCall` for poweruptime excluded.",
+    "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **1351–1500** (+150); capacity/stat/armorclass/airtime/key/cvar tick values + interpolation toward `drawValue`; hull ends before **whenNotZero** (**1501+**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 1351 --end 1500` and `--chunk 1082 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| **AMMO1/2CAPACITY** max amount (**1354–1364**) | yes |\n| Parameterized **AMMOCAPACITY** default fallback (**1369–1372**) | yes |\n| Intermission / score stat dispatch (**1375–1398**) | yes |\n| **ARMORCLASS** / **SAVEPERCENT** slot math (**1402–1417**) | yes |\n| **GLOBALVAR** / **GLOBALARRAY** reads (**1419–1424**) | yes (call-site policy only) |\n| Powerup time seconds conversion (**1434**) | yes |\n| Generic inventory amount (**1439–1443**) | yes (delegates **1081**) |\n| **AIRTIME** above/under water (**1448–1451**) | yes |\n| **SELECTEDINVENTORY** optional update (**1455–1456**) | yes |\n| **KEYS** fold counter (**1465–1470**) | yes |\n| **INTCVAR** typed read fallback (**1475–1488**) | yes |\n| Draw-value interpolation (**1492–1500**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1349–1353** | **1081** ammo1 null abort seam |\n| **1368**, **1403**, **1429–1433**, **1439**, **1474** | host pawn/inventory/VM/CVar lookup |\n| **1419–1423**, **1459–1462** | host field reads (wiring only at call site) |\n| **1501+** | **whenNotZero** / translation outside hull |\n\n| Managed (`VmSbarinfoCommandDrawNumber1082Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|------------------------------------------------------|----------------------------------|\n| Capacity + level stat resolution | **1354–1398** |\n| Armor class / save percent | **1402–1417** |\n| Powerup / air / keys / cvar tick policy | **1434–1488** |\n| Interpolation step + snap | **1492–1500** |\n| Band hull (exclusive slice) | **1351–1500** |\n\n### Chunk **1082** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1081** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmSbarinfoCommandDrawNumber1082Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_statusbar/sbarinfo_commands.cpp",
+        "symbol": "CommandDrawNumber::Tick",
+        "start": 1351,
+        "end": 1500,
+        "tests": [
+          "VmSbarinfoCommandDrawNumber1082SliceTests.ResolveParameterizedAmmoCapacityMax_UsesDefaultWhenMissing",
+          "VmSbarinfoCommandDrawNumber1082SliceTests.ResolveDrawNumberPrimaryLevelStat_MapsKillsAndSecrets",
+          "VmSbarinfoCommandDrawNumber1082SliceTests.ComputeDrawNumberArmorClassOrSavePercent_DividesOnlyArmorClass",
+          "VmSbarinfoCommandDrawNumber1082SliceTests.ConvertPowerupEffectTicsToDisplaySeconds_MatchesNativeFormula",
+          "VmSbarinfoCommandDrawNumber1082SliceTests.ResolveDrawNumberAirTimeTickNum_SwitchesOnWaterLevel",
+          "VmSbarinfoCommandDrawNumber1082SliceTests.ResolveSelectedInventoryTickNum_LeavesPriorWhenMissing",
+          "VmSbarinfoCommandDrawNumber1082SliceTests.FoldDrawNumberKeyCount_IncrementsForKeys",
+          "VmSbarinfoCommandDrawNumber1082SliceTests.ResolveDrawNumberIntCVarTickNum_FallsBackToZero",
+          "VmSbarinfoCommandDrawNumber1082SliceTests.StepDrawNumberInterpolationTowardTarget_ClampsStep",
+          "VmSbarinfoCommandDrawNumber1082SliceTests.ResolveDrawNumberDisplayValueAfterTick_SnapsWhenInterpolationDisabled"
+        ]
+      }
+    ]
+  }
+]
