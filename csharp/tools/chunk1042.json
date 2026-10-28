@@ -1,0 +1,36 @@
+[
+  {
+    "name": "info-loadalthud-staticinit-chunk1042",
+    "bucket": "conversion",
+    "note": "`GetSpriteIndex` push tail, `LoadAltHudStuff`, and `PClassActor::StaticInit` / `StaticSetActorNums` head from `info.cpp` (**301–450**). Continues **1041** (**151–300**).",
+    "auditSeams": "`TexMan`, `fileSystem.FindLump`, `FScanner`, `LoadActors`, `InitBotStuff`, and `staticEventManager` remain host-injected; uncredited `VmSpriteCatalog` (lookup/add) and `VmAltHudLoader` (partial defaults) are not re-credited.",
+    "auditRationale": "File-scoped UNCredited **`info.cpp`** **301–450**; excludes **1–300** (**1040–1041**), **500–799** (**1037–1038**), deferred **800–893**, and **894–1043** (**1039**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/info.cpp --start 301 --end 450` and `--chunk 1042 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `GetSpriteIndex` push (**301–306**) | yes (`CreateSpriteDefDraft`; host/`VmSpriteCatalog` seam for list push) |\n| `LoadAltHudStuff` game switch (**319–336**) | yes (`ResolveDefaultAltHudPicNames`) |\n| `LoadAltHudStuff` ALTHUDCF loop (**338–379**) | yes (classify / inventory validation / icon tokens) |\n| `PClassActor::StaticInit` sprite seed (**391–409**) | yes |\n| `StaticInit` actor registry collect (**417–423**) | yes |\n| post-load call order (**425–429**) | yes (step list) |\n| `StaticSetActorNums` (**440–446**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1–300** | chunks **1040–1041** |\n| **271–306** lookup/cache | uncredited `VmSpriteCatalog` seam (push draft only credited **301–306**) |\n| **319–336** partial overlap | `VmAltHudLoader.GetDefaultHudPics` seam — not double-counted |\n| **411–415**, **387**, **428–429** host calls | `LoadActors`, `InitServices`, event manager |\n| **448–450** | comment header before `SetReplacement` (**456+**) |\n| **500–799** | chunks **1037–1038** |\n| **800–893** | deferred (**94** lines) |\n| **894–1043** | chunk **1039** |\n| `VmActorClassRegistry.TrySetReplacement` | uncredited — outside hull |\n\n| Managed (`VmInfoLoadAltHud1042Slice.cs`) | Native (`info.cpp`) |\n|-------------------------------------------|---------------------|\n| `CreateSpriteDefDraft` | **301–305** |\n| `ResolveDefaultAltHudPicNames` | **319–336** |\n| `ClassifyAltHudKeyword` / null texture / inventory apply | **343–377** |\n| Format helpers | **360**, **364** |\n| `NeedsDefaultSpriteSeed` / `DefaultSpriteSeedNames` | **391–409** |\n| `ShouldAddActorClassToRegistry` | **417–423** |\n| `StaticInitPostActorLoadSteps` | **425–429** |\n| `RunRegisterIdsForAllActorClasses` | **440–446** |\n| Band hull (exclusive slice) | **301–450** |\n\n### Chunk **1042** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1041** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmInfoLoadAltHud1042Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/info.cpp",
+        "symbol": "LoadAltHudStuff / PClassActor StaticInit",
+        "start": 301,
+        "end": 450,
+        "tests": [
+          "VmInfoLoadAltHud1042SliceTests.CreateSpriteDefDraft_ZeroFrames",
+          "VmInfoLoadAltHud1042SliceTests.ClassifyAltHudKeyword_HealthBerserkOrItem",
+          "VmInfoLoadAltHud1042SliceTests.ResolveDefaultAltHudPicNames_MatchesGameTypeSwitch",
+          "VmInfoLoadAltHud1042SliceTests.IsExplicitNullAltHudTextureToken_RecognizesSentinels",
+          "VmInfoLoadAltHud1042SliceTests.EvaluateAltHudInventoryClass_UnknownOrNotInventory",
+          "VmInfoLoadAltHud1042SliceTests.BuildAltHudInventoryApply_NullTokenClearsIcon",
+          "VmInfoLoadAltHud1042SliceTests.FormatAltHudClassMessages_IncludeClassName",
+          "VmInfoLoadAltHud1042SliceTests.NeedsDefaultSpriteSeed_OnlyWhenEmpty",
+          "VmInfoLoadAltHud1042SliceTests.DefaultSpriteSeedNames_MatchesStaticInit",
+          "VmInfoLoadAltHud1042SliceTests.RunRegisterIdsForAllActorClasses_InvokesEach",
+          "VmInfoLoadAltHud1042SliceTests.StaticInitPostActorLoadSteps_IncludesAltHud",
+          "VmInfoLoadAltHud1042SliceTests.ShouldAddActorClassToRegistry_RequiresActorDescendant"
+        ]
+      }
+    ]
+  }
+]
