@@ -23,8 +23,6 @@ public static class VmPClassActorInfo1038Slice
         skillReplaceName = "";
     }
 
-    public static bool ShouldSkipReplacementWhenLevelNull(bool hasLevel) => !hasLevel;
-
     public static ReplacementResolveResult ResolveEventHandlerReplacement(
         bool eventHandlerMatched,
         string? handlerReplacementType,
