@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 62237,
+  "convertedThisRunNative": 62387,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 88129,
+  "convertedThisRunManaged": 88330,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 426568,
+  "remainingNative": 426418,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 80764,
+  "convertedBehaviorNative": 80914,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 81518,
-  "convertedBehaviorManaged": 97800,
+  "combinedBehaviorNative": 81668,
+  "convertedBehaviorManaged": 98001,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -35187,6 +35187,39 @@
       "nativeLoc": 150,
       "managedLoc": 206,
       "conversionManagedCommit": "0810e58f8a9fe2d20bb9ea7f003a515b8bc0786b"
+    },
+    {
+      "name": "p-acs-behavior-lookup-chunk964",
+      "bucket": "conversion",
+      "note": "`FBehavior::GetFunction`, map/function name lookup, array accessors, chunk walk, and string lookup head from `p_acs.cpp` (**3155\u20133304**).",
+      "auditSeams": "`Imports[]` recursion, `stricmp`, `GlobalACSStrings.GetString`, Hexen localization in `LookupString`, and `StartTypedScripts` tail remain host seams.",
+      "auditRationale": "Honest **150**-line UNCredited band adjacent to chunk **963**; exclusive `VmPAcsBehaviorLookup964Slice.cs` (does not re-credit chunk **568** container load helpers at **1977\u20132124**).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 3155 --end 3304` and `--chunk 964 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `FBehavior::GetFunction` (**3155\u20133169**) | yes |\n| `FindFunctionName` / `FindMapVarName` / `FindMapArray` (**3171\u20133189**) | yes (chunk lookup via host) |\n| `FindStringInChunk` (**3191\u20133206**) | yes |\n| `GetArrayVal` / `SetArrayVal` (**3208\u20133226**) | yes |\n| `CopyStringToArray` (**3228\u20133245**) | yes |\n| `FindChunk` / `NextChunk` (**3247\u20133275**) | yes |\n| `FBehaviorContainer::LookupString` (**3277\u20133290**) | yes |\n| `FBehavior::LookupString` old/enhanced range gates (**3292\u20133304**) | yes |\n| Separator (**3276**, **3291**) | layout only |\n\n| Managed (`VmPAcsBehaviorLookup964Slice.cs`) | Native (`p_acs.cpp`) |\n|---------------------------------------------|---------------------|\n| `ResolveGetFunction` / `FunctionIndexInRange` | **3155\u20133169** |\n| `FindStringInChunk` | **3191\u20133206** |\n| `ResolveMapArrayIndex` | **3181\u20133189** |\n| `GetArrayVal` / `SetArrayVal` | **3208\u20133226** |\n| `CopyStringToArray` | **3228\u20133245** |\n| `FindChunkOffset` / `NextChunkOffset` | **3247\u20133275** |\n| `LookupUsesStringPool` / `LookupModuleInRange` | **3277\u20133290** |\n| `OldFormatStringInRange` / `EnhancedFormatStringInRange` | **3292\u20133304** |\n| Band hull (exclusive slice) | **3155\u20133304** |\n\n### Chunk **964** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**963** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPAcsBehaviorLookup964Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "FBehavior::GetFunction",
+          "start": 3155,
+          "end": 3304,
+          "tests": [
+            "VmPAcsBehaviorLookup964SliceTests.ResolveGetFunction_LocalFunction",
+            "VmPAcsBehaviorLookup964SliceTests.ResolveGetFunction_ImportRedirect",
+            "VmPAcsBehaviorLookup964SliceTests.FindStringInChunk_MatchesName",
+            "VmPAcsBehaviorLookup964SliceTests.GetArrayVal_ReturnsZeroWhenOutOfRange",
+            "VmPAcsBehaviorLookup964SliceTests.CopyStringToArray_WritesTerminator",
+            "VmPAcsBehaviorLookup964SliceTests.FindChunkOffset_WalksLinkedChunks",
+            "VmPAcsBehaviorLookup964SliceTests.LookupUsesStringPool_DetectsPoolIndex",
+            "VmPAcsBehaviorLookup964SliceTests.OldFormatStringInRange_RequiresValidTable"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 201,
+      "conversionManagedCommit": "d5075db816cf027cc20855945f2032f0420a25ed"
     }
   ],
   "behaviorNativeChecksum": 508086,
