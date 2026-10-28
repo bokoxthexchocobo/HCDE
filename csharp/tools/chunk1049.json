@@ -1,0 +1,31 @@
+[
+  {
+    "name": "gskill-parse-head-chunk1049",
+    "bucket": "conversion",
+    "note": "Global `AllSkills` / `DefaultSkill` and `FMapInfoParser::ParseSkill` head from `g_skill.cpp` (**1–150**). Continues **1048–1047** (**391–690**).",
+    "auditSeams": "`FScanner`, `ParseOpenBrace`, and `TArray` host remain injected; uncredited `VmSkillMapinfoParser` / `VmGSkillGlobals` are not re-credited.",
+    "auditRationale": "File-scoped UNCredited **`g_skill.cpp`** **1–150** (+150); excludes **391–690** (**1048–1047**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_skill.cpp --start 1 --end 150` and `--chunk 1049 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `AllSkills` / `DefaultSkill` globals (**35–36**) | yes (constants) |\n| `ParseSkill` factory defaults (**50–81**) | yes |\n| Skill name token (**83–84**) | yes |\n| Float properties (**90–118**) | yes |\n| Flag properties (**120–150**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1–34** | license / includes host |\n| **86–88** | `ParseOpenBrace` / scanner loop host |\n| **151+** | remainder of `ParseSkill` (**1049** hull ends **150**) |\n| **391–690** | chunks **1048–1047** |\n| `VmSkillMapinfoParser` | uncredited token parser — seam only |\n| `VmGSkillGlobals` | uncredited list helper — seam only |\n\n| Managed (`VmGSkillParseHead1049Slice.cs`) | Native (`g_skill.cpp`) |\n|-------------------------------------------|------------------------|\n| `DefaultSkillIndexUnset` | **36** |\n| `ApplyParseSkillFactoryDefaults` | **50–81** |\n| `AssignSkillBlockNameFromScanner` | **83–84** |\n| `ClassifySkillParseKeyword` | **90–150** keywords |\n| `TryApplySkillParseFloatProperty` | **90–118** |\n| `TryApplySkillParseFlagProperty` | **120–150** |\n| Band hull (exclusive slice) | **1–150** |\n\n### Chunk **1049** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1048** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmGSkillParseHead1049Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "ParseSkill / AllSkills globals",
+        "start": 1,
+        "end": 150,
+        "tests": [
+          "VmGSkillParseHead1049SliceTests.ApplyParseSkillFactoryDefaults_MatchesNativeBaseline",
+          "VmGSkillParseHead1049SliceTests.ClassifySkillParseKeyword_RecognizesHeadBandKeys",
+          "VmGSkillParseHead1049SliceTests.TryApplySkillParseFloatProperty_SetsFactors",
+          "VmGSkillParseHead1049SliceTests.TryApplySkillParseFlagProperty_SetsFlags",
+          "VmGSkillParseHead1049SliceTests.AssignSkillBlockNameFromScanner_SetsName",
+          "VmGSkillParseHead1049SliceTests.DefaultSkillIndexUnset_MatchesGlobal",
+          "VmGSkillParseHead1049SliceTests.TryApplySkillParseFloatProperty_RejectsFlagKeywords"
+        ]
+      }
+    ]
+  }
+]
