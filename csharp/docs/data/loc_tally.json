@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 71837,
+  "convertedThisRunNative": 71987,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 95431,
+  "convertedThisRunManaged": 95548,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 416968,
+  "remainingNative": 416818,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 90364,
+  "convertedBehaviorNative": 90514,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 91118,
-  "convertedBehaviorManaged": 105102,
+  "combinedBehaviorNative": 91268,
+  "convertedBehaviorManaged": 105219,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -37068,6 +37068,39 @@
       "nativeLoc": 150,
       "managedLoc": 195,
       "conversionManagedCommit": "1ff059d8c270dda5f45cdc91d960c19546ec689c"
+    },
+    {
+      "name": "g-mapinfo-options-media-chunk1028",
+      "bucket": "conversion",
+      "note": "MAPINFO media/scalar DEFINE options from `g_mapinfo.cpp` (**1191\u20131340**). Follows chunk **1027** (**833\u2013982**). Skips **1041\u20131190** (`VmMapInfoParseNextMap`, `VmMapInfoShadowQualityCap`, `VmMapInfoMapOptionsCore`).",
+      "auditSeams": "`DEFINE_MAP_OPTION` macro expansion, `parse.ParseAssign`, `V_GetColor`, `ParseMusic`, and `ParseLumpOrTextureName` remain native/host.",
+      "auditRationale": "First tally-clean **150**-line `g_mapinfo.cpp` hull at **\u22651191** with no conversion/recognition overlap and no Vm* line-range collision on the band.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_mapinfo.cpp --start 1191 --end 1340` and `--chunk 1028 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `skymistyscale` clamp (**1194\u20131198**) | yes |\n| `skybox` speed zero (**1202\u20131207**) | yes |\n| `titlepatch` hide-author comma (**1227\u20131234**) | yes |\n| `partime` / `par` (**1238\u20131249**) | yes |\n| `wavelimit` / `duellimit` / `sucktime` (**1252\u20131270**) | yes |\n| `mapintermusic` insert (**1285\u20131294**) | yes |\n| `evenlighting` (**1309\u20131311**) | yes |\n| `cdtrack` / `cdid` / `warptrans` (**1314\u20131332**) | yes |\n| `vertwallshade` / `horizwallshade` (**1335\u20131340**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **754\u2013832** | ParseExit* / `VmMapInfoMapOptionsExitEnvironment` |\n| **833\u2013982** | chunk **1027** |\n| **1008\u20131027** | `VmMapInfoClusterExitTextRemap` |\n| **1041\u20131190** | off-tally Vm next/shadow/core bands |\n| **1180\u20131192** | `skymist` float tail + closing brace (outside hull start **1191**) |\n| **1209\u20131221**, **1273\u20131307** | color/lump host calls outside ported predicates |\n| **1341+** | outside hull |\n| Retired **321** `VmMapInfoMapOptionsScalars` | duplicate clamp helpers \u2014 not re-listed in audit map rows |\n\n| Managed (`VmMapInfoMapOptionsMedia1028Slice.cs`) | Native (`g_mapinfo.cpp`) |\n|--------------------------------------------------|---------------------------|\n| `ClampSkyMistYScale` | **1194\u20131198** |\n| `TryApplyOption` (`skybox`, limits, cd*, warp, shades) | **1202\u20131332** |\n| `ApplyTitlePatchFlags` | **1227\u20131234** |\n| `StoreMapInterMusic` | **1285\u20131294** |\n| `ApplyEvenLighting` | **1309\u20131311** |\n| Band hull (exclusive slice) | **1191\u20131340** |\n\n### Chunk **1028** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1027** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Gamedata/VmMapInfoMapOptionsMedia1028Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "DEFINE_MAP_OPTION media scalars",
+          "start": 1191,
+          "end": 1340,
+          "tests": [
+            "VmMapInfoMapOptionsMedia1028SliceTests.ApplyTitlePatchFlags_SetsHideAuthorOnNewFormatComma",
+            "VmMapInfoMapOptionsMedia1028SliceTests.StoreMapInterMusic_InsertsPair",
+            "VmMapInfoMapOptionsMedia1028SliceTests.TryApplyOption_WaveAndDuelLimitsClamp",
+            "VmMapInfoMapOptionsMedia1028SliceTests.TryApplyOption_WallShadesHalveAndClamp",
+            "VmMapInfoMapOptionsMedia1028SliceTests.TryApplyOption_SkyboxClearsSpeed",
+            "VmMapInfoMapOptionsMedia1028SliceTests.TryApplyOption_SkymistyScaleClamps",
+            "VmMapInfoMapOptionsMedia1028SliceTests.TryParseCdIdHex_ParsesHex",
+            "VmMapInfoMapOptionsMedia1028SliceTests.ApplyEvenLighting_ZerosWallLights"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 117,
+      "conversionManagedCommit": "b845fe16956a38b7903c74d12fb0a1bc57f914cf"
     }
   ],
   "behaviorNativeChecksum": 508086,
