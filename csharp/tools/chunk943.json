@@ -1,0 +1,31 @@
+[
+  {
+    "name": "p-lnspec-thing-hate-chunk943",
+    "bucket": "conversion",
+    "note": "`LS_Thing_Hate` from `p_lnspec.cpp` (**1565–1714**). Planned **3983–4132** corridor is absent (`p_lnspec.cpp` EOF **3982**); pivoted to next clean **150** avoiding deferred **2869–2910**, **3019–3129**, **3905–3982**.",
+    "auditSeams": "`GetActorIterator`, `SeeState`, inventory, and `SetState` remain host seams.",
+    "auditRationale": "Honest in-repo **150**-line UNCredited band; exclusive `VmPLnspecThingHate943Slice.cs` (live `VmPLnspecThingHate` / retired **417** are not matrix credit for these lines).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 1565 --end 1714` and `--chunk 943 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`p_lnspec.cpp`) |\n|---------|-------------------------|\n| chunk **943** hull | **1565–1714** |\n| `HateeCandidateValid` | hatee scan **1577–1579** |\n| `NothingToHateWhenTidNonZero` | **1584–1587** |\n| `RejectPlayerAsHater` | player hater guard **1592–1596** |\n| `HaterIteratorCandidate` | hater pick **1606–1608** |\n| `ShouldRecordTidToHate` / `ShouldClearTargetForTid` | group TID **1620–1636** |\n| `BuildHateAttitude` | `MF3`/`MF4` modes **1651–1674** |\n| `CanChaseAfterHate` | target assign **1697–1707** |\n| `HateeScanContinue` | group hatee loop **1690–1694** |\n| `ShouldWakeSeeState` | `SetState(SeeState)` **1704–1706** |\n| `ContinueHaterIterator` | iterator **1710–1718** |\n| `AssignActivatorAsHatee` | **1676–1678** |\n| `UsesGroupHateMode` | **1620** |\n| `ShouldStoreLastEnemyBeforeRetarget` | **1699–1701** |\n| `HasSeeStateForHate` | `SeeState` gate **1615** |\n| `ShouldBreakHaterLoop` | hater iterator exit **1720–1723** |\n\n### Chunk **943** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**942** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPLnspecThingHate943Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Thing_Hate",
+        "start": 1565,
+        "end": 1714,
+        "tests": [
+          "VmPLnspecThingHate943SliceTests.HateeCandidateValid_RequiresShootableAliveAwake",
+          "VmPLnspecThingHate943SliceTests.NothingToHateWhenTidNonZero_DetectsMissingHatee",
+          "VmPLnspecThingHate943SliceTests.RejectPlayerAsHater_BlocksActivatorPlayer",
+          "VmPLnspecThingHate943SliceTests.BuildHateAttitude_SetsNoSightForMode2",
+          "VmPLnspecThingHate943SliceTests.CanChaseAfterHate_RejectsSelf",
+          "VmPLnspecThingHate943SliceTests.HateeScanContinue_StopsOnDormant",
+          "VmPLnspecThingHate943SliceTests.ShouldWakeSeeState_RequiresPositiveHealth"
+        ]
+      }
+    ]
+  }
+]
