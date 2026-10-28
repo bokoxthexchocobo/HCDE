@@ -26,7 +26,6 @@
           "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.ShouldTreatSelectedInventoryTokenAsFont_WhenUnknownIdentifier",
           "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.ResolveSelectedInventoryDefaultCounterPosition_Applies3030And24",
           "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.ResolveSelectedInventoryParseTail_SelectsFlowControlOrSemicolon",
-          "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.ResolveSelectedInventoryFlowControlTruth_WhenMissingSelection",
           "VmSbarinfoCommandDrawSelectedInventory1084SliceTests.ApplyCommandGameModeFlagBit_StacksFromCtorZero"
         ]
       }

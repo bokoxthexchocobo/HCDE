@@ -80,7 +80,6 @@ public class VmSbarinfoCommandDrawSelectedInventory1084SliceTests
     }
 
     [Fact]
-    [Fact]
     public void ResolveSelectedInventoryParseTail_SelectsFlowControlOrSemicolon()
     {
         var (flow, semi) = VmSbarinfoCommandDrawSelectedInventory1084Slice.ResolveSelectedInventoryParseTail(
