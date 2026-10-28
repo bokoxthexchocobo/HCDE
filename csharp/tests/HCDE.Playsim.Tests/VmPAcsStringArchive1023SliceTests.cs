@@ -1,66 +1,79 @@
 namespace HCDE.Playsim.Tests;
 
-public class VmPAcsCallfuncGameplay1023SliceTests
+public class VmPAcsStringArchive1023SliceTests
 {
     [Fact]
-    public void NamedExecuteScriptIndex_NegatesValidNameIndex()
+    public void ShouldListPooledString_SkipsFreeEntries()
     {
-        var idx = VmPAcsCallfuncGameplay1023Slice.NamedExecuteScriptIndex(
-            "foo", name => name == "foo" ? 42 : 0);
-        Assert.Equal(-42, idx);
+        Assert.False(VmPAcsStringArchive1023Slice.ShouldListPooledString(VmAcsStringPool.FreeEntry));
+        Assert.True(VmPAcsStringArchive1023Slice.ShouldListPooledString(1));
     }
 
     [Fact]
-    public void UniqueTidStartArg_DefaultsWhenEmpty()
+    public void FormatDumpLine_MatchesNativePrintfShape()
     {
-        Assert.Equal(0, VmPAcsCallfuncGameplay1023Slice.UniqueTidStartArg(Array.Empty<int>(), 0));
-        Assert.Equal(7, VmPAcsCallfuncGameplay1023Slice.UniqueTidStartArg(new[] { 7, -1 }, 2));
-        Assert.Equal(0, VmPAcsCallfuncGameplay1023Slice.UniqueTidMinInUseArg(new[] { 1, -3 }, 2));
-        Assert.Equal(5, VmPAcsCallfuncGameplay1023Slice.UniqueTidMinInUseArg(new[] { 1, 5 }, 2));
+        Assert.Equal("   3. ( 2) \"foo\"", VmPAcsStringArchive1023Slice.FormatDumpLine(3, 2, "foo"));
     }
 
     [Fact]
-    public void IntegerSqrtRoundDown_MatchesNativeRoundDown()
+    public void UnlockLevelLocksNative_RemovesMatchingLock()
     {
-        Assert.Equal(3, VmPAcsCallfuncGameplay1023Slice.IntegerSqrtRoundDown(10));
-        Assert.Equal(4, VmPAcsCallfuncGameplay1023Slice.IntegerSqrtRoundDown(17));
+        var removed = new List<(int, int)>();
+        var pool = new[]
+        {
+            new VmAcsStringPoolUnlockForLevel.PoolEntry(VmAcsStringPool.FreeEntry, []),
+            new VmAcsStringPoolUnlockForLevel.PoolEntry(1, [4, 9]),
+        };
+        VmPAcsStringArchive1023Slice.UnlockLevelLocksNative(pool, 9, (i, ndx) => removed.Add((i, ndx)));
+        Assert.Equal([(1, 1)], removed);
     }
 
     [Fact]
-    public void FixedSqrtAndVectorLength_Use65536Scale()
+    public void FormatScriptPresentation_QuotesNamedScripts()
     {
-        Assert.Equal(65536, VmPAcsCallfuncGameplay1023Slice.FixedSqrtFromAcs(65536));
-        var len = VmPAcsCallfuncGameplay1023Slice.VectorLengthFixed(65536, 0);
-        Assert.Equal(65536, len);
+        var named = VmPAcsStringArchive1023Slice.FormatScriptPresentation(-42, _ => "intro");
+        Assert.Equal("script \"intro\"", named);
+        Assert.Equal("script 5", VmPAcsStringArchive1023Slice.FormatScriptPresentation(5, _ => null));
     }
 
     [Fact]
-    public void BuildHudClipRect_DefaultsHandleAspectTrue()
+    public void CollectGlobalStringsNative_MarksStacksThenPurges()
     {
-        var state = VmPAcsCallfuncGameplay1023Slice.BuildHudClipRect(new[] { 1, 2, 3, 4 }, 4);
-        Assert.Equal(new VmPAcsCallfuncGameplay1023Slice.HudClipRectState(1, 2, 3, 4, 0, true), state);
-        var off = VmPAcsCallfuncGameplay1023Slice.BuildHudClipRect(new[] { 0, 0, 0, 0, 0, 0 }, 6);
-        Assert.False(off.HandleAspect);
+        var marks = new List<int>();
+        VmPAcsStringArchive1023Slice.CollectGlobalStringsNative(
+            [0, 2, -5000],
+            (_, sp) => IntPtr.Zero,
+            (_, sp) => marks.Add(sp),
+            () => marks.Add(-1),
+            () => marks.Add(-2),
+            () => marks.Add(-3));
+        Assert.Equal([2, -1, -2, -3], marks);
+        Assert.Throws<InvalidOperationException>(() =>
+            VmPAcsStringArchive1023Slice.CollectGlobalStringsNative(
+                [-5000], (_, _) => IntPtr.Zero, (_, _) => { }, () => { }, () => { }, () => { }));
     }
 
     [Fact]
-    public void LineAttackFhFlags_MapsNativeBits()
+    public void ClearAcsVarsNative_BranchesLikeNative()
     {
-        var flags = VmPAcsCallfuncGameplay1023Slice.FhfNorandompuffz
-                    | VmPAcsCallfuncGameplay1023Slice.FhfNoimpactdecal;
-        var fh = VmPAcsCallfuncGameplay1023Slice.LineAttackFhFlags(flags);
-        Assert.Equal(
-            VmPAcsCallfuncGameplay1023Slice.LafNorandompuffz
-            | VmPAcsCallfuncGameplay1023Slice.LafNoimpactdecal,
-            fh);
-    }
+        var log = new List<string>();
+        VmPAcsStringArchive1023Slice.ClearAcsVarsNative(
+            alsoGlobal: true,
+            () => log.Add("world"),
+            () => log.Add("global"),
+            () => log.Add("purgeAll"),
+            () => log.Add("mark"),
+            () => log.Add("purgeRef"));
+        Assert.Equal(["world", "global", "purgeAll"], log);
 
-    [Fact]
-    public void BuildPlaySoundArgs_DefaultChannelAndVolume()
-    {
-        var args = VmPAcsCallfuncGameplay1023Slice.BuildPlaySoundArgs(new[] { 0, 0 }, 2);
-        Assert.Equal(VmPAcsCallfuncGameplay1023Slice.ChanBody, args.Channel);
-        Assert.Equal(1f, args.Volume);
-        Assert.True(VmPAcsCallfuncGameplay1023Slice.PlaySoundUsesActivator(0));
+        log.Clear();
+        VmPAcsStringArchive1023Slice.ClearAcsVarsNative(
+            false,
+            () => log.Add("world"),
+            () => log.Add("global"),
+            () => log.Add("purgeAll"),
+            () => log.Add("mark"),
+            () => log.Add("purgeRef"));
+        Assert.Equal(["world", "mark", "purgeRef"], log);
     }
 }

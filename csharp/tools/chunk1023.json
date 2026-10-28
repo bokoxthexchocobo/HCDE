@@ -18,9 +18,11 @@
         "end": 1535,
         "tests": [
           "VmPAcsStringArchive1023SliceTests.ShouldListPooledString_SkipsFreeEntries",
+          "VmPAcsStringArchive1023SliceTests.FormatDumpLine_MatchesNativePrintfShape",
+          "VmPAcsStringArchive1023SliceTests.UnlockLevelLocksNative_RemovesMatchingLock",
           "VmPAcsStringArchive1023SliceTests.FormatScriptPresentation_QuotesNamedScripts",
-          "VmPAcsStringArchive1023SliceTests.ClearAcsVarsBranch_SelectsGlobalVersusMarkPurge",
-          "VmPAcsStringArchive1023SliceTests.StackPointerCorrupted_MatchesNativeBounds"
+          "VmPAcsStringArchive1023SliceTests.CollectGlobalStringsNative_MarksStacksThenPurges",
+          "VmPAcsStringArchive1023SliceTests.ClearAcsVarsNative_BranchesLikeNative"
         ]
       }
     ]
