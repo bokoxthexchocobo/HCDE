@@ -1,0 +1,32 @@
+[
+  {
+    "name": "g-mapinfo-parse-head-chunk1051",
+    "bucket": "conversion",
+    "note": "Level lookup helpers and `CheckWarpTransMap` head from `g_mapinfo.cpp` (**1–150**). MAPINFO parse entry before cluster/snapshot helpers (**151+**).",
+    "auditSeams": "`wadlevelinfos` / `wadclusterinfos` storage, `HexenMusic`, and host `FString` mutation remain injected; uncredited `VmMapInfoLevelLookup` / `VmMapInfoWarpTrans` / `SecretLevelVisited` tail (**161+**) are not re-credited.",
+    "auditRationale": "File-scoped UNCredited **`g_mapinfo.cpp`** **1–150** (+150); zero live conversion overlap on head band; avoids ParseExit/Hexen/ParseMapInfoLoop denylist regions (all **≥676**). Hull ends inside `CheckWarpTransMap` substitute (**150**); **151–154** deferred with next band.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_mapinfo.cpp --start 1 --end 150` and `--chunk 1051 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `FindWadLevelInfo` (**64–72**) | yes |\n| `FindLevelInfo` default sky seed (**79–98**) | yes |\n| `FindLevelByNum` (**105–112**) | yes |\n| `FindLevelByWarpTrans` (**120–127**) | yes |\n| `CheckWarpTransMap` prefix + lookup + substitute head (**134–150**) | yes |\n| `ParsedLumps(8)` default (**57**) | yes (constant) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1–46** | license / includes host |\n| **47–56** | global container declarations host |\n| **151–154** | `CheckWarpTransMap` tail outside hull (**150** ends substitute build) |\n| **161+** | `SecretLevelVisited`, cluster lookup, deferred mid/tail bands |\n| **833+** | chunks **1027–1036** credited bands |\n| `VmMapInfoLevelLookup` / `VmMapInfoWarpTrans` | uncredited off-tally helpers — seam only |\n\n| Managed (`VmMapInfoParseHead1051Slice.cs`) | Native (`g_mapinfo.cpp`) |\n|---------------------------------------------|---------------------------|\n| `FindWadLevelIndex` | **64–72** |\n| `FindLevelInfo` | **79–98** |\n| `FindLevelByNum` | **105–112** |\n| `FindLevelByWarpTrans` | **120–127** |\n| `TryResolveCheckWarpTransMap` / prefix | **134–150** |\n| `ParsedLumpsInitialCapacity` | **57** |\n| Band hull (exclusive slice) | **1–150** |\n\n### Chunk **1051** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1050** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmMapInfoParseHead1051Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "FindLevelInfo / CheckWarpTransMap head",
+        "start": 1,
+        "end": 150,
+        "tests": [
+          "VmMapInfoParseHead1051SliceTests.FindWadLevelIndex_IsCaseInsensitive",
+          "VmMapInfoParseHead1051SliceTests.FindLevelInfo_SeedsDefaultWhenAllowed",
+          "VmMapInfoParseHead1051SliceTests.FindLevelByNum_MatchesLevelNumField",
+          "VmMapInfoParseHead1051SliceTests.FindLevelByWarpTrans_ScansFromEnd",
+          "VmMapInfoParseHead1051SliceTests.TryResolveCheckWarpTransMap_ReplacesWithLevelName",
+          "VmMapInfoParseHead1051SliceTests.TryResolveCheckWarpTransMap_SubstituteBuildsMapPrefix",
+          "VmMapInfoParseHead1051SliceTests.IsWarpTransMapPrefix_RequiresWtAt",
+          "VmMapInfoParseHead1051SliceTests.ParsedLumpsInitialCapacity_MatchesNativeDefault"
+        ]
+      }
+    ]
+  }
+]
