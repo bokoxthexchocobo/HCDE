@@ -1,0 +1,27 @@
+[
+  {
+    "name": "p-saveg-player-restore-chunk994",
+    "bucket": "conversion",
+    "note": "`ReadMultiplePlayers` tail, `CopyPlayer`, and `SpawnExtraPlayers` from `p_saveg.cpp` (**751–900**). **Pivot:** `p_setup.cpp` **751–900** aborted — file EOF **788** (no hull past EOF).",
+    "auditSeams": "`CopyFrom`, `userinfo_t::TransferFrom`, `R_FindSkin`, `Printf`, `Serialize`, and `SpawnPlayer` host calls remain injected.",
+    "auditRationale": "UNCredited mid-file `p_saveg.cpp`; disjoint from chunk **10** archive band (**276–335**) and retired **887**. No existing `VmPSaveg*` managed slice on **751–900**.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_saveg.cpp --start 751 --end 900` and `--chunk 994 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Name-based temp player assign (**751–768**) | yes |\n| First-unused temp assign (**778–795**) | yes |\n| Unused temp actor destroy (**800–804**) | yes |\n| `CopyPlayer` userinfo/bot/skin (**813–873**) | yes (predicates) |\n| `SpawnExtraPlayers` gate (**882–900**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **756–757**, **784–785** | `Printf` host |\n| **820–827**, **847–853** | `TransferFrom` / `R_FindSkin` host |\n| **829**, **858–859** | `CopyFrom` / `player` pointer host |\n| **897–898** | `SpawnPlayer` host |\n| **901+** | outside hull |\n\n| Managed (`VmPSavegPlayerRestore994Slice.cs`) | Native (`p_saveg.cpp`) |\n|---------------------------------------------|----------------------|\n| `TryAssignNamedTempPlayer` / `TryAssignFirstUnusedTempPlayer` | **751–795** |\n| `ShouldDestroyUnusedTempActor` | **800–804** |\n| `MergeChaseCamCheat` / `ResolveUserinfoRestoreAfterCopy` / bot walk / psprite relink / sticky input | **823–872** |\n| `ShouldSpawnExtraPlayers` / `ShouldSpawnMissingPlayerPawn` | **888–900** |\n| Band hull (exclusive slice) | **751–900** |\n\n### Chunk **994** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**993** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPSavegPlayerRestore994Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/p_saveg.cpp",
+        "symbol": "FLevelLocals::CopyPlayer",
+        "start": 751,
+        "end": 900,
+        "tests": [
+          "VmPSavegPlayerRestore994SliceTests.ReadMultiplePlayersAssignment",
+          "VmPSavegPlayerRestore994SliceTests.CopyPlayerPredicates",
+          "VmPSavegPlayerRestore994SliceTests.SpawnExtraPlayersGate"
+        ]
+      }
+    ]
+  }
+]
