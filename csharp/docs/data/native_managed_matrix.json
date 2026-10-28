@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 229710
+    "managedCSharpLoc": 229852
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 60437,
+    "convertedThisRunNative": 60587,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 86907,
+    "convertedThisRunManaged": 87049,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 428368,
+    "remainingNative": 428218,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 78964,
+    "convertedBehaviorNative": 79114,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 79718,
-    "convertedBehaviorManaged": 96578,
+    "combinedBehaviorNative": 79868,
+    "convertedBehaviorManaged": 96720,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -34778,6 +34778,40 @@
         "nativeLoc": 150,
         "managedLoc": 75,
         "conversionManagedCommit": "80f5a16212044129dfcea0db7b34446abaa0a505"
+      },
+      {
+        "name": "p-acs-start-script-defer-chunk951",
+        "bucket": "conversion",
+        "note": "`addDefered` tail, `P_StartScript`, suspend/terminate routing, deferred serialize, `scriptstat`, and `DumpScriptStatus` head from `p_acs.cpp` (**10950\u201311099**). Follows **950** (**\u226410949**); avoids **10050\u201310199** credited corridor.",
+        "auditSeams": "`Behaviors.FindScript`, `P_GetScriptGoing`, `RunScript`, `FindLevelInfo`, `addDefered`, `SetScriptState`, `FSerializer`, and `AllLevels` iteration remain host seams.",
+        "auditRationale": "Honest **150**-line UNCredited band with zero tally overlap; exclusive `VmPAcsStartScript951Slice.cs` (hosted `AcsVm` / ACS thinker dumps are not matrix credit).",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 10950 --end 11099` and `--chunk 951 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `addDefered` tail (**10950\u201310953**) | yes |\n| `allowsingleplayerscripts` / `sv_allowallscripts` CVAR lines (**10957\u201310958**) | seam (config host) |\n| `P_StartScript` (**10960\u201311037**) | yes |\n| `P_SuspendScript` / `P_TerminateScript` (**11039\u201311053**) | yes |\n| `Serialize(acsdefered_t)` (**11055\u201311066**) | yes |\n| `CCMD scriptstat` + `DumpScriptStatus` head (**11068\u201311099**) | yes |\n\n| Managed (`VmPAcsStartScript951Slice.cs`) | Native (`p_acs.cpp`) |\n|------------------------------------------------|---------------------|\n| `MapNamesMatchForScript` / `ShouldDeferStartOnOtherMap` | **10962\u201310963**, **11029\u201311033** |\n| `DenyNonNetScriptRequest` / denial logging gates | **10981\u201311005** |\n| `StartScriptReturnsRunResult` / `StartScriptResultWhenRunning` | **11013\u201311018** |\n| `ShouldPrintUnknownScript` | **11023\u201311026** |\n| `DeferredExecuteTypeForStartFlags` | **11031\u201311033** |\n| `SuspendOrTerminateOnOtherMap` / defer types / local states | **11041\u201311052** |\n| `DeferredSerialize*` / arg slot padding | **11057\u201311063** |\n| `LevelHasNoAcsThinker` / `DumpScriptStatusHasNext` | **11073\u201311099** |\n| `ScriptStateName*` | **11086\u201311101** (names through band end) |\n| `ResolveDeferredPlayerNumOnAdd` | **10944\u201310951** |\n\n### Chunk **951** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**950** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPAcsStartScript951Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "P_StartScript",
+            "start": 10950,
+            "end": 11099,
+            "tests": [
+              "VmPAcsStartScript951SliceTests.MapNamesMatchForScript_IgnoresCaseWithinEightChars",
+              "VmPAcsStartScript951SliceTests.ShouldDeferStartOnOtherMap_WhenTargetDiffers",
+              "VmPAcsStartScript951SliceTests.DenyNonNetScriptRequest_BlocksNetPukeInNetgame",
+              "VmPAcsStartScript951SliceTests.DenyNonNetScriptRequest_AllowsLocalConsoleRequester",
+              "VmPAcsStartScript951SliceTests.DeferredExecuteTypeForStartFlags_UsesAlwaysDefer",
+              "VmPAcsStartScript951SliceTests.StartScriptResultWhenRunning_ReturnsRunScriptWhenWantResult",
+              "VmPAcsStartScript951SliceTests.SuspendOrTerminateOnOtherMap_WhenMapsDiffer",
+              "VmPAcsStartScript951SliceTests.ScriptStateNameIndex_AlignsWithNativeStateNames",
+              "VmPAcsStartScript951SliceTests.ResolveDeferredPlayerNumOnAdd_MissingWithoutPlayer"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 142,
+        "conversionManagedCommit": "578afcf39d3e60de277c80aca9c89698b613efec"
       }
     ],
     "behaviorNativeChecksum": 508086,
