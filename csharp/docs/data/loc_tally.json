@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 84470,
+  "convertedThisRunNative": 84620,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 105825,
+  "convertedThisRunManaged": 105965,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404402,
+  "remainingNative": 404252,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102997,
+  "convertedBehaviorNative": 103147,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 103684,
-  "convertedBehaviorManaged": 115496,
+  "combinedBehaviorNative": 103834,
+  "convertedBehaviorManaged": 115636,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -39874,6 +39874,37 @@
       "nativeLoc": 150,
       "managedLoc": 148,
       "conversionManagedCommit": "7cfcd086d2d8e6c43720dea797d24a0b80853822"
+    },
+    {
+      "name": "pmobj-tick-tail-chunk1113",
+      "bucket": "conversion",
+      "note": "Actor tick tail, nightmare respawn, `CheckNoDelay`, and `CheckSectorTransition` action bits from `p_mobj.cpp` (**5127\u20135276**). Skips credited movement/tick hulls through **5075**.",
+      "auditSeams": "`P_ActorInSpecialSector`, `SetState`, `CalcBones`, `P_NightmareRespawn`, and sector triggers remain host-injected.",
+      "auditRationale": "First \u2265150 UNCredited window after **1112**: **5127\u20135276**. **2251\u20132400** is **1112**; **2421\u20135075** overlaps **724**/**725**/**728**.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 5127 --end 5276` and `--chunk 1113 --band` \u2192 UNCredited, exit 0.",
+      "auditManagedLocJustification": "Respawn cadence and sector-enter masks follow native branches; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Terrain flat touch gate (**5126\u20135128**) | yes |\n| Null state destroy (**5132\u20135135**) | yes |\n| Tic countdown (**5142\u20135151**) | yes |\n| Bone recalc skip (**5154\u20135157**) | yes |\n| Nightmare respawn gates (**5159\u20135190**) | yes |\n| `CheckNoDelay` (**5200\u20135224**) | yes |\n| Sector enter/hit bits (**5251\u20135262**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **5076\u20135126** | inside credited tick / outside hull |\n| **5121\u20135125**, **5140**, **5190** | host damage/render/respawn calls |\n| **5227\u20135231** | VM thunk |\n| **5277+** | transition tail outside hull |\n\n| Managed (`VmPMobjTickTail1113Slice.cs`) | Native (`p_mobj.cpp`) |\n|----------------------------------------|---------------------|\n| Tick tail + no-delay + sector bits | **5127\u20135276** |\n| Band hull (exclusive slice) | **5127\u20135276** |\n\n### Chunk **1113** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1112** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjTickTail1113Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "Tick tail CheckNoDelay sector transition",
+          "start": 5127,
+          "end": 5276,
+          "tests": [
+            "VmPMobjTickTail1113SliceTests.ShouldApplyTerrainFlat_WhenTouchingOrInWater",
+            "VmPMobjTickTail1113SliceTests.ResolveRespawnMonsterTics_ScalesNegativeMinimum",
+            "VmPMobjTickTail1113SliceTests.TryNightmareRespawn_SpawnsWhenDiceAndCadenceAllow",
+            "VmPMobjTickTail1113SliceTests.RunCheckNoDelay_ReturnsFalseWhenActionFreesActor",
+            "VmPMobjTickTail1113SliceTests.BuildSectorEnterActions_OrsFloorAndCeiling"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 140,
+      "conversionManagedCommit": "ad927b91ae0a0bd46a2c2ee63f889841859a7b6b"
     }
   ],
   "behaviorNativeChecksum": 508086,
