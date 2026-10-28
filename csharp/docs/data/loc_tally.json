@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 76956,
+  "convertedThisRunNative": 77106,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 99629,
+  "convertedThisRunManaged": 99715,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 411916,
+  "remainingNative": 411766,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 95483,
+  "convertedBehaviorNative": 95633,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 96170,
-  "convertedBehaviorManaged": 109300,
+  "combinedBehaviorNative": 96320,
+  "convertedBehaviorManaged": 109386,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -38172,6 +38172,38 @@
       "nativeLoc": 150,
       "managedLoc": 103,
       "conversionManagedCommit": "ef53b58159aadf74038c3c5a171c0bcdcadabf6f"
+    },
+    {
+      "name": "v-font-parse-init-chunk1062",
+      "bucket": "conversion",
+      "note": "`CalcDefaultTranslation` tail, `V_LogColorFromColorRange`, `V_ParseFontColor`, and `V_InitFonts` / `V_LoadTranslations` head from `v_font.cpp` (**751\u2013900**); follows chunk **1061** (**601\u2013750**). Remaining **901\u2013957** (~57) deferred without padding.",
+      "auditSeams": "Gap RGB interpolation (**751\u2013758**) delegates to **1061** `InterpolateDefaultRemapGap`; `V_FindFontColor`, `CreateHexLumpFont`, `fileSystem`, and `FFont` mutation remain host-injected.",
+      "auditRationale": "UNCredited **`v_font.cpp`** **751\u2013900** (+150); finishes `CalcDefaultTranslation` control tail and font color/init policy; **901\u2013957** sub-150 deferred.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/common/fonts/v_font.cpp --start 751 --end 900` and `--chunk 1062 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Gap-fill cursor advance (**760\u2013761**) | yes |\n| `V_LogColorFromColorRange` bounds (**776\u2013780**) | yes |\n| `V_ParseFontColor` escape dispatch (**798\u2013842**) | yes |\n| `V_InitFonts` hex console requirement (**863\u2013865**) | yes (predicate) |\n| `V_LoadTranslations` load gate (**876\u2013877**) | yes |\n| Big/small default translation indices (**881\u2013900**) | yes |\n| Luminosity translation index patch (**885\u2013900**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **751\u2013758** | RGB gap blend \u2014 **1061** `InterpolateDefaultRemapGap` seam |\n| **764** | closing brace host |\n| **826** | `V_FindFontColor` host |\n| **856\u2013870** | font ctor / `V_GetFont` host |\n| **901\u2013957** | deferred tail (<150) |\n\n| Managed (`VmVFontParseInit1062Slice.cs`) | Native (`v_font.cpp`) |\n|------------------------------------------|----------------------|\n| `AdvanceGapFillCursor` | **760\u2013761** |\n| `ShouldUseDefaultLogColor` | **776\u2013778** |\n| `ClassifyFontColorEscape` / `ResolveStandardColorLetter` / named token | **798\u2013842** |\n| `RequiresConsoleHexFont` | **863\u2013864** |\n| `ShouldLoadFontTranslations` | **876** |\n| `BigFontDefaultTranslationTableIndex` / `SmallFontDefaultTranslationTableIndex` | **881\u2013895** |\n| `PatchLuminosityTranslationIndex` | **885\u2013900** |\n| Band hull (exclusive slice) | **751\u2013900** |\n\n### Chunk **1062** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1061** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmVFontParseInit1062Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/fonts/v_font.cpp",
+          "symbol": "V_ParseFontColor / V_InitFonts",
+          "start": 751,
+          "end": 900,
+          "tests": [
+            "VmVFontParseInit1062SliceTests.AdvanceGapFillCursor_MatchesNativeIncrement",
+            "VmVFontParseInit1062SliceTests.ShouldUseDefaultLogColor_WhenOutOfRange",
+            "VmVFontParseInit1062SliceTests.ResolveStandardColorLetter_AcceptsCase",
+            "VmVFontParseInit1062SliceTests.ClassifyFontColorEscape_RecognizesNativeLeaders",
+            "VmVFontParseInit1062SliceTests.TryParseNamedColorToken_ExtractsBracketName",
+            "VmVFontParseInit1062SliceTests.PatchLuminosityTranslationIndex_ReplacesHighBits",
+            "VmVFontParseInit1062SliceTests.RequiresConsoleHexFont_WhenLumpMissing"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 86,
+      "conversionManagedCommit": "eefd5b5c85fdc4fd98b5ae8ba4ca90a5e6515727"
     }
   ],
   "behaviorNativeChecksum": 508086,
