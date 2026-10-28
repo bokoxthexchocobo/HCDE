@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 72137,
+  "convertedThisRunNative": 72287,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 95714,
+  "convertedThisRunManaged": 95842,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 416668,
+  "remainingNative": 416518,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 90664,
+  "convertedBehaviorNative": 90814,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 91418,
-  "convertedBehaviorManaged": 105385,
+  "combinedBehaviorNative": 91568,
+  "convertedBehaviorManaged": 105513,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -37133,6 +37133,38 @@
       "nativeLoc": 150,
       "managedLoc": 166,
       "conversionManagedCommit": "e3585afde5abbb9ab94b55cb8d3116ac9fd7f3b3"
+    },
+    {
+      "name": "g-mapinfo-parse-mapinfo-tail-chunk1030",
+      "bucket": "conversion",
+      "note": "`ParseMapInfo` late top-level keywords, `G_ClearMapinfo`, and `HCDE_ParseCMPGNINF` scanner helpers from `g_mapinfo.cpp` (**2750\u20132899**). Follows chunk **1029** (**2600\u20132749**). Hull ends inside `mapname` token validation (**2896\u20132899**); apply/skip tail (**2920+**) deferred to next band.",
+      "auditSeams": "`ParseDamageDefinition`, `ParseSpawnNums`, `ParseConversationIDs`, `ParseAMColors`, `DeinitIntermissions`, `HCDE_ClearEMapInfoCompat`, `fileSystem.FindLump`, and `FScanner` I/O remain native.",
+      "auditRationale": "UNCredited contiguous **`g_mapinfo.cpp`** band after **1029** with zero conversion/recognition overlap and no Vm* line-range collision on **2750\u20132899** (`VmMapInfoParseMapInfoLoop` **3067\u20133114** outside hull).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_mapinfo.cpp --start 2750 --end 2899` and `--chunk 1030 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `damagetype` / `spawnnums` / `conversationids` new-format gates (**2752\u20132787**) | yes |\n| `automap` / `automap_overlay` gate + overlay flag (**2788\u20132798**) | yes |\n| Unknown top-level keyword error (**2800\u20132802**) | yes |\n| `G_ClearMapinfo` reset fields (**2815\u20132826**) | yes (policy snapshot) |\n| Indexed CMPGNINF property bracket depth (**2835\u20132845**) | yes |\n| `HCDE_SkipCMPGNINFValue` comma continuation (**2860\u20132865**) | yes (predicate) |\n| `mapname` token kind validation (**2894\u20132899**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2600\u20132749** | chunk **1029** |\n| **2750\u20132751** | `doomednums` old-format error tail (seam with **1029**) |\n| **2805\u20132813** | closing braces / forward decl host |\n| **2874\u20132877**, **2879\u20132881** | lump find / scanner host |\n| **2900+** | outside hull (**2899** end) |\n| **2920+** | CMPGNINF apply/skip block (next band) |\n| **3067\u20133114** | off-tally `VmMapInfoParseMapInfoLoop` |\n| Retired chunk **303** | no tally re-credit; `VmCmpgninfParser` seam test only |\n\n| Managed (`VmMapInfoParseMapInfo1030Slice.cs`) | Native (`g_mapinfo.cpp`) |\n|--------------------------------------------------|---------------------------|\n| `TryParseLateTopLevelKeyword` | **2752\u20132802** |\n| `CreateClearedMapinfoState` | **2815\u20132826** |\n| `AdvanceIndexedPropertyBracketDepth` | **2835\u20132845** |\n| `ShouldContinueSkippingCmpgninfValue` | **2860\u20132865** |\n| `TryValidateCmpgninfMapNameToken` | **2896\u20132899** |\n| Band hull (exclusive slice) | **2750\u20132899** |\n\n### Chunk **1030** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1029** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Gamedata/VmMapInfoParseMapInfo1030Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "ParseMapInfo tail / G_ClearMapinfo / HCDE_ParseCMPGNINF head",
+          "start": 2750,
+          "end": 2899,
+          "tests": [
+            "VmMapInfoParseMapInfo1030SliceTests.TryParseLateTopLevelKeyword_RejectsDamageTypeOnOldFormat",
+            "VmMapInfoParseMapInfo1030SliceTests.TryParseLateTopLevelKeyword_AcceptsSpawnNumsOnNewFormat",
+            "VmMapInfoParseMapInfo1030SliceTests.TryParseLateTopLevelKeyword_DetectsAutomapOverlay",
+            "VmMapInfoParseMapInfo1030SliceTests.FormatUnknownTopLevelKeyword_MatchesNativeShape",
+            "VmMapInfoParseMapInfo1030SliceTests.CreateClearedMapinfoState_MatchesNativeDefaults",
+            "VmMapInfoParseMapInfo1030SliceTests.AdvanceIndexedPropertyBracketDepth_TracksNestedBrackets",
+            "VmMapInfoParseMapInfo1030SliceTests.TryValidateCmpgninfMapNameToken_RejectsInvalidToken"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 128,
+      "conversionManagedCommit": "d7a7111c6df63816e3764ab255f19c9bdb8304b8"
     }
   ],
   "behaviorNativeChecksum": 508086,
