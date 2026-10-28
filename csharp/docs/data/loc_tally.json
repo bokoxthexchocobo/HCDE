@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 80406,
+  "convertedThisRunNative": 80556,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 102206,
+  "convertedThisRunManaged": 102322,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 408466,
+  "remainingNative": 408316,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 98933,
+  "convertedBehaviorNative": 99083,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 99620,
-  "convertedBehaviorManaged": 111877,
+  "combinedBehaviorNative": 99770,
+  "convertedBehaviorManaged": 111993,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -38968,6 +38968,41 @@
       "nativeLoc": 150,
       "managedLoc": 130,
       "conversionManagedCommit": "ed9a5fafb43626447b12e69638df099fd72aab34"
+    },
+    {
+      "name": "sbarinfo-commands-gamemode-flow-aspect-chunk1085",
+      "bucket": "conversion",
+      "note": "`CommandGameMode` parse/tick, ammo/inventory flow control, and `CommandAspectRatio` parse head from `sbarinfo_commands.cpp` (**1801\u20131950**); follows **1084** ctor seam (**1800**).",
+      "auditSeams": "**1084** owns `ApplyCommandGameModeFlagBit` and selected-inventory band; **1085** delegates keyword OR to **1084**. Host `MatchString`, `FindRatio`, and `SetTruth` excluded.",
+      "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **1801\u20131950** (+150); gamemode comma list + tick truth + usesammo/inventorybar ticks + aspect ratio token map head; hull ends at **ASPECTRATIO_5_4** enum entry (**1950**).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 1801 --end 1950` and `--chunk 1085 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| GameMode keyword OR loop (**1807\u20131821**) | yes |\n| Unknown gamemode warn-once (**1813\u20131818**) | yes |\n| GameMode tick truth table (**1828\u20131831**) | yes |\n| `GameModes` flag values (**1837\u20131840**) | yes |\n| `UsesAmmo` tick OR (**1866**) | yes |\n| `UsesSecondaryAmmo` distinct slot (**1883**) | yes |\n| `InventoryBarNotVisible` tics/bar flag (**1900**) | yes |\n| Aspect ratio string dispatch (**1917\u20131928**) | yes |\n| `ratioMap[ratio]=ratio` self map (**1933**) | yes |\n| Aspect ratio tick equality (**1941**) | yes (predicate) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1799\u20131802** | **1084** ctor close seam |\n| **1822**, **1864**, **1881**, **1898**, **1935**, **1939** | host flow-control delegate |\n| **1846\u20131853** | static `modeNames` table (wiring via classifier) |\n| **1951+** | `ratioMap` static + `FindRatio` outside hull |\n\n| Managed (`VmSbarinfoCommandGameMode1085Slice.cs` + nested types) | Native (`sbarinfo_commands.cpp`) |\n|---------------------------------------------------------------------|----------------------------------|\n| GameMode parse/tick | **1804\u20131832** |\n| Ammo / inventory flow | **1862\u20131900** |\n| Aspect ratio parse/tick policy | **1914\u20131941** |\n| Band hull (exclusive slice) | **1801\u20131950** |\n\n### Chunk **1085** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1084** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmSbarinfoCommandGameMode1085Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/g_statusbar/sbarinfo_commands.cpp",
+          "symbol": "CommandGameMode / CommandUsesAmmo / CommandAspectRatio",
+          "start": 1801,
+          "end": 1950,
+          "tests": [
+            "VmSbarinfoCommandGameMode1085SliceTests.TryResolveGameModeKeyword_MapsTeamgameIndex",
+            "VmSbarinfoCommandGameMode1085SliceTests.MergeGameModeKeywordIntoMask_StacksBitsVia1084Helper",
+            "VmSbarinfoCommandGameMode1085SliceTests.ResolveUnknownGameModeWarningState_EmitsOnce",
+            "VmSbarinfoCommandGameMode1085SliceTests.ResolveGameModeFlowControlTruth_MatchesCooperativeCase",
+            "VmSbarinfoCommandGameMode1085SliceTests.ResolveUsesAmmoFlowControlTruth_OrPrimarySecondary",
+            "VmSbarinfoCommandGameMode1085SliceTests.ResolveUsesSecondaryAmmoFlowControlTruth_RequiresDistinctSecondary",
+            "VmSbarinfoCommandGameMode1085SliceTests.ResolveInventoryBarNotVisibleTruth_WhenTicsExpired",
+            "VmSbarinfoCommandGameMode1085SliceTests.TryParseAspectRatioKeyword_Maps169",
+            "VmSbarinfoCommandGameMode1085SliceTests.RegisterAspectRatioSelfMapping_WritesDiagonalEntry",
+            "VmSbarinfoCommandGameMode1085SliceTests.ResolveAspectRatioFlowControlTruth_ComparesMappedRatio"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 116,
+      "conversionManagedCommit": "34b2a11025e630ac84ebbe1e7f2fd1cdbcbec429"
     }
   ],
   "behaviorNativeChecksum": 508086,
