@@ -79,9 +79,12 @@ public static class VmSbarinfoCommandDrawGem1093Slice
             GoalValue: 0,
             ChainWiggle: 0);
 
-    public static bool ShouldSkipDrawGemDraw(bool chainImageMissing) => chainImageMissing;
-
-    public static int ApplyDrawGemChainWiggleOffset(
+    public static (bool DrawChain, bool DrawGemOverlay) ResolveDrawGemDrawOutcome(
+        bool chainImageMissing,
+        bool gemImagePresent) =>
+        chainImageMissing
+            ? (DrawChain: false, DrawGemOverlay: false)
+            : (DrawChain: true, DrawGemOverlay: gemImagePresent);
         bool wiggleEnabled,
         double drawValue,
         int goalValue,
