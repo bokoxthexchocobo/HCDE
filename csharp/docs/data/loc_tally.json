@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 75456,
+  "convertedThisRunNative": 75606,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 98441,
+  "convertedThisRunManaged": 98624,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 413416,
+  "remainingNative": 413266,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 93983,
+  "convertedBehaviorNative": 94133,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 94670,
-  "convertedBehaviorManaged": 108112,
+  "combinedBehaviorNative": 94820,
+  "convertedBehaviorManaged": 108295,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -37846,6 +37846,40 @@
       "nativeLoc": 150,
       "managedLoc": 101,
       "conversionManagedCommit": "3e33b59498bf12d1641546af58233af766181768"
+    },
+    {
+      "name": "g-mapinfo-parse-mid-chunk1052",
+      "bucket": "conversion",
+      "note": "`CheckWarpTransMap` tail, cluster lookup, snapshot/defered clears, and `level_info_t::Reset` head from `g_mapinfo.cpp` (**151\u2013300**). Follows **1051** (**1\u2013150**).",
+      "auditSeams": "`Snapshot.Clean`, `ClearDefered`, `GlobalACSStrings.UnlockAll`, `primaryLevel` / `currentVMLevel`, and `gameinfo.gametype` remain host-injected; uncredited `VmMapInfoWarpTrans` / `VmMapInfoLevelReset` are not re-credited.",
+      "auditRationale": "File-scoped UNCredited **`g_mapinfo.cpp`** **151\u2013300** (+150); excludes **1\u2013150** (**1051**). Hull ends at **`slideshow = NAME_None`** (**300**); **301+** deferred without padding.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_mapinfo.cpp --start 151 --end 300` and `--chunk 1052 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `CheckWarpTransMap` tail (**151\u2013154**) | yes (fallthrough **false**) |\n| `SecretLevelVisited` (**161\u2013168**) | yes |\n| `FindWadClusterInfo` / `FindClusterInfo` (**175\u2013197**) | yes |\n| `G_ClearSnapshots` (**204\u2013220**) | yes (attached-level + runtime extras predicates) |\n| `P_RemoveDefereds` (**229\u2013235**) | yes |\n| `level_info_t::Reset` through **slideshow** (**243\u2013300**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1\u2013150** | chunk **1051** |\n| **208\u2013216** | host `Snapshot.Clean` on live levels |\n| **220** | `GlobalACSStrings.UnlockAll` host |\n| **301+** | remainder of `Reset` + later MAPINFO parse (future band) |\n| **833+** | chunks **1027\u20131036** |\n| `VmMapInfoWarpTrans` / `VmMapInfoLevelReset` | uncredited off-tally helpers \u2014 seam only |\n\n| Managed (`VmMapInfoParseMid1052Slice.cs`) | Native (`g_mapinfo.cpp`) |\n|-------------------------------------------|---------------------------|\n| `CheckWarpTransMapTailReturnsFalse` | **151\u2013154** |\n| `SecretLevelVisited` | **161\u2013168** |\n| `FindWadClusterIndex` / `ResolveClusterInfo` | **175\u2013197** |\n| `ShouldCleanAttachedLevelSnapshot` / `ExtraRuntimeSnapshotClears` | **204\u2013220** |\n| `ClearDeferedForEachLevel` | **229\u2013235** |\n| `ApplyLevelInfoResetHead` | **243\u2013300** |\n| Band hull (exclusive slice) | **151\u2013300** |\n\n### Chunk **1052** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1051** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Gamedata/VmMapInfoParseMid1052Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "SecretLevelVisited / level_info_t::Reset head",
+          "start": 151,
+          "end": 300,
+          "tests": [
+            "VmMapInfoParseMid1052SliceTests.CheckWarpTransMapTailReturnsFalse_MatchesNativeFallthrough",
+            "VmMapInfoParseMid1052SliceTests.SecretLevelVisited_DetectsVisitedSecret",
+            "VmMapInfoParseMid1052SliceTests.ResolveClusterInfo_UsesDefaultWhenMissing",
+            "VmMapInfoParseMid1052SliceTests.ResolveClusterInfo_FindsWadCluster",
+            "VmMapInfoParseMid1052SliceTests.ShouldCleanAttachedLevelSnapshot_RequiresBoth",
+            "VmMapInfoParseMid1052SliceTests.ExtraRuntimeSnapshotClears_CountsPrimaryAndVm",
+            "VmMapInfoParseMid1052SliceTests.ClearDeferedForEachLevel_InvokesPerIndex",
+            "VmMapInfoParseMid1052SliceTests.ApplyLevelInfoResetHead_SetsDoomLaxMonsterFlags2",
+            "VmMapInfoParseMid1052SliceTests.ApplyLevelInfoResetHead_ClearsHexenFlags2"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 183,
+      "conversionManagedCommit": "b50d0194ac31197f0ff7e38a1c51fed116f0ba71"
     }
   ],
   "behaviorNativeChecksum": 508086,
