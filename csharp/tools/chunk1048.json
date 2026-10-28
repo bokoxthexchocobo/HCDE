@@ -1,0 +1,31 @@
+[
+  {
+    "name": "gskill-property-export-chunk1048",
+    "bucket": "conversion",
+    "note": "`G_SkillProperty` int/float tail, `G_SkillName`, `G_VerifySkill`, and `FSkillInfo::operator=` head from `g_skill.cpp` (**391–540**). Continues **1047** (**541–690**).",
+    "auditSeams": "`DEFINE_ACTION_FUNCTION`, `GStrings`, and `players[consoleplayer]` remain host-injected; uncredited `VmGSkillPropertyQuery` / `VmGSkillNativeExportRecognition` are not re-credited.",
+    "auditRationale": "File-scoped UNCredited **`g_skill.cpp`** **391–540** (+150); excludes **541–690** (**1047**). Recognition **227b** retired (no **417–508** overlap).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_skill.cpp --start 391 --end 540` and `--chunk 1048 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `G_SkillProperty` int tail (**392–410**) | yes |\n| `G_SkillPropertyInt` export (**417–422**) | yes (export name) |\n| `G_SkillProperty` float (**430–469**) | yes |\n| `G_SkillPropertyFloat` export (**472–477**) | yes |\n| `G_SkillName` (**487–501**) | yes |\n| `G_SkillName` export (**504–508**) | yes |\n| `G_VerifySkill` (**516–522**) | yes |\n| `operator=` head (**530–540**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1–390** | parse / property head bands |\n| **541–690** | chunk **1047** |\n| **691+** | past EOF |\n| `VmGSkillPropertyQuery` | uncredited query layer — seam only |\n\n| Managed (`VmGSkillPropertyExport1048Slice.cs`) | Native (`g_skill.cpp`) |\n|--------------------------------------------------|------------------------|\n| `ResolveSkillPropertyIntTail` / infighting helpers | **392–410** |\n| `SkillPropertyIntExportName` | **417–422** |\n| `ResolveFloatSkillProperty` | **430–469** |\n| `SkillPropertyFloatExportName` | **472–477** |\n| `ResolveDisplayedSkillName` | **487–501** |\n| `SkillNameExportName` | **504–508** |\n| `ClampActiveGameSkill` | **516–522** |\n| `ApplySkillInfoOperatorAssignHead` | **532–540** |\n| Band hull (exclusive slice) | **391–540** |\n\n### Chunk **1048** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1047** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmGSkillPropertyExport1048Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "G_SkillProperty / G_SkillName / G_VerifySkill",
+        "start": 391,
+        "end": 540,
+        "tests": [
+          "VmGSkillPropertyExport1048SliceTests.ResolveInfightingProperty_TotalAndNone",
+          "VmGSkillPropertyExport1048SliceTests.ResolveFloatSkillProperty_DoubleAmmoFlag",
+          "VmGSkillPropertyExport1048SliceTests.ResolveDisplayedSkillName_PerClassAndDollar",
+          "VmGSkillPropertyExport1048SliceTests.ClampActiveGameSkill_Bounds",
+          "VmGSkillPropertyExport1048SliceTests.ApplySkillInfoOperatorAssignHead_CopiesPrefixFields",
+          "VmGSkillPropertyExport1048SliceTests.ResolveSkillPropertyIntTail_CoversBandCases",
+          "VmGSkillPropertyExport1048SliceTests.ExportNames_MatchDefineActionFunctions"
+        ]
+      }
+    ]
+  }
+]
