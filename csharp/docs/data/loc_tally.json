@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 79806,
+  "convertedThisRunNative": 79956,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 101638,
+  "convertedThisRunManaged": 101767,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 409066,
+  "remainingNative": 408916,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 98333,
+  "convertedBehaviorNative": 98483,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 99020,
-  "convertedBehaviorManaged": 111309,
+  "combinedBehaviorNative": 99170,
+  "convertedBehaviorManaged": 111438,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -38828,6 +38828,41 @@
       "nativeLoc": 150,
       "managedLoc": 126,
       "conversionManagedCommit": "61cb4f9d50a5d0825701b08afd76f8eed44ee3aa"
+    },
+    {
+      "name": "sbarinfo-commands-drawnumber-parse-tick-chunk1081",
+      "bucket": "conversion",
+      "note": "`CommandDrawNumber::Parse` flag tail, optional coloring, and `Tick` dispatch head from `sbarinfo_commands.cpp` (**1201\u20131350**); follows **1080** through inventory validation (**1200**).",
+      "auditSeams": "**1080** owns value keyword validation through **1200**; **1078** owns `InvalidStringCache` (**-1**). Host `GetCoordinates`, `GetTranslation`, `ParseStringValue`, and `FindInventory` excluded.",
+      "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **1201\u20131350** (+150); draw-number flag loop + tick health/ammo head; no overlap with **1080** hull except seam **1200**/**1201**.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 1201 --end 1350` and `--chunk 1081 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Parse flag keywords (**1203\u20131261**) | yes |\n| Flag separator `|` vs `,` (**1262\u20131263**) | yes |\n| Optional font spacing + low/high coloring gates (**1266\u20131287**) | yes |\n| Script health/armor interpolation override at parse end (**1291\u20131294**) | yes |\n| `Reset` draw value (**1296\u20131298**) | yes (constant) |\n| Prefix tick cache invalidation (**1302\u20131306**) | yes |\n| Tick health clamp + interpolation (**1311\u20131321**) | yes |\n| Missing ammo early exit (**1324\u20131337**, **1349\u20131350**) | yes |\n| Parameterized ammo amount (**1339\u20131346**) | yes |\n| Draw-number alignment keyword order (**1235\u20131240**) | yes (delegates **1077**) |\n| Prefix + constant merge (**1253\u20131257**) | yes |\n| Draw-shadow optional offsets (**1211\u20131222**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1201** | trailing `,` seam with **1080** |\n| **1265**, **1276\u20131285** | host coordinates / translation scanner |\n| **1305** | host `CommandDrawString::Tick` delegate |\n| **1312**, **1319**, **1329**, **1336** | host status bar field reads |\n| **1341** | host `FindInventory` |\n| **1351+** | `ammo1` max amount outside hull |\n\n| Managed (`VmSbarinfoCommandDrawNumber1081Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|------------------------------------------------------|----------------------------------|\n| Parse flag classification + separators | **1203\u20131263** |\n| Shadow / prefix / alignment / coloring gates | **1211\u20131257**, **1266\u20131287** |\n| Parse-close interpolation policy | **1291\u20131294** |\n| Tick cache + health/ammo predicates | **1302\u20131350** |\n| Band hull (exclusive slice) | **1201\u20131350** |\n\n### Chunk **1081** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1080** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmSbarinfoCommandDrawNumber1081Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/g_statusbar/sbarinfo_commands.cpp",
+          "symbol": "CommandDrawNumber::Parse / Reset / Tick",
+          "start": 1201,
+          "end": 1350,
+          "tests": [
+            "VmSbarinfoCommandDrawNumber1081SliceTests.ClassifyDrawNumberParseKeyword_MapsFillZerosAndRejectsUnknown",
+            "VmSbarinfoCommandDrawNumber1081SliceTests.ResolveDrawNumberFlagListSeparator_MatchesNativePipeComma",
+            "VmSbarinfoCommandDrawNumber1081SliceTests.ApplyDrawNumberShadowFlag_UsesOptionalOffsets",
+            "VmSbarinfoCommandDrawNumber1081SliceTests.ResolveDrawNumberPrefixWhenConstant_DisablesPrefixAndConcatenates",
+            "VmSbarinfoCommandDrawNumber1081SliceTests.ShouldParseDrawNumberLowHighColoring_MatchesNativeCommaGates",
+            "VmSbarinfoCommandDrawNumber1081SliceTests.ResolveDrawNumberParseClosingInterpolation_OverridesHealthArmorFromScript",
+            "VmSbarinfoCommandDrawNumber1081SliceTests.ClampDrawNumberHealthForDisplay_ZeroesNegativesWhenCapped",
+            "VmSbarinfoCommandDrawNumber1081SliceTests.ResolveDrawNumberPrefixTickCache_InvalidatesWhenPrefixEnabled",
+            "VmSbarinfoCommandDrawNumber1081SliceTests.ResolveDrawNumberTickWhenAmmoMissing_ClearsStringAndReturns",
+            "VmSbarinfoCommandDrawNumber1081SliceTests.ResolveInventoryDrawNumberAmount_ReturnsZeroWhenMissing"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 129,
+      "conversionManagedCommit": "c8522e346f0058bef08d0d00d5d362696a1d2479"
     }
   ],
   "behaviorNativeChecksum": 508086,
