@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 75606,
+  "convertedThisRunNative": 75756,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 98624,
+  "convertedThisRunManaged": 98771,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 413266,
+  "remainingNative": 413116,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 94133,
+  "convertedBehaviorNative": 94283,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 94820,
-  "convertedBehaviorManaged": 108295,
+  "combinedBehaviorNative": 94970,
+  "convertedBehaviorManaged": 108442,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -37880,6 +37880,39 @@
       "nativeLoc": 150,
       "managedLoc": 183,
       "conversionManagedCommit": "b50d0194ac31197f0ff7e38a1c51fed116f0ba71"
+    },
+    {
+      "name": "g-mapinfo-parse-tail-chunk1053",
+      "bucket": "conversion",
+      "note": "`level_info_t::Reset` tail, `LookupLevelName`, `CheckLevelRedirect`, and `isValid` from `g_mapinfo.cpp` (**301\u2013450**). Follows **1052** (**151\u2013300**).",
+      "auditSeams": "`GStrings.CheckString`, `PClass::FindActor`, inventory scans, `FindCVar` / `GetCVar`, `P_CheckMapData`, and `FindLevelInfo` remain host-injected; uncredited `VmMapInfoLookupLevelName` / `VmMapInfoLevelReset` are not re-credited.",
+      "auditRationale": "File-scoped UNCredited **`g_mapinfo.cpp`** **301\u2013450** (+150); excludes **151\u2013300** (**1052**). Hull ends at **`isValid` opening brace** (**450**); **451\u2013452** return deferred without padding.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_mapinfo.cpp --start 301 --end 450` and `--chunk 1053 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `Reset` tail (**301\u2013334**) | yes |\n| `LookupLevelName` (**342\u2013389**) | yes |\n| `CheckLevelRedirect` predicates (**397\u2013441**) | yes (host callbacks for actor/cvar/map) |\n| `isValid` policy (**449\u2013452**) | yes (`IsLevelInfoValid`; hull **450** ends at `{`) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **151\u2013300** | chunk **1052** |\n| **335\u2013341** | comment banners |\n| **390\u2013396** | comment banners / redirect prologue host |\n| **453+** | `GetSecretMap` / parse helpers (future band) |\n| **833+** | chunks **1027\u20131036** |\n| `VmMapInfoLookupLevelName` | uncredited strip helper \u2014 seam only |\n\n| Managed (`VmMapInfoParseTail1053Slice.cs`) | Native (`g_mapinfo.cpp`) |\n|-------------------------------------------|---------------------------|\n| `ApplyLevelInfoResetTail` | **301\u2013334** |\n| `ResolveLookupLevelName` / prefix builder | **342\u2013389** |\n| redirect predicates | **397\u2013441** |\n| `IsLevelInfoValid` | **449\u2013452** |\n| Band hull (exclusive slice) | **301\u2013450** |\n\n### Chunk **1053** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1052** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Gamedata/VmMapInfoParseTail1053Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "Reset tail / LookupLevelName / CheckLevelRedirect",
+          "start": 301,
+          "end": 450,
+          "tests": [
+            "VmMapInfoParseTail1053SliceTests.ApplyLevelInfoResetTail_SetsHcdeShadowUnsetAndSkyRotate",
+            "VmMapInfoParseTail1053SliceTests.ResolveLookupLevelName_ReturnsPlainWhenFlagUnset",
+            "VmMapInfoParseTail1053SliceTests.ResolveLookupLevelName_StripsMapHeaderFromLocalizedString",
+            "VmMapInfoParseTail1053SliceTests.BuildLocalizedHeaderPrefix_FormatsEpisodeMap",
+            "VmMapInfoParseTail1053SliceTests.ShouldEvaluateInventoryRedirect_RequiresNamedType",
+            "VmMapInfoParseTail1053SliceTests.ShouldEvaluateCvarRedirect_RejectsIgnoredBool",
+            "VmMapInfoParseTail1053SliceTests.UsesPerPlayerCvarRedirect_DetectsUserInfoFlag",
+            "VmMapInfoParseTail1053SliceTests.IsLevelInfoValid_AllowsDefaultRecordWithoutMapName"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 147,
+      "conversionManagedCommit": "5f4daf91872d807fcdc0f8ea809034be9d616b3a"
     }
   ],
   "behaviorNativeChecksum": 508086,
