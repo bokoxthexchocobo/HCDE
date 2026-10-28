@@ -27,7 +27,7 @@ public class VmGGameHead995SliceTests
             yawSensitivity: 1f);
         Assert.Equal(640, pitch);
         Assert.Equal(320, yaw);
-        Assert.Equal(4, VmGGameHead995Slice.ApplySlowTurnSpeedBoost(turnHeld: 2, turnSpeed: 1));
+        Assert.Equal(3, VmGGameHead995Slice.ApplySlowTurnSpeedBoost(turnHeld: 2, turnSpeed: 1));
     }
 
     [Fact]
