@@ -1,0 +1,30 @@
+[
+  {
+    "name": "p-conversation-item-reply-chunk973",
+    "bucket": "conversion",
+    "note": "`ClearConversationStuff`, `CheckStrifeItem`, `TakeStrifeItem` guards, `ShouldSkipReply`, and `SendConversationReply` wire selection from `p_conversation.cpp` (**151–300**).",
+    "auditSeams": "`TakeInventory` VM call, `Net_Write*`, menu close, and `P_FreeStrifeConversations` body remain host-injected.",
+    "auditRationale": "UNCredited Strife dialog band with no prior `p_conversation.cpp` matrix row; predicates mirror item/reply gating without re-crediting line-special conversation helpers on chunk **933**.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_conversation.cpp --start 151 --end 300` and `--chunk 973 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `ClearConversationStuff` (**154–160**) | yes |\n| `CheckStrifeItem` (**171–181**) | yes |\n| `TakeStrifeItem` skip policy (**192–207**) | yes (guard predicates) |\n| `dlg_musicvolume` clamp (**218–222**) | yes |\n| `ShouldSkipReply` (**232–254**) | yes |\n| `SendConversationReply` opcode switch (**268–284**) | yes (wire kind + last reply) |\n| `P_FreeStrifeConversations` menu gate (**298–300**) | yes (predicate) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **162–170**, **183–191**, **224–231**, **256–267**, **289–297** | comments / VM prologue / separators |\n| **209–216** | `TakeInventory` VM seam |\n\n| Managed (`VmPConversationItemReply973Slice.cs`) | Native (`p_conversation.cpp`) |\n|--------------------------------------------------|--------------------------------|\n| `ClearConversationPointers` | **154–160** |\n| `CheckStrifeItem` | **171–181** |\n| `TakeStrifeItemBlocked` | **192–207** |\n| `ClampDlgMusicVolume` | **218–222** |\n| `ShouldSkipReply` | **232–254** |\n| `SelectReplyWireKind` / `ReplyWireWritesNodeAndReply` | **268–284** |\n| `FreeConversationsShouldCloseMenu` | **298–300** |\n| Band hull (exclusive slice) | **151–300** |\n\n### Chunk **973** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**972** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPConversationItemReply973Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/p_conversation.cpp",
+        "symbol": "CheckStrifeItem",
+        "start": 151,
+        "end": 300,
+        "tests": [
+          "VmPConversationItemReply973SliceTests.ClearConversationPointers_ResetsAllFields",
+          "VmPConversationItemReply973SliceTests.CheckStrifeItem_RequiresAmountOnPc",
+          "VmPConversationItemReply973SliceTests.TakeStrifeItemBlocked_SkipsQuestKeySigil",
+          "VmPConversationItemReply973SliceTests.ClampDlgMusicVolume_ClampsToUnitInterval",
+          "VmPConversationItemReply973SliceTests.ShouldSkipReply_EmptyTextOrFailedChecks",
+          "VmPConversationItemReply973SliceTests.SelectReplyWireKind_MapsDemConversationOpcodes"
+        ]
+      }
+    ]
+  }
+]
