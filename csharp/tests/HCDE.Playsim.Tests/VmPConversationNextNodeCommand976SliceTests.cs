@@ -91,5 +91,11 @@ public class VmPConversationNextNodeCommand976SliceTests
             conversationNpcNotNull: true,
             VmPConversationNextNodeCommand976Slice.DemConvNull));
         Assert.True(VmPConversationNextNodeCommand976Slice.TerminalPrintsWithoutStatusBar(null));
+        Assert.True(VmPConversationNextNodeCommand976Slice.TeardownClearsPlayerConversation(
+            intermissionActive: false,
+            slideshowActive: false));
+        Assert.False(VmPConversationNextNodeCommand976Slice.TeardownClearsPlayerConversation(
+            true,
+            false));
     }
 }
