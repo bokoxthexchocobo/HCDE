@@ -59,4 +59,37 @@ public class VmPConversationNextNodeCommand976SliceTests
         Assert.Equal(12, VmPConversationNextNodeCommand976Slice.StrifeDialogueNodeFieldExportCount);
         Assert.Equal(9, VmPConversationNextNodeCommand976Slice.StrifeDialogueReplyFieldExportCountInBand);
     }
+
+    [Fact]
+    public void TryResolveNextDialogueAssignment_MatchesNativeBranches()
+    {
+        Assert.True(VmPConversationNextNodeCommand976Slice.TryResolveNextDialogueAssignment(
+            nextNode: 2,
+            conversationRoot: 5,
+            dialogueCount: 10,
+            closeDialog: false,
+            intermissionActive: false,
+            out var index));
+        Assert.Equal(6, index);
+
+        Assert.False(VmPConversationNextNodeCommand976Slice.TryResolveNextDialogueAssignment(
+            2,
+            5,
+            6,
+            false,
+            false,
+            out _));
+    }
+
+    [Fact]
+    public void TerminalStringTable_AndCommandElseBranch()
+    {
+        Assert.Equal("foo", VmPConversationNextNodeCommand976Slice.StripTerminalStringTablePrefix("$foo"));
+        Assert.True(VmPConversationNextNodeCommand976Slice.ShouldRunConversationCommandElseBranch(
+            VmPConversationNextNodeCommand976Slice.DemConvClose));
+        Assert.True(VmPConversationNextNodeCommand976Slice.ConversationNpcUpdateApplies(
+            conversationNpcNotNull: true,
+            VmPConversationNextNodeCommand976Slice.DemConvNull));
+        Assert.True(VmPConversationNextNodeCommand976Slice.TerminalPrintsWithoutStatusBar(null));
+    }
 }

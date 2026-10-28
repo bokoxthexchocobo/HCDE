@@ -59,4 +59,39 @@ public static class VmPConversationNextNodeCommand976Slice
 
     public static bool TerminalResponsePrefersStatusBar(object? statusBar, bool hasStatusBar) =>
         hasStatusBar && statusBar is not null;
+
+    public static bool TerminalPrintsWithoutStatusBar(object? statusBar) => statusBar is null;
+
+    public static string StripTerminalStringTablePrefix(string text) =>
+        text.Length > 0 && text[0] == '$' ? text[1..] : text;
+
+    public static bool ShouldRunConversationCommandElseBranch(int netcode) =>
+        !NetcodeDispatchesHandleReply(netcode);
+
+    public static bool ConversationNpcUpdateApplies(bool conversationNpcNotNull, int netcode) =>
+        conversationNpcNotNull && ShouldRunConversationCommandElseBranch(netcode);
+
+    public static bool TryResolveNextDialogueAssignment(
+        int nextNode,
+        int conversationRoot,
+        int dialogueCount,
+        bool closeDialog,
+        bool intermissionActive,
+        out int dialogueIndex)
+    {
+        dialogueIndex = 0;
+        if (!HasNextNodeTransition(nextNode))
+            return false;
+
+        dialogueIndex = ComputeNextDialogueIndex(conversationRoot, nextNode);
+        if (!NextDialogueIndexInRange(dialogueIndex, dialogueCount))
+            return false;
+
+        return ShouldChainConversationAfterNextNode(closeDialog, intermissionActive)
+            || ShouldStopNpcVoiceDuringIntermission(closeDialog, intermissionActive)
+            || closeDialog;
+    }
+
+    public static bool TeardownClearsPlayerConversation(bool intermissionActive, bool slideshowActive) =>
+        !intermissionActive && !slideshowActive;
 }
