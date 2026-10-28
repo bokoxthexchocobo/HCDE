@@ -26,7 +26,7 @@
           "VmSbarinfoDsbarDraw1069SliceTests.ResolveProtrusionOffset_WalksAscendingFactors",
           "VmSbarinfoDsbarDraw1069SliceTests.ShouldSkipDrawGraphic_WhenTextureMissing",
           "VmSbarinfoDsbarDraw1069SliceTests.ShouldAdvancePendingPopupAfterClose_WhenClosedAndSettled",
-          "VmSbarinfoDsbarDraw1069SliceTests.SelectInventoryHudBarIndex_SwitchesForFullscreen"
+          "VmSbarinfoDsbarDraw1069SliceTests.ApplyInventoryTicsWhenBarEmpty_ClearsWhenNoCommands",
         ]
       }
     ]

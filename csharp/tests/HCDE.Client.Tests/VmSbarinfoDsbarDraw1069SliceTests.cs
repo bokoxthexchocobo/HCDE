@@ -77,6 +77,13 @@ public class VmSbarinfoDsbarDraw1069SliceTests
     }
 
     [Fact]
+    public void ApplyInventoryTicsWhenBarEmpty_ClearsWhenNoCommands()
+    {
+        Assert.Equal(0, VmSbarinfoDsbarDraw1069Slice.ApplyInventoryTicsWhenBarEmpty(12, false, true));
+        Assert.Equal(12, VmSbarinfoDsbarDraw1069Slice.ApplyInventoryTicsWhenBarEmpty(12, true, true));
+    }
+
+    [Fact]
     public void SelectInventoryHudBarIndex_SwitchesForFullscreen()
     {
         Assert.Equal(VmSbarinfoDsbarDraw1069Slice.InventoryFullscreenHudBarIndex,
