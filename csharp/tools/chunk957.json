@@ -21,7 +21,7 @@
           "VmADynLightCollect957SliceTests.DistToSegSquared_PerpendicularOffset",
           "VmADynLightCollect957SliceTests.SegmentWithinLightRadius_UsesSquaredCompare",
           "VmADynLightCollect957SliceTests.LightNodeListNeedsResize_WhenIndexAtSize",
-          "VmADynLightCollect957SliceTests.ShouldInsertLightNode_WhenKeyAbsent",
+          "VmADynLightCollect957SliceTests.EvaluateLightListCapacity_ResizesWhenNeeded",
           "VmADynLightCollect957SliceTests.LinkedPortalEligible_OnlyLinkedType",
           "VmADynLightCollect957SliceTests.ShouldAddWallLightNode_DelegatesCrossProduct",
           "VmADynLightCollect957SliceTests.ShouldSkipCollectWithinRadius_WhenSectionNull",
