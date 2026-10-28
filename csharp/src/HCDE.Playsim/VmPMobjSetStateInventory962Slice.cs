@@ -17,7 +17,7 @@ public static class VmPMobjSetStateInventory962Slice
 
     public static bool StateLoopExhausted(int remainingIterations) => remainingIterations <= 0;
 
-    public static int PreviousStateSprite(object? currentStateSprite) => currentStateSprite ?? -1;
+    public static int PreviousStateSprite(int? currentStateSprite) => currentStateSprite ?? -1;
 
     public static bool StateUsableOnActor(int useFlags) => (useFlags & SufActor) != 0;
 
