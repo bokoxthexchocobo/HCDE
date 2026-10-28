@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 63887,
+  "convertedThisRunNative": 64037,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 89557,
+  "convertedThisRunManaged": 89647,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 424918,
+  "remainingNative": 424768,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 82414,
+  "convertedBehaviorNative": 82564,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 83168,
-  "convertedBehaviorManaged": 99228,
+  "combinedBehaviorNative": 83318,
+  "convertedBehaviorManaged": 99318,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -35528,6 +35528,39 @@
       "nativeLoc": 150,
       "managedLoc": 80,
       "conversionManagedCommit": "2190e984676eaa5923e7a27de20bdeacf327ba3e"
+    },
+    {
+      "name": "p-conversation-handle-reply-chunk975",
+      "bucket": "conversion",
+      "note": "`HandleReply` reply lookup, item-check failure, inventory give/take, log/terminal hooks from `p_conversation.cpp` (**451\u2013600**); follows chunk **974** (**\u2264450**).",
+      "auditSeams": "`Spawn`, `CallTryPickup`, `P_ExecuteSpecial`, `G_StartSlideshow`, `TerminalResponse`, `ClearConversationStuff`, and `NextNode` continuation (**602+**) remain host-injected.",
+      "auditRationale": "UNCredited `HandleReply` band; reuses chunk **973** item-check semantics in tests only\u2014no second matrix row on **151\u2013300**. `NextNode` body deferred past hull **600**.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_conversation.cpp --start 451 --end 600` and `--chunk 975 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `HandleReply` abort + reply walk (**470\u2013478**) | yes |\n| default reply teardown (**480\u2013487**) | yes |\n| item-check failure + QuickNo (**490\u2013506**) | yes |\n| give/take policy (**513\u2013576**) | yes (predicates) |\n| quest log + terminal (**578\u2013597**) | yes |\n\n**Excluded (zero credit / deferred)**\n\n| Native | Reason |\n|--------|--------|\n| **451\u2013460** | `P_ResumeConversation` tail / comment banner |\n| **509\u2013510**, **528\u2013545**, **558\u2013562** | host calls (animation, spawn, special) |\n| **599\u2013600**, **602+** | `NextNode` comment + body (next band) |\n\n| Managed (`VmPConversationHandleReply975Slice.cs`) | Native (`p_conversation.cpp`) |\n|---------------------------------------------------|--------------------------------|\n| `HandleReplyShouldAbort` / `AdvanceToReplyChild` | **470\u2013478** |\n| `IsDefaultReplyPath` / angle + in-conversation clear | **480\u2013487** |\n| `ReplyItemCheckPasses` / `ShouldShowQuickNo` | **490\u2013506** |\n| `WeaponAlreadyOwnedBlocksGive` / `FlameThrowerDialogAmmoGive` | **518\u2013535** |\n| `CombineTakeStuffWithSpecial` / `SelectTerminalReplyText` | **558\u2013576** |\n| `ResolveLogString` / `ShouldTerminalReply` | **578\u2013597** |\n| Band hull (exclusive slice) | **451\u2013600** |\n\n### Chunk **975** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**974** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPConversationHandleReply975Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/p_conversation.cpp",
+          "symbol": "HandleReply",
+          "start": 451,
+          "end": 600,
+          "tests": [
+            "VmPConversationHandleReply975SliceTests.HandleReplyShouldAbort_InvalidNodeOrNpc",
+            "VmPConversationHandleReply975SliceTests.AdvanceToReplyChild_WalksLinkedReplies",
+            "VmPConversationHandleReply975SliceTests.ReplyItemCheckPasses_AllRequiredPresent",
+            "VmPConversationHandleReply975SliceTests.WeaponAlreadyOwnedBlocksGive_WhenDuplicateWeapon",
+            "VmPConversationHandleReply975SliceTests.CombineTakeStuffWithSpecial_OrSemantics",
+            "VmPConversationHandleReply975SliceTests.SelectTerminalReplyText_PicksHaveEnoughWhenTakeFails",
+            "VmPConversationHandleReply975SliceTests.ResolveLogString_ExpandsDollarPrefix",
+            "VmPConversationHandleReply975SliceTests.ShouldTerminalReply_RequiresConsoleAndText"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 90,
+      "conversionManagedCommit": "f481b0c3edfa12da5b24250c0a09b9d330ca60d3"
     }
   ],
   "behaviorNativeChecksum": 508086,
