@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 238745
+    "managedCSharpLoc": 238839
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 72437,
+    "convertedThisRunNative": 72587,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 95942,
+    "convertedThisRunManaged": 96036,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 416368,
+    "remainingNative": 416218,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 90964,
+    "convertedBehaviorNative": 91114,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 91718,
-    "convertedBehaviorManaged": 105613,
+    "combinedBehaviorNative": 91868,
+    "convertedBehaviorManaged": 105707,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -37215,6 +37215,38 @@
         "nativeLoc": 150,
         "managedLoc": 100,
         "conversionManagedCommit": "d0eef60cb809c26f3fd64b89ff0068a86d6270a8"
+      },
+      {
+        "name": "g-mapinfo-options-post-shadow-chunk1032",
+        "bucket": "conversion",
+        "note": "MAPINFO toggles, skyrotate, script lumps, and `MapFlagHandlers` table head from `g_mapinfo.cpp` (**1827\u20131976**). **Pivot:** primary **3050\u20133199** aborted \u2014 only **102** uncredited lines remain (**3050\u20133151** EOF); **3067\u20133114** off-tally `VmMapInfoParseMapInfoLoop`; alternate **3115\u20133264** past EOF (**3151**).",
+        "auditSeams": "`DEFINE_MAP_OPTION` macro expansion, `parse.ParseCutscene`, `FMapInfoParser` format commas, and native `MapFlagHandlers[]` storage remain host-injected.",
+        "auditRationale": "UNCredited **`g_mapinfo.cpp`** **1827\u20131976** with zero conversion overlap; avoids **1341\u20131640** deferred bands and tail Loop collision.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/g_mapinfo.cpp --start 1827 --end 1976` and `--chunk 1032 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `notexturefill` optional bool (**1827\u20131835**) | yes |\n| `lightadditivesurfaces` optional bool (**1838\u20131848**) | yes |\n| `skyrotate` / `skyrotate2` vectors (**1851\u20131876**) | yes (delegate `VmMapInfoSkyRotateParser`) |\n| `fs_nocheckposition` toggle (**1879\u20131889**) | yes |\n| `edata` / `loadacs` / `intro` / `outro` (**1892\u20131914**) | yes (delegate `VmMapInfoMapOptionsScript`) |\n| `EMIType` / `MapFlagHandlers` head (**1923\u20131976**) | yes (kind + keyword policy) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **3050\u20133199** (primary target) | EOF **3151** + Loop **3067\u20133114** \u2014 deferred without padding |\n| **1738\u20131826** | off-tally `VmMapInfoHcdeShadowMapOptions` |\n| **1567\u20131716** | off-tally `VmMapInfoScalarOptionsBlock` |\n| **1825\u20131826** | closing brace seam before hull **1827** |\n| **1977+** | outside hull |\n| Retired **329** script-flags | overlap duplicate \u2014 not re-listed |\n\n| Managed (`VmMapInfoMapOptionsPostShadow1032Slice.cs`) | Native (`g_mapinfo.cpp`) |\n|------------------------------------------------------|---------------------------|\n| `ParseOptionalBoolFlag` + toggle apply | **1827\u20131889** |\n| `TryParseSkyRotateVector` | **1851\u20131876** |\n| `ApplyScriptLumps` | **1892\u20131914** |\n| `ResolveHandlerKind` / `MatchesFlagHandlerKeyword` | **1923\u20131976** |\n| Band hull (exclusive slice) | **1827\u20131976** |\n\n### Chunk **1032** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1031** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Gamedata/VmMapInfoMapOptionsPostShadow1032Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/g_mapinfo.cpp",
+            "symbol": "DEFINE_MAP_OPTION post-shadow / MapFlagHandlers head",
+            "start": 1827,
+            "end": 1976,
+            "tests": [
+              "VmMapInfoMapOptionsPostShadow1032SliceTests.ParseOptionalBoolFlag_MatchesNativeToggleShape",
+              "VmMapInfoMapOptionsPostShadow1032SliceTests.TryParseSkyRotateVector_Normalizes",
+              "VmMapInfoMapOptionsPostShadow1032SliceTests.ApplyScriptLumps_DelegatesToScriptSlice",
+              "VmMapInfoMapOptionsPostShadow1032SliceTests.ResolveHandlerKind_MapsNativeMitTypes",
+              "VmMapInfoMapOptionsPostShadow1032SliceTests.ResolveSetFlagMask_ReturnsDataForSetFlag",
+              "VmMapInfoMapOptionsPostShadow1032SliceTests.ShouldIgnoreFlagHandler_ForMitIgnore",
+              "VmMapInfoMapOptionsPostShadow1032SliceTests.MatchesFlagHandlerKeyword_IsCaseInsensitive"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 94,
+        "conversionManagedCommit": "b457f594750eece869ac6cb375277bbcb57f381a"
       }
     ],
     "behaviorNativeChecksum": 508086,
