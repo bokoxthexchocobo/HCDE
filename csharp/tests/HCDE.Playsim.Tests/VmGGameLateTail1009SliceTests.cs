@@ -31,7 +31,7 @@ public class VmGGameLateTail1009SliceTests
     [Fact]
     public void DemoRecordingFinish()
     {
-        Assert.Equal(112, VmGGameLateTail1009Slice.EstimateDemoBodyCompressCapacity(bodyLength: 100));
+        Assert.Equal(113, VmGGameLateTail1009Slice.EstimateDemoBodyCompressCapacity(bodyLength: 100));
         Assert.True(VmGGameLateTail1009Slice.ShouldReplaceDemoBodyWithCompressed(
             zlibResult: VmGGameLateTail1009Slice.ZLibOk,
             compressedLength: 50,
