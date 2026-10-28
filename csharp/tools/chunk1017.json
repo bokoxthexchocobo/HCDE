@@ -1,0 +1,27 @@
+[
+  {
+    "name": "g-level-mark-tick-music-chunk1017",
+    "bucket": "conversion",
+    "note": "`DSectorMarker::PropagateMark` tail, `FLevelLocals::Tick`, `Mark`, `AddScroller`, `SetInterMusic`, and `SetMusicVolume` from `g_level.cpp` (**2409–2558**); follows chunk **1016** (**2259–2408**).",
+    "auditSeams": "`Black2Gray`, `GC::Mark`, `Create<DSectorMarker>`, `memset`, `S_ChangeMusic`, `I_SetMusicVolume`, and thinker `MarkRoots` remain injected. Sector/poly/side **batch stepping** stays on **1016** helpers only.",
+    "auditRationale": "UNCredited **2409–2558**; **1017** credits sidedef loop body, gray requeue, and level tick/mark/music — not a second port of **1016** `Step*PropagateMark` batch math.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_level.cpp --start 2409 --end 2558` and `--chunk 1017 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Sidedef propagate loop + gray requeue (**2408–2429**) | yes (tail only; batch sizes from **1016** constants) |\n| `FLevelLocals::Tick` scroll reset (**2437–2443**) | yes |\n| `FLevelLocals::Mark` marker lifecycle + roots (**2451–2497**) | yes |\n| `AddScroller` head (**2505–2516**) | yes |\n| `SetInterMusic` + VM (**2523–2540**) | yes |\n| `SetMusicVolume` (**2547–2551**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2371–2407** | sector/poly batch stepping (**1016**) |\n| **2425–2427** | GC list mutation host |\n| **2517+** | `AddScroller` assign (**2559+** `GetInfighting` outside hull) |\n| **2559+** | next band |\n\n| Managed (`VmGLevelMarkTickMusic1017Slice.cs`) | Native (`g_level.cpp`) |\n|---------------------------------------------|----------------------|\n| Side marked-bytes + texture mark count | **2410–2415** |\n| Gray reinsert plan | **2423–2427** |\n| Scroll carry clear/resize | **2440–2443**, **2511–2515** |\n| Sector marker create/reset | **2453–2464** |\n| Inter music fallback chain | **2525–2531** |\n| Music volume assign | **2547–2550** |\n| Band hull (exclusive slice) | **2409–2558** |\n\n### Chunk **1017** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1016** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmGLevelMarkTickMusic1017Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_level.cpp",
+        "symbol": "FLevelLocals::Mark",
+        "start": 2409,
+        "end": 2558,
+        "tests": [
+          "VmGLevelMarkTickMusic1017SliceTests.PropagateMarkTailAndGrayReinsert",
+          "VmGLevelMarkTickMusic1017SliceTests.LevelTickMarkAndScroller",
+          "VmGLevelMarkTickMusic1017SliceTests.InterMusicAndVolume"
+        ]
+      }
+    ]
+  }
+]
