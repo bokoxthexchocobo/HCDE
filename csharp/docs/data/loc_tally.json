@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 59837,
+  "convertedThisRunNative": 59987,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 86568,
+  "convertedThisRunManaged": 86666,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 428968,
+  "remainingNative": 428818,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 78364,
+  "convertedBehaviorNative": 78514,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 79118,
-  "convertedBehaviorManaged": 96239,
+  "combinedBehaviorNative": 79268,
+  "convertedBehaviorManaged": 96337,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -34624,6 +34624,42 @@
       "nativeLoc": 150,
       "managedLoc": 101,
       "conversionManagedCommit": "55a12e2dac9a679f767f16ce909063a1e836ea1a"
+    },
+    {
+      "name": "p-acs-runscript-inv-music-fade-chunk947",
+      "bucket": "conversion",
+      "note": "`DLevelScript::RunScript` `PCD_CHECKACTORINVENTORY` tail through `PCD_CANCELFADE` from `p_acs.cpp` (**9750\u20139899**). Follows **946** (**\u22649749**); avoids **8850\u20138999** credited corridor.",
+      "auditSeams": "`CheckInventory`, `UseInventory`, `S_ChangeMusic`, `DoFadeTo`/`DoFadeRange`, and `DFlashFader` iteration remain host seams.",
+      "auditRationale": "Honest **150**-line UNCredited band with zero tally overlap; exclusive `VmPAcsVmOpcode947Slice.cs` (`AcsVm` handlers are not matrix credit).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 9750 --end 9899` and `--chunk 947 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native opcode region | Behavior ported |\n|----------------------|-----------------|\n| `PCD_CHECKACTORINVENTORY` tail / `CHECKINVENTORYDIRECT` (**9750\u20139754**) | yes |\n| `PCD_USEINVENTORY` / `USEACTORINVENTORY` (**9757\u20139780**) | yes |\n| `PCD_GETSIGILPIECES` (**9783\u20139795**) | yes |\n| `PCD_GETAMMOCAPACITY` / `SETAMMOCAPACITY` (**9798\u20139849**) | yes |\n| `PCD_SETMUSIC` / `DIRECT` / `LOCAL*` (**9852\u20139875**) | yes |\n| `PCD_FADETO` / `FADERANGE` (**9878\u20139886**) | yes |\n| `PCD_CANCELFADE` through cancel loop (**9889\u20139899**) | yes |\n\n| Managed (`VmPAcsVmOpcode947Slice.cs`) | Native (`p_acs.cpp`) |\n|----------------------------------------|---------------------|\n| `CheckInventoryDirectPcAfterRead` | **9752\u20139754** |\n| `UseActorInventoryUsesWorld` / `AccumulateUseInventoryResult` | **9765\u20139778** |\n| `SigilPiecesWhenMissing` / `ActivatorHasSigil` | **9787\u20139793** |\n| `TypeParentIsAmmo` / `AmmoMaxFromOwnedItem` | **9803\u20139813** |\n| `SetAmmoCapacity*` / `GrantedAmmoStartingAmount` | **9826\u20139849** |\n| `SetMusic*` / `ShouldApplyLocalSetMusic` | **9852\u20139875** |\n| `ApplyFadeToStackPop` / `ApplyFadeRangeStackPop` | **9878\u20139886** |\n| `CancelFadeForAllPlayers` / `ShouldCancelFader` | **9896\u20139899** |\n| `PlayMovieDisabledResult` | **9904\u20139905** (deferred past hull) |\n| `SetsMusic` | **9852\u20139875** |\n\n### Chunk **947** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**946** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPAcsVmOpcode947Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::RunScript",
+          "start": 9750,
+          "end": 9899,
+          "tests": [
+            "VmPAcsVmOpcode947SliceTests.CheckInventoryDirectPcAfterRead_AdvancesOneWord",
+            "VmPAcsVmOpcode947SliceTests.UseActorInventoryUsesWorld_WhenTidZero",
+            "VmPAcsVmOpcode947SliceTests.AccumulateUseInventoryResult_SumsUses",
+            "VmPAcsVmOpcode947SliceTests.ResolveAmmoCapacity_UsesDefaultWhenNotOwned",
+            "VmPAcsVmOpcode947SliceTests.ResolveSigilPieces_ReturnsZeroWithoutSigil",
+            "VmPAcsVmOpcode947SliceTests.InventoryAmountAfterGrant_ClearsPrevious",
+            "VmPAcsVmOpcode947SliceTests.ApplySetMusicStackPop_DropsThreeSlots",
+            "VmPAcsVmOpcode947SliceTests.ShouldCancelFader_WhenActivatorNull",
+            "VmPAcsVmOpcode947SliceTests.ResolvePlayMovieStackValue_ForcesNegativeOne",
+            "VmPAcsVmOpcode947SliceTests.SetsMusic_IncludesLocalDirectOpcode",
+            "VmPAcsVmOpcode947SliceTests.ApplyFadeRangeStackPop_DropsNineSlots"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 98,
+      "conversionManagedCommit": "6a4bf3bbb6b8b86d02c7653a6e4c81218ad14821"
     }
   ],
   "behaviorNativeChecksum": 508086,
