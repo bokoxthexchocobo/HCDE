@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 74387,
+  "convertedThisRunNative": 74537,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 97520,
+  "convertedThisRunManaged": 97629,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 414418,
+  "remainingNative": 414268,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 92914,
+  "convertedBehaviorNative": 93064,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 93668,
-  "convertedBehaviorManaged": 107191,
+  "combinedBehaviorNative": 93818,
+  "convertedBehaviorManaged": 107300,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -37651,6 +37651,45 @@
       "nativeLoc": 150,
       "managedLoc": 114,
       "conversionManagedCommit": "fca3cb0a98c809ef258a4a7331c73e07ca6903fb"
+    },
+    {
+      "name": "statistics-parse-head-chunk1045",
+      "bucket": "conversion",
+      "note": "CVAR/globals layout and `ParseStatistics` scanner head from `statistics.cpp` (**1\u2013150**). Completes file with **1044** (**320\u2013469**) + **1043** (**470\u2013619**).",
+      "auditSeams": "`FScanner`, `CRecoverableError`, and global `EpisodeStatistics` arrays remain host-injected; uncredited `VmStatisticsConfig`, `VmStatisticsParser.ParseTimeToTics`, and `VmOneLevelStats` are not re-credited.",
+      "auditRationale": "File-scoped UNCredited **`statistics.cpp`** **1\u2013150** (+150); excludes credited **320\u2013619** (**1044\u20131043**). Hull ends mid nested level parse (**150**).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/gamedata/statistics.cpp --start 1 --end 150` and `--chunk 1045 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `savestatistics` / `statfile` defaults (**50\u201351**) | yes (via `VmStatisticsConfig` seam constants) |\n| `OneLevel` / stats struct field sizes (**60\u201395**) | yes (layout constants) |\n| `ParseStatistics` open/clear (**108\u2013114**) | yes (skip-when-missing policy) |\n| Episode header + `{` (**116\u2013125**) | yes |\n| Session token/time/skill (**127\u2013141**) | yes |\n| Level block `{` + name token (**142\u2013149**) | yes |\n| Level info token read start (**150**) | yes (hull seam; **151+** outside band) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1\u201349** | license / includes host |\n| **70\u2013100** | static global containers host |\n| **151\u2013319** | remainder of `ParseStatistics` + save/read helpers (future band) |\n| **320\u2013619** | chunks **1044\u20131043** |\n| `VmStatisticsParser.TryParseDocument` | uncredited parallel parser \u2014 time helper seam only |\n\n| Managed (`VmStatisticsParseHead1045Slice.cs`) | Native (`statistics.cpp`) |\n|-----------------------------------------------|---------------------------|\n| `DefaultStatFileName` / `DefaultSaveStatisticsMode` | **50\u201351** |\n| `OneLevelCounterFieldCount` / field length constants | **60\u201380** |\n| `ShouldSkipParseWhenFileUnavailable` | **110\u2013114** |\n| `BuildEpisodeDraft` / `IsStatisticsBlockOpenToken` | **116\u2013125** |\n| `BuildSessionDraft` / `TryBuildSessionDraft` / loop guards | **127\u2013144** |\n| `BeginNestedLevelStatEntry` / `TakePendingLevelInfoToken` | **148\u2013150** |\n| Band hull (exclusive slice) | **1\u2013150** |\n\n### Chunk **1045** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1044** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Gamedata/VmStatisticsParseHead1045Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/statistics.cpp",
+          "symbol": "ParseStatistics / globals",
+          "start": 1,
+          "end": 150,
+          "tests": [
+            "VmStatisticsParseHead1045SliceTests.BuildEpisodeDraft_CapturesHeaderAndName",
+            "VmStatisticsParseHead1045SliceTests.IsStatisticsBlockOpenToken_OnlyBrace",
+            "VmStatisticsParseHead1045SliceTests.BuildSessionDraft_ParsesDurationAndTruncates",
+            "VmStatisticsParseHead1045SliceTests.SelectSessionNameFromFileTokens_UsesSecondToken",
+            "VmStatisticsParseHead1045SliceTests.ParseColonDurationToTics_DelegatesToParser",
+            "VmStatisticsParseHead1045SliceTests.ShouldSkipParseWhenFileUnavailable",
+            "VmStatisticsParseHead1045SliceTests.ParseLevelStatNameFromToken_Truncates",
+            "VmStatisticsParseHead1045SliceTests.ShouldBeginSessionLevelBlock_MatchesOpenBrace",
+            "VmStatisticsParseHead1045SliceTests.DefaultConfig_MatchesCvarDefaults",
+            "VmStatisticsParseHead1045SliceTests.OneLevelCounterFieldCount_MatchesStruct",
+            "VmStatisticsParseHead1045SliceTests.SessionDurationHasValidShape_RejectsMalformed",
+            "VmStatisticsParseHead1045SliceTests.NormalizeEpisodeHeaderToken_Trims",
+            "VmStatisticsParseHead1045SliceTests.TryBuildSessionDraft_ValidatesTokens",
+            "VmStatisticsParseHead1045SliceTests.TakePendingLevelInfoToken_Truncates"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 109,
+      "conversionManagedCommit": "548a787e0c785272df4f4bff64642cba21b0b4da"
     }
   ],
   "behaviorNativeChecksum": 508086,
