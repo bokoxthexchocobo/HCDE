@@ -93,7 +93,8 @@ public static class VmPConversationItemReply973Slice
     public static bool ReplyWireWritesNodeAndReply(ConversationReplyWireKind kind) =>
         kind == ConversationReplyWireKind.Reply;
 
-    public static int RememberStaticLastReply(int reply) => reply;
+    public static bool ShouldAssignStaticLastReply(ConversationReplyWireKind kind) =>
+        kind == ConversationReplyWireKind.Reply;
 
     public static bool FreeConversationsShouldCloseMenu(bool menuIsConversationKind) => menuIsConversationKind;
 }

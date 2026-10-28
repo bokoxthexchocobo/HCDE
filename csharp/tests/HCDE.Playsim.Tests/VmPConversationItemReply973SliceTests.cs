@@ -103,9 +103,9 @@ public class VmPConversationItemReply973SliceTests
             VmPConversationItemReply973Slice.SelectReplyWireKind(3));
         Assert.True(VmPConversationItemReply973Slice.ReplyWireWritesNodeAndReply(
             VmPConversationItemReply973Slice.ConversationReplyWireKind.Reply));
+        Assert.True(VmPConversationItemReply973Slice.ShouldAssignStaticLastReply(
+            VmPConversationItemReply973Slice.ConversationReplyWireKind.Reply));
+        Assert.False(VmPConversationItemReply973Slice.ShouldAssignStaticLastReply(
+            VmPConversationItemReply973Slice.ConversationReplyWireKind.Null));
     }
-
-    [Fact]
-    public void RememberStaticLastReply_ReturnsReplyIndex() =>
-        Assert.Equal(7, VmPConversationItemReply973Slice.RememberStaticLastReply(7));
 }
