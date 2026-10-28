@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 63137,
+  "convertedThisRunNative": 63287,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 88990,
+  "convertedThisRunManaged": 89164,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 425668,
+  "remainingNative": 425518,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 81664,
+  "convertedBehaviorNative": 81814,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 82418,
-  "convertedBehaviorManaged": 98661,
+  "combinedBehaviorNative": 82568,
+  "convertedBehaviorManaged": 98835,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -35377,6 +35377,35 @@
       "nativeLoc": 150,
       "managedLoc": 180,
       "conversionManagedCommit": "2f477650d90c89ed098de6536bed438122c843ea"
+    },
+    {
+      "name": "p-acs-pcode-enum-continued-chunk970",
+      "bucket": "conversion",
+      "note": "Continued ACS P-code enum opcodes **221\u2013368** from `p_acs.cpp` (**301\u2013450**); follows chunk **969** (**\u2264300**).",
+      "auditSeams": "Interpreter bodies for these opcodes remain in later `p_acs.cpp` bands; row credits enum/constants only.",
+      "auditRationale": "Primary **970** UNCredited continuation after **969**; zero conversion/recognition overlap and no existing `VmPAcsPcode*` coverage in band.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 301 --end 450` and `--chunk 970 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| P-code enum **221\u2013368** (**301\u2013450**) | yes (148 opcode constants + cluster classifiers) |\n| Comment marker lines in band | layout only |\n\n| Managed (`VmPAcsPcodeEnumContinued970Slice.cs`) | Native (`p_acs.cpp`) |\n|--------------------------------------------------|---------------------|\n| `Pcd*` constants | **301\u2013450** |\n| `IsContinuedOpcode` / trig / world-array / actor-inventory / callfunc helpers | enum clusters |\n| Band hull (exclusive slice) | **301\u2013450** |\n\n### Chunk **970** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**969** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPAcsPcodeEnumContinued970Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "PCD_COS",
+          "start": 301,
+          "end": 450,
+          "tests": [
+            "VmPAcsPcodeEnumContinued970SliceTests.ContinuedRange_MatchesNativeBand",
+            "VmPAcsPcodeEnumContinued970SliceTests.IsTrigOpcode_CoversCosThroughVectorangle",
+            "VmPAcsPcodeEnumContinued970SliceTests.IsWorldArrayOpcode_Span",
+            "VmPAcsPcodeEnumContinued970SliceTests.IsCallfuncOpcode_IncludesPushfunction"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 174,
+      "conversionManagedCommit": "4b96f0fa5635e1079ba123e0b0d6dfbcb27e296b"
     }
   ],
   "behaviorNativeChecksum": 508086,
