@@ -1,0 +1,27 @@
+[
+  {
+    "name": "p-states-head-chunk985",
+    "bucket": "conversion",
+    "note": "`GetSpriteTexture`, `StaticFindStateOwner`, `StaticGetStateName`, and `FindLabel` from `p_states.cpp` (**1–150**); UNCredited head before later state-parser bands.",
+    "auditSeams": "`DEFINE_ACTION_FUNCTION` VM prologue, `SpriteFrames`/`Skins` tables, and `BinarySearch` helper remain host-injected.",
+    "auditRationale": "No existing `VmPStates*` managed slice; CLI UNCredited **1–150** with EOF **1174**.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_states.cpp --start 1 --end 150` and `--chunk 985 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `GetSpriteTexture` sprite/frame pick + skin branch (**60–76**) | yes |\n| Return slot count cap (**77**) | yes |\n| `StaticFindStateOwner` all classes (**87–99**) | yes |\n| `StaticFindStateOwner` hierarchy (**108–119**) | yes |\n| `StaticGetStateName` (**126–139**) | yes |\n| `FindLabel` guard (**146–149**) | yes (lookup enabled) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1–49**, **80–86**, **121–125**, **141–145** | includes / comments / banners |\n| **151+** | `FStateLabels::Destroy` outside hull |\n\n| Managed (`VmPStatesHead985Slice.cs`) | Native (`p_states.cpp`) |\n|----------------------------------------|----------------------|\n| `SelectEffectiveSprite` / `SelectEffectiveFrame` / `UsesAlternateSkinSprite` | **60–73** |\n| `CapSpriteTextureReturnCount` / `ShouldWrite*` / `SpriteFlipForRotation` | **74–77** |\n| `ScanAllActorClassesForStateOwner` | **87–99** |\n| `FindStateOwnerInHierarchy` | **108–119** |\n| `ResolveStateDisplayName` / `Format*` / `ShouldFormatDehExtraStateName` | **126–139** |\n| `StateLabelLookupEnabled` | **146–149** |\n| Band hull (exclusive slice) | **1–150** |\n\n### Chunk **985** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**984** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPStatesHead985Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/p_states.cpp",
+        "symbol": "FState::GetSpriteTexture",
+        "start": 1,
+        "end": 150,
+        "tests": [
+          "VmPStatesHead985SliceTests.GetSpriteTexture_SelectorsAndReturns",
+          "VmPStatesHead985SliceTests.FindStateOwner_ScansClassesAndHierarchy",
+          "VmPStatesHead985SliceTests.StateNamingAndLabels"
+        ]
+      }
+    ]
+  }
+]
