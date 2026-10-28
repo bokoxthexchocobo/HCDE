@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 64787,
+  "convertedThisRunNative": 64937,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 90074,
+  "convertedThisRunManaged": 90152,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 424018,
+  "remainingNative": 423868,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 83314,
+  "convertedBehaviorNative": 83464,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 84068,
-  "convertedBehaviorManaged": 99745,
+  "combinedBehaviorNative": 84218,
+  "convertedBehaviorManaged": 99823,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -35715,6 +35715,35 @@
       "nativeLoc": 150,
       "managedLoc": 92,
       "conversionManagedCommit": "1cb6fb5f9babed12dae2a4c144092a3778f19658"
+    },
+    {
+      "name": "p-setup-clearlevel-setup-chunk981",
+      "bucket": "conversion",
+      "note": "`ClearLevelData` continuation, `P_FreeLevelData`, and `P_SetupLevel` head from `p_setup.cpp` (**301\u2013450**); follows chunk **980** (**151\u2013300**).",
+      "auditSeams": "`ClearVelocities`, `SN_StopAllSequences`, container `.Clear()`, `delete`, `Behaviors.UnloadModules`, and sound init remain host-injected.",
+      "auditRationale": "UNCredited mid-file `p_setup.cpp`; disjoint from **979**/**980** hulls. Counter lines **302\u2013307** are native in this band (not in **980** `151\u2013300` hull). Reaudit hygiene: no identity `ShouldRecordShaderStartTime`.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_setup.cpp --start 301 --end 450` and `--chunk 981 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| UDMF key clears (**311\u2013314**) | yes |\n| Strife dialogue drain (**318\u2013326**) | yes |\n| Subsector BSP teardown (**328\u2013331**) | yes |\n| Polyblock chain delete (**365\u2013375**) | yes |\n| Automap / spatial accel teardown (**381\u2013389**) | yes |\n| Network sector baselines (**391\u2013393**) | yes |\n| `P_FreeLevelData` (**404\u2013411**) | yes |\n| `P_SetupLevel` head (**423\u2013450**) | yes (predicates) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **302\u2013309**, **316**, **332\u2013363**, **377\u2013380** | host calls / bulk clears |\n| **398\u2013421** | comment banners |\n| **291\u2013300** | credited on **980** |\n\n| Managed (`VmPSetupClearLevel981Slice.cs`) | Native (`p_setup.cpp`) |\n|-------------------------------------------|----------------------|\n| `UdmfKeySlotInRange` | **311\u2013314** |\n| `TryPopStrifeDialogue` / `ShouldDrainStrifeDialogueQueue` | **318\u2013326** |\n| `ShouldDeleteSubsectorBsp` | **328\u2013331** |\n| `DeletePolyblockChain` / `ShouldDeletePolyblockLink` | **365\u2013375** |\n| `ShouldDestroyAutomap` / `ShouldDeleteSpatialAccelerators` | **381\u2013389** |\n| `ShouldClearNetworkSectorBaselines` | **391\u2013393** |\n| `ShouldIterateFreeLevelData` | **404\u2013411** |\n| `SetupLevelResetsScoreCounts` / `SetupLevelClearsPlayerMobReference` | **435\u2013447** |\n| `MaptypeAwaitingMapinfoClassification` / `SelectInitialViewHeight` | **432\u2013450** |\n| Band hull (exclusive slice) | **301\u2013450** |\n\n### Chunk **981** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**980** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPSetupClearLevel981Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/p_setup.cpp",
+          "symbol": "ClearLevelData",
+          "start": 301,
+          "end": 450,
+          "tests": [
+            "VmPSetupClearLevel981SliceTests.UdmfKeysAndDialogueDrain",
+            "VmPSetupClearLevel981SliceTests.PolyblockChainDeletion",
+            "VmPSetupClearLevel981SliceTests.ClearLevelDataTailPredicates",
+            "VmPSetupClearLevel981SliceTests.FreeLevelDataAndSetupHead"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 78,
+      "conversionManagedCommit": "1db6bd8c120c92c0780664e4633ad3291e9d7841"
     }
   ],
   "behaviorNativeChecksum": 508086,
