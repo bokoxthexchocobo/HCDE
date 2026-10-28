@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 248769
+    "managedCSharpLoc": 248894
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 84620,
+    "convertedThisRunNative": 84770,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 105965,
+    "convertedThisRunManaged": 106090,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 404252,
+    "remainingNative": 404102,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 103147,
+    "convertedBehaviorNative": 103297,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 103834,
-    "convertedBehaviorManaged": 115636,
+    "combinedBehaviorNative": 103984,
+    "convertedBehaviorManaged": 115761,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -39921,6 +39921,35 @@
         "nativeLoc": 150,
         "managedLoc": 140,
         "conversionManagedCommit": "ad927b91ae0a0bd46a2c2ee63f889841859a7b6b"
+      },
+      {
+        "name": "pmobj-water-depth-chunk1114",
+        "bucket": "conversion",
+        "note": "`UpdateWaterDepth` and `SplashCheck` boom-water gate from `p_mobj.cpp` (**5277\u20135426**); follows **1113** tick tail.",
+        "auditSeams": "Plane `ZatPoint`, `P_HitWater`, and the virtual dive/surface thunk remain host-injected; `UpdateWaterLevel` body continues at **5427**.",
+        "auditRationale": "UNCredited **`p_mobj.cpp`** **5277\u20135426** (+150); follows **1113** (**5127\u20135276**).",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 5277 --end 5426` and `--chunk 1114 --band` \u2192 UNCredited, exit 0.",
+        "auditManagedLocJustification": "Water depth walks height-sector and 3D-floor rules with explicit level thresholds; managed LOC exceeds 50%.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Missing sector early return (**5297\u20135300**) | yes |\n| Underwater sector full height (**5302\u20135305**) | yes |\n| Height-sec splash/mask depth (**5313\u20135322**) | yes |\n| Swimmable 3D floor pick (**5328\u20135344**) | yes |\n| Level 1/2/3 thresholds (**5349\u20135367**) | yes |\n| `SplashCheck` boom rising edge (**5386\u20135390**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **5264\u20135273** | chunk **1113** tail |\n| **5388** | host `P_HitWater` |\n| **5402\u20135408** | virtual thunk |\n| **5427+** | dive/surface sounds outside hull |\n\n| Managed (`VmPMobjWaterDepth1114Slice.cs`) | Native (`p_mobj.cpp`) |\n|-----------------------------------------|---------------------|\n| Water depth + splash gate | **5277\u20135426** |\n| Band hull (exclusive slice) | **5277\u20135426** |\n\n### Chunk **1114** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1113** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMobjWaterDepth1114Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "UpdateWaterDepth and SplashCheck",
+            "start": 5277,
+            "end": 5426,
+            "tests": [
+              "VmPMobjWaterDepth1114SliceTests.RunUpdateWaterDepth_UsesFullHeightWhenSectorUnderwater",
+              "VmPMobjWaterDepth1114SliceTests.RunUpdateWaterDepth_SkipsSolidRoversAndUsesSwimmableTop",
+              "VmPMobjWaterDepth1114SliceTests.RunSplashCheck_HitsWaterOnRisingLevel"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 125,
+        "conversionManagedCommit": "5ce5c1ee1ae34f70f5e568adf3bd0f268d79deb5"
       }
     ],
     "behaviorNativeChecksum": 508086,
