@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 232180
+    "managedCSharpLoc": 232280
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 63587,
+    "convertedThisRunNative": 63737,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 89377,
+    "convertedThisRunManaged": 89477,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 425218,
+    "remainingNative": 425068,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 82114,
+    "convertedBehaviorNative": 82264,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 82868,
-    "convertedBehaviorManaged": 99048,
+    "combinedBehaviorNative": 83018,
+    "convertedBehaviorManaged": 99148,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -35481,6 +35481,37 @@
         "nativeLoc": 150,
         "managedLoc": 83,
         "conversionManagedCommit": "2f9b7d5e0f13d01847fef333d722a2ba876f3bb0"
+      },
+      {
+        "name": "p-conversation-item-reply-chunk973",
+        "bucket": "conversion",
+        "note": "`ClearConversationStuff`, `CheckStrifeItem`, `TakeStrifeItem` guards, `ShouldSkipReply`, and `SendConversationReply` wire selection from `p_conversation.cpp` (**151\u2013300**).",
+        "auditSeams": "`TakeInventory` VM call, `Net_Write*`, menu close, and `P_FreeStrifeConversations` body remain host-injected.",
+        "auditRationale": "UNCredited Strife dialog band with no prior `p_conversation.cpp` matrix row; predicates mirror item/reply gating without re-crediting line-special conversation helpers on chunk **933**.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/p_conversation.cpp --start 151 --end 300` and `--chunk 973 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `ClearConversationStuff` (**154\u2013160**) | yes |\n| `CheckStrifeItem` (**171\u2013181**) | yes |\n| `TakeStrifeItem` skip policy (**192\u2013207**) | yes (guard predicates) |\n| `dlg_musicvolume` clamp (**218\u2013222**) | yes |\n| `ShouldSkipReply` (**232\u2013254**) | yes |\n| `SendConversationReply` opcode switch (**268\u2013284**) | yes (wire kind + last reply) |\n| `P_FreeStrifeConversations` menu gate (**298\u2013300**) | yes (predicate) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **162\u2013170**, **183\u2013191**, **224\u2013231**, **256\u2013267**, **289\u2013297** | comments / VM prologue / separators |\n| **209\u2013216** | `TakeInventory` VM seam |\n\n| Managed (`VmPConversationItemReply973Slice.cs`) | Native (`p_conversation.cpp`) |\n|--------------------------------------------------|--------------------------------|\n| `ClearConversationPointers` | **154\u2013160** |\n| `CheckStrifeItem` | **171\u2013181** |\n| `TakeStrifeItemBlocked` | **192\u2013207** |\n| `ClampDlgMusicVolume` | **218\u2013222** |\n| `ShouldSkipReply` | **232\u2013254** |\n| `SelectReplyWireKind` / `ReplyWireWritesNodeAndReply` | **268\u2013284** |\n| `FreeConversationsShouldCloseMenu` | **298\u2013300** |\n| Band hull (exclusive slice) | **151\u2013300** |\n\n### Chunk **973** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**972** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPConversationItemReply973Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/p_conversation.cpp",
+            "symbol": "CheckStrifeItem",
+            "start": 151,
+            "end": 300,
+            "tests": [
+              "VmPConversationItemReply973SliceTests.ClearConversationPointers_ResetsAllFields",
+              "VmPConversationItemReply973SliceTests.CheckStrifeItem_RequiresAmountOnPc",
+              "VmPConversationItemReply973SliceTests.TakeStrifeItemBlocked_SkipsQuestKeySigil",
+              "VmPConversationItemReply973SliceTests.ClampDlgMusicVolume_ClampsToUnitInterval",
+              "VmPConversationItemReply973SliceTests.ShouldSkipReply_EmptyTextOrFailedChecks",
+              "VmPConversationItemReply973SliceTests.SelectReplyWireKind_MapsDemConversationOpcodes"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 100,
+        "conversionManagedCommit": "5a9b0b7313e0c6ee6f3a4d4218cf90167af56923"
       }
     ],
     "behaviorNativeChecksum": 508086,
