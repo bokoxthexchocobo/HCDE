@@ -12,6 +12,8 @@ public static class VmPAcsVmOpcode948Slice
     public const int SectorFloorCeilingStackPop = 2;
     public const int PlaneWatcherStackPop = 8;
     public const int StartTranslationStackPop = 1;
+    public const int SetFloorTriggerOpcode = 194;
+    public const int SetCeilingTriggerOpcode = 195;
 
     public static double AcsToDouble(int fixedValue) => fixedValue / 65536.0;
 

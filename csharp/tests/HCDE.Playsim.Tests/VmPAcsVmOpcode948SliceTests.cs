@@ -30,7 +30,7 @@ public class VmPAcsVmOpcode948SliceTests
 
     [Fact]
     public void IsCeilingPlaneWatcher_ForSetCeilingTrigger() =>
-        Assert.True(VmPAcsVmOpcode948Slice.IsCeilingPlaneWatcher((int)AcsPcode.SetCeilingTrigger));
+        Assert.True(VmPAcsVmOpcode948Slice.IsCeilingPlaneWatcher(VmPAcsVmOpcode948Slice.SetCeilingTriggerOpcode));
 
     [Fact]
     public void TranslationTableSlot_IsZeroBased() =>
