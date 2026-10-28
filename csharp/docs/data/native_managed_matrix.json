@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 243606
+    "managedCSharpLoc": 243721
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 78606,
+    "convertedThisRunNative": 78756,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 100802,
+    "convertedThisRunManaged": 100917,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 410266,
+    "remainingNative": 410116,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 97133,
+    "convertedBehaviorNative": 97283,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 97820,
-    "convertedBehaviorManaged": 110473,
+    "combinedBehaviorNative": 97970,
+    "convertedBehaviorManaged": 110588,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -38577,6 +38577,42 @@
         "nativeLoc": 150,
         "managedLoc": 83,
         "conversionManagedCommit": "724d129960bf6cb00c5e7c98d332853c89330482"
+      },
+      {
+        "name": "sbarinfo-commands-drawimage-chunk1073",
+        "bucket": "conversion",
+        "note": "`CommandDrawImage` draw-scale and parse keyword head from `sbarinfo_commands.cpp` (**1\u2013150**). Primary `sbarinfo.cpp` **1641\u20131790** blocked (file EOF **1640**); pivot to included commands TU.",
+        "auditSeams": "`SBarInfoCommandFlowControl::Draw`, `DrawGraphic`, `FScanner`, `PClass`, and **149\u2013150** `MustGetToken` remain host; **1501\u20131640** `sbarinfo.cpp` tail still deferred (140, no pad).",
+        "auditRationale": "UNCredited **`sbarinfo_commands.cpp`** **1\u2013150** (+150); zero conversion overlap; no Vm* line collision; honest continuation after **1072** / deferred sbarinfo tail.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_statusbar/sbarinfo_commands.cpp --start 1 --end 150` and `--chunk 1073 --band` \u2192 UNCredited, exit 0.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `DI_ALTERNATEONFAIL` pre-draw gate (**44\u201345**) | yes |\n| Null texture early out (**47\u201348**) | yes |\n| Frame alpha product (**53**) | yes |\n| `DI_DRAWINBOX` scale policy (**55\u201379**) | yes |\n| Spawn scale dimension path (**81\u201385**) | yes |\n| Draw-image keyword dispatch (**96\u2013107**) | yes |\n| Hexen armor piece names (**113\u2013125**) | yes |\n| `translatable` + inventory icon branch (**129\u2013147**) | yes |\n| `getImage` string token gate (**149\u2013150**) | yes (predicate) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1\u201330** | license banner / include comment |\n| **34\u201340** | ctor initializer list host |\n| **45**, **86\u201387** | host `Draw` / `DrawGraphic` |\n| **93\u201394**, **112**, **126\u2013127**, **137\u2013145**, **151** | host scanner / class lookup |\n| **1641+** | `sbarinfo.cpp` out of body |\n\n| Managed (`VmSbarinfoCommandDrawImage1073Slice.cs`) | Native (`sbarinfo_commands.cpp`) |\n|------------------------------------------------------|----------------------------------|\n| Alternate-on-fail + null texture gates | **44\u201348** |\n| Draw-in-box + spawn scale sizing | **53\u201385** |\n| Keyword + hexen armor classification | **96\u2013125** |\n| Translatable / inventory parse policy | **129\u2013147** |\n| Image token requirement | **149\u2013150** |\n| Band hull (exclusive slice) | **1\u2013150** |\n\n### Chunk **1073** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1072** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Client/VmSbarinfoCommandDrawImage1073Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/g_statusbar/sbarinfo_commands.cpp",
+            "symbol": "CommandDrawImage::Draw / Parse",
+            "start": 1,
+            "end": 150,
+            "tests": [
+              "VmSbarinfoCommandDrawImage1073SliceTests.ShouldInvokeParentDrawBeforeTexture_DetectsAlternateOnFailFlag",
+              "VmSbarinfoCommandDrawImage1073SliceTests.ComputeDrawInBoxDimensions_ForceScalePicksHeightLimiter",
+              "VmSbarinfoCommandDrawImage1073SliceTests.ComputeDrawInBoxDimensions_WithoutForceScaleUsesMinScale",
+              "VmSbarinfoCommandDrawImage1073SliceTests.ClassifyDrawImageKeyword_MapsNativeKeywords",
+              "VmSbarinfoCommandDrawImage1073SliceTests.ClassifyDrawImageKeyword_TranslatableSetsFlags",
+              "VmSbarinfoCommandDrawImage1073SliceTests.ResolveHexenArmorPiece_DefaultsUnknownToArmor",
+              "VmSbarinfoCommandDrawImage1073SliceTests.ComputeFrameAlpha_MultipliesBlockAndCommandAlpha",
+              "VmSbarinfoCommandDrawImage1073SliceTests.ResolveSpawnScaledDimensions_AppliesSpawnScales",
+              "VmSbarinfoCommandDrawImage1073SliceTests.ShouldCloseHexenArmorParen_RequiresParenAndImageToken",
+              "VmSbarinfoCommandDrawImage1073SliceTests.ShouldUseDrawInBoxPath_DetectsDrawInBoxFlag",
+              "VmSbarinfoCommandDrawImage1073SliceTests.ResolveInventoryImageIndex_UsesNativeSentinel"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 115,
+        "conversionManagedCommit": "96717c4357a8662d402159ba32a78bf61f72db35"
       }
     ],
     "behaviorNativeChecksum": 508086,
