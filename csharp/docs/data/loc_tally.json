@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 58937,
+  "convertedThisRunNative": 59087,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 86037,
+  "convertedThisRunManaged": 86130,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 429868,
+  "remainingNative": 429718,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 77464,
+  "convertedBehaviorNative": 77614,
   "recognitionBehaviorNative": 754,
-  "combinedBehaviorNative": 78218,
-  "convertedBehaviorManaged": 95708,
+  "combinedBehaviorNative": 78368,
+  "convertedBehaviorManaged": 95801,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -34429,6 +34429,38 @@
       "nativeLoc": 150,
       "managedLoc": 77,
       "conversionManagedCommit": "e2a705cb70df607d1fc85465986d568bc658c863"
+    },
+    {
+      "name": "fscript-shot-line-chunk941",
+      "bucket": "conversion",
+      "note": "`SF_SetColor` loop tail through `SaveCurrentScript` from `fragglescript/t_func.cpp` (**3695\u20133844**). Follows **940** (**\u22643694**); **3135\u20133244** and other deferred tails untouched.",
+      "auditSeams": "`SetColor`, `Spawn`, `S_Sound`, `P_CheckMissileSpawn`, thinker iteration, `TranslateLineDef`, `P_ExecuteSpecial`, and `Create<DRunningScript>` remain host seams.",
+      "auditRationale": "Honest **150**-line UNCredited band; exclusive `VmFScriptParserShotLine941Slice.cs` (live `VmFScriptParserSfGzd` handlers are not matrix credit for these lines).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 3695 --end 3844` and `--chunk 941 --band` \u2192 UNCredited, exit 0.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Managed | Native (`fragglescript/t_func.cpp`) |\n|---------|-----------------------------------|\n| chunk **941** hull | **3695\u20133844** |\n| `SetColorLoopAppliesToSector` | `SF_SetColor` loop **3693\u20133696** |\n| `ResolveSpawnShot2Source` / `SpawnShot2UsesOptionalZ` | `SF_SpawnShot2` **3717\u20133724** |\n| `SpawnShot2AbortsWithoutSource` | early return **3726** |\n| `SpawnShot2ClearsMissileOnFailedSpawn` / `SpawnShot2ReturnMobj` | `P_CheckMissileSpawn` / return **3739\u20133741** |\n| `BuildSpawnShot2Invoke` | `SF_SpawnShot2` setup **3717\u20133728** |\n| `KillInSectorShouldMassacre` | `SF_KillInSector` **3761\u20133763** |\n| `SetLineTriggerTagFromArgc` | optional tag **3784** |\n| `MergeSetLineTriggerFlags` | line flag merge **3794\u20133795** |\n| `SetLineTriggerIteratorActive` | line id iterator **3786** |\n| `FillRunLineSpecialArgs` / `RunLineSpecialFillArg` | `RunLineSpecial` **3813\u20133818** |\n| `RunLineSpecialRequiresMinArgs` | `CheckArgs(spec->min_args)` **3811** |\n| `BuildSaveCurrentScript` | `SaveCurrentScript` **3830\u20133841** |\n| `SpawnShot2RequiresTwoArgs` | `CheckArgs(2)` **3717** |\n| `KillInSectorRequiresOneArg` | `CheckArgs(1)` **3755** |\n| `SetLineTriggerRequiresTwoArgs` | `CheckArgs(2)` **3780** |\n\n### Chunk **941** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**940** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmFScriptParserShotLine941Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_SetColor",
+          "start": 3695,
+          "end": 3844,
+          "tests": [
+            "VmFScriptParserShotLine941SliceTests.ResolveSpawnShot2Source_UsesTriggerWhenSecondArgNegativeInt",
+            "VmFScriptParserShotLine941SliceTests.SpawnShot2ClearsMissileOnFailedSpawn_WhenCheckFails",
+            "VmFScriptParserShotLine941SliceTests.KillInSectorShouldMassacre_RequiresMonsterAndTag",
+            "VmFScriptParserShotLine941SliceTests.SetLineTriggerTagFromArgc_DefaultsZero",
+            "VmFScriptParserShotLine941SliceTests.MergeSetLineTriggerFlags_PreservesActivationBits",
+            "VmFScriptParserShotLine941SliceTests.FillRunLineSpecialArgs_PadsMissingWithZero",
+            "VmFScriptParserShotLine941SliceTests.BuildSaveCurrentScript_ReturnsNullWithoutThinker"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 93,
+      "conversionManagedCommit": "ef933eaba4235d235a3b000736353b774a9856a4"
     }
   ],
   "behaviorNativeChecksum": 508086,
