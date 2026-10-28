@@ -22,14 +22,23 @@ public static class VmSbarinfoCommandDrawKeyBar1089Slice
         return (false, KeyBarParseFlag.Unknown);
     }
 
-    public static bool RequiresKeyBarFlagListCommaAfterFlag(bool nextTokenIsPipe) => !nextTokenIsPipe;
+    public static (bool ContinueFlagLoop, bool RequireCommaBeforeIconSize) ResolveKeyBarFlagListContinuation(
+        bool nextTokenIsPipe) =>
+        nextTokenIsPipe
+            ? (ContinueFlagLoop: true, RequireCommaBeforeIconSize: false)
+            : (ContinueFlagLoop: false, RequireCommaBeforeIconSize: true);
 
     public static int ResolveKeyBarIconSizeFromParse(bool autoToken, int intConst) =>
         autoToken ? VmSbarinfoCommandDrawKeyBar1088Slice.UnspecifiedIconSize : intConst;
 
-    public static bool ShouldParseKeyBarKeyOffsetClause(bool commaAfterBaseCoordinates) => commaAfterBaseCoordinates;
-
-    public static bool ShouldParseKeyBarRowLayoutClause(bool commaAfterKeyOffset) => commaAfterKeyOffset;
+    public static (bool ParseKeyOffset, bool ParseRowLayout) ResolveKeyBarOptionalLayoutParse(
+        bool commaAfterBaseCoordinates,
+        bool commaAfterKeyOffset) =>
+        !commaAfterBaseCoordinates
+            ? (ParseKeyOffset: false, ParseRowLayout: false)
+            : !commaAfterKeyOffset
+                ? (ParseKeyOffset: true, ParseRowLayout: false)
+                : (ParseKeyOffset: true, ParseRowLayout: true);
 
     public static int ResolveKeyBarRowIconSizeFromParse(bool autoToken, int intConst) =>
         autoToken ? VmSbarinfoCommandDrawKeyBar1088Slice.UnspecifiedIconSize : intConst;

@@ -18,9 +18,9 @@
         "end": 2550,
         "tests": [
           "VmSbarinfoCommandDrawKeyBar1089SliceTests.TryClassifyKeyBarParseFlagKeyword_MapsReverseRows",
-          "VmSbarinfoCommandDrawKeyBar1089SliceTests.RequiresKeyBarFlagListCommaAfterFlag_WhenNotPipe",
+          "VmSbarinfoCommandDrawKeyBar1089SliceTests.ResolveKeyBarFlagListContinuation_EndsOnComma",
           "VmSbarinfoCommandDrawKeyBar1089SliceTests.ResolveKeyBarIconSizeFromParse_AutoUsesNegativeOne",
-          "VmSbarinfoCommandDrawKeyBar1089SliceTests.ShouldParseKeyBarRowLayoutClause_RequiresSecondComma",
+          "VmSbarinfoCommandDrawKeyBar1089SliceTests.ResolveKeyBarOptionalLayoutParse_ReadsRowWhenTwoCommas",
           "VmSbarinfoCommandDrawKeyBar1089SliceTests.CreateDrawBarCtorDefaults_MatchesNativeInit",
           "VmSbarinfoCommandDrawKeyBar1089SliceTests.InvertNormalizedDrawValueForBorderDraw_FlipsWhenBorderNonZero",
           "VmSbarinfoCommandDrawKeyBar1089SliceTests.ComputeDrawBarClipFillRemaining_ScalesByValue",

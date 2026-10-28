@@ -11,10 +11,12 @@ public class VmSbarinfoCommandDrawKeyBar1089SliceTests
     }
 
     [Fact]
-    public void RequiresKeyBarFlagListCommaAfterFlag_WhenNotPipe()
+    public void ResolveKeyBarFlagListContinuation_EndsOnComma()
     {
-        Assert.True(VmSbarinfoCommandDrawKeyBar1089Slice.RequiresKeyBarFlagListCommaAfterFlag(
-            nextTokenIsPipe: false));
+        var (cont, comma) = VmSbarinfoCommandDrawKeyBar1089Slice.ResolveKeyBarFlagListContinuation(
+            nextTokenIsPipe: false);
+        Assert.False(cont);
+        Assert.True(comma);
     }
 
     [Fact]
@@ -28,10 +30,13 @@ public class VmSbarinfoCommandDrawKeyBar1089SliceTests
     }
 
     [Fact]
-    public void ShouldParseKeyBarRowLayoutClause_RequiresSecondComma()
+    public void ResolveKeyBarOptionalLayoutParse_ReadsRowWhenTwoCommas()
     {
-        Assert.True(VmSbarinfoCommandDrawKeyBar1089Slice.ShouldParseKeyBarRowLayoutClause(
-            commaAfterKeyOffset: true));
+        var (keyOffset, rowLayout) = VmSbarinfoCommandDrawKeyBar1089Slice.ResolveKeyBarOptionalLayoutParse(
+            commaAfterBaseCoordinates: true,
+            commaAfterKeyOffset: true);
+        Assert.True(keyOffset);
+        Assert.True(rowLayout);
     }
 
     [Fact]
