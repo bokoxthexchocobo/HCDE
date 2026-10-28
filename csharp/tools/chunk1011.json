@@ -1,0 +1,27 @@
+[
+  {
+    "name": "g-level-light-defer-chunk1011",
+    "bucket": "conversion",
+    "note": "`getRealLightmode`, cutscene helpers, and `G_DeferedInitNew` from `g_level.cpp` (**151–300**); follows chunk **1010** (**1–150**).",
+    "auditSeams": "`CUSTOM_CVAR` bodies (**153–156** seam with **1010**), VM `CallCreateFunction`, `ScreenJobValidate`, and `CheckWarpTransMap` remain injected.",
+    "auditRationale": "UNCredited **151–300** CLI band; disjoint from chunk **1010** hull except CVAR tail seam lines **151–156** (zero duplicate managed credit).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_level.cpp --start 151 --end 300` and `--chunk 1011 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `getRealLightmode` (**158–171**) | yes |\n| `CallCreateMapFunction` arity (**217–223**) | yes |\n| `CreateCutscene` (**234–249**) | yes |\n| `G_DeferedInitNew` map/skill (**262–268**) | seam (host defer) |\n| `G_DeferedInitNew(FNewGameStartup*)` (**270–297**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **153–156** | `gl_lightmode` CVAR body (credited **1010**) |\n| **173–197** | globals / extern host |\n| **206–209** | `Local_Job_Init` type registration host |\n| **220–225** | VM call host |\n| **245** | `AddGenericVideo` host |\n| **290–295** | `ScreenJobValidate` / delete host |\n| **305+** | `CCMD(map)` (next band) |\n\n| Managed (`VmGLevelLightAndDefer1011Slice.cs`) | Native (`g_level.cpp`) |\n|-----------------------------------------------|----------------------|\n| `ResolveRealLightMode` | **158–171** |\n| `ClassifyCutsceneDefinition` / arity validate | **234–249**, **217–223** |\n| Deferred new-game / intro gates | **270–297** |\n| Band hull (exclusive slice) | **151–300** |\n\n### Chunk **1011** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1010** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmGLevelLightAndDefer1011Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_level.cpp",
+        "symbol": "getRealLightmode",
+        "start": 151,
+        "end": 300,
+        "tests": [
+          "VmGLevelLightAndDefer1011SliceTests.RealLightMode",
+          "VmGLevelLightAndDefer1011SliceTests.CutsceneCreation",
+          "VmGLevelLightAndDefer1011SliceTests.DeferredNewGame"
+        ]
+      }
+    ]
+  }
+]
