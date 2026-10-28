@@ -1,0 +1,28 @@
+[
+  {
+    "name": "p-acs-runscript-print-opcodes-chunk1018",
+    "bucket": "conversion",
+    "note": "`DLevelScript::RunScript` `PCD_PRINTFIXED`, `PCD_PRINTNAME`, and script/map/world/global char-array print opcodes from `p_acs.cpp` (**8941–9090**). Follows **945** (**≤8849**); gap **8850–8940** stays on prior credited RunScript bands.",
+    "auditSeams": "Full `RunScript` dispatch, `work`/`lookup` string builders, `CharArrayParms` host arrays, `HCDE_ResolveACSPlayer`, and `Level->Behaviors.LookupString` remain native.",
+    "auditRationale": "First tally-clean **150**-line UNCredited `p_acs.cpp` band after **945** with no overlap to retired/off-tally ACS string or opcode VM slices.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 8941 --end 9090` and `--chunk 1018 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native opcode region | Behavior ported |\n|----------------------|-----------------|\n| `PCD_PRINTFIXED` (**8939–8942**, in hull) | yes |\n| `PCD_PRINTNAME` negative kind table (**8950–8990**) | yes |\n| `PCD_PRINTNAME` player/activator resolution (**8994–9022**) | yes |\n| `PCD_PRINTSCRIPT*` char arrays (**9027–9041**) | yes |\n| `PCD_PRINTMAP*` char arrays (**9043–9057**) | yes |\n| `PCD_PRINTWORLD*` char arrays (**9059–9073**) | yes |\n| `PCD_PRINTGLOBAL*` char arrays (**9075–9089**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **9091+** | `PCD_PRINTBIND` (next band) |\n| **8850–8940** | prior credited RunScript opcodes outside this hull |\n\n| Managed (`VmPAcsVmOpcode1018Slice.cs`) | Native (`p_acs.cpp`) |\n|----------------------------------------|---------------------|\n| `FormatPrintFixed` | **8940–8941** |\n| `TryResolvePrintNameSpecial` | **8950–8990** |\n| `ResolvePrintNamePlayer` | **8994–9022** |\n| `TryBuildPrintCharArray` / `AppendCharArrayRun` | **9027–9089** |\n| Band hull (exclusive slice) | **8941–9090** |\n\n### Chunk **1018** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1017** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPAcsVmOpcode1018Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "DLevelScript::RunScript",
+        "start": 8941,
+        "end": 9090,
+        "tests": [
+          "VmPAcsVmOpcode1018SliceTests.FormatPrintFixed_UsesInvariantDouble",
+          "VmPAcsVmOpcode1018SliceTests.TryResolvePrintNameSpecial_MapsNegativeKinds",
+          "VmPAcsVmOpcode1018SliceTests.ResolvePrintNamePlayer_UsesActivatorWhenIndexZero",
+          "VmPAcsVmOpcode1018SliceTests.TryBuildPrintCharArray_AppendsUntilNul"
+        ]
+      }
+    ]
+  }
+]
