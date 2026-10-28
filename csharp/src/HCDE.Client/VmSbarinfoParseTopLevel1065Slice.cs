@@ -32,7 +32,8 @@ public static class VmSbarinfoParseTopLevel1065Slice
     public static VmSbarinfoMainBlockLoad1064Slice.DefaultScriptAction ResolveCustomSlotAction(bool slotIsNull) =>
         VmSbarinfoMainBlockLoad1064Slice.ResolveScriptSlotAction(slotIsNull);
 
-    public static bool ShouldProcessIncludeDirective(bool tokenIsInclude) => tokenIsInclude;
+    public static bool ShouldRecurseParsedInclude(bool tokenIsInclude, int resolvedLumpNum) =>
+        tokenIsInclude && !ShouldFailMissingIncludeLump(resolvedLumpNum);
 
     public static bool ShouldFailMissingIncludeLump(int lumpNum) =>
         VmSbarinfoMainBlockLoad1064Slice.IsMissingLump(lumpNum);
@@ -126,5 +127,6 @@ public static class VmSbarinfoParseTopLevel1065Slice
         return null;
     }
 
-    public static bool ShouldParseOptionalAlignment(bool hasTrailingComma) => hasTrailingComma;
+    public static SpacingAlignment? TryParseOptionalSpacingAlignment(bool hasAlignmentComma, string alignmentToken) =>
+        hasAlignmentComma ? TryClassifySpacingAlignment(alignmentToken) : null;
 }

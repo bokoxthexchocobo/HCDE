@@ -86,6 +86,21 @@ public class VmSbarinfoParseTopLevel1065SliceTests
     }
 
     [Fact]
+    public void ShouldRecurseParsedInclude_RequiresValidLump()
+    {
+        Assert.True(VmSbarinfoParseTopLevel1065Slice.ShouldRecurseParsedInclude(true, 2));
+        Assert.False(VmSbarinfoParseTopLevel1065Slice.ShouldRecurseParsedInclude(true, -1));
+    }
+
+    [Fact]
+    public void TryParseOptionalSpacingAlignment_SkipsWhenNoComma()
+    {
+        Assert.Null(VmSbarinfoParseTopLevel1065Slice.TryParseOptionalSpacingAlignment(false, "left"));
+        Assert.Equal(VmSbarinfoParseTopLevel1065Slice.SpacingAlignment.Left,
+            VmSbarinfoParseTopLevel1065Slice.TryParseOptionalSpacingAlignment(true, "left"));
+    }
+
+    [Fact]
     public void ShouldContinueCustomLumpScan_StopsOnMissingLump()
     {
         Assert.True(VmSbarinfoParseTopLevel1065Slice.ShouldContinueCustomLumpScan(1));

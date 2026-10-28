@@ -27,6 +27,8 @@
           "VmSbarinfoParseTopLevel1065SliceTests.ResolveMonospaceSpacingCharacter_ClearsOnFalseBranch",
           "VmSbarinfoParseTopLevel1065SliceTests.TryClassifySpacingAlignment_RecognizesNativeKeywords",
           "VmSbarinfoParseTopLevel1065SliceTests.ResolveCustomSlotAction_DelegatesTo1064",
+          "VmSbarinfoParseTopLevel1065SliceTests.ShouldRecurseParsedInclude_RequiresValidLump",
+          "VmSbarinfoParseTopLevel1065SliceTests.TryParseOptionalSpacingAlignment_SkipsWhenNoComma",
           "VmSbarinfoParseTopLevel1065SliceTests.ShouldContinueCustomLumpScan_StopsOnMissingLump"
         ]
       }
