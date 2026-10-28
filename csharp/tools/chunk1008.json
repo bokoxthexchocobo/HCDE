@@ -1,0 +1,27 @@
+[
+  {
+    "name": "g-game-demo-playback-chunk1008",
+    "bucket": "conversion",
+    "note": "`G_ProcessIFFDemo` tail, `G_DoPlayDemo`, `G_TimeDemo`, and `G_CheckDemoStatus` head from `g_game.cpp` (**3500–3649**); follows chunk **1007** (**3350–3499**).",
+    "auditSeams": "File I/O, `uncompress`, `G_InitNew`, `I_Error`, and userinfo hosts remain injected.",
+    "auditRationale": "UNCredited **3500–3649** CLI band; disjoint from chunks **995–1007** and chunk **9** credited segments.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/g_game.cpp --start 3500 --end 3649` and `--chunk 1008 --band` → UNCredited, exit 0.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| No players / no BODY (**3501–3512**) | yes |\n| Multiplayer + decompress (**3514–3529**) | yes |\n| `G_DoPlayDemo` load/FORM (**3542–3587**) | yes |\n| Successful play path (**3594–3613**) | yes |\n| `G_TimeDemo` (**3622–3627**) | yes |\n| `G_CheckDemoStatus` head (**3643–3654**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **3503–3510** | `Printf` host |\n| **3520–3528** | zlib buffer host |\n| **3545–3563** | filesystem read host |\n| **3573–3580** | `C_BackupCVars` / buffer reset host |\n| **3601–3608** | `G_InitNew` / console host |\n| **3650+** | timing print tail (next band) |\n\n| Managed (`VmGGameDemoPlayback1008Slice.cs`) | Native (`g_game.cpp`) |\n|---------------------------------------------|----------------------|\n| `ResolveNoPlayersFailure` / `ResolveNoBodyFailure` | **3501–3512** |\n| Decompress / netgame player count | **3514–3529** |\n| Lump/file open + FORM guards | **3542–3587** |\n| Map init vs savegame requirement | **3599–3606** |\n| `ResolveTimeDemoGameAction` / draw flags | **3622–3627** |\n| `G_CheckDemoStatus` userinfo/timing gates | **3643–3654** |\n| Band hull (exclusive slice) | **3500–3649** |\n\n### Chunk **1008** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1007** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmGGameDemoPlayback1008Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "G_DoPlayDemo",
+        "start": 3500,
+        "end": 3649,
+        "tests": [
+          "VmGGameDemoPlayback1008SliceTests.ProcessIffDemoTail",
+          "VmGGameDemoPlayback1008SliceTests.DoPlayDemoHead",
+          "VmGGameDemoPlayback1008SliceTests.TimeDemoAndStatusHead"
+        ]
+      }
+    ]
+  }
+]
