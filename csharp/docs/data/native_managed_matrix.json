@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 249317
+    "managedCSharpLoc": 249449
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 85220,
+    "convertedThisRunNative": 85370,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 106513,
+    "convertedThisRunManaged": 106645,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 403652,
+    "remainingNative": 403502,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 103747,
+    "convertedBehaviorNative": 103897,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 104434,
-    "convertedBehaviorManaged": 116184,
+    "combinedBehaviorNative": 104584,
+    "convertedBehaviorManaged": 116316,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -40040,6 +40040,36 @@
         "nativeLoc": 150,
         "managedLoc": 162,
         "conversionManagedCommit": "632f68764788c96a31b008d24cbcc5b6990cdcdb"
+      },
+      {
+        "name": "pmobj-spawn-missile-chunk1118",
+        "bucket": "conversion",
+        "note": "`GetDefaultSpeed`, `P_SpawnMissileXYZ` aim policy, `P_SpawnMissile`, and `P_SpawnMissileZ` from `p_mobj.cpp` (**7901\u20138050**). Skips recognition **7880\u20137900** (`PlaySpawnSound`, chunk **19**).",
+        "auditSeams": "`Spawn`, `Vec3To`, shadow handling, and `P_OldSpawnMissile` body past the null check remain host-injected.",
+        "auditRationale": "UNCredited conversion band **7901\u20138050** (+150) after **1117**. **7877\u20137900** overlaps recognition **19**.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 7901 --end 8050` and `--chunk 1118 --band` \u2192 UNCredited, exit 0.",
+        "auditManagedLocJustification": "Spawn-sound site selection and hugger/overhead velocity adjustments match native branches; managed LOC exceeds 50%.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `GetDefaultSpeed` fast override (**7912\u20137921**) | yes |\n| Missing source/dest abort (**7935\u20137945**) | yes |\n| Floorclip unless sentinel Z (**7947\u20137950**) | yes |\n| Owner default + hugger/overhead Z (**7955\u20137978**) | yes |\n| Spectral friend + spawn check (**7985\u20137991**) | yes |\n| `P_SpawnMissile` launch Z (**8015**) | yes |\n| `P_SpawnMissileZ` source gate (**8029\u20138033**) | yes |\n| `P_OldSpawnMissile` null gate (**8047\u20138049**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **7880\u20137900** | recognition chunk **19** |\n| **7902\u20137907**, **7996\u20138006**, **8018\u20138024**, **8036\u20138042** | VM thunks |\n| **7952**, **7968**, **7981**, **7992** | host spawn/resize/net |\n| **8051+** | old missile body outside hull |\n\n| Managed (`VmPMobjSpawnMissile1118Slice.cs`) | Native (`p_mobj.cpp`) |\n|--------------------------------------------|---------------------|\n| Speed + missile aim/Z | **7901\u20138050** |\n| Band hull (exclusive slice) | **7901\u20138050** |\n\n### Chunk **1118** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1117** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMobjSpawnMissile1118Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "PlaySpawnSound and SpawnMissileXYZ",
+            "start": 7901,
+            "end": 8050,
+            "tests": [
+              "VmPMobjSpawnMissile1118SliceTests.ResolveSpawnSound_UsesPositionWhenSpawnerMissingAndSectorAudible",
+              "VmPMobjSpawnMissile1118SliceTests.GetDefaultSpeed_PrefersFastSpeedWhenSkillIsFast",
+              "VmPMobjSpawnMissile1118SliceTests.RunSpawnMissileXyz_ZerosHuggerVelocityAndAbortsFailedCheck",
+              "VmPMobjSpawnMissile1118SliceTests.TrySpawnMissileZ_RejectsMissingSource"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 132,
+        "conversionManagedCommit": "c20f9e3c91f381e6b8cd291e1e6b446e89834ff1"
       }
     ],
     "behaviorNativeChecksum": 508086,
