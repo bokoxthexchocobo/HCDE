@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 250996
+    "managedCSharpLoc": 251110
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 87020,
+    "convertedThisRunNative": 87170,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 108192,
+    "convertedThisRunManaged": 108306,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 401852,
+    "remainingNative": 401702,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 105547,
+    "convertedBehaviorNative": 105697,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 106234,
-    "convertedBehaviorManaged": 117863,
+    "combinedBehaviorNative": 106384,
+    "convertedBehaviorManaged": 117977,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -40403,6 +40403,36 @@
         "nativeLoc": 150,
         "managedLoc": 162,
         "conversionManagedCommit": "7968403ea915586b28bd1fa1f80338f9cd9f5189"
+      },
+      {
+        "name": "am-map-display-init-chunk1130",
+        "bucket": "conversion",
+        "note": "startDisplay player center, clearMarks, LevelInit scale, min/max window, line thickness, NewResolution, and the follow-pan gate from `am_map.cpp` (**1351\u20131500**); follows **1129**.",
+        "auditSeams": "`TexMan`, `UpdateShowAllLines`, and `C_DoKey` stay host-injected. Responder continues at **1501**.",
+        "auditRationale": "UNCredited **`am_map.cpp`** **1351\u20131500** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 1351 --end 1500` and a full tally line scan \u2192 no overlap.",
+        "auditManagedLocJustification": "Player scan, mark clear, 0.7 scale fallback, half-even thickness, and the pan-bind gate match native; managed LOC exceeds 50%.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Initial player scan and window save (**1351\u20131366**) | yes |\n| `clearMarks` (**1375\u20131381**) | yes |\n| `LevelInit` background and scale (**1389\u20131409**) | yes |\n| `minOutWindowScale` / `maxOutWindowScale` (**1417\u20131433**) | yes |\n| `NewUIScale` half-even thickness (**1441\u20131456**) | yes |\n| `NewResolution` ratio clamp (**1464\u20131483**) | yes |\n| Follow-mode `+am_pan` swallow (**1492\u20131500**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1337\u20131348** | display head already credited by **1129** |\n| **1408**, **1481\u20131482** | host `UpdateShowAllLines` / `activateNewScale` |\n| **1501+** | `C_DoKey` and the rest of `Responder` |\n\n`MAXPLAYERS` is **64**. Initial scale is `min/0.7`, and when that exceeds max the code stores **min**, not max. `RoundHalfEven` is IEEE round-ties-to-even via `llrint`. Empty map background selects **AUTOPAGE**.\n\n| Managed (`VmAmMapDisplayInit1130Slice.cs`) | Native (`am_map.cpp`) |\n|--------------------------------------------|---------------------|\n| Display init, thickness, pan gate | **1351\u20131500** |\n| Band hull (exclusive slice) | **1351\u20131500** |\n\n### Chunk **1130** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1129** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Client/VmAmMapDisplayInit1130Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "Automap display init and pan gate",
+            "start": 1351,
+            "end": 1500,
+            "tests": [
+              "VmAmMapDisplayInit1130SliceTests.FindInitialPlayer_SkipsConsoleWhenAbsentAndCentersCamera",
+              "VmAmMapDisplayInit1130SliceTests.ClearMarks_EmptiesSlotsAndLevelScaleFallsBackToMinimum",
+              "VmAmMapDisplayInit1130SliceTests.LineThickness_RoundsHalfEvenAndResolutionKeepsRatio",
+              "VmAmMapDisplayInit1130SliceTests.SuppressesFollowPan_OnlyForAutomapPanBinds"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 114,
+        "conversionManagedCommit": "746b9a9e6e85c3c38e1baf18f1a9780813debdb3"
       }
     ],
     "behaviorNativeChecksum": 508086,
