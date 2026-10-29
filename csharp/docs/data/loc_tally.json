@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 87170,
+  "convertedThisRunNative": 87320,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 108306,
+  "convertedThisRunManaged": 108420,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 401702,
+  "remainingNative": 401552,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 105697,
+  "convertedBehaviorNative": 105847,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 106384,
-  "convertedBehaviorManaged": 117977,
+  "combinedBehaviorNative": 106534,
+  "convertedBehaviorManaged": 118091,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -40417,6 +40417,36 @@
       "nativeLoc": 150,
       "managedLoc": 114,
       "conversionManagedCommit": "746b9a9e6e85c3c38e1baf18f1a9780813debdb3"
+    },
+    {
+      "name": "am-map-zoom-follow-chunk1131",
+      "bucket": "conversion",
+      "note": "Responder tail, changeWindowScale, doFollowPlayer, Ticker, and clearFB background policy from `am_map.cpp` (**1501\u20131650**); follows **1130**.",
+      "auditSeams": "`C_DoKey` and texture draw calls stay host-injected. `clearFB` continues after the blit loops at **1651**.",
+      "auditRationale": "UNCredited **`am_map.cpp`** **1501\u20131650** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 1501 --end 1650` and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "Key-release rule, legacy zoom, follow scroll, clock, and Raven background gate match native; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Key-up release handoff and `return res` (**1503\u20131513**) | yes |\n| `changeWindowScale` (**1523\u20131558**) | yes |\n| `doFollowPlayer` (**1566\u20131594**) | yes |\n| `Ticker` clock (**1603\u20131608**) | yes |\n| `clearFB` background gate and tile origins (**1618\u20131650**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1492\u20131500** | follow `+am_pan` gate already credited by **1130** |\n| **1572** | unused view-height delta |\n| **1651+** | remainder of `clearFB` |\n\n`M_OLDZOOMIN` is **1.02** and `M_OLDZOOMOUT` is **1/1.02**. `am_zoomdir` is cleared after the step. `am_drawmapback == 2` still draws Raven (`colorset` 3, or -1 with `GAME_Raven` **6**) when the mod set is undefined. A non-positive patch size is not tiled.\n\n| Managed (`VmAmMapZoomFollow1131Slice.cs`) | Native (`am_map.cpp`) |\n|-------------------------------------------|---------------------|\n| Zoom, follow, ticker, background | **1501\u20131650** |\n| Band hull (exclusive slice) | **1501\u20131650** |\n\n### Chunk **1131** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1130** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmAmMapZoomFollow1131Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "Automap zoom follow and background",
+          "start": 1501,
+          "end": 1650,
+          "tests": [
+            "VmAmMapZoomFollow1131SliceTests.ResponderResult_ReleasesBareKeysAndKeepsPlusBinds",
+            "VmAmMapZoomFollow1131SliceTests.ApplyZoom_UsesLegacyDirectionThenClearsIt",
+            "VmAmMapZoomFollow1131SliceTests.FollowPlayer_ScrollsWhenTheCameraMoves",
+            "VmAmMapZoomFollow1131SliceTests.ShouldDrawMapBackground_RavenModeTwoStillBlits"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 114,
+      "conversionManagedCommit": "570db24c88c8633f5d87889199dc4346be677c91"
     }
   ],
   "behaviorNativeChecksum": 508086,
