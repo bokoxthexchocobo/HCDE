@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 87320,
+  "convertedThisRunNative": 87470,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 108420,
+  "convertedThisRunManaged": 108558,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 401552,
+  "remainingNative": 401402,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 105847,
+  "convertedBehaviorNative": 105997,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 106534,
-  "convertedBehaviorManaged": 118091,
+  "combinedBehaviorNative": 106684,
+  "convertedBehaviorManaged": 118229,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -40447,6 +40447,37 @@
       "nativeLoc": 150,
       "managedLoc": 114,
       "conversionManagedCommit": "570db24c88c8633f5d87889199dc4346be677c91"
+    },
+    {
+      "name": "am-map-clip-line-chunk1132",
+      "bucket": "conversion",
+      "note": "Cohen-Sutherland clipMline and the first drawMline screen endpoint from `am_map.cpp` (**1651\u20131800**); follows **1131**.",
+      "auditSeams": "The second endpoint and thickness selection begin at **1801**. Host line drawing stays outside this slice.",
+      "auditRationale": "UNCredited **`am_map.cpp`** **1651\u20131800** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 1651 --end 1800` and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "Map reject, framebuffer outcodes, integer Scale, and the clip loop match native; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Outcode bits and map-space reject (**1668\u20131717**) | yes |\n| `CXMTOF` / `CYMTOF` into the clip box (**1719\u20131729**) | yes |\n| Edge clip with `Scale` (**1731\u20131784**) | yes |\n| `drawMline` origin of endpoint A (**1799\u20131800**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1651\u20131664** | closing braces and the clip comment |\n| **1801+** | endpoint B, thickness, and antialiasing |\n\n`Scale` is the widening `int32` divide from `cmdlib.h`. Map Y uses assignment (`TOP` if `y > m_y2`, `BOTTOM` if `y < m_y`); X is then OR-ed. A shared outcode bit rejects the segment.\n\n| Managed (`VmAmMapClipLine1132Slice.cs`) | Native (`am_map.cpp`) |\n|------------------------------------------|---------------------|\n| clipMline and screen start | **1651\u20131800** |\n| Band hull (exclusive slice) | **1651\u20131800** |\n\n### Chunk **1132** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1131** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmAmMapClipLine1132Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "Automap Cohen-Sutherland clip",
+          "start": 1651,
+          "end": 1800,
+          "tests": [
+            "VmAmMapClipLine1132SliceTests.Scale_UsesWideningIntegerDivision",
+            "VmAmMapClipLine1132SliceTests.TryClip_RejectsASegmentThatIsEntirelyAboveTheMapWindow",
+            "VmAmMapClipLine1132SliceTests.TryClip_CutsAVerticalSegmentToTheTopEdge",
+            "VmAmMapClipLine1132SliceTests.TryClip_CutsAHorizontalSegmentToTheLeftEdge",
+            "VmAmMapClipLine1132SliceTests.FrameOutcode_MarksTheCornerOutside"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 138,
+      "conversionManagedCommit": "c773e6f3821f40a5e93df409b0d144bda2682a59"
     }
   ],
   "behaviorNativeChecksum": 508086,
