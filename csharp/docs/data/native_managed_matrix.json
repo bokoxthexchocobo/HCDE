@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 279144
+    "managedCSharpLoc": 279894
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 110034,
+    "convertedThisRunNative": 110379,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 136340,
+    "convertedThisRunManaged": 137090,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 378838,
+    "remainingNative": 378493,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 128561,
+    "convertedBehaviorNative": 128906,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 129248,
-    "convertedBehaviorManaged": 146011,
+    "combinedBehaviorNative": 129593,
+    "convertedBehaviorManaged": 146761,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -43462,6 +43462,34 @@
         "nativeLoc": 311,
         "managedLoc": 436,
         "conversionManagedCommit": "90971624eb22ecbfd2b51ac2ae0b9835c5ee42a8"
+      },
+      {
+        "name": "multipatch-texture-chunk1238",
+        "bucket": "conversion",
+        "note": "TEXTUREx composite, blend map, and true-color downconvert from multipatchtexture.cpp (1-345).",
+        "auditManagedLocJustification": "CopyToBlock and CopyPixels call ClipCopyPixelRect and FBitmap::Blit, which are not source lines in this file. The managed port contains that clip (rotations 0-7), the ten BGRA copy operators the compositor selects, and the ice, desaturate, special, modulate, and overlay blend application those calls perform. Palette matching, the paletted ice remap, the desaturate tables, and the special-color tables stay small seams. That host surface is why the managed file is over 150% of the 345-line source.",
+        "auditSeams": "The constructor copies every part, then sets the game-palette flag only when the texture is not complex and every part uses the game palette. An early miss leaves the flag clear. SupportRemap0 is false for a textual definition or a game-palette texture, and otherwise requires every part to support it. An empty non-palette texture therefore supports it. GetBlendMap returns the ice remap when the blend dword is 1. Dwords 33 through 36 select the four special-map seams, and 2 through 32 select the desaturate seams (index xor 0x20+slot). Any other non-zero alpha fills a work table through the slice Pick seam, (r*3+g*5+b*7)&255, using base channels b=i, g=(i+1)&255, r=(i+2)&255. Alpha 0 that is not one of those indexes returns null and the part is copied raw. CopyToBlock reads column-major pixels with step height,1 and uses the bitmap clip. A non-zero style drops the translation after the blend map is chosen. Index 0 is not written, so a translation can store 0 and a later part can paint that pixel. CreatePalettedPixels forces the paletted path for luminance when the texture uses the game palette, even if a part op is not copy, and forces the true-color path for luminance when it does not. Other conversions scan ops only when the texture is not complex. noremap0 becomes normal when the texture is textual or not a game-palette texture. The true-color path calls CopyPixels with normal and frame 0, then writes a column-major index from RGBToPalette only where the paletted byte is still 0 and the BGRA alpha is non-zero. Luminance uses (r*77+g*143+b*37)>>8. Other conversions use the RGB256 seam ((r>>2)*3+(g>>2)*5+(b>>2)*7)&255. CopyPixels leaves the running return at -1 for every part result, including a positive one. Alpha 255 sets BLEND_MODULATE and blendcolor channel*65536/255. Any other non-zero alpha sets BLEND_OVERLAY. A zero-alpha blend dword other than 0 is passed through as the blend enum. Child bitmaps are the caller RGBA, or the part translation palette expanded with index 0 skipped when its alpha is 0. The true-color ice table is the 16-entry bitmap.cpp palette. True-color desaturate uses gray (r*77+g*143+b*36)>>8. A special blend past the four-entry seam is a logged fault and does not write. CollectForPrecache records this image with the incoming flag, then upgrades the flag for children when the texture is complex or any op is not copy.",
+        "auditRationale": "UNCredited multipatchtexture.cpp 1-345 (+345). The file ends at 345. A full tally line scan shows no overlap.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/textures/formats/multipatchtexture.cpp --start 1 --end 345 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Constructor and palette vote (**37\u201360**) | yes |\n| Sky remap gate (**73\u201381**) | yes |\n| Blend map (**89\u2013135**) | yes |\n| Paletted block copy (**143\u2013184**) | yes |\n| Paletted composite and downconvert (**192\u2013259**) | yes |\n| True-color copy and return (**269\u2013320**) | yes |\n| Precache forwarding (**328\u2013345**) | yes |\n| Band hull (**1\u2013345**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nA luminance request on a game-palette texture stays paletted even when a part op is not copy. The same request on a texture that misses the game palette builds true color even when every op is copy. noremap0 survives only for a non-textual game-palette texture, and a non-zero style then drops the blend map. The copy return starts at -1 and a positive part result does not replace it. A transparent source is skipped, while overwrite still stores the color and an alpha of 0. The downconvert walks the finished bitmap in column order and will not replace a non-zero index.\n\n| Managed (`VmMultiPatch1238Slice.cs`) | Native (`multipatchtexture.cpp`) |\n|--------------------------------------|-------------------------------|\n| Composite, blend, copy, and precache | **1\u2013345** |\n| Band hull (exclusive slice) | **1\u2013345** |\n\n### Chunk **1238** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **345** |\n| **Net headline** | **+345** vs post-**1237** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmMultiPatch1238Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/textures/formats/multipatchtexture.cpp",
+            "symbol": "FMultiPatchTexture::CreatePalettedPixels",
+            "start": 1,
+            "end": 345,
+            "tests": [
+              "VmMultiPatch1238SliceTests.PaletteVote_CompositesPostsAndClearsStyleMaps",
+              "VmMultiPatch1238SliceTests.TrueColor_BlendsDownconvertsAndKeepsUnknownReturn"
+            ]
+          }
+        ],
+        "nativeLoc": 345,
+        "managedLoc": 750,
+        "conversionManagedCommit": "2ca13b89550691c44d0753b2471f58b45b461462"
       }
     ],
     "behaviorNativeChecksum": 508086,
