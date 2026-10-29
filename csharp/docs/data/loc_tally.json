@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 89270,
+  "convertedThisRunNative": 89420,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 110400,
+  "convertedThisRunManaged": 110508,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 399602,
+  "remainingNative": 399452,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 107797,
+  "convertedBehaviorNative": 107947,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 108484,
-  "convertedBehaviorManaged": 120071,
+  "combinedBehaviorNative": 108634,
+  "convertedBehaviorManaged": 120179,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -40837,6 +40837,35 @@
       "nativeLoc": 150,
       "managedLoc": 117,
       "conversionManagedCommit": "f97be7fe0799e7104c93e2799ed0d9da0f7ea177"
+    },
+    {
+      "name": "p-enemy-melee-chunk1145",
+      "bucket": "conversion",
+      "note": "Recursive sound lines, noise alert, and melee range from `p_enemy.cpp` (**151\u2013300**); follows **1144**.",
+      "auditSeams": "Portal sectors and sight checks stay host-supplied. Missile range begins at **307**.",
+      "auditRationale": "UNCredited **`p_enemy.cpp`** **151\u2013300** (+150), inside the 3488-line file, with no conversion or recognition overlap.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_enemy.cpp --start 151 --end 300` and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "Door cuts, sound-block depth, and melee order match native; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Portal plane and line-portal marks (**152\u2013175**) | yes |\n| Two-sided, closed-door, and sound-block cuts (**177\u2013217**) | yes |\n| `P_NoiseAlert` (**230\u2013245**) | yes |\n| `P_CheckMeleeRange` (**253\u2013299**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1\u2013150** | tables and sector mark already credited by **1144** |\n| **307+** | `P_CheckMissileRange` |\n\n`ML_TWOSIDED` is **4** and `ML_SOUNDBLOCK` is **0x40**. A sound-block line is entered only while `soundblocks` is **0**, and the neighbor is then marked with **1**. Equal floor and ceiling planes block sound (`>=`). `CF_NOTARGET` is **8**. `SECF_NOATTACK` is **2048**. `MF5_NOVERTICALMELEERANGE` is **0x04000000**. A reached goal returns before the no-attack, vertical, friend, and sight checks. A negative melee range uses the actor's `meleerange`.\n\n| Managed (`VmPEnemyMelee1145Slice.cs`) | Native (`p_enemy.cpp`) |\n|------------------------------------------|----------------------|\n| Sound lines, alert, melee | **151\u2013300** |\n| Band hull (exclusive slice) | **151\u2013300** |\n\n### Chunk **1145** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1144** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPEnemyMelee1145Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "Enemy sound lines and melee range",
+          "start": 151,
+          "end": 300,
+          "tests": [
+            "VmPEnemyMelee1145SliceTests.SoundLines_StopAtClosedDoorsAndASecondSoundBlock",
+            "VmPEnemyMelee1145SliceTests.BeginNoiseAlert_IgnoresAMissingEmitterAndANoTargetPlayer",
+            "VmPEnemyMelee1145SliceTests.CheckMeleeRange_ReachesAGoalBeforeSectorAndFriendChecks"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 108,
+      "conversionManagedCommit": "a2b593dcfb5056f0deef17d1e90b1864274675d4"
     }
   ],
   "behaviorNativeChecksum": 508086,
