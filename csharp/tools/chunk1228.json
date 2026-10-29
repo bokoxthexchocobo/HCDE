@@ -1,0 +1,26 @@
+[
+  {
+    "name": "defcvars-chunk1228",
+    "bucket": "conversion",
+    "note": "DEFCVARS version gate, legacy renames, blacklist, and archive defaults from d_defcvars.cpp (1-163).",
+    "auditSeams": "atoi of LASTRUNVERSION is 234. A lump whose index plus one is past the IWAD's last entry prints the red wad warning and stops the scan. The first token must be version, compared without case. The version number is the scanner's base-0 integer, and MAXINT is the signed maximum. A version above 234 or below 219 is fatal and later lumps are not read. Below 220 the name is folded and gamma, fullscreen, and cd_drive are special: the first two are renamed and cd_drive abandons the rest of that lump without reading its value. Below 221, mouse_sensitivity and m_noprescale do the same. The blacklist is an exact name match. A system-only cvar is also refused. The message quotes the original token. An archived cvar stores the next token as its default. A known cvar without the archive bit, and an unknown name, skip one value and continue. A fatal missing token stops the whole grab.",
+    "auditRationale": "UNCredited d_defcvars.cpp 1-163 (+163). The file ends at 163. A full tally line scan shows no overlap.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/d_defcvars.cpp --start 1 --end 163 and a full tally line scan \u2192 no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Supported version (**34\u201360**) | yes |\n| Legacy rename and early stop (**65\u2013101**) | yes |\n| Blacklist and archive default (**103\u2013161**) | yes |\n| Band hull (**1\u2013163**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nVersion 219 renames GAMMA before the lookup and leaves the tokens after cd_drive unread. A lump at the IWAD's last index is refused. A bad version number does not change a default.\n\n| Managed (`VmDefCVars1228Slice.cs`) | Native (`d_defcvars.cpp`) |\n|------------------------------------|---------------------------|\n| Version gate, renames, and defaults | **1\u2013163** |\n| Band hull (exclusive slice) | **1\u2013163** |\n\n### Chunk **1228** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **163** |\n| **Net headline** | **+163** vs post-**1227** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmDefCVars1228Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/d_defcvars.cpp",
+        "symbol": "D_GrabCVarDefaults",
+        "start": 1,
+        "end": 163,
+        "tests": [
+          "VmDefCVars1228SliceTests.Grab_RenamesLegacyNamesAndStopsTheLump",
+          "VmDefCVars1228SliceTests.Grab_RejectsAWadLumpAndABadVersion"
+        ]
+      }
+    ]
+  }
+]
