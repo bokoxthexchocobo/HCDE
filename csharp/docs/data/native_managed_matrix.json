@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 257249
+    "managedCSharpLoc": 257447
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 92794,
+    "convertedThisRunNative": 93003,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 114445,
+    "convertedThisRunManaged": 114643,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 396078,
+    "remainingNative": 395869,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 111321,
+    "convertedBehaviorNative": 111530,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 112008,
-    "convertedBehaviorManaged": 124116,
+    "combinedBehaviorNative": 112217,
+    "convertedBehaviorManaged": 124314,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -41351,6 +41351,36 @@
         "nativeLoc": 167,
         "managedLoc": 270,
         "conversionManagedCommit": "def53ea99df48aaad1f32ebc38f0e7b5ae158799"
+      },
+      {
+        "name": "p-sight-opening-chunk1162",
+        "bucket": "conversion",
+        "note": "Sight opening and check setup from `p_sight.cpp` (**1\u2013209**).",
+        "auditSeams": "Plane heights, portal sight blocks, and cross-group displacement stay host-supplied. This slice places the eye and classifies the opening.",
+        "auditRationale": "UNCredited **`p_sight.cpp`** **1\u2013209** (+209), a whole hole with no conversion or recognition overlap. `PTR_SightTraverse` starts at **210**.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_sight.cpp --start 1 --end 209` and a full tally line scan \u2192 no overlap.",
+        "auditManagedLocJustification": "Side swap, eye placement, and the one-sided plane swap match native; managed LOC exceeds 50%.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Opening flags and `SwapSides` (**57\u201377**) | yes |\n| `SightCheck::init` (**126\u2013145**) | yes |\n| `P_SightOpening` (**156\u2013199**) | yes |\n| Band hull (**1\u2013209**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **210\u2013384** | `PTR_SightTraverse` is already credited |\n| `PosRelative` | the displacement add stays the host offset |\n| `PortalBlocksSight` and `ZatPoint` | sector queries stay host-supplied |\n\n`SO_TOPFRONT` is **1**, `SO_TOPBACK` is **2**, `SO_BOTTOMFRONT` is **4**, and `SO_BOTTOMBACK` is **8**. `ML_PORTALCONNECT` is **0x80000000**. `FF_SEETHROUGH` is **0x2000000**. `LINEOPEN_MAX` is float max and `LINEOPEN_MIN` is its negation. The sight streams are named `BotCheckSight` and `CheckSight`. The intercept list reserves **128** and the portal list reserves **32**.\n\n`SwapSides` moves the front bits one place left and the back bits one place right. Any other bit is dropped. Setup stores the viewer position plus the displacement from the viewer group to the task group, then adds three quarters of the viewer height to `Z`. The target contributes only `XY`, shifted from the target group to the same task group. A matching group does not ask the host and contributes **(0, 0)**. The trace runs from the raised eye to that target point. Both remembered `Z` values start at the raised eye. Slopes, fraction, direction, flags, and the target id are copied. No portal has been found, and the see-through mask is `FF_SEETHROUGH`.\n\nA one-sided line with no portal connection leaves the opening at zero and the range at **0**. A portal that does not block a plane stores float max on the ceiling or float min on the floor and sets the front flag. A plane that stays **0** is then replaced from the other plane: the top reads the floor and the bottom reads the ceiling. The one-sided range is always **0**. A two-sided line applies the same portal substitution on both sides, using back flags for the back sector. An unset plane reads that side's own ceiling or floor. The bottom is the higher floor and the top is the lower ceiling. The range is **1** only when the bottom is strictly below the top, so a closed or equal window is **0**.\n\n| Managed (`VmPSightOpening1162Slice.cs`) | Native (`p_sight.cpp`) |\n|-----------------------------------------|------------------------|\n| Opening and check setup | **1\u2013209** |\n| Band hull (exclusive slice) | **1\u2013209** |\n\n### Chunk **1162** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **209** |\n| **Net headline** | **+209** vs post-**1161** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPSightOpening1162Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_sight.cpp",
+            "symbol": "Sight opening and check setup",
+            "start": 1,
+            "end": 209,
+            "tests": [
+              "VmPSightOpening1162SliceTests.Begin_RaisesTheEyeAndShiftsOnlyAcrossGroups",
+              "VmPSightOpening1162SliceTests.Swap_ExchangesFrontAndBackBits",
+              "VmPSightOpening1162SliceTests.Open_OneSidedUsesTheSwappedPlanesAndAlwaysCloses",
+              "VmPSightOpening1162SliceTests.Open_TwoSidedWindowIsTheOverlapNotTheDistance"
+            ]
+          }
+        ],
+        "nativeLoc": 209,
+        "managedLoc": 198,
+        "conversionManagedCommit": "9fc1feb65887c9a4445586239a99ca7289d8f21d"
       }
     ],
     "behaviorNativeChecksum": 508086,
