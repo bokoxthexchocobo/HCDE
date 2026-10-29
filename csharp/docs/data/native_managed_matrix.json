@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 251757
+    "managedCSharpLoc": 251915
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 87920,
+    "convertedThisRunNative": 88070,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 108953,
+    "convertedThisRunManaged": 109111,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 400952,
+    "remainingNative": 400802,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 106447,
+    "convertedBehaviorNative": 106597,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 107134,
-    "convertedBehaviorManaged": 118624,
+    "combinedBehaviorNative": 107284,
+    "convertedBehaviorManaged": 118782,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -40584,6 +40584,36 @@
         "nativeLoc": 150,
         "managedLoc": 125,
         "conversionManagedCommit": "b8131d7a39fc8a1eabd37f55d186c5bd642b4eab"
+      },
+      {
+        "name": "am-map-poly-shade-chunk1136",
+        "bucket": "conversion",
+        "note": "Polygon origin, hole-ring copy, shade, secret probe, and subsector debug colors from `am_map.cpp` (**2251\u20132400**); follows **1135**.",
+        "auditSeams": "Earcut and AddPoly stay host-supplied. Red poly-seg drawing begins at **2401**.",
+        "auditRationale": "UNCredited **`am_map.cpp`** **2251\u20132400** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 2251 --end 2400` and a full tally line scan \u2192 no overlap.",
+        "auditManagedLocJustification": "Shade, secret returns, rotated segs, and the debug gate match native; managed LOC exceeds 50%.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Fill origin zeros (**2251\u20132252**) | yes |\n| Hole ring vs cleared indices (**2256\u20132276**) | yes |\n| Soft and linear fade, texture scale (**2278\u20132303**) | yes |\n| `AM_CheckSecret` (**2315\u20132337**) | yes |\n| `drawSeg` / `drawPolySeg` rotation (**2346\u20132376**) | yes |\n| Subsector debug gate, colors, yellow segs, poly-node match (**2378\u20132400**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2101\u20132250** | textured fill already credited by **1135** |\n| **2401\u20132410** | red poly-seg loop that closes `showSS` |\n| **2418+** | 3D-floor boundary and sector-action probes |\n\n`SSECF_HOLE` is **8**. `ML_SECRET` is **0x20**. `NUMCOLORMAPS` is **32**. Soft fade is `clamp(((64 - (light+12)*0.25) - 12) / 32, 0, 1)`. Linear fade is `1 - clamp(light, 0, 255) / 255`. A revealed former secret returns **1** before a still-secret line without `ML_SECRET` returns **2**. `am_map_secrets == 0` draws neither.\n\n| Managed (`VmAmMapPolyShade1136Slice.cs`) | Native (`am_map.cpp`) |\n|------------------------------------------|---------------------|\n| Shade, secrets, debug segs | **2251\u20132400** |\n| Band hull (exclusive slice) | **2251\u20132400** |\n\n### Chunk **1136** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1135** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Client/VmAmMapPolyShade1136Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "Automap polygon shade",
+            "start": 2251,
+            "end": 2400,
+            "tests": [
+              "VmAmMapPolyShade1136SliceTests.HoleRing_TriangulatesOnlyWhenFlaggedAndMoreThanThreeLines",
+              "VmAmMapPolyShade1136SliceTests.FadeLevel_UsesTheSoftRampOrTheLinearHardwareScale",
+              "VmAmMapPolyShade1136SliceTests.CheckSecret_PrefersARevealedFrontSector",
+              "VmAmMapPolyShade1136SliceTests.DebugStrokes_RotateSegsAndMarkTheShownSubsector"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 158,
+        "conversionManagedCommit": "cb08eba794361edf1f8b18cf08a6a6e7f6d8ec7f"
       }
     ],
     "behaviorNativeChecksum": 508086,
