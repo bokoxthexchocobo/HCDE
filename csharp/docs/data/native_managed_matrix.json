@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 254187
+    "managedCSharpLoc": 254435
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 90396,
+    "convertedThisRunNative": 90668,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 111383,
+    "convertedThisRunManaged": 111631,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 398476,
+    "remainingNative": 398204,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 108923,
+    "convertedBehaviorNative": 109195,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 109610,
-    "convertedBehaviorManaged": 121054,
+    "combinedBehaviorNative": 109882,
+    "convertedBehaviorManaged": 121302,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -41027,6 +41027,36 @@
         "nativeLoc": 152,
         "managedLoc": 144,
         "conversionManagedCommit": "b43c887f1d9c8f0de62abaf79e8d523dfdc7ed93"
+      },
+      {
+        "name": "p-enemy-pain-chunk1151",
+        "bucket": "conversion",
+        "note": "Chase dispatch, facing, monster rail, drop, and pain from `p_enemy.cpp` (**2999\u20133270**). Last in-file hole of at least 150 lines.",
+        "auditSeams": "Resurrection, aim, shadow checks, missile damage, sound lookup, and the drop VM stay host-supplied. Facing uses the native BAM normalizer.",
+        "auditRationale": "UNCredited **`p_enemy.cpp`** **2999\u20133270** (+272), inside the 3488-line file, with no conversion or recognition overlap.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_enemy.cpp --start 2999 --end 3270` and a full tally line scan \u2192 no overlap.",
+        "auditManagedLocJustification": "Flag split, limited facing, rail lead, and pain-name order match native; managed LOC exceeds 50%.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `A_DoChaseNative` (**3012\u20133016**) | yes |\n| `A_Face` / `A_FaceTarget` (**3046\u20133145**) | yes |\n| `A_MonsterRail` (**3155\u20133196**) | yes |\n| `P_DropItem` (**3204\u20133215**) | yes |\n| `A_Pain` (**3217\u20133269**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2245\u20132396** | wander already credited by **1150** |\n| **2397\u20132998** | chase body already credited |\n| **3000\u20133009** and **3019\u20133028** | VM thunks forwarded to the host |\n| **3271+** | `CheckBossDeath` already credited |\n| **451\u2013481** | 31-line gap under the floor |\n\n`CHF_FASTCHASE` is **1**, `CHF_NOPLAYACTIVE` is **2**, `CHF_NIGHTMAREFAST` is **4**, `CHF_RESURRECT` is **8**, and `CHF_DONTMOVE` is **16**. A resurrection hit returns before the chase. Otherwise play-active is the inverse of the no-play bit, and the flags passed on are masked with **0x3fffffff**. `A_Face` returns immediately with no other actor. Stealth sets `visdir` to **1** and `MF_AMBUSH` is cleared. The turn delta is the negated BAM `deltaangle`. A non-zero max turn smaller than that delta steps by `max_turn + ang_offset` in the delta's direction; otherwise yaw becomes the target angle plus the offset. Pitch runs only when max pitch is at most **180** (the face-target default is **270** and skips it). The default body points are **32** above each foot, then the feet, center, or top flags replace the target in that order, and `z_add` is applied last. A point at or above the actor's top uses the center. Pitch is `-asin(dz / distance)`. A non-zero max pitch steps by the smaller of that limit and the **360**-normalized difference. A shadow yaw offset is `Random2() * 45/256 * aim * penalty`, and only when the turn is unlimited and yaw already equals the target angle. Vertical shadow aim (`MF9_SHADOWAIMVERT`, **8**) does the same for pitch only when max pitch is zero. `A_MonsterRail` needs a target. It clears ambush, uses the lead angle, keeps an aimed pitch when a line target exists, and otherwise uses `-atan2(zdiff, xy)` where `zdiff` is the target center minus the shooter center minus floor clip. `MISSILERANGE` is **2048** and the aim window is **60** degrees. The saved pitch is restored after the shot. `P_DropItem` returns an actor only when the VM does. Player pain, with no alternative skin, uses `*pain25`, `*pain50`, `*pain75`, or `*pain100` at health **25**, **50**, and **75**. A damage type tries the amount plus the type, then `*pain-` plus the type, then the amount. That path rumbles and plays on `CHAN_VOICE` (**2**) with `CHANF_NORUMBLE` (**0x80000**) at attenuation **1**. Any other actor plays `PainSound` only when it is valid, without the no-rumble flag.\n\n| Managed (`VmPEnemyPain1151Slice.cs`) | Native (`p_enemy.cpp`) |\n|----------------------------------------|----------------------|\n| Chase, face, rail, pain | **2999\u20133270** |\n| Band hull (exclusive slice) | **2999\u20133270** |\n\n### Chunk **1151** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **272** |\n| **Net headline** | **+272** vs post-**1150** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPEnemyPain1151Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "Enemy chase face rail and pain",
+            "start": 2999,
+            "end": 3270,
+            "tests": [
+              "VmPEnemyPain1151SliceTests.DoChase_StopsForAResurrectionAndMasksTheHighFlag",
+              "VmPEnemyPain1151SliceTests.Turn_LimitsYawAndAimsPitchFromTheChosenBodyPoint",
+              "VmPEnemyPain1151SliceTests.MonsterRail_LeadsTheShotAndRestoresPitch",
+              "VmPEnemyPain1151SliceTests.Pain_PrefersADamageTypeAndUsesHealthBands"
+            ]
+          }
+        ],
+        "nativeLoc": 272,
+        "managedLoc": 248,
+        "conversionManagedCommit": "093f58231546f67f0f35179182fa60e6b8dd6b08"
       }
     ],
     "behaviorNativeChecksum": 508086,
