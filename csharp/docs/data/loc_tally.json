@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 101011,
+  "convertedThisRunNative": 101178,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 125949,
+  "convertedThisRunManaged": 126197,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 387861,
+  "remainingNative": 387694,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 119538,
+  "convertedBehaviorNative": 119705,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 120225,
-  "convertedBehaviorManaged": 135620,
+  "combinedBehaviorNative": 120392,
+  "convertedBehaviorManaged": 135868,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -42365,6 +42365,33 @@
       "nativeLoc": 165,
       "managedLoc": 184,
       "conversionManagedCommit": "d9ba6dbbeccab5db5e8e2c8f89b2689d34168b9a"
+    },
+    {
+      "name": "font-chars-chunk1198",
+      "bucket": "conversion",
+      "note": "FON1 and FON2 character pixels and the paletted copy from fontchars.cpp (1\u2013167).",
+      "auditSeams": "The lump bytes and the font's short name are host results. A missing lump throws. A wrapped width times height aborts with the corrupt-font error before the pixel walk. CopyPixels clips to the bitmap and skips a remap entry whose alpha is 0. A null remap writes nothing and still returns 0.",
+      "auditRationale": "UNCredited fontchars.cpp 1\u2013167 (+167). The file ends at 167. A full tally line scan shows no overlap.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/textures/formats/fontchars.cpp --start 1 --end 167 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| FFontChar2 constructor (**40\u201347**) | yes |\n| FFontChar2::CreatePalettedPixels (**57\u2013159**) | yes |\n| FFontChar2::CopyPixels (**161\u2013167**) | yes |\n| Band hull (**1\u2013167**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nThe constructor stores the lump, the source position, and both offsets. CreatePalettedPixels reads four header bytes. A FON2 mark reads seven more and uses the last of those as the maximum color, then seeks to the source position. A FON1 mark reads thirteen more, subtracts one from the last of those for the maximum, turns RLE off, and seeks to the source position. Any other header keeps RLE and a maximum of 255. RLE codes of zero or more start a literal run. Negative codes other than -128 start a repeated color. -128 is skipped. Colors above the maximum are clamped. Raw FON1 bytes are clamped the same way. Both walks store the glyph column-major. CopyPixels forces luminance back to normal, expands the palette to BGRA, and returns 0.\n\n| Managed (`VmFontChars1198Slice.cs`) | Native (`fontchars.cpp`) |\n|-------------------------------------|--------------------------|\n| Font character | **1\u2013167** |\n| Band hull (exclusive slice) | **1\u2013167** |\n\n### Chunk **1198** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **167** |\n| **Net headline** | **+167** vs post-**1197** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmFontChars1198Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/textures/formats/fontchars.cpp",
+          "symbol": "FFontChar2::CreatePalettedPixels",
+          "start": 1,
+          "end": 167,
+          "tests": [
+            "VmFontChars1198SliceTests.CreatePalettedPixels_DecodesFon2RunsAndFon1Raw",
+            "VmFontChars1198SliceTests.CopyPixels_ExpandsRemapAndSkipsTransparentEntries"
+          ]
+        }
+      ],
+      "nativeLoc": 167,
+      "managedLoc": 248,
+      "conversionManagedCommit": "74fa42ca09c329547b51c566435a55c66a5e5127"
     }
   ],
   "behaviorNativeChecksum": 508086,
