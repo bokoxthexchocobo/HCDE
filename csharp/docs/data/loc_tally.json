@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 104196,
+  "convertedThisRunNative": 104456,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 129606,
+  "convertedThisRunManaged": 129867,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 384676,
+  "remainingNative": 384416,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 122723,
+  "convertedBehaviorNative": 122983,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 123410,
-  "convertedBehaviorManaged": 139277,
+  "combinedBehaviorNative": 123670,
+  "convertedBehaviorManaged": 139538,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -42797,6 +42797,33 @@
       "nativeLoc": 176,
       "managedLoc": 177,
       "conversionManagedCommit": "c565dec396dd3f62a674993ac8973bb8383233dd"
+    },
+    {
+      "name": "md5check-chunk1214",
+      "bucket": "conversion",
+      "note": "Alpha-patch and palette IMGZ checksum lists from md5check.cpp (1-260).",
+      "auditSeams": "MD5 is the little-endian digest from chunk 1209. IMGZ Seek and Read are the file reader. A short read leaves the unread tail zero. Digests are 32 lowercase hex characters.",
+      "auditRationale": "UNCredited md5check.cpp 1-260 (+260). The file ends at 260. A full tally line scan shows no overlap.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/textures/formats/md5check.cpp --start 1 --end 260 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| alphapatches (**41-171**) | yes |\n| palimgzs (**175-180**) | yes |\n| makeMD5 (**188-199**) | yes |\n| checkPatchForAlpha (**207-227**) | yes |\n| checkIMGZPalette (**235-260**) | yes |\n| Band hull (**1-260**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nPatches longer than 10164 bytes return false before a digest. A listed length is hashed once and compared with every row of that length. IMGZ seeks to the start and reads the reported length only after a listed length matches. The sentinel row is the end of each native array and is not a listed length.\n\n| Managed (`VmMd5Check1214Slice.cs`) | Native (`md5check.cpp`) |\n|------------------------------------|-------------------------|\n| Checksum lists | **1-260** |\n| Band hull (exclusive slice) | **1-260** |\n\n### Chunk **1214** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **260** |\n| **Net headline** | **+260** vs post-**1213** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmMd5Check1214Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/textures/formats/md5check.cpp",
+          "symbol": "checkPatchForAlpha",
+          "start": 1,
+          "end": 260,
+          "tests": [
+            "VmMd5Check1214SliceTests.MakeMd5_PrintsLowerHexAndTheAlphaListRejectsOtherBytes",
+            "VmMd5Check1214SliceTests.CheckImgzPalette_HashesFromTheStartOnlyWhenTheLengthIsListed"
+          ]
+        }
+      ],
+      "nativeLoc": 260,
+      "managedLoc": 261,
+      "conversionManagedCommit": "2e93f9abffcf898ea65302fb21c7d8962f9d46f8"
     }
   ],
   "behaviorNativeChecksum": 508086,
