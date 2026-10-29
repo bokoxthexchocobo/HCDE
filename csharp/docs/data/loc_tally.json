@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 104615,
+  "convertedThisRunNative": 104776,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 129973,
+  "convertedThisRunManaged": 130140,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 384257,
+  "remainingNative": 384096,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 123142,
+  "convertedBehaviorNative": 123303,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 123829,
-  "convertedBehaviorManaged": 139644,
+  "combinedBehaviorNative": 123990,
+  "convertedBehaviorManaged": 139811,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -42851,6 +42851,33 @@
       "nativeLoc": 159,
       "managedLoc": 106,
       "conversionManagedCommit": "770ea1d16f906142e25abdbba1b69cb83a06658c"
+    },
+    {
+      "name": "aabbtree-chunk1216",
+      "bucket": "conversion",
+      "note": "AABB node path, ray overlap, and ray-line hit from hw_aabbtree.cpp (1-161).",
+      "auditSeams": "Node and line coordinates are float widened to double. The ray Z is ignored. std::min keeps the current fraction when the new one is not smaller, including NaN. A 32-slot stack skips an internal node instead of descending.",
+      "auditRationale": "UNCredited hw_aabbtree.cpp 1-161 (+161). The file ends at 161. A full tally line scan shows no overlap.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/hwrenderer/data/hw_aabbtree.cpp --start 1 --end 161 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| FindNodePath (**24-49**) | yes |\n| RayTest (**51-96**) | yes |\n| OverlapRayAABB (**98-127**) | yes |\n| IntersectRayLine (**129-158**) | yes |\n| Band hull (**1-161**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nA line point on the box edge is inside. The path is the matching leaf, then each parent back to the start node, and the left child is used only when the right child misses. A ray shorter than length 1 returns 1 before the walk. A parallel line, a hit at or behind the origin, and a parent box that misses the ray all stay at 1. The nearest positive fraction replaces the running hit.\n\n| Managed (`VmAabbTree1216Slice.cs`) | Native (`hw_aabbtree.cpp`) |\n|------------------------------------|----------------------------|\n| Ray tree | **1-161** |\n| Band hull (exclusive slice) | **1-161** |\n\n### Chunk **1216** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **161** |\n| **Net headline** | **+161** vs post-**1215** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmAabbTree1216Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/rendering/hwrenderer/data/hw_aabbtree.cpp",
+          "symbol": "LevelAABBTree::RayTest",
+          "start": 1,
+          "end": 161,
+          "tests": [
+            "VmAabbTree1216SliceTests.FindNodePath_ReturnsTheLeafThenItsParents",
+            "VmAabbTree1216SliceTests.RayTest_KeepsTheNearestHitAndSkipsATooDeepTree"
+          ]
+        }
+      ],
+      "nativeLoc": 161,
+      "managedLoc": 167,
+      "conversionManagedCommit": "db45c605d79b257f6fafeec8437138019e99adea"
     }
   ],
   "behaviorNativeChecksum": 508086,
