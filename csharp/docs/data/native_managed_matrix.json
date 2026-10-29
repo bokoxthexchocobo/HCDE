@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 250191
+    "managedCSharpLoc": 250377
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 86270,
+    "convertedThisRunNative": 86420,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 107387,
+    "convertedThisRunManaged": 107573,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 402602,
+    "remainingNative": 402452,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 104797,
+    "convertedBehaviorNative": 104947,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 105484,
-    "convertedBehaviorManaged": 117058,
+    "combinedBehaviorNative": 105634,
+    "convertedBehaviorManaged": 117244,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -40252,6 +40252,36 @@
         "nativeLoc": 150,
         "managedLoc": 145,
         "conversionManagedCommit": "b390abcbc935939e6e99d4035ec7996b4db1fc67"
+      },
+      {
+        "name": "am-map-palette-init-chunk1125",
+        "bucket": "conversion",
+        "note": "Doom/Strife/Raven automap palettes, AM_ClearColorsets, and AM_initColors through the Strife case from `am_map.cpp` (**601\u2013750**); follows **1124**.",
+        "auditSeams": "Host color CVARs stay injected. The Raven switch arm is **752\u2013755** and is not applied here.",
+        "auditRationale": "UNCredited **`am_map.cpp`** **601\u2013750** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 601 --end 750` and a full tally line scan \u2192 no overlap.",
+        "auditManagedLocJustification": "Palette triplets, clear-colorsets, and the initColors branch order match native; managed LOC exceeds 50%.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Doom palette rows after the background triplet (**601\u2013626**) | yes |\n| Strife palette (**628\u2013655**) | yes |\n| Raven palette bytes (**657\u2013684**) | yes |\n| `AM_ClearColorsets` (**693\u2013697**) | yes |\n| `AM_initColors` overlay/mod/Doom/Strife (**705\u2013750**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **600** | Doom background triplet already credited by **1124** |\n| **686\u2013692**, **699\u2013704** | storage and section comments |\n| **752\u2013755** | Raven `initFromColors(..., true)` switch arm |\n\n`GAME_DoomChex` is **17**, `GAME_Strife` is **8**, `GAME_Raven` is **6**. Doom and Strife palettes pass `showlocks` false.\n\n| Managed (`VmAmMapPaletteInit1125Slice.cs`) | Native (`am_map.cpp`) |\n|--------------------------------------------|---------------------|\n| Palettes, clear, initColors head | **601\u2013750** |\n| Band hull (exclusive slice) | **601\u2013750** |\n\n### Chunk **1125** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1124** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Client/VmAmMapPaletteInit1125Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "Automap palettes and initColors",
+            "start": 601,
+            "end": 750,
+            "tests": [
+              "VmAmMapPaletteInit1125SliceTests.DoomColors_WallIsRedAndSpecialIsUnused",
+              "VmAmMapPaletteInit1125SliceTests.StrifeAndRaven_SpotCheckThingAndPortal",
+              "VmAmMapPaletteInit1125SliceTests.ClearColorsets_ClearsBothDefinedFlags",
+              "VmAmMapPaletteInit1125SliceTests.ChooseInit_PrefersOverlayModThenGamePalette"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 186,
+        "conversionManagedCommit": "e41b7b884414f365fe23d8e9a030e829e0d14349"
       }
     ],
     "behaviorNativeChecksum": 508086,
