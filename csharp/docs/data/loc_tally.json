@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 101973,
+  "convertedThisRunNative": 102207,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 127024,
+  "convertedThisRunManaged": 127344,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 386899,
+  "remainingNative": 386665,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 120500,
+  "convertedBehaviorNative": 120734,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 121187,
-  "convertedBehaviorManaged": 136695,
+  "combinedBehaviorNative": 121421,
+  "convertedBehaviorManaged": 137015,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -42527,6 +42527,33 @@
       "nativeLoc": 164,
       "managedLoc": 238,
       "conversionManagedCommit": "52d5d93770d17665d055411f18c40a47f904f26d"
+    },
+    {
+      "name": "date-chunk1204",
+      "bucket": "conversion",
+      "note": "setdate, getdate, and SystemTime format from date.cpp (1\u2013234).",
+      "auditSeams": "ReadClock and Zone stand in for time and localtime. Tests pin UTC. Integer fields use the FString IsInt predicate and strtoll base 0. Wall fields normalize the way mktime does, and the GCC hour nudge is applied after that. strftime names are the C locale. %Z for the UTC zone is UTC. Other zones use the host daylight or standard name. Years outside 1..9999 fail the conversion.",
+      "auditRationale": "UNCredited date.cpp 1\u2013234 (+234). The file ends at 234. A full tally line scan shows no overlap.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/engine/date.cpp --start 1 --end 234 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| epochoffset (**29\u201329**) | yes |\n| setdate (**40\u2013136**) | yes |\n| getdate (**138\u2013156**) | yes |\n| GetEpochTime (**166\u2013171**) | yes |\n| CheckStrfString (**174\u2013202**) | yes |\n| FormatTime (**204\u2013218**) | yes |\n| SystemTime exports (**220\u2013234**) | yes |\n| Band hull (**1\u2013234**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nsetdate requires the command plus a clock and a date. Each field must pass IsInt. A lone 0 is an integer, a leading zero is octal, and 0x is hex, so 08 is rejected. ToLong uses base 0. The broken-down fields are written onto the current local time and converted back. Out-of-range fields roll over. If either conversion fails, the offset stays put. Otherwise the offset is the new instant minus the old one, then the shown hour is compared with the requested hour. A difference of -1 or 23 adds 3600 seconds. A difference of 1 or -23 subtracts 3600. getdate prints the shifted local time with a trailing newline from the format and another from the print. GetEpochTime returns -1 when the clock fails. CheckStrfString rewrites %% to %a, prepends a, and rejects an empty token or a first character outside the valid set. FormatTime throws the VM format abort for a bad specifier. A failed local conversion or a result that does not fit in 1023 characters leaves the result empty.\n\n| Managed (`VmDate1204Slice.cs`) | Native (`date.cpp`) |\n|---------------------------------|---------------------|\n| Date commands | **1\u2013234** |\n| Band hull (exclusive slice) | **1\u2013234** |\n\n### Chunk **1204** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **234** |\n| **Net headline** | **+234** vs post-**1203** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmDate1204Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/date.cpp",
+          "symbol": "setdate",
+          "start": 1,
+          "end": 234,
+          "tests": [
+            "VmDate1204SliceTests.SetDate_MovesTheEpochAndRejectsBadFields",
+            "VmDate1204SliceTests.Format_MatchesCLocaleAndRejectsBadSpecifiers"
+          ]
+        }
+      ],
+      "nativeLoc": 234,
+      "managedLoc": 320,
+      "conversionManagedCommit": "c7b8573421c0ee6a93d27f25ead7b6f65c08ad2d"
     }
   ],
   "behaviorNativeChecksum": 508086,
