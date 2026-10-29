@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 273083
+    "managedCSharpLoc": 273284
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 104943,
+    "convertedThisRunNative": 105153,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 130279,
+    "convertedThisRunManaged": 130480,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 383929,
+    "remainingNative": 383719,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 123470,
+    "convertedBehaviorNative": 123680,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 124157,
-    "convertedBehaviorManaged": 139950,
+    "combinedBehaviorNative": 124367,
+    "convertedBehaviorManaged": 140151,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -42921,6 +42921,33 @@
         "nativeLoc": 167,
         "managedLoc": 139,
         "conversionManagedCommit": "e65b23945b1f7fdc2a180ced629fe85fecfb602c"
+      },
+      {
+        "name": "eventtree-chunk1218",
+        "bucket": "conversion",
+        "note": "Splitter event tree, spare-node recycle, and the distance print from nodebuild_events.cpp (1-210).",
+        "auditSeams": "Equal distances go right. Signed zero compares equal, and a negative zero inserted after zero hangs on the right. NaN never compares equal, so FindEvent misses it. A fresh node from new is indeterminate in C++ and zero-filled here. The printer is glibc %g of sqrt(distance / 2^32), capped at 99 characters.",
+        "auditRationale": "UNCredited nodebuild_events.cpp 1-210 (+210). The file ends at 210. A full tally line scan shows no overlap.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/utility/nodebuilder/nodebuild_events.cpp --start 1 --end 210 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Construct and destroy (**28\u201346**) | yes |\n| DeleteAll (**48\u201363**) | yes |\n| GetNewNode (**65\u201379**) | yes |\n| Insert (**81\u2013113**) | yes |\n| Successor and predecessor (**115\u2013159**) | yes |\n| FindEvent and GetMinimum (**161\u2013196**) | yes |\n| PrintTree (**198\u2013210**) | yes |\n| Band hull (**1\u2013210**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nThe tree is a binary search with no rebalance. DeleteAll walks post-order and pushes each node onto the spare list through its left link. GetNewNode pops that list. The in-order print uses six-digit glibc %g, including -0, nan, and inf.\n\n| Managed (`VmEventTree1218Slice.cs`) | Native (`nodebuild_events.cpp`) |\n|-------------------------------------|-------------------------------|\n| Event tree | **1\u2013210** |\n| Band hull (exclusive slice) | **1\u2013210** |\n\n### Chunk **1218** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **210** |\n| **Net headline** | **+210** vs post-**1217** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmEventTree1218Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/utility/nodebuilder/nodebuild_events.cpp",
+            "symbol": "FEventTree::Insert",
+            "start": 1,
+            "end": 210,
+            "tests": [
+              "VmEventTree1218SliceTests.Insert_PlacesEqualKeysRightAndPrintsTheSqrtDistance",
+              "VmEventTree1218SliceTests.DeleteAll_RecyclesNodesInPostOrder"
+            ]
+          }
+        ],
+        "nativeLoc": 210,
+        "managedLoc": 201,
+        "conversionManagedCommit": "0f5bafd764f1c4737cfcdb2082575f98542ecf25"
       }
     ],
     "behaviorNativeChecksum": 508086,
