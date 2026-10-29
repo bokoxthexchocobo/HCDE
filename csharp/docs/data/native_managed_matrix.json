@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 266936
+    "managedCSharpLoc": 267180
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 99749,
+    "convertedThisRunNative": 99949,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 124132,
+    "convertedThisRunManaged": 124376,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 389123,
+    "remainingNative": 388923,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 118276,
+    "convertedBehaviorNative": 118476,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 118963,
-    "convertedBehaviorManaged": 133803,
+    "combinedBehaviorNative": 119163,
+    "convertedBehaviorManaged": 134047,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -42188,6 +42188,34 @@
         "nativeLoc": 224,
         "managedLoc": 270,
         "conversionManagedCommit": "8375ea1a677e3ed1629779109842c9978fd73794"
+      },
+      {
+        "name": "canvas-texture-chunk1191",
+        "bucket": "conversion",
+        "note": "Camera-to-canvas assignments from r_canvastexture.cpp (1\u2013200).",
+        "auditSeams": "Texture lookup is a host result. A texture id is valid when it is greater than zero. Wall lookup uses texture type Wall and the overridable flag. The archive records the write calls; a missing canvastextures array leaves the list unchanged.",
+        "auditRationale": "UNCredited r_canvastexture.cpp 1\u2013200 (+200). The file ends at 200. A full tally line scan shows no overlap.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/r_data/r_canvastexture.cpp --start 1 --end 200 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| FCanvasTextureInfo::Add (**40\u201377**) | yes |\n| SetCameraToTexture (**87\u201399**) | yes |\n| UpdateAll (**109\u2013118**) | yes |\n| EmptyList (**128\u2013131**) | yes |\n| Serialize (**141\u2013184**) | yes |\n| Mark (**194\u2013200**) | yes |\n| Band hull (**1\u2013200**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nAn invalid texture id is ignored. A texture without a canvas is reported and not stored. The same texture object keeps its first picture number. Viewpoint or field-of-view changes mark the texture for a first update. SetCameraToTexture asks for an overridable wall and continues only when that texture is a hardware canvas. Update visits entries that have a viewpoint and still need an update. An empty list writes nothing. A present list writes canvastextures, skipping a null viewpoint or texture. A closed object writes no fields. A missing array on read leaves the list in place. A successful read assigns each record through Add. Mark visits every viewpoint.\n\n| Managed (`VmCanvasTexture1191Slice.cs`) | Native (`r_canvastexture.cpp`) |\n|------------------------------------------|-------------------------------|\n| Canvas texture assignments | **1\u2013200** |\n| Band hull (exclusive slice) | **1\u2013200** |\n\n### Chunk **1191** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **200** |\n| **Net headline** | **+200** vs post-**1190** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmCanvasTexture1191Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/r_data/r_canvastexture.cpp",
+            "symbol": "FCanvasTextureInfo::Add",
+            "start": 1,
+            "end": 200,
+            "tests": [
+              "VmCanvasTexture1191SliceTests.Add_ReplacesTheSameTextureAndRejectsANonCanvas",
+              "VmCanvasTexture1191SliceTests.SetCameraToTexture_RequiresAHardwareCanvas",
+              "VmCanvasTexture1191SliceTests.Serialize_SkipsEmptyAndRestoresThroughAdd"
+            ]
+          }
+        ],
+        "nativeLoc": 200,
+        "managedLoc": 244,
+        "conversionManagedCommit": "11dd97f159689373e09ca2d0433847e7208f1e9a"
       }
     ],
     "behaviorNativeChecksum": 508086,
