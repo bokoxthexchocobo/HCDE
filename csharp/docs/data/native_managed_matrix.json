@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 277726
+    "managedCSharpLoc": 277858
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 108758,
+    "convertedThisRunNative": 108944,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 134922,
+    "convertedThisRunManaged": 135054,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 380114,
+    "remainingNative": 379928,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 127285,
+    "convertedBehaviorNative": 127471,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 127972,
-    "convertedBehaviorManaged": 144593,
+    "combinedBehaviorNative": 128158,
+    "convertedBehaviorManaged": 144725,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -43327,6 +43327,33 @@
         "nativeLoc": 172,
         "managedLoc": 140,
         "conversionManagedCommit": "adb812dfb7cd5e0a434e58e8f792032848e0b068"
+      },
+      {
+        "name": "strife-start-chunk1233",
+        "bucket": "conversion",
+        "note": "Strife startup picture lookup, even laser notches, and the bot and peasant blit from startscreen_strife.cpp (1-186).",
+        "auditSeams": "Each of the eight picture names is looked up in namespace 15 and, only on a miss, in the global namespace. A found lump asks for an image with the second argument false and caches style 0. A null image leaves that slot empty. STARTUP0 must be 320 by 200 or the constructor errors before any blit, and the countdown does not run. A good screen blits the background, the even laser frame, the bot, and peasant frame 0, then sets scale 2. The notch is (CurPos + 1) times 184 divided by MaxPos, computed before the base budget stretch. It redraws only when the value changed and is even. DrawStuff does not read the old laser. The background blit is pic 7 at the origin. The laser is pic 4 or 5 at x = 60 plus the new laser and y = 156. The bot hop is max(0, (laser >> 1) % 5 - 2) added to y = 138. The peasant frame is (laser >> 1) & 3 at (262, 136). An odd notch does not draw. A cursor already at MaxPos skips the divide and the base call still runs.",
+        "auditRationale": "UNCredited startscreen_strife.cpp 1-186 (+186). The file ends at 186. A full tally line scan shows no overlap.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/startscreen/startscreen_strife.cpp --start 1 --end 186 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Picture lookup and asset check (**94\u2013121**) | yes |\n| Even laser progress (**131\u2013146**) | yes |\n| Background, laser, bot, and peasant blit (**158\u2013178**) | yes |\n| Create and countdown (**181\u2013186**) | yes |\n| Band hull (**1\u2013186**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nSTRTPD1 with a null image is not cached. Notch 1 does not paint. Notch 2 puts the laser at x=62. Laser 8 raises the bot to y=140. A 319-wide STARTUP0 errors.\n\n| Managed (`VmStrifeStart1233Slice.cs`) | Native (`startscreen_strife.cpp`) |\n|----------------------------------------|-------------------------------------|\n| Lookup, even notches, and the blits | **1\u2013186** |\n| Band hull (exclusive slice) | **1\u2013186** |\n\n### Chunk **1233** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **186** |\n| **Net headline** | **+186** vs post-**1232** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmStrifeStart1233Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/startscreen/startscreen_strife.cpp",
+            "symbol": "CreateStrifeStartScreen",
+            "start": 1,
+            "end": 186,
+            "tests": [
+              "VmStrifeStart1233SliceTests.Create_RejectsABadBackgroundAndPaintsEvenNotches",
+              "VmStrifeStart1233SliceTests.Draw_IgnoresTheOldLaserAndHopsTheBot"
+            ]
+          }
+        ],
+        "nativeLoc": 186,
+        "managedLoc": 132,
+        "conversionManagedCommit": "f8ca3be06837c3405af0b133044990e6c510545f"
       }
     ],
     "behaviorNativeChecksum": 508086,
