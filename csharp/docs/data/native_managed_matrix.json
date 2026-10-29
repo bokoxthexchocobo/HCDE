@@ -1,5 +1,5 @@
 {
-  "generatedOn": "2026-10-28",
+  "generatedOn": "2026-10-29",
   "locScope": {
     "nativeEngineRoot": "src/",
     "nativeExtensions": [
@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 248894
+    "managedCSharpLoc": 249036
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 84770,
+    "convertedThisRunNative": 84920,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 106090,
+    "convertedThisRunManaged": 106232,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 404102,
+    "remainingNative": 403952,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 103297,
+    "convertedBehaviorNative": 103447,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 103984,
-    "convertedBehaviorManaged": 115761,
+    "combinedBehaviorNative": 104134,
+    "convertedBehaviorManaged": 115903,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -39950,6 +39950,36 @@
         "nativeLoc": 150,
         "managedLoc": 125,
         "conversionManagedCommit": "5ce5c1ee1ae34f70f5e568adf3bd0f268d79deb5"
+      },
+      {
+        "name": "pmobj-construct-actor-chunk1115",
+        "bucket": "conversion",
+        "note": "`UpdateWaterLevel` dive gate and `ConstructActor` spawn setup through the float-rand space test from `p_mobj.cpp` (**5427\u20135576**); follows **1114**.",
+        "auditSeams": "`PlayDiveOrSurfaceSounds`, `LinkToWorld`, `P_FindFloorCeiling`, and conversation lookup remain host-injected; float-rand Z write continues at **5577**.",
+        "auditRationale": "UNCredited **`p_mobj.cpp`** **5427\u20135576** (+150); follows **1114** (**5277\u20135426**).",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 5427 --end 5576` and `--chunk 1115 --band` \u2192 UNCredited, exit 0.",
+        "auditManagedLocJustification": "Spawn Z modes, monster reaction, and floor/ceiling copy branches match native control flow; managed LOC exceeds 50%.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Dive sound only for players (**5432\u20135435**) | yes |\n| `UpdateWaterLevel` returns false (**5437**) | yes |\n| Conversation root gate (**5462\u20135468**) | yes |\n| Zero gravity flag (**5477**) | yes |\n| Instant reaction / last-look (**5481\u20135489**) | yes |\n| Client vs server tics + fullbright (**5496\u20135500**) | yes |\n| Fast speed, spawn Z, floor/ceiling copy (**5503\u20135556**) | yes |\n| Spawn XY only + float-rand space (**5559\u20135576**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **5423\u20135424** | splash/depth calls (chunk **1114**) |\n| **5440\u20135444** | VM thunk |\n| **5510\u20135515** | host link / plane sample |\n| **5577+** | float-rand write outside hull |\n\n| Managed (`VmPMobjConstructActor1115Slice.cs`) | Native (`p_mobj.cpp`) |\n|----------------------------------------------|---------------------|\n| Water-level tail + construct policy | **5427\u20135576** |\n| Band hull (exclusive slice) | **5427\u20135576** |\n\n### Chunk **1115** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1114** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMobjConstructActor1115Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "UpdateWaterLevel tail and ConstructActor",
+            "start": 5427,
+            "end": 5576,
+            "tests": [
+              "VmPMobjConstructActor1115SliceTests.RunUpdateWaterLevel_PlaysDiveOnlyForPlayersAndReturnsFalse",
+              "VmPMobjConstructActor1115SliceTests.RunConstructActor_ZerosReactionForAlwaysFastMonsters",
+              "VmPMobjConstructActor1115SliceTests.RunConstructActor_PlacesOnCeilingAndCopiesMapFloor",
+              "VmPMobjConstructActor1115SliceTests.RunConstructActor_FloatRandomOnlyWhenSpaceExceeds48"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 142,
+        "conversionManagedCommit": "85085801a0411aa9e2729f457b8a411fc217f782"
       }
     ],
     "behaviorNativeChecksum": 508086,
