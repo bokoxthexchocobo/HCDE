@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 258724
+    "managedCSharpLoc": 259018
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 94190,
+    "convertedThisRunNative": 94369,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 115920,
+    "convertedThisRunManaged": 116214,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 394682,
+    "remainingNative": 394503,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 112717,
+    "convertedBehaviorNative": 112896,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 113404,
-    "convertedBehaviorManaged": 125591,
+    "combinedBehaviorNative": 113583,
+    "convertedBehaviorManaged": 125885,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -41501,6 +41501,36 @@
         "nativeLoc": 391,
         "managedLoc": 490,
         "conversionManagedCommit": "86fe0d46f47964add48cb5bc5249b9d7078d117e"
+      },
+      {
+        "name": "p-acs-module-state-chunk1167",
+        "bucket": "conversion",
+        "note": "ACS module string locks and variable serialization from `p_acs.cpp` (**2102\u20132280**).",
+        "auditSeams": "The global string table stays host-supplied. This slice chooses the arrays, the saved names and sizes, and the non-zero variable span.",
+        "auditRationale": "UNCredited **`p_acs.cpp`** **2102\u20132280** (+179). Chunk **1166** ends at **2101**. `FBehavior::Init` credit starts at **2281**. A full tally line scan shows no overlap.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 2102 --end 2280` and a full tally line scan \u2192 no overlap.",
+        "auditManagedLocJustification": "Variable-span trimming, save-name checks, and the local-array chunk walk are branched control flow. Managed LOC is above 150% of 179 because each archive rejection and each little-endian size is asserted in the port rather than collapsed.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `UnlockLevelVarStrings` (**2103\u20132106**) | yes |\n| `MarkMapVarStrings` / `LockMapVarStrings` (**2108\u20132124**) | yes |\n| `SerializeModuleStates` (**2126\u20132169**) | yes |\n| `SerializeVars` / `SerializeVarSet` (**2171\u20132238**) | yes |\n| `ParseLocalArrayChunk` (**2240\u20132258**) | yes |\n| `FBehavior` constructor (**2260\u20132278**) | yes |\n| Band hull (**2102\u20132280**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1711\u20132101** | inventory and module loading are chunk **1166** |\n| **2281\u20132750** | `FBehavior::Init` is already conversion credit |\n| `GlobalACSStrings` | the string table itself stays host-supplied |\n\nUnlock forwards the level number to the string table. Mark walks the **128** map variables and then each array's element pointer and size. Lock does the same walk with the level number.\n\nModule serialization opens `acsmodules`. A reader whose saved count differs from the live count stops with the have/save counts. Each open object writes the live name and data size, or reads the saved pair. A name that differs ignoring case stops with the live name and the saved name. A matching name with a different size stops with both byte counts. A closed object is skipped. A matching module then serializes its variables.\n\nVariable serialization opens `variables`, writes the map store, then each array. A writer finds the first and last non-zero slots. An all-zero set stores count **0** and no values. A reader clears the destination, and when the saved count is non-zero it clamps `first + count` to the destination length before copying.\n\nA local-array chunk reads the second 32-bit word, subtracts **2**, keeps the low **16** bits, and divides by **4**. Each following 32-bit size is little-endian. The offset advances by that size. Count **0** leaves the info pointer untouched and returns the incoming offset.\n\nThe behavior constructor zeros the script, function, and array counts, clears the pointers, sets the format to unknown (**3**), sets the lump to **-1**, zeros the map store, and empties the module name.\n\n| Managed (`VmPAcsModuleState1167Slice.cs`) | Native (`p_acs.cpp`) |\n|--------------------------------------------|----------------------|\n| Module state | **2102\u20132280** |\n| Band hull (exclusive slice) | **2102\u20132280** |\n\n### Chunk **1167** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **179** |\n| **Net headline** | **+179** vs post-**1166** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPAcsModuleState1167Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "Module state",
+            "start": 2102,
+            "end": 2280,
+            "tests": [
+              "VmPAcsModuleState1167SliceTests.Strings_MarkAndLockEveryMapVarThenEachArray",
+              "VmPAcsModuleState1167SliceTests.Modules_StopWhenTheSaveNamesOrSizesDisagree",
+              "VmPAcsModuleState1167SliceTests.VarSets_DropTheZeroEdgesAndClampALongRead",
+              "VmPAcsModuleState1167SliceTests.ChunkAndConstruct_ReadLittleSizesAndResetTheModule"
+            ]
+          }
+        ],
+        "nativeLoc": 179,
+        "managedLoc": 294,
+        "conversionManagedCommit": "6b23db362fbd40a45dfaef2aeb40bd0744396b99"
       }
     ],
     "behaviorNativeChecksum": 508086,
