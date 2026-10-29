@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 254043
+    "managedCSharpLoc": 254187
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 90244,
+    "convertedThisRunNative": 90396,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 111239,
+    "convertedThisRunManaged": 111383,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 398628,
+    "remainingNative": 398476,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 108771,
+    "convertedBehaviorNative": 108923,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 109458,
-    "convertedBehaviorManaged": 120910,
+    "combinedBehaviorNative": 109610,
+    "convertedBehaviorManaged": 121054,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -40999,6 +40999,34 @@
         "nativeLoc": 285,
         "managedLoc": 273,
         "conversionManagedCommit": "4f9d4912179927c9b1bc324082e5b853ecac2822"
+      },
+      {
+        "name": "p-enemy-wander-chunk1150",
+        "bucket": "conversion",
+        "note": "Clear last heard, wander, and A_Look2 from `p_enemy.cpp` (**2245\u20132396**); follows **1149**.",
+        "auditSeams": "Smart movement and the player search stay host-supplied. The facing delta uses the native BAM `Normalized180`.",
+        "auditRationale": "UNCredited **`p_enemy.cpp`** **2245\u20132396** (+152), inside the 3488-line file, with no conversion or recognition overlap. `A_DoChase` at **2397** is already credited.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_enemy.cpp --start 2245 --end 2396` and a full tally line scan \u2192 no overlap.",
+        "auditManagedLocJustification": "Turn order, movecount short-circuit, and Look2 fidget rolls match native; managed LOC exceeds 50%.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `A_ClearLastHeard` (**2255\u20132260**) | yes |\n| Chase flags (**2268\u20132281**) | yes |\n| `A_Wander` (**2283\u20132322**) | yes |\n| `A_Look2` (**2330\u20132381**) | yes |\n| Boss strafe range (**2395**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1778\u20132062** | player look already credited by **1149** |\n| **2063\u20132244** | `A_LookEx` already credited |\n| **2397+** | `A_DoChase` already credited |\n\n`A_ClearLastHeard` drops the heard actor. `A_Wander` clears `MF4_INCOMBAT` (**0x8000**) before returning for conversation or `MF4_STANDSTILL` (**0x20000**). A nonzero reaction time counts down and skips the step. Otherwise yaw snaps with `floor(yaw / 45) * 45`, then steps **45** degrees toward `movedir * 45` when `deltaangle` is not zero and `CHF_NODIRECTIONTURN` is clear. `180` degrees normalizes to **-180** through a signed BAM, so that facing turns backward. `movecount` decrements first. A negative count chases a new direction unless `CHF_NORANDOMTURN` is set, and that path does not call `P_SmartMove`. A failed smart move also chases unless `CHF_STOPIFBLOCKED` is set. A new direction adds **5** to the decremented count. `A_Look2` returns during conversation before clearing the threshold. A dead heard actor is ignored. Different friendliness, or `LEVEL_NOALLIES` (**0x20000000**), sees a shootable actor unless it is ambushing without sight. Matching friends enter the see state and `MF4_INCOMBAT` only when the player search succeeds, and their threshold stays **0**. A hostile wake sets the threshold to **10**. The idle path plays spawn frame `(roll & 1) + 1` when `pr_look2() < 30`, consuming the second roll only in that case, then spawn frame **3** when not standing still and the next roll is below **40**. `CLASS_BOSS_STRAFE_RANGE` is **640**. Sight for an ambush uses `SF_SEEPASTBLOCKEVERYTHING` (**4**).\n\n| Managed (`VmPEnemyWander1150Slice.cs`) | Native (`p_enemy.cpp`) |\n|------------------------------------------|----------------------|\n| Wander and `A_Look2` | **2245\u20132396** |\n| Band hull (exclusive slice) | **2245\u20132396** |\n\n### Chunk **1150** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **152** |\n| **Net headline** | **+152** vs post-**1149** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPEnemyWander1150Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "Enemy wander and A_Look2",
+            "start": 2245,
+            "end": 2396,
+            "tests": [
+              "VmPEnemyWander1150SliceTests.WanderStep_ClearsCombatAndTurnsBeforeANewDirection",
+              "VmPEnemyWander1150SliceTests.Look2_SeesAHostileAndFidgetsWhenTheSearchFails"
+            ]
+          }
+        ],
+        "nativeLoc": 152,
+        "managedLoc": 144,
+        "conversionManagedCommit": "b43c887f1d9c8f0de62abaf79e8d523dfdc7ed93"
       }
     ],
     "behaviorNativeChecksum": 508086,
