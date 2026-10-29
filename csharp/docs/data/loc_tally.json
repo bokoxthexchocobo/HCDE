@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 100505,
+  "convertedThisRunNative": 100691,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 125285,
+  "convertedThisRunManaged": 125543,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 388367,
+  "remainingNative": 388181,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 119032,
+  "convertedBehaviorNative": 119218,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 119719,
-  "convertedBehaviorManaged": 134956,
+  "combinedBehaviorNative": 119905,
+  "convertedBehaviorManaged": 135214,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -42283,6 +42283,34 @@
       "nativeLoc": 166,
       "managedLoc": 170,
       "conversionManagedCommit": "d4281a58add3060e731ba0acafa2119732df2a4c"
+    },
+    {
+      "name": "shared-hud-chunk1195",
+      "bucket": "conversion",
+      "note": "Alternate HUD cvars, class creation, and draw size from shared_hud.cpp (1\u2013186).",
+      "auditSeams": "Class lookup and GetUIScale are host results. A missing AltHud class after the fallback aborts. Draw reads the global status bar's player. An empty player table is not indexed.",
+      "auditRationale": "UNCredited shared_hud.cpp 1\u2013186 (+186). The file ends at 186. A full tally line scan shows no overlap.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/g_statusbar/shared_hud.cpp --start 1 --end 186 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| HUD cvars (**46\u201389**) | yes |\n| hud_althud_forceinternal (**97\u2013101**) | yes |\n| DoCreateAltHUD (**103\u2013130**) | yes |\n| DBaseStatusBar::CreateAltHUD (**132\u2013147**) | yes |\n| DBaseStatusBar::DrawAltHUD (**159\u2013186**) | yes |\n| Band hull (**1\u2013186**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nRegistration stores archive cvars and does not run the force-internal callback. That callback rebuilds the HUD only when a status bar exists. None skips class lookup. An unknown name or a class outside AltHud is reported in red and the built-in AltHud is used. A previous HUD is destroyed first. Forcing the internal class skips the game class. The old-scale path divides the screen by the UI scale. The new path uses 640 divided by the scale factor, then the screen aspect, and optionally five sixths of that height. Draw clears the console player's inventory timer and calls the AltHud Draw virtual with the global player and the computed size.\n\n| Managed (`VmSharedHud1195Slice.cs`) | Native (`shared_hud.cpp`) |\n|--------------------------------------|---------------------------|\n| Alternate HUD | **1\u2013186** |\n| Band hull (exclusive slice) | **1\u2013186** |\n\n### Chunk **1195** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **186** |\n| **Net headline** | **+186** vs post-**1194** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmSharedHud1195Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/g_statusbar/shared_hud.cpp",
+          "symbol": "DBaseStatusBar::CreateAltHUD",
+          "start": 1,
+          "end": 186,
+          "tests": [
+            "VmSharedHud1195SliceTests.Reset_RegistersTheArchiveCvarsWithoutCallingTheCallback",
+            "VmSharedHud1195SliceTests.CreateAltHUD_FallsBackAndTheCallbackRebuilds",
+            "VmSharedHud1195SliceTests.DrawAltHUD_SizesFromTheScalePathAndClearsInventoryTics"
+          ]
+        }
+      ],
+      "nativeLoc": 186,
+      "managedLoc": 258,
+      "conversionManagedCommit": "d251286198265cec6c9053566d0dc2c1ab427f9b"
     }
   ],
   "behaviorNativeChecksum": 508086,
