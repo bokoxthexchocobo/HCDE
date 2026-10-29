@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 253312
+    "managedCSharpLoc": 253423
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 89420,
+    "convertedThisRunNative": 89570,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 110508,
+    "convertedThisRunManaged": 110619,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 399452,
+    "remainingNative": 399302,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 107947,
+    "convertedBehaviorNative": 108097,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 108634,
-    "convertedBehaviorManaged": 120179,
+    "combinedBehaviorNative": 108784,
+    "convertedBehaviorManaged": 120290,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -40882,6 +40882,35 @@
         "nativeLoc": 150,
         "managedLoc": 108,
         "conversionManagedCommit": "a2b593dcfb5056f0deef17d1e90b1864274675d4"
+      },
+      {
+        "name": "p-enemy-missile-chunk1146",
+        "bucket": "conversion",
+        "note": "Missile range, friend blocking, lift, and crush direction from `p_enemy.cpp` (**301\u2013450**); follows **1145**.",
+        "auditSeams": "Sight, the defect and missile-range rolls, aim-line friends, and floor thinkers stay host-supplied. Sector damage under the actor begins at **451**.",
+        "auditRationale": "UNCredited **`p_enemy.cpp`** **301\u2013450** (+150), inside the 3488-line file, with no conversion or recognition overlap.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_enemy.cpp --start 301 --end 450` and a full tally line scan \u2192 no overlap.",
+        "auditManagedLocJustification": "Just-hit order, chance truncation, and crush-direction OR match native; managed LOC exceeds 50%.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `P_CheckMissileRange` (**307\u2013365**) | yes |\n| `P_HitFriend` (**384\u2013399**) | yes |\n| `P_IsOnLift` (**412\u2013426**) | yes |\n| Crushing-ceiling direction (**438\u2013450**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **151\u2013300** | sound lines and melee range already credited by **1145** |\n| **367\u2013371** | VM thunk forwarded to the host |\n| **451\u2013481** | sector-damage return and `P_Move` head; 31 lines, under the floor |\n\n`SECF_NOATTACK` is **2048**. Sight uses `SF_SEEPASTBLOCKEVERYTHING` (**4**). `MF_JUSTHIT` is **0x40** and is cleared before the friend checks. An unfriendly monster always fights back. A friendly monster skips a dead target, then rolls `pr_defect() > 128` for a player friend and also requires the target not to be just-hit otherwise. Reaction time, friendship, and `P_HitFriend` apply only when the monster was not just hit. Distance starts at `Distance2D - 64`, then subtracts **128** when there is no melee state. `maxtargetrange` rejects a larger distance, and `meleethreshold` rejects a closer one when a melee state exists. The roll is `pr_checkmissilerange() >= min((int)dist, (int)(MinMissileChance * aggressiveness))`, truncating toward zero. `SKILLP_Aggressiveness` is enum index **5**; the multiplier itself is host-supplied. A different aimed friend blocks only a friendly monster that still has a target. An active `DPlat` is a lift, otherwise `SECMF_LIFT` (**2048**). Crush direction is **1** up, **0** waiting, **-1** down, and only a ceiling with `getCrush() > 0` is OR-ed in.\n\n| Managed (`VmPEnemyMissile1146Slice.cs`) | Native (`p_enemy.cpp`) |\n|-------------------------------------------|----------------------|\n| Missile range, friend, lift, crush | **301\u2013450** |\n| Band hull (exclusive slice) | **301\u2013450** |\n\n### Chunk **1146** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1145** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPEnemyMissile1146Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "Enemy missile range and lift",
+            "start": 301,
+            "end": 450,
+            "tests": [
+              "VmPEnemyMissile1146SliceTests.CheckMissileRange_FightsBackOnceThenUsesChance",
+              "VmPEnemyMissile1146SliceTests.HitFriend_StopsOnlyOnADifferentFriend",
+              "VmPEnemyMissile1146SliceTests.LiftAndCrush_UsePlatAndCeilingDirection"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 111,
+        "conversionManagedCommit": "7008447324df9fa3e560102339a2822fea14ffe8"
       }
     ],
     "behaviorNativeChecksum": 508086,
