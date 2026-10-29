@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 86120,
+  "convertedThisRunNative": 86270,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 107242,
+  "convertedThisRunManaged": 107387,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 402752,
+  "remainingNative": 402602,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 104647,
+  "convertedBehaviorNative": 104797,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 105334,
-  "convertedBehaviorManaged": 116913,
+  "combinedBehaviorNative": 105484,
+  "convertedBehaviorManaged": 117058,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -40206,6 +40206,36 @@
       "nativeLoc": 150,
       "managedLoc": 117,
       "conversionManagedCommit": "b4e392a8878ffbe17da5a0adca1febd4d8603fd1"
+    },
+    {
+      "name": "am-map-colorset-tables-chunk1124",
+      "bucket": "conversion",
+      "note": "initFromColors, white set, linedef color indexes, standard/overlay CVAR tables, and am_restorecolors from `am_map.cpp` (**451\u2013600**); follows **1123**.",
+      "auditSeams": "`ResetToDefault` stays a host callback. Doom palette bytes after the background triplet begin at **601**.",
+      "auditRationale": "UNCredited **`am_map.cpp`** **451\u2013600** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 451 --end 600` and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "Triplet decode, white set, line-style indexes, CVAR name tables, and the restore command match native; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `initFromColors` unused marker and zero fill (**453\u2013470**) | yes |\n| `setWhite` / index validity (**472\u2013489**) | yes |\n| `AUTOMAP_LINE_COLORS` (**498\u2013514**) | yes |\n| `cv_standard` / `cv_overlay` (**522\u2013576**) | yes |\n| `am_restorecolors` (**578\u2013593**) | yes |\n| Doom background triplet (**599\u2013600**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **451** | closing brace of `initFromCVars` |\n| **492\u2013497**, **516\u2013521**, **594\u2013598** | section comments and `NOT_USED` macro site covered by the unused-triplet test |\n| **601+** | remaining Doom/Strife palettes outside hull |\n\n| Managed (`VmAmMapColorsetTables1124Slice.cs`) | Native (`am_map.cpp`) |\n|------------------------------------------------|---------------------|\n| Triplets, line colors, CVAR restore | **451\u2013600** |\n| Band hull (exclusive slice) | **451\u2013600** |\n\n### Chunk **1124** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1123** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmAmMapColorsetTables1124Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "Automap colorset tables and restore",
+          "start": 451,
+          "end": 600,
+          "tests": [
+            "VmAmMapColorsetTables1124SliceTests.InitFromColorTriplets_MarksUnusedAndClearsFillAlpha",
+            "VmAmMapColorsetTables1124SliceTests.SetWhite_BlacksBackgroundAndWhitesTheRest",
+            "VmAmMapColorsetTables1124SliceTests.LineStyleColorIndex_MapsPortalAndDefault",
+            "VmAmMapColorsetTables1124SliceTests.RestoreColorDefaults_ResetsBothTablesAndBothAlphas"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 145,
+      "conversionManagedCommit": "b390abcbc935939e6e99d4035ec7996b4db1fc67"
     }
   ],
   "behaviorNativeChecksum": 508086,
