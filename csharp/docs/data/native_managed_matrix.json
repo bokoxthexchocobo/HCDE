@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 267180
+    "managedCSharpLoc": 267739
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 99949,
+    "convertedThisRunNative": 100144,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 124376,
+    "convertedThisRunManaged": 124935,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 388923,
+    "remainingNative": 388728,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 118476,
+    "convertedBehaviorNative": 118671,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 119163,
-    "convertedBehaviorManaged": 134047,
+    "combinedBehaviorNative": 119358,
+    "convertedBehaviorManaged": 134606,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -42216,6 +42216,35 @@
         "nativeLoc": 200,
         "managedLoc": 244,
         "conversionManagedCommit": "11dd97f159689373e09ca2d0433847e7208f1e9a"
+      },
+      {
+        "name": "special-font-chunk1192",
+        "bucket": "conversion",
+        "note": "Explicit character-patch font from specialfont.cpp (1\u2013195).",
+        "auditSeams": "Case maps, accent folding, and the nearest-color pick are host results. Luminosity ramps are host tables indexed by color range. A character list shorter than count, or a notranslate mask shorter than 256, aborts. A character without an image contributes no luminosity samples. The palette container starts with the identity translation in slot 0.",
+        "auditRationale": "UNCredited specialfont.cpp 1\u2013195 (+195). The file ends at 195. A full tally line scan shows no overlap.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/fonts/specialfont.cpp --start 1 --end 195 and a full tally line scan \u2192 no overlap.",
+        "auditManagedLocJustification": "FSpecialFont::FSpecialFont calls FixXMoves, and LoadTranslations calls FFont::LoadTranslations, V_ApplyLuminosityTranslation, and GPalette.StoreTranslation. Those helpers live in font.cpp, v_font.cpp, and palettecontainer.cpp, outside this 195-line file. The slice includes the gap fill, the luminosity rebuild, the font-character copy, and duplicate translation storage so the constructor and LoadTranslations results can be checked. That is why the managed file is over 150% of the native band.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| FSpecialFont::FSpecialFont (**53\u2013119**) | yes |\n| FSpecialFont::LoadTranslations (**127\u2013190**) | yes |\n| CreateSpecialFont (**192\u2013195**) | yes |\n| Band hull (**1\u2013195**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nA missing patch keeps a null picture and then takes the space width, or the uppercase or unaccented advance when that character is in range. N supplies the space width when its picture exists; otherwise the space width is 4. Height is the tallest display height plus the absolute display top offset. Font characters use texture type FontChar, copy the source display size, and keep image offsets when the source sets OffsetsNotForFont. The created callback sees the source and the font character. An empty character list leaves translations empty. A font whose pictures are all null still builds luminosity ids, including the untranslated slot at 0, and then returns before the locked-color pass. With no locked colors the luminosity ids stay in place. Locked colors keep the base palette and an identity remap; every other index is the luminosity color and the nearest palette index. Duplicate palettes reuse the stored id. The untranslated slot is not a luminosity id and is left alone.\n\n| Managed (`VmSpecialFont1192Slice.cs`) | Native (`specialfont.cpp`) |\n|----------------------------------------|---------------------------|\n| Character-patch font | **1\u2013195** |\n| Band hull (exclusive slice) | **1\u2013195** |\n\n### Chunk **1192** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **195** |\n| **Net headline** | **+195** vs post-**1191** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmSpecialFont1192Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/fonts/specialfont.cpp",
+            "symbol": "FSpecialFont::FSpecialFont",
+            "start": 1,
+            "end": 195,
+            "tests": [
+              "VmSpecialFont1192SliceTests.Create_CopiesPatchesAndMeasuresFromTheTallestGlyph",
+              "VmSpecialFont1192SliceTests.FixXMoves_FillsMissingWidthsFromCaseAccentAndSpace",
+              "VmSpecialFont1192SliceTests.LoadTranslations_RebuildsLockedLuminosityColors"
+            ]
+          }
+        ],
+        "nativeLoc": 195,
+        "managedLoc": 559,
+        "conversionManagedCommit": "8a769aa21f915f2e2cbf5c61d820b24e81906951"
       }
     ],
     "behaviorNativeChecksum": 508086,
