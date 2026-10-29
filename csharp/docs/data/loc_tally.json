@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 89120,
+  "convertedThisRunNative": 89270,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 110283,
+  "convertedThisRunManaged": 110400,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 399752,
+  "remainingNative": 399602,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 107647,
+  "convertedBehaviorNative": 107797,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 108334,
-  "convertedBehaviorManaged": 119954,
+  "combinedBehaviorNative": 108484,
+  "convertedBehaviorManaged": 120071,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -40807,6 +40807,36 @@
       "nativeLoc": 150,
       "managedLoc": 158,
       "conversionManagedCommit": "ecf029d5211801d342d9bee9c1df2ff2ac478957"
+    },
+    {
+      "name": "p-enemy-noise-chunk1144",
+      "bucket": "conversion",
+      "note": "Chase tables and noise-alert sector marking from `p_enemy.cpp` (**1\u2013150**). `am_map.cpp` **3451\u20133594** stays under the 150-line floor.",
+      "auditSeams": "Sector portals and actor distance stay host-supplied. The recursive line walk begins at **152**.",
+      "auditRationale": "UNCredited **`p_enemy.cpp`** **1\u2013150** (+150), inside the 3488-line file, with no conversion or recognition overlap.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_enemy.cpp --start 1 --end 150` and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "Direction tables and the flood/hear rules match native; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| RNG stream names (**49\u201368**) | yes |\n| Interpolation and drop-style defaults (**76\u201377**) | yes |\n| Opposite, diagonal, and speed tables (**83\u201396**) | yes |\n| `NoiseMarkSector` (**122\u2013145**) | yes |\n| Ceiling and floor portal-sound gates (**149\u2013150**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1\u201348** | license and includes |\n| **152+** | recursive sound line walk |\n\n`SQRTHALF` is **0.7071075439453125**. `DI_EAST` is **0** and `DI_NODIR` is **8**. Opposite of east is west. `pr_chase`, `pr_facetarget`, and `pr_railface` are not file-local. A sector is already flooded when its `validcount` matches and `soundtraversed <= soundblocks + 1`. Splash alerts skip `MF4_NOSPLASHALERT` (**0x00100000**). `maxdist == 0` does not filter by distance. `sector_t::floor` is **0** and `ceiling` is **1**.\n\n| Managed (`VmPEnemyNoise1144Slice.cs`) | Native (`p_enemy.cpp`) |\n|----------------------------------------|----------------------|\n| Tables and noise mark | **1\u2013150** |\n| Band hull (exclusive slice) | **1\u2013150** |\n\n### Chunk **1144** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1143** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPEnemyNoise1144Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "Enemy chase tables and noise mark",
+          "start": 1,
+          "end": 150,
+          "tests": [
+            "VmPEnemyNoise1144SliceTests.ChaseTables_UseTheNativeDiagonalAndOppositeDirections",
+            "VmPEnemyNoise1144SliceTests.RngStreams_LeaveChaseAndFaceTargetProcessWide",
+            "VmPEnemyNoise1144SliceTests.MarkSector_SkipsASectorThatWasAlreadyFlooded",
+            "VmPEnemyNoise1144SliceTests.MarkSector_HearsActorsInsideTheSplashAndDistanceRules"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 117,
+      "conversionManagedCommit": "f97be7fe0799e7104c93e2799ed0d9da0f7ea177"
     }
   ],
   "behaviorNativeChecksum": 508086,
