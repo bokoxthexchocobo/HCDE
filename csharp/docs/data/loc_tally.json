@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 88370,
+  "convertedThisRunNative": 88520,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 109475,
+  "convertedThisRunManaged": 109634,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 400502,
+  "remainingNative": 400352,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 106897,
+  "convertedBehaviorNative": 107047,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 107584,
-  "convertedBehaviorManaged": 119146,
+  "combinedBehaviorNative": 107734,
+  "convertedBehaviorManaged": 119305,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -40658,6 +40658,35 @@
       "nativeLoc": 150,
       "managedLoc": 200,
       "conversionManagedCommit": "09cb461a4fa1e4312bd8e87ff33842e7e2a86173"
+    },
+    {
+      "name": "am-map-wall-color-chunk1139",
+      "bucket": "conversion",
+      "note": "Wall color chain, automap rotation, and glyph scale from `am_map.cpp` (**2701\u20132850**); follows **1138**.",
+      "auditSeams": "Palette slots, yaw sine, and the character's B endpoint stay host-supplied. Angle application on the glyph begins at **2854**.",
+      "auditRationale": "UNCredited **`am_map.cpp`** **2701\u20132850** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 2701 --end 2850` and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "Color order, rotation matrix, and non-zero glyph scale match native; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Secret, teleport, exit, lock, trigger colors (**2701\u20132747**) | yes |\n| One-sided, plane, 3D-floor, two-sided colors (**2748\u20132769**) | yes |\n| Unseen `NotSeenColor` and its dontdraw skip (**2771\u20132781**) | yes |\n| `rotate` / `rotatePoint` (**2794\u20132831**) | yes |\n| Glyph endpoint scale (**2839\u20132850**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2551\u20132700** | trigger, lock, and portal pass already credited by **1138** |\n| **2851+** | glyph rotation and the second endpoint |\n\n`ML_SECRET` is **0x20** and `ML_REVEALED` is **0x20000000**. A non-negative lock map color is split with `RPART`/`GPART`/`BPART`. Color **0** is black, not the locked fallback. `am_showtriggerlines` is any non-zero value. Floor-plane changes win over ceiling changes. The rotation cache updates only when the angle changes, then applies `x' = x cos - y sin`, `y' = x sin + y cos` around the map center. A glyph scale of **0** leaves the point unchanged.\n\n| Managed (`VmAmMapWallColor1139Slice.cs`) | Native (`am_map.cpp`) |\n|-------------------------------------------|---------------------|\n| Colors, rotation, glyph scale | **2701\u20132850** |\n| Band hull (exclusive slice) | **2701\u20132850** |\n\n### Chunk **1139** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1138** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmAmMapWallColor1139Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "Automap wall colors",
+          "start": 2701,
+          "end": 2850,
+          "tests": [
+            "VmAmMapWallColor1139SliceTests.ChooseWall_FollowsTheSecretTeleportAndLockOrder",
+            "VmAmMapWallColor1139SliceTests.ChooseWall_UsesTriggerThenPlaneChangesThenTheUnseenColor",
+            "VmAmMapWallColor1139SliceTests.RotatePoint_SpinsAroundTheMapCenter"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 159,
+      "conversionManagedCommit": "a2391498f7f2474fed13db0c7629163672128c91"
     }
   ],
   "behaviorNativeChecksum": 508086,
