@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 260031
+    "managedCSharpLoc": 260450
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 94950,
+    "convertedThisRunNative": 95137,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 117227,
+    "convertedThisRunManaged": 117646,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 393922,
+    "remainingNative": 393735,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 113477,
+    "convertedBehaviorNative": 113664,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 114164,
-    "convertedBehaviorManaged": 126898,
+    "combinedBehaviorNative": 114351,
+    "convertedBehaviorManaged": 127317,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -41591,6 +41591,36 @@
         "nativeLoc": 360,
         "managedLoc": 631,
         "conversionManagedCommit": "8a0b76e223d963381e09870aa3acf72593c2c053"
+      },
+      {
+        "name": "p-map-line-trace-chunk1170",
+        "bucket": "conversion",
+        "note": "Named `P_LineAttack`, `P_LineTrace`, and `P_LinePickActor` from `p_map.cpp` (**5051\u20135237**).",
+        "auditSeams": "The trace, the sector lookup, and the named class lookup stay host-supplied. The class-puff `P_LineAttack` is chunk **1169**. `P_TraceBleed` starts at **5245**.",
+        "auditRationale": "UNCredited **`p_map.cpp`** **5051\u20135237** (+187). Chunk **1169** ends at **5050**. `P_TraceBleed` credit starts at **5245**. **5238\u20135244** is the bleed comment and stays uncredited. A full tally line scan shows no overlap. Radius damage **6101\u20136522** is not this band.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_map.cpp --start 5051 --end 5237` and a full tally line scan \u2192 no overlap.",
+        "auditManagedLocJustification": "The name overload, the portal callback, the block-self wall mask, and the wall-tier texture pick are separate branches. Managed LOC is above 150% of 187 because those masks and the output clear are spelled out beside the host trace.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Named `P_LineAttack` (**5052\u20135067**) | yes |\n| `CheckLineTrace` (**5083\u20135100**) | yes |\n| `P_LineTrace` placement and masks (**5102\u20135157**) | yes |\n| Trace output and wall tier (**5158\u20135200**) | yes |\n| `P_LinePickActor` (**5208\u20135237**) | yes |\n| Band hull (**5051\u20135237**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **4691\u20135050** | class-puff `P_LineAttack` is chunk **1169** |\n| **5238\u20135244** | comment banner before `P_TraceBleed` |\n| **5245\u20135327** | `P_TraceBleed` is already conversion credit |\n| **6101\u20136522** | radius damage stays off the queue |\n| `Trace` / `FindActor` / `PointInSector` | the trace and the lookups stay host-supplied |\n\nAn unknown puff name clears the victim when one was passed, prints `Attempt to spawn unknown actor type`, and returns null. A known name calls the class-puff attack.\n\nA portal crossing increments the portal count and returns skip (**2**). Any other non-actor hit returns stop. Thru-actors, or thru-species with the same species, skips an actor. A different species stops.\n\nStart Z is actor Z minus floor clip plus the Z argument. Absolute position uses the three offsets and that Z argument. Absolute offset and a rotated offset use the start Z. A zero offset uses the actor at the start Z. Angle **0** with forward **3** and side **1** places the shot at offset `(3, -1, startZ)`. All-actors uses mask `0xFFFFFFFF`; otherwise the mask is shootable (**4**), with solid (**2**) added when requested. The wall mask starts as block-everything plus block-hitscan. Block-use adds that bit. Block-self adds projectile when the actor is a missile or has MBF bounce, blocking when it is not a projectile or blocks as a player, monsters unless the no-block-monster or friendly-compat bit applies, blocking and block-players for a player or block-as-player, and block-floaters for a float. Thru-block clears block-everything. Thru-hitscan clears block-hitscan. Trace flags are report-portals, plus no-sky when requested. The sector lookup receives the start position.\n\nThe output is cleared before it is filled. A ceiling sets the sector plane to **1**. A wall copies the side and the tier texture: middle part **1** texture **1**, upper part **0** texture **0**, lower part **2** texture **2**. A 3D floor acts as a middle part and takes the upper master texture when that flag is set, otherwise the lower, otherwise the middle. Any other hit copies the trace texture. Portal count is the callback count minus **2**. A null output still returns the trace result.\n\nPick uses center minus floor clip plus attack offset, no extra Z. Trace flags are no-sky plus portal-restrict. Ghosts are pierced, and the species checks are off with puff species `None`. An actor hit returns that actor. A miss or any other hit returns null.\n\n| Managed (`VmPMapLineTrace1170Slice.cs`) | Native (`p_map.cpp`) |\n|------------------------------------------|----------------------|\n| Named attack, line trace, and pick | **5051\u20135237** |\n| Band hull (exclusive slice) | **5051\u20135237** |\n\n### Chunk **1170** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **187** |\n| **Net headline** | **+187** vs post-**1169** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapLineTrace1170Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_LineTrace",
+            "start": 5051,
+            "end": 5237,
+            "tests": [
+              "VmPMapLineTrace1170SliceTests.Name_RejectsAnUnknownPuffAndForwardsAKnownOne",
+              "VmPMapLineTrace1170SliceTests.Callback_SkipsPortalsAndSameSpecies",
+              "VmPMapLineTrace1170SliceTests.Trace_PlacesTheShotAndFillsTheWall",
+              "VmPMapLineTrace1170SliceTests.Pick_ReturnsOnlyAnActorHit"
+            ]
+          }
+        ],
+        "nativeLoc": 187,
+        "managedLoc": 419,
+        "conversionManagedCommit": "9b4704527b354832abb83b914d69a20942ae3672"
       }
     ],
     "behaviorNativeChecksum": 508086,
