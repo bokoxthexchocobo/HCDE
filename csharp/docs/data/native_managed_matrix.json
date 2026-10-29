@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 261398
+    "managedCSharpLoc": 261957
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 95723,
+    "convertedThisRunNative": 96091,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 118594,
+    "convertedThisRunManaged": 119153,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 393149,
+    "remainingNative": 392781,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 114250,
+    "convertedBehaviorNative": 114618,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 114937,
-    "convertedBehaviorManaged": 128265,
+    "combinedBehaviorNative": 115305,
+    "convertedBehaviorManaged": 128824,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -41680,6 +41680,35 @@
         "nativeLoc": 332,
         "managedLoc": 374,
         "conversionManagedCommit": "2f2cb537dc0e5061df5499b2cf47772dcd473625"
+      },
+      {
+        "name": "p-map-try-move-crossing-chunk1173",
+        "bucket": "conversion",
+        "note": "P_TryMove crossing checks from p_map.cpp (2359\u20132726). The successful link and push-line label stay in 2727\u20132898.",
+        "auditSeams": "P_CheckPosition, P_TestMobjZ, portal translation, and the push-line label stay outside this band. This slice decides whether the move fails, pushes, or is ready to link.",
+        "auditRationale": "UNCredited p_map.cpp 2359\u20132726 (+368). Chunk 715 ends at 2358. 2727\u20132898 stays for the link. A full tally line scan shows no overlap. Radius damage 6101\u20136522 is not this band.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_map.cpp --start 2359 --end 2726 and a full tally line scan \u2192 no overlap.",
+        "auditManagedLocJustification": "The blocked-step, dropoff, and portal-exit branches each keep their own restore and collide rules. Managed LOC is just over 150% of 368 because those outcomes are spelled out beside the host probes.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `P_TryMove` banner (**2359\u20132367**) | yes |\n| Position reject and pass-mobj step (**2368\u20132421**) | yes |\n| Fit, dropoff, floor picture, and bot (**2423\u20132584**) | yes |\n| Fake-floor eyes and MBF step (**2586\u20132610**) | yes |\n| Portal crossing loop (**2612\u20132726**) | yes |\n| Band hull (**2359\u20132726**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2299\u20132358** | `CheckForPushSpecial` is chunk **715** |\n| **2727\u20132898** | successful link, push-line label, and the short overload |\n| **2899\u20132991** | `P_CheckMove` is chunk **715** |\n| **6101\u20136522** | radius damage stays off the queue |\n| **4566\u20134690**, **5238\u20135244**, **5822\u20135828**, **7272\u20137391** | short tails stay uncredited |\n\nThe move clears float-ok and portal-step, samples Z before an optional floor plane, and sets the in-try-move flag. A failed position collides when the blocker exists and the actor is not a player whose cheats include the predicting bit (bitwise and). No blocker, a player blocker, or a non-player mover pushes. A player stepping onto a non-player pushes when the step, the blocker ceiling portal, or the trace ceiling is too tight. Otherwise a missing pass-mobj flag, or the no-pass compatibility flag, restores Z and returns false. The compiled fly path pushes when the top is above the ceiling and does not rewrite vertical velocity.\n\nFloor and ceiling huggers take the trace plane. The same floor sector then wins over a hugger when the caller passed a floor plane. Without noclip, a gap shorter than the actor pushes before float-ok is set. A teleport skips the must-lower and step tests. A missile that is not a step missile cannot climb. A step that fits is tested at the floor and restored; a step missile stays on that floor, and negative velocity either bounces or becomes zero. Cross-dropoff compatibility clears the dropoff option unless the move came from a scroller. Dropoff option 2 is cleared for a large gap, a missing target, or a target above the drop. Actors that cannot drop restore Z. Actors that are avoiding a dropoff return false without restoring Z. The floor-picture lock, a dangerous bot sector, and an MBF bounce step each return false on their own terms. Eyes are sampled from the original Z. Linked portals move in ascending fraction order, keeping the earlier line when fractions tie. A non-linked portal checks actors at the translated trace point and either restores the previous coordinates or commits the translated trace position, velocity, and angle.\n\n| Managed (`VmPMapTryMove1173Slice.cs`) | Native (`p_map.cpp`) |\n|----------------------------------------|----------------------|\n| Crossing checks | **2359\u20132726** |\n| Band hull (exclusive slice) | **2359\u20132726** |\n\n### Chunk **1173** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **368** |\n| **Net headline** | **+368** vs post-**1172** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapTryMove1173Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_TryMove",
+            "start": 2359,
+            "end": 2726,
+            "tests": [
+              "VmPMapTryMove1173SliceTests.Block_StepsAPassableBodyAndRejectsATightFit",
+              "VmPMapTryMove1173SliceTests.Dropoff_KeepsTheFloorPictureAndStopsTheBot",
+              "VmPMapTryMove1173SliceTests.Portals_LinkInOrderAndRestoreABlockedExit"
+            ]
+          }
+        ],
+        "nativeLoc": 368,
+        "managedLoc": 559,
+        "conversionManagedCommit": "0c8d2bcd7dc15f58da3679f679c733469e2b3cfd"
       }
     ],
     "behaviorNativeChecksum": 508086,
