@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 93799,
+  "convertedThisRunNative": 94190,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 115430,
+  "convertedThisRunManaged": 115920,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 395073,
+  "remainingNative": 394682,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 112326,
+  "convertedBehaviorNative": 112717,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 113013,
-  "convertedBehaviorManaged": 125101,
+  "combinedBehaviorNative": 113404,
+  "convertedBehaviorManaged": 125591,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -41455,6 +41455,36 @@
       "nativeLoc": 169,
       "managedLoc": 161,
       "conversionManagedCommit": "8be0a0585b1a5713e3e08c3e16ea9cdc8fb47dde"
+    },
+    {
+      "name": "p-acs-inventory-chunk1166",
+      "bucket": "conversion",
+      "note": "Inventory use, plane watcher, and ACS module loading from `p_acs.cpp` (**1711\u20132101**).",
+      "auditSeams": "Class lookup, client-slot mapping, reserved slots, and module `Init` stay host-supplied. `MarkMapVarStrings` and `LockMapVarStrings` begin at **2108**, so this slice only walks the modules and scripts.",
+      "auditRationale": "UNCredited **`p_acs.cpp`** **1711\u20132101** (+391). Conversion credit ends at **1710** and resumes at **2281**. A full tally line scan shows no overlap. Outside the **9091\u20139240** denylist.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_acs.cpp --start 1711 --end 2101` and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "Cheat-bit restore, sparse player loop, plane crossing, and module reuse match native; managed LOC stays under 150% of 391.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `DoUseInv` (**1723\u20131748**) | yes |\n| `UseInventory` (**1758\u20131785**) | yes |\n| Player slot helpers (**1787\u20131810**) | yes |\n| `CheckInventory` (**1821\u20131866**) | yes |\n| `DPlaneWatcher` construct, serialize, and tick (**1899\u20131971**) | yes |\n| Module load, unload, and lookup (**1977\u20132053**) | yes |\n| Level var string mark and lock (**2055\u20132101**) | yes |\n| Band hull (**1711\u20132101**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1688\u20131710** | `P_ReadACSVars` / `P_WriteACSVars` are already conversion credit |\n| **2108\u20132124** | `MarkMapVarStrings` and `LockMapVarStrings` start after this band |\n| **2281\u20132750** | `FBehavior::Init` is already conversion credit |\n| `FindInventory` / `PClass::FindActor` | class and item lookup stay host-supplied |\n| `I_ToInternalClientSlot` / `I_IsServerReservedSlot` | slot mapping stays host-supplied |\n\n`DoUseInv` returns false when the actor has no matching item. With no player it returns `UseInventory`. With a player it clears `CF_TOTALLYFROZEN` (**1 << 12**) for the call, then ORs that saved bit back. Other cheat bits changed during the call stay as the call left them.\n\n`UseInventory` returns **0** for a null type or an unknown class. A null activator adds one for each in-game player, across `MAXPLAYERS` (**64**), whose item use succeeds. An activator returns **1** or **0**.\n\nA negative player number is returned unchanged and does not call the slot host. `Resolve` stores the internal slot even when it then rejects the number. Rejection is a negative slot, a slot at or above **64**, a reserved slot, or a player who is not in the game.\n\n`CheckInventory` returns **0** for a null activator or type. `Health` returns max health or current health and does not look up a class. `Armor` is looked up as `BasicArmor`. An unknown class and a non-inventory class log and return **0**. Max amount prefers the held item, otherwise the class default. Otherwise the held amount is returned, or **0**.\n\nA plane watcher stores the special, activator, line, nonzero side, ceiling flag, and five args. Last distance is the chosen plane `D`. Watch distance is `D - height * normal.Z`. Serialize stores special, sector, ceiling, both distances, activator, line, side, and args. A missing sector destroys the watcher. A tick fires when the stored last distance is below the watch and the current distance has reached it, or the stored last distance is above the watch and the current distance has fallen to it. The stored last distance is not replaced. The watcher is destroyed after the special runs.\n\n`LoadModule` returns null when the lump is **-1** and there is no reader. An existing lump is reused. A failed `Init` drops the module and records an invalid-module message. `LoadDefaultModules` scans each `LOADACS` string, loads a library lump at or above **0**, and records a missing library otherwise. `CheckAllGood` is true only when every module is good. Unload destroys from the end and clears the list. `GetModule` treats a negative index as out of range.\n\nMark and lock walk every module, then the server script list, then the client script list. A null thinker is skipped.\n\n| Managed (`VmPAcsInventory1166Slice.cs`) | Native (`p_acs.cpp`) |\n|------------------------------------------|----------------------|\n| Inventory and modules | **1711\u20132101** |\n| Band hull (exclusive slice) | **1711\u20132101** |\n\n### Chunk **1166** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **391** |\n| **Net headline** | **+391** vs post-**1165** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPAcsInventory1166Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "Inventory and modules",
+          "start": 1711,
+          "end": 2101,
+          "tests": [
+            "VmPAcsInventory1166SliceTests.UseInv_ClearsTotallyFrozenOnlyWhileTheItemIsUsed",
+            "VmPAcsInventory1166SliceTests.CheckInventory_RenamesArmorAndHealthBeforeClassLookup",
+            "VmPAcsInventory1166SliceTests.Players_KeepNegativeNumbersAndRejectReservedSlots",
+            "VmPAcsInventory1166SliceTests.WatcherAndModules_CrossThePlaneAndReuseALoadedLump"
+          ]
+        }
+      ],
+      "nativeLoc": 391,
+      "managedLoc": 490,
+      "conversionManagedCommit": "86fe0d46f47964add48cb5bc5249b9d7078d117e"
     }
   ],
   "behaviorNativeChecksum": 508086,
