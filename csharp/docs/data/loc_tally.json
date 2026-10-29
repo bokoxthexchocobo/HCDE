@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 103790,
+  "convertedThisRunNative": 104020,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 129190,
+  "convertedThisRunManaged": 129429,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 385082,
+  "remainingNative": 384852,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 122317,
+  "convertedBehaviorNative": 122547,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 123004,
-  "convertedBehaviorManaged": 138861,
+  "combinedBehaviorNative": 123234,
+  "convertedBehaviorManaged": 139100,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -42743,6 +42743,33 @@
       "nativeLoc": 218,
       "managedLoc": 282,
       "conversionManagedCommit": "a75210923a8b10754e1f2fa59217d125be61c21d"
+    },
+    {
+      "name": "writezip-chunk1212",
+      "bucket": "conversion",
+      "note": "DOS zip time and the local, central, and end-of-directory headers from writezip.cpp (1-230).",
+      "auditSeams": "FileWriter::Open, Tell, Write, and RemoveFile are host callbacks. time and localtime are the injected calendar. This host is little endian, so LittleShort and LittleLong do not swap. Header sizes are the packed 30, 46, and 22 byte structs. Names are raw bytes.",
+      "auditRationale": "UNCredited writezip.cpp 1-230 (+230). The file ends at 230. A full tally line scan shows no overlap.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/utility/writezip.cpp --start 1 --end 230 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| time_to_dos (**46-59**) | yes |\n| AppendToZip (**73-116**) | yes |\n| AppendCentralDirectory (**128-172**) | yes |\n| WriteZip (**174-230**) | yes |\n| Band hull (**1-230**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nA null calendar or a year before 1980 stores a zero DOS stamp. Otherwise the time is hour*2048 + minute*32 + second/2 and the date is (year-80)*512 + (month+1)*32 + day. Implode methods 1000 through 1006 become method 6 with the low flags. Deflate stores method 8 and flags 2. Methods at or above 1337 fail the entry. The local header writes the DOS time into ModDate and the DOS date into ModTime. The central header writes them the other way around. A short write or a rejected method deletes the file. A failed open returns false and does not delete. The end record counts the entries and sizes only the central directory.\n\n| Managed (`VmWriteZip1212Slice.cs`) | Native (`writezip.cpp`) |\n|------------------------------------|------------------------|\n| Zip writer | **1-230** |\n| Band hull (exclusive slice) | **1-230** |\n\n### Chunk **1212** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **230** |\n| **Net headline** | **+230** vs post-**1211** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmWriteZip1212Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/utility/writezip.cpp",
+          "symbol": "WriteZip",
+          "start": 1,
+          "end": 230,
+          "tests": [
+            "VmWriteZip1212SliceTests.Write_StoresLocalCentralAndEndHeaders",
+            "VmWriteZip1212SliceTests.Write_RemovesTheFileWhenAHeaderIsRejected"
+          ]
+        }
+      ],
+      "nativeLoc": 230,
+      "managedLoc": 239,
+      "conversionManagedCommit": "ebf4320ff592ef642699721a57823cacef32fcb8"
     }
   ],
   "behaviorNativeChecksum": 508086,
