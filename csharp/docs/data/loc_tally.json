@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 93630,
+  "convertedThisRunNative": 93799,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 115269,
+  "convertedThisRunManaged": 115430,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 395242,
+  "remainingNative": 395073,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 112157,
+  "convertedBehaviorNative": 112326,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 112844,
-  "convertedBehaviorManaged": 124940,
+  "combinedBehaviorNative": 113013,
+  "convertedBehaviorManaged": 125101,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -41425,6 +41425,36 @@
       "nativeLoc": 393,
       "managedLoc": 348,
       "conversionManagedCommit": "72f42a0087cc66e035017dae0fb54de7c369dc65"
+    },
+    {
+      "name": "p-action-corpse-chunk1165",
+      "bucket": "conversion",
+      "note": "Corpse queue and unblock actions from `a_action.cpp` (**1\u2013169**).",
+      "auditSeams": "Drop-item class lookup stays host-supplied. Destroy is a flag on the actor. The corpse list is the caller's queue.",
+      "auditRationale": "UNCredited **`a_action.cpp`** **1\u2013169** (+169). The file ends at **169**. A full tally line scan shows no overlap. An older sketch in `VmAAction.cs` is off the tally.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/a_action.cpp --start 1 --end 169` and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "Queue eviction, conversation early-out, and the drop walk match native; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `HCDE_QueueCorpse` (**37\u201379**) | yes |\n| `A_Unblock` (**87\u2013136**) | yes |\n| `A_QueueCorpse` (**146\u2013155**) | yes |\n| `A_DeQueueCorpse` (**158\u2013169**) | yes |\n| Band hull (**1\u2013169**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| `P_DropItem` | the drop call is recorded and the class lookup stays host-supplied |\n| `GC::WriteBarrier` | the push is the queue insert; the barrier has no extra state |\n\nBit **0** of the corpse filter keeps monster bodies. Any other value leaves the body alone. A missing corpse or a missing level returns before that test. A body already in the queue is removed first. A queue size of **0** or less destroys that body and returns. While the queue is at least that size, the head is destroyed when it exists and is not the body being queued, then the head is removed. The body is pushed after that.\n\n`A_Unblock` sets alpha to **1** and visdir to **0** when stealth is set, then clears solid. A conversation with a drop type drops amount **-1** at probability **256**, clears the conversation, and returns. Otherwise the conversation is cleared. When drop is requested and the actor is not a player pawn, each drop whose name is not `None` is spawned when the class exists, using that link's amount and probability. A corpse with no player that is not a player pawn is then queued.\n\n`A_QueueCorpse` queues only when the corpse flag is set and returns **0**. `A_DeQueueCorpse` removes the actor when it is in the queue and returns **0**.\n\n| Managed (`VmAActionCorpse1165Slice.cs`) | Native (`a_action.cpp`) |\n|------------------------------------------|--------------------------|\n| Corpse queue | **1\u2013169** |\n| Band hull (exclusive slice) | **1\u2013169** |\n\n### Chunk **1165** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **169** |\n| **Net headline** | **+169** vs post-**1164** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmAActionCorpse1165Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/a_action.cpp",
+          "symbol": "Corpse queue",
+          "start": 1,
+          "end": 169,
+          "tests": [
+            "VmAActionCorpse1165SliceTests.QueueCorpse_FiltersDedupesAndEvictsTheOldest",
+            "VmAActionCorpse1165SliceTests.Unblock_DropsConversationAndSkipsTheQueue",
+            "VmAActionCorpse1165SliceTests.Unblock_WalksDropsAndQueuesAMonsterCorpse",
+            "VmAActionCorpse1165SliceTests.Actions_QueueOnlyCorpsesAndDequeueTheActor"
+          ]
+        }
+      ],
+      "nativeLoc": 169,
+      "managedLoc": 161,
+      "conversionManagedCommit": "8be0a0585b1a5713e3e08c3e16ea9cdc8fb47dde"
     }
   ],
   "behaviorNativeChecksum": 508086,
