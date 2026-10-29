@@ -1,0 +1,28 @@
+[
+  {
+    "name": "p-map-try-move-crossing-chunk1173",
+    "bucket": "conversion",
+    "note": "P_TryMove crossing checks from p_map.cpp (2359–2726). The successful link and push-line label stay in 2727–2898.",
+    "auditSeams": "P_CheckPosition, P_TestMobjZ, portal translation, and the push-line label stay outside this band. This slice decides whether the move fails, pushes, or is ready to link.",
+    "auditRationale": "UNCredited p_map.cpp 2359–2726 (+368). Chunk 715 ends at 2358. 2727–2898 stays for the link. A full tally line scan shows no overlap. Radius damage 6101–6522 is not this band.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_map.cpp --start 2359 --end 2726 and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "The blocked-step, dropoff, and portal-exit branches each keep their own restore and collide rules. Managed LOC is just over 150% of 368 because those outcomes are spelled out beside the host probes.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `P_TryMove` banner (**2359–2367**) | yes |\n| Position reject and pass-mobj step (**2368–2421**) | yes |\n| Fit, dropoff, floor picture, and bot (**2423–2584**) | yes |\n| Fake-floor eyes and MBF step (**2586–2610**) | yes |\n| Portal crossing loop (**2612–2726**) | yes |\n| Band hull (**2359–2726**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2299–2358** | `CheckForPushSpecial` is chunk **715** |\n| **2727–2898** | successful link, push-line label, and the short overload |\n| **2899–2991** | `P_CheckMove` is chunk **715** |\n| **6101–6522** | radius damage stays off the queue |\n| **4566–4690**, **5238–5244**, **5822–5828**, **7272–7391** | short tails stay uncredited |\n\nThe move clears float-ok and portal-step, samples Z before an optional floor plane, and sets the in-try-move flag. A failed position collides when the blocker exists and the actor is not a player whose cheats include the predicting bit (bitwise and). No blocker, a player blocker, or a non-player mover pushes. A player stepping onto a non-player pushes when the step, the blocker ceiling portal, or the trace ceiling is too tight. Otherwise a missing pass-mobj flag, or the no-pass compatibility flag, restores Z and returns false. The compiled fly path pushes when the top is above the ceiling and does not rewrite vertical velocity.\n\nFloor and ceiling huggers take the trace plane. The same floor sector then wins over a hugger when the caller passed a floor plane. Without noclip, a gap shorter than the actor pushes before float-ok is set. A teleport skips the must-lower and step tests. A missile that is not a step missile cannot climb. A step that fits is tested at the floor and restored; a step missile stays on that floor, and negative velocity either bounces or becomes zero. Cross-dropoff compatibility clears the dropoff option unless the move came from a scroller. Dropoff option 2 is cleared for a large gap, a missing target, or a target above the drop. Actors that cannot drop restore Z. Actors that are avoiding a dropoff return false without restoring Z. The floor-picture lock, a dangerous bot sector, and an MBF bounce step each return false on their own terms. Eyes are sampled from the original Z. Linked portals move in ascending fraction order, keeping the earlier line when fractions tie. A non-linked portal checks actors at the translated trace point and either restores the previous coordinates or commits the translated trace position, velocity, and angle.\n\n| Managed (`VmPMapTryMove1173Slice.cs`) | Native (`p_map.cpp`) |\n|----------------------------------------|----------------------|\n| Crossing checks | **2359–2726** |\n| Band hull (exclusive slice) | **2359–2726** |\n\n### Chunk **1173** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **368** |\n| **Net headline** | **+368** vs post-**1172** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapTryMove1173Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_TryMove",
+        "start": 2359,
+        "end": 2726,
+        "tests": [
+          "VmPMapTryMove1173SliceTests.Block_StepsAPassableBodyAndRejectsATightFit",
+          "VmPMapTryMove1173SliceTests.Dropoff_KeepsTheFloorPictureAndStopsTheBot",
+          "VmPMapTryMove1173SliceTests.Portals_LinkInOrderAndRestoreABlockedExit"
+        ]
+      }
+    ]
+  }
+]
