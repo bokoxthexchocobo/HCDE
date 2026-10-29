@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 98645,
+  "convertedThisRunNative": 98801,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 122420,
+  "convertedThisRunManaged": 122501,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 390227,
+  "remainingNative": 390071,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 117172,
+  "convertedBehaviorNative": 117328,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 117859,
-  "convertedBehaviorManaged": 132091,
+  "combinedBehaviorNative": 118015,
+  "convertedBehaviorManaged": 132172,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -42002,6 +42002,34 @@
       "nativeLoc": 213,
       "managedLoc": 243,
       "conversionManagedCommit": "1fcbbb6a55af7f0c2c3afdd0ad75161f9682121e"
+    },
+    {
+      "name": "hu-scores-order-chunk1185",
+      "bucket": "conversion",
+      "note": "Scoreboard cvars, player order, draw, and toggle from hu_scores.cpp (1\u2013156).",
+      "auditSeams": "DrawScores asks the host status bar to draw. The virtual call's integer result is nonzero-as-true. Name order uses ordinal case-insensitive compare, matching stricmp.",
+      "auditRationale": "UNCredited hu_scores.cpp 1\u2013156 (+156). The file ends at 156. Playsim has no remaining clean hole of at least 150 lines outside the standing skips. A full tally line scan shows no overlap.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/hu_scores.cpp --start 1 --end 156 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| scoreboard cvars (**68\u201379**) | yes |\n| comparepoints (**81\u201394**) | yes |\n| compareteams (**96\u2013113**) | yes |\n| HU_DrawScores (**138\u2013151**) | yes |\n| togglescoreboard (**153\u2013156**) | yes |\n| Band hull (**1\u2013156**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nDeathmatch order uses frag count. Otherwise it uses kill count. Equal counts fall through to a case-insensitive name compare. Team order uses the team number first, then frags, then the name. Draw leaves the toggle set only when a status bar exists and its draw returns nonzero. A missing bar does not call draw and clears the toggle. The console command flips the toggle. The commented sort helper is not live code.\n\n| Managed (`VmHuScores1185Slice.cs`) | Native (`hu_scores.cpp`) |\n|-------------------------------------|--------------------------|\n| Order, draw, and toggle | **1\u2013156** |\n| Band hull (exclusive slice) | **1\u2013156** |\n\n### Chunk **1185** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **156** |\n| **Net headline** | **+156** vs post-**1184** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmHuScores1185Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/hu_scores.cpp",
+          "symbol": "HU_DrawScores",
+          "start": 1,
+          "end": 156,
+          "tests": [
+            "VmHuScores1185SliceTests.ComparePoints_UsesFragsInDeathmatchAndKillsOtherwise",
+            "VmHuScores1185SliceTests.CompareTeams_OrdersByTeamThenFragsThenName",
+            "VmHuScores1185SliceTests.DrawAndToggle_ClearTheFlagUnlessTheBarDraws"
+          ]
+        }
+      ],
+      "nativeLoc": 156,
+      "managedLoc": 81,
+      "conversionManagedCommit": "9a5d3c506efc4c24aae738a8e4f991ac2f2041c7"
     }
   ],
   "behaviorNativeChecksum": 508086,
