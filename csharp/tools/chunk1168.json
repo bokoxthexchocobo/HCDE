@@ -1,0 +1,29 @@
+[
+  {
+    "name": "p-destructible-hit-chunk1168",
+    "bucket": "conversion",
+    "note": "Projectile geometry hits and health-group actions from `p_destructible.cpp` (**689–909**).",
+    "auditSeams": "Missile damage, line side, and plane height stay host-supplied. `P_DamageSector` and `P_SetHealthGroupHealth` are called as recorded hits because their bodies sit outside this band.",
+    "auditRationale": "UNCredited **`p_destructible.cpp`** **689–909** (+221). Chunk **661** ends at **688**. Chunk **1021** starts at **918**. A full tally line scan shows no overlap. **910–917** is the opening of `DamageLinedef` and stays uncredited so the band ends on the `DamageSector` action.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_destructible.cpp --start 689 --end 909` and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "The linedef closest-point walk, the three-deep hit order, and the health-group read/write split are separate branches. Managed LOC is above 150% of 221 because the vector helpers and the hit record stay in the slice instead of calling an uncredited body.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `P_ProjectileHitLinedef` (**697–747**) | yes |\n| `P_ProjectileHitPlane` (**750–784**) | yes |\n| `P_CheckLinedefVulnerable` / `P_CheckSectorVulnerable` (**795–821**) | yes |\n| Health-group serialize (**825–868**) | yes |\n| ZScript field and action wrappers (**874–909**) | yes |\n| Band hull (**689–909**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **442–688** | geometry radius attack is chunk **661** |\n| **918–1067** | line and sector health actions are chunk **1021** |\n| **910–917** | opening of `DamageLinedef`, left uncredited so this band does not end mid-function |\n| `GetMissileDamage` / `P_PointOnLineSide` / `ZatPoint` | damage, side, and plane height stay host-supplied |\n\nA blocking 3D floor with health above **0** takes strife factor **3** when `MF4_STRIFEDAMAGE` (**0x100**) is set, otherwise factor **7**, and scale **1**. The linedef side comes from the host. The other side is **1** only when that side is **0**. The closest point is `pos - unit(rotate90CW(delta)) * abs(dot(unit, v1 - pos))`. A bottom below the other floor plus **1/65536**, with floor health and a vulnerable line, damages the floor. A top above the other ceiling minus that epsilon, with ceiling health, damages the ceiling. Line health above **0** damages the line on the missile side. Any of those hits returns true.\n\nA negative plane part becomes the ceiling when the ceiling is blocking, otherwise the floor when the floor is blocking. A blocking 3D floor returns after that check: health above **0** damages part **2**, and health **0** returns false without the floor or ceiling. Floor and ceiling parts also require health and a vulnerable sector.\n\nA horizon line (special **9**) is not vulnerable. A missing sidedef is not vulnerable. The sector-part argument does not change that result. A 3D sector part is vulnerable. Any other part reads the ceiling texture and plane when the part is ceiling, otherwise the floor, and rejects the sky texture.\n\nGroup serialization writes id and health only. A closed array changes nothing. A reader copies health onto an existing id and skips an unknown id. A writer walks the live groups. `FindHealthGroup` returns the lookup result. `SetHealth` forwards the value and returns **0**. `DamageSector` records the position and sets groups, then returns **0**.\n\n| Managed (`VmPDestructibleHit1168Slice.cs`) | Native (`p_destructible.cpp`) |\n|---------------------------------------------|-------------------------------|\n| Geometry hits | **689–909** |\n| Band hull (exclusive slice) | **689–909** |\n\n### Chunk **1168** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **221** |\n| **Net headline** | **+221** vs post-**1167** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPDestructibleHit1168Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_destructible.cpp",
+        "symbol": "Geometry hits",
+        "start": 689,
+        "end": 909,
+        "tests": [
+          "VmPDestructibleHit1168SliceTests.LinedefHit_DamagesTheNearPlaneAndTheWall",
+          "VmPDestructibleHit1168SliceTests.PlaneHit_PrefersABlockingCeilingAndStopsOnAnEmptyThreeDFloor",
+          "VmPDestructibleHit1168SliceTests.Groups_CopyHealthOntoAnExistingIdOnly",
+          "VmPDestructibleHit1168SliceTests.Actions_ApplyHealthAndDamageTheNamedSector"
+        ]
+      }
+    ]
+  }
+]
