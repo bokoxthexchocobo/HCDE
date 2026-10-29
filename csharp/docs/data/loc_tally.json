@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 88820,
+  "convertedThisRunNative": 88970,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 109976,
+  "convertedThisRunManaged": 110125,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 400052,
+  "remainingNative": 399902,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 107347,
+  "convertedBehaviorNative": 107497,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 108034,
-  "convertedBehaviorManaged": 119647,
+  "combinedBehaviorNative": 108184,
+  "convertedBehaviorManaged": 119796,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -40747,6 +40747,36 @@
       "nativeLoc": 150,
       "managedLoc": 181,
       "conversionManagedCommit": "e54cb07697b2db2b1fcd56b7065386a08212b8a3"
+    },
+    {
+      "name": "am-map-markers-chunk1142",
+      "bucket": "conversion",
+      "note": "Cheat boxes, texture markers, numbered marks, and author-marker frames from `am_map.cpp` (**3151\u20133300**); follows **1141**.",
+      "auditSeams": "Texture lookup and point rotation stay host-supplied. TID targeting begins at **3303**.",
+      "auditRationale": "UNCredited **`am_map.cpp`** **3151\u20133300** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 3151 --end 3300` and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "Cheat-box geometry, marker scale flip, and mark font choice match native; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Cheat radius box (**3153\u20133164**) | yes |\n| `DrawMarker` clip and scale (**3178\u20133207**) | yes |\n| Numbered marks (**3215\u20133250**) | yes |\n| Author-marker texture and flip (**3258\u20133300**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **3001\u20133150** | keys and triangles already credited by **1141** |\n| **3303+** | TID targeting for map markers |\n\nCheats **3** and **6** draw a unit square at scale `radius`, with angle `drawnAngle - yaw`. A negative marker `xscale` toggles flip and becomes positive. `CXMTOF` / `CYMTOF` truncate toward zero. The default mark font `AMMNUMx` keeps the number textures and a Y adjust of **-3**; any other font draws `'0' + index`. `MF2_DORMANT` is **0x10000000**. A rotation index of **0xFFFF** keeps the picture. Otherwise flip is bit **0** of the sprite frame.\n\n| Managed (`VmAmMapMarkers1142Slice.cs`) | Native (`am_map.cpp`) |\n|------------------------------------------|---------------------|\n| Boxes, marks, author frames | **3151\u20133300** |\n| Band hull (exclusive slice) | **3151\u20133300** |\n\n### Chunk **1142** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1141** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmAmMapMarkers1142Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "Automap markers",
+          "start": 3151,
+          "end": 3300,
+          "tests": [
+            "VmAmMapMarkers1142SliceTests.CheatBox_IsAUnitSquareAtTheRemainingYaw",
+            "VmAmMapMarkers1142SliceTests.PlaceMarker_FlipsANegativeScaleAndTruncatesTheFramePoint",
+            "VmAmMapMarkers1142SliceTests.Marks_UseTexturesForTheDefaultFontAndDigitsOtherwise",
+            "VmAmMapMarkers1142SliceTests.AuthorMarkers_SkipDormantActorsAndReadTheFirstFlipBit"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 149,
+      "conversionManagedCommit": "b1d77366830f9ff03888b9d98a5cea869216eca4"
     }
   ],
   "behaviorNativeChecksum": 508086,
