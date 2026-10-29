@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 85820,
+  "convertedThisRunNative": 85970,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 106994,
+  "convertedThisRunManaged": 107125,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 403052,
+  "remainingNative": 402902,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 104347,
+  "convertedBehaviorNative": 104497,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 105034,
-  "convertedBehaviorManaged": 116665,
+  "combinedBehaviorNative": 105184,
+  "convertedBehaviorManaged": 116796,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -40144,6 +40144,37 @@
       "nativeLoc": 150,
       "managedLoc": 91,
       "conversionManagedCommit": "ef9f674ff4a12fe15fb3d695ed6508ec97e0bf05"
+    },
+    {
+      "name": "am-map-display-chunk1122",
+      "bucket": "conversion",
+      "note": "Automap display CVARs, empty-space margin clamp, follow/grid/mark commands, and default colors from `am_map.cpp` (**151\u2013300**); follows **1121**.",
+      "auditSeams": "`StatusBar`, `Printf`, and `AM_ToggleMap` remain host-injected; overlay colors continue at **301**.",
+      "auditRationale": "UNCredited **`am_map.cpp`** **151\u2013300** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 151 --end 300` and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "Margin clamp, command gates, and the color table match native defaults; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Display CVAR defaults (**153\u2013166**, **191\u2013198**) | yes |\n| Empty-space margin clamp (**170\u2013177**) | yes |\n| Follow/grid/texture toggles (**201\u2013217**) | yes |\n| Set/clear marks, gobig, togglemap, zoom (**221\u2013259**) | yes |\n| Map and overlay colors through other-walls (**269\u2013300**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **179\u2013181**, **204**, **227**, **243** | host automap/printf |\n| **301+** | remaining overlay colors outside hull |\n\n| Managed (`VmAmMapDisplay1122Slice.cs`) | Native (`am_map.cpp`) |\n|----------------------------------------|---------------------|\n| Display defaults, commands, colors | **151\u2013300** |\n| Band hull (exclusive slice) | **151\u2013300** |\n\n### Chunk **1122** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1121** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmAmMapDisplay1122Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "Automap display commands and colors",
+          "start": 151,
+          "end": 300,
+          "tests": [
+            "VmAmMapDisplay1122SliceTests.ClampEmptySpaceMargin_LimitsToZeroThroughNinety",
+            "VmAmMapDisplay1122SliceTests.ToggleFollow_FlipsAndTryAddMark_RejectsNegative",
+            "VmAmMapDisplay1122SliceTests.ShouldToggleMap_OnlyWhenGameActionIsIdle",
+            "VmAmMapDisplay1122SliceTests.TrySetZoomDirection_ParsesSecondArgument",
+            "VmAmMapDisplay1122SliceTests.DefaultColors_IncludeWallAndOverlayWall"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 131,
+      "conversionManagedCommit": "f200ebb239f4073b3b109da4ff91142553420730"
     }
   ],
   "behaviorNativeChecksum": 508086,
