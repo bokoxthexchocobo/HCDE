@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 272233
+    "managedCSharpLoc": 272410
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 104020,
+    "convertedThisRunNative": 104196,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 129429,
+    "convertedThisRunManaged": 129606,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 384852,
+    "remainingNative": 384676,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 122547,
+    "convertedBehaviorNative": 122723,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 123234,
-    "convertedBehaviorManaged": 139100,
+    "combinedBehaviorNative": 123410,
+    "convertedBehaviorManaged": 139277,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -42786,6 +42786,33 @@
         "nativeLoc": 230,
         "managedLoc": 239,
         "conversionManagedCommit": "ebf4320ff592ef642699721a57823cacef32fcb8"
+      },
+      {
+        "name": "eternitycompat-chunk1213",
+        "bucket": "conversion",
+        "note": "EMAPINFO, EDF, and ExtraData detection from hcde_eternity_compat.cpp (1-176).",
+        "auditSeams": "GetFileContainer, GetMaxIwadNum, GetFileShortName, GetFileFullName, and GetFileFullPath are the lump list. Printf is the report callback. ASCII A-Z folds to lower case after backslashes become slashes, matching the C locale.",
+        "auditRationale": "UNCredited hcde_eternity_compat.cpp 1-176 (+176). The file ends at 176. A full tally line scan shows no overlap.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/engine/hcde_eternity_compat.cpp --start 1 --end 176 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| LowerCopy (**35-49**) | yes |\n| BaseName (**51-55**) | yes |\n| EndsWith (**57-61**) | yes |\n| HasPathSegment (**63-67**) | yes |\n| IsUserLoadedLump (**69-72**) | yes |\n| RememberSample (**74-86**) | yes |\n| RecordEMapInfo (**88-93**) | yes |\n| RecordEdf (**95-100**) | yes |\n| RecordExtraData (**102-107**) | yes |\n| ReportDetectedResources (**109-128**) | yes |\n| HCDE_EternityCompat_DetectLoadedResources (**131-166**) | yes |\n| HCDE_EternityCompat_IsActive (**168-171**) | yes |\n| HCDE_EternityCompat_GetFlags (**173-176**) | yes |\n| Band hull (**1-176**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nA user lump is one whose container is greater than the IWAD index. An empty full name falls back to the short name. The three family checks are separate, so one lump can raise more than one flag. Samples store the raw full path, ignore duplicates, and stop at eight. No flags means no report. IsActive(0) stays true.\n\n| Managed (`VmEternityCompat1213Slice.cs`) | Native (`hcde_eternity_compat.cpp`) |\n|------------------------------------------|--------------------------------------|\n| Resource scan | **1-176** |\n| Band hull (exclusive slice) | **1-176** |\n\n### Chunk **1213** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **176** |\n| **Net headline** | **+176** vs post-**1212** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmEternityCompat1213Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/engine/hcde_eternity_compat.cpp",
+            "symbol": "HCDE_EternityCompat_DetectLoadedResources",
+            "start": 1,
+            "end": 176,
+            "tests": [
+              "VmEternityCompat1213SliceTests.Detect_ClassifiesEmapinfoEdfAndExtradata",
+              "VmEternityCompat1213SliceTests.Detect_CapsSamplesAndSkipsIwadLumps"
+            ]
+          }
+        ],
+        "nativeLoc": 176,
+        "managedLoc": 177,
+        "conversionManagedCommit": "c565dec396dd3f62a674993ac8973bb8383233dd"
       }
     ],
     "behaviorNativeChecksum": 508086,
