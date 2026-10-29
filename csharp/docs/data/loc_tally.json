@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 100846,
+  "convertedThisRunNative": 101011,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 125765,
+  "convertedThisRunManaged": 125949,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 388026,
+  "remainingNative": 387861,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 119373,
+  "convertedBehaviorNative": 119538,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 120060,
-  "convertedBehaviorManaged": 135436,
+  "combinedBehaviorNative": 120225,
+  "convertedBehaviorManaged": 135620,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -42338,6 +42338,33 @@
       "nativeLoc": 155,
       "managedLoc": 222,
       "conversionManagedCommit": "0375aedc0129afad3cecf2d8e082a5b40bbe6e50"
+    },
+    {
+      "name": "anm-texture-chunk1197",
+      "bucket": "conversion",
+      "note": "Build ANM probe, frame-1 copy, and palette expand from anmtexture.cpp (1\u2013165).",
+      "auditSeams": "ANIM_LoadAnim, ANIM_DrawFrame, and ColorMatcher.Pick are host results. TryCreate passes the file length, which is the padded buffer size minus the extra zero. ReadFrame passes the raw lump size and draws frame 1. A missing lump throws. CopyPixels writes Width times Height pixels from the start of the bitmap and does not clip.",
+      "auditRationale": "UNCredited anmtexture.cpp 1\u2013165 (+165). The file ends at 165. A full tally line scan shows no overlap.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/textures/formats/anmtexture.cpp --start 1 --end 165 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| AnmImage_TryCreate (**55\u201378**) | yes |\n| FAnmTexture constructor (**86\u201393**) | yes |\n| FAnmTexture::ReadFrame (**95\u2013113**) | yes |\n| FAnmTexture::CreatePalettedPixels (**127\u2013140**) | yes |\n| FAnmTexture::CopyPixels (**148\u2013165**) | yes |\n| Band hull (**1\u2013165**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nTryCreate rewinds, requires the four characters LPF and a space, rewinds again, and loads the padded file. The load length drops the extra zero. A short read, a failed load, or zero frames returns nothing. One or more frames creates a 320 by 200 texture with both offsets cleared. ReadFrame loads the lump at its real size. It copies 768 palette bytes and frame 1 when that load succeeds and has a frame. Otherwise it clears the pixel and palette buffers. CreatePalettedPixels matches all 256 palette colors and stores them in column order. CopyPixels writes those indices as opaque BGRA in the frame's original order and returns -1.\n\n| Managed (`VmAnmTexture1197Slice.cs`) | Native (`anmtexture.cpp`) |\n|--------------------------------------|---------------------------|\n| ANM texture | **1\u2013165** |\n| Band hull (exclusive slice) | **1\u2013165** |\n\n### Chunk **1197** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **165** |\n| **Net headline** | **+165** vs post-**1196** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmAnmTexture1197Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/textures/formats/anmtexture.cpp",
+          "symbol": "FAnmTexture::CreatePalettedPixels",
+          "start": 1,
+          "end": 165,
+          "tests": [
+            "VmAnmTexture1197SliceTests.TryCreate_RequiresLpfAndAtLeastOneFrame",
+            "VmAnmTexture1197SliceTests.ReadFrame_CopiesFrameOneAndPaintsColumnMajorPalette"
+          ]
+        }
+      ],
+      "nativeLoc": 165,
+      "managedLoc": 184,
+      "conversionManagedCommit": "d9ba6dbbeccab5db5e8e2c8f89b2689d34168b9a"
     }
   ],
   "behaviorNativeChecksum": 508086,
