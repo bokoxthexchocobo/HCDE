@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 253770
+    "managedCSharpLoc": 254043
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 89959,
+    "convertedThisRunNative": 90244,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 110966,
+    "convertedThisRunManaged": 111239,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 398913,
+    "remainingNative": 398628,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 108486,
+    "convertedBehaviorNative": 108771,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 109173,
-    "convertedBehaviorManaged": 120637,
+    "combinedBehaviorNative": 109458,
+    "convertedBehaviorManaged": 120910,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -40970,6 +40970,35 @@
         "nativeLoc": 231,
         "managedLoc": 204,
         "conversionManagedCommit": "fc91c1c793e2c55326b3858ae19c05143391d8ef"
+      },
+      {
+        "name": "p-enemy-wake-chunk1149",
+        "bucket": "conversion",
+        "note": "Player search and A_Look from `p_enemy.cpp` (**1778\u20132062**); follows **1148**. A_LookEx at **2063** is already credited.",
+        "auditSeams": "TID, enemy, and monster searches, player masks, ambush sight, and the see sound stay host-supplied. The MBF friend loop is not compiled.",
+        "auditRationale": "UNCredited **`p_enemy.cpp`** **1778\u20132062** (+285), inside the 3488-line file, with no conversion or recognition overlap.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_enemy.cpp --start 1778 --end 2062` and a full tally line scan \u2192 no overlap.",
+        "auditManagedLocJustification": "Friend early-outs, the 64-slot mask, and A_Look's see order match native; managed LOC exceeds 50%.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `P_LookForPlayers` (**1789\u20131933**) | yes |\n| `A_Look` (**1944\u20132054**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1258\u20131488** | look scan already credited by **1148** |\n| **1811\u20131842** | `MBF_FRIENDS` is not defined, so the block is not compiled |\n| **2063+** | `A_LookEx` already credited |\n\n`LOF_DONTCHASEGOAL` is **4**. With no parameter block, goals are chased. A hate tid returns immediately on a tid hit, and returns false without `MF3_HUNTPLAYERS` (**0x80000000**). A friendly with no friend player and either no team play or `TEAM_NONE` (**255**) returns the enemy search. A friendly who does have a friend player returns true in coop even when no enemy was found, and falls through only in deathmatch. `MF8_SEEFRIENDLYMONSTERS` returns only when an enemy was found. A dead player on a primary solo non-title map looks for monsters only when the game is outside `GAME_DoomStrifeChex` (**25**) and there is no goal. Otherwise the scan starts at the next slot after `LastLook`, or after `pr_look2() & 63` for a hate tid, and gives every one of the **64** slots one chance. Empty slots still consume a chance. `LastLook` advances only for occupied slots when there is no hate tid. A player who is the current goal clears `reactiontime`. After the mask, a goal is adopted unless chasing goals is off, otherwise a living unfriendly last enemy is adopted and a friendly one is dropped. The final result is whether the existing target is the goal. `A_Look` returns before doing anything during conversation. `Thing_SetGoal` (**229**) with `args[0] == 0` takes the first patrol point for `args[1]`, clears the special, sets `reactiontime` to `args[2] * 35 + maptime`, and toggles `MF5_CHASEGOAL` from `args[3]`. A dead heard actor is ignored. A heard player with `CF_NOTARGET` or without `MF_FRIENDLY` aborts after the threshold is cleared. Sector sound is used when `COMPATF_SOUNDTARGET` or `MF_NOSECTOR` is set. Stealth sets `visdir` to **-1**. A friendly heard target looks once and, on failure, enters the see state or wanders, then looks again. An ambush monster keeps the heard target and looks only when sight fails; any other shootable heard target sees immediately. At the see label, a goal whose reaction time is still ahead is cleared and makes no sound. A boss or `MF8_FULLVOLSEE` plays the see sound at full volume. The see state runs only when a target remains. `MF4_LOOKALLAROUND` is **0x00010000** and is the host's all-around bit.\n\n| Managed (`VmPEnemyWake1149Slice.cs`) | Native (`p_enemy.cpp`) |\n|----------------------------------------|----------------------|\n| Player look and `A_Look` | **1778\u20132062** |\n| Band hull (exclusive slice) | **1778\u20132062** |\n\n### Chunk **1149** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **285** |\n| **Net headline** | **+285** vs post-**1148** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPEnemyWake1149Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "Enemy player look and A_Look",
+            "start": 1778,
+            "end": 2062,
+            "tests": [
+              "VmPEnemyWake1149SliceTests.LookForPlayers_ReturnsEarlyForFriendsAndThenWalksTheMask",
+              "VmPEnemyWake1149SliceTests.Look_WakesFromAShootableHeardActorAndRefusesANoTargetPlayer",
+              "VmPEnemyWake1149SliceTests.Look_AmbushAndFriendsUseTheSearchBeforeTheSeeState"
+            ]
+          }
+        ],
+        "nativeLoc": 285,
+        "managedLoc": 273,
+        "conversionManagedCommit": "4f9d4912179927c9b1bc324082e5b853ecac2822"
       }
     ],
     "behaviorNativeChecksum": 508086,
