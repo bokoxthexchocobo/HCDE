@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 251505
+    "managedCSharpLoc": 251632
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 87620,
+    "convertedThisRunNative": 87770,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 108701,
+    "convertedThisRunManaged": 108828,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 401252,
+    "remainingNative": 401102,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 106147,
+    "convertedBehaviorNative": 106297,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 106834,
-    "convertedBehaviorManaged": 118372,
+    "combinedBehaviorNative": 106984,
+    "convertedBehaviorManaged": 118499,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -40524,6 +40524,36 @@
         "nativeLoc": 150,
         "managedLoc": 143,
         "conversionManagedCommit": "ccd02c6f3d58c3cbf8ddbed4c13afc5522e4a406"
+      },
+      {
+        "name": "am-map-fake-flat-chunk1134",
+        "bucket": "conversion",
+        "note": "AM_FakeFlat floor transfer and drawSubsectors skip gates from `am_map.cpp` (**1951\u20132100**); follows **1133**.",
+        "auditSeams": "Plane copy validity and texture ids stay host-supplied. Subsector point fill begins at **2104**.",
+        "auditRationale": "UNCredited **`am_map.cpp`** **1951\u20132100** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 1951 --end 2100` and a full tally line scan \u2192 no overlap.",
+        "auditManagedLocJustification": "Viewer area, fake-floor copy, sky-floor replacement, and the four subsector skips match native; managed LOC exceeds 50%.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Viewer Z and in-area (**1951\u20131971**) | yes |\n| Clip-fake-planes and fake-floor-only return (**1973\u20132007**) | yes |\n| Below and above floor texture/light (**2009\u20132053**) | yes |\n| Polyorg, undrawn, cheat-4 hidden, portal skips (**2080\u20132102**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1949** | null height-sector return already credited by **1133** |\n| **2104+** | point fill and later drawing |\n\nFlag values are the native ones: `SECMF_FAKEFLOORONLY` **2**, `SECMF_CLIPFAKEPLANES` **4**, `SECMF_NOFAKELIGHT` **8**, `SECMF_HIDDEN` **256**, `SSECMF_DRAWN` **2**, `SSECF_POLYORG` **4**, `SSECF_HOLE` **8**. Area 1 keeps the control ceiling texture when the control floor is sky.\n\n| Managed (`VmAmMapFakeFlat1134Slice.cs`) | Native (`am_map.cpp`) |\n|------------------------------------------|---------------------|\n| Fake flat and subsector skips | **1951\u20132100** |\n| Band hull (exclusive slice) | **1951\u20132100** |\n\n### Chunk **1134** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1133** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Client/VmAmMapFakeFlat1134Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "Automap fake flat and subsector skips",
+            "start": 1951,
+            "end": 2100,
+            "tests": [
+              "VmAmMapFakeFlat1134SliceTests.ViewerZAndArea_PlayerViewAndBelowOrAboveTheControl",
+              "VmAmMapFakeFlat1134SliceTests.Apply_FakeFloorOnlyBelowCopiesLightAndOtherwiseKeepsTheSector",
+              "VmAmMapFakeFlat1134SliceTests.Apply_BelowRestoresTheTargetFloorAndAboveKeepsSkyCeiling",
+              "VmAmMapFakeFlat1134SliceTests.SkipSubsector_HidesPolyOrgUndrawnAndForeignPortals"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 127,
+        "conversionManagedCommit": "9e2ca12b476d80410ae5b9dfb6cf2db14efc652e"
       }
     ],
     "behaviorNativeChecksum": 508086,
