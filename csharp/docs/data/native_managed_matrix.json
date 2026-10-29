@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 250377
+    "managedCSharpLoc": 250641
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 86420,
+    "convertedThisRunNative": 86570,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 107573,
+    "convertedThisRunManaged": 107837,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 402452,
+    "remainingNative": 402302,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 104947,
+    "convertedBehaviorNative": 105097,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 105634,
-    "convertedBehaviorManaged": 117244,
+    "combinedBehaviorNative": 105784,
+    "convertedBehaviorManaged": 117508,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -40282,6 +40282,36 @@
         "nativeLoc": 150,
         "managedLoc": 186,
         "conversionManagedCommit": "e41b7b884414f365fe23d8e9a030e829e0d14349"
+      },
+      {
+        "name": "am-map-color-parse-chunk1126",
+        "bucket": "conversion",
+        "note": "Raven initColors arm, ParseAMColors, thin-triangle glyph, arrow lump scale, and AM_StaticInit clears from `am_map.cpp` (**751\u2013900**); follows **1125**.",
+        "auditSeams": "Scanner and `V_GetColorFromString` stay host-injected. Lump opens that miss return an empty arrow.",
+        "auditRationale": "UNCredited **`am_map.cpp`** **751\u2013900** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 751 --end 900` and a full tally line scan \u2192 no overlap.",
+        "auditManagedLocJustification": "Base/showlocks/color-key parse, arrow scale `int((8*16)/7)==18`, and the four static clears match native; managed LOC exceeds 50%.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Raven `initFromColors(..., true)` (**752\u2013755**) | yes |\n| `ParseAMColors` base, showlocks, and color keys (**767\u2013838**) | yes |\n| Thin-triangle glyph (**853\u2013857**) | yes |\n| `AM_ParseArrow` radius and vertex pairs (**865\u2013895**) | yes |\n| `AM_StaticInit` four clears (**897\u2013900**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **756\u2013766**, **840\u2013852**, **859\u2013864** | braces and section comments |\n| **901+** | arrow lump selection and fatal error outside hull |\n\n`FScanner::Compare` is case-insensitive. Arrow radius truncates to **18** before scaling.\n\n| Managed (`VmAmMapColorParse1126Slice.cs`) | Native (`am_map.cpp`) |\n|-------------------------------------------|---------------------|\n| Color parser, glyph, arrow scale | **751\u2013900** |\n| Band hull (exclusive slice) | **751\u2013900** |\n\n### Chunk **1126** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1125** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Client/VmAmMapColorParse1126Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "Automap color parser and arrow glyph",
+            "start": 751,
+            "end": 900,
+            "tests": [
+              "VmAmMapColorParse1126SliceTests.RavenArm_ShowsLocksAndBaseDoomClearsThem",
+              "VmAmMapColorParse1126SliceTests.ParseAmColors_RejectsBaseAfterAColorAndUnknownKeys",
+              "VmAmMapColorParse1126SliceTests.ParseAmColors_WritesOpaqueWallFromResolver",
+              "VmAmMapColorParse1126SliceTests.ArrowLump_ScalesByPlayerRadiusAndStaticInitClears"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 264,
+        "conversionManagedCommit": "51c63863588458250779747c99f60a48e10013c3"
       }
     ],
     "behaviorNativeChecksum": 508086,
