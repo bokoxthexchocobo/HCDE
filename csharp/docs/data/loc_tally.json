@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 85070,
+  "convertedThisRunNative": 85220,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 106351,
+  "convertedThisRunManaged": 106513,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 403802,
+  "remainingNative": 403652,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 103597,
+  "convertedBehaviorNative": 103747,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 104284,
-  "convertedBehaviorManaged": 116022,
+  "combinedBehaviorNative": 104434,
+  "convertedBehaviorManaged": 116184,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -39994,6 +39994,36 @@
       "nativeLoc": 150,
       "managedLoc": 119,
       "conversionManagedCommit": "cfba8e9c81dcaccec327696cab063a624653a5a0"
+    },
+    {
+      "name": "pmobj-spawn-player-tail-chunk1117",
+      "bucket": "conversion",
+      "note": "`P_SpawnPlayer` counter reset, inventory/respawn branches, ceiling drop, script dispatch, and `SpawnMapThing` editor-number reject from `p_mobj.cpp` (**6427\u20136576**); follows **1116**.",
+      "auditSeams": "VM inventory hooks, `P_SetupPsprites`, teleport fog, and thinker iteration remain host-injected; unknown-thing warnings continue at **6584**.",
+      "auditRationale": "UNCredited **`p_mobj.cpp`** **6427\u20136576** (+150). Skips **5577\u20135726** (chunk **481**) and earlier credited movement/tick bands.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 6427 --end 6576` and `--chunk 1117 --band` \u2192 UNCredited, exit 0.",
+      "auditManagedLocJustification": "Respawn versus enter script selection and ceiling clamp follow native branches; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Live counter reset (**6427\u20136448**) | yes |\n| Camera retarget + demo chase (**6458\u20136468**) | yes |\n| Psprite / deathmatch / coop inventory gates (**6471\u20136491**) | yes |\n| Old inventory destroy + respawn hook (**6493\u20136507**) | yes |\n| Status bar, fog, ceiling drop (**6510\u20136525**) | yes |\n| Enter vs respawn scripts and sound-target clear (**6528\u20136558**) | yes |\n| `SpawnMapThing` ednum reject + multi flags (**6575\u20136576**) | yes (head) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **6450\u20136456**, **6478\u20136506** | VM calls |\n| **6517**, **6532**, **6544\u20136554** | host fog / thinker scan / substitution |\n| **6584+** | unknown-thing warning outside hull |\n\n| Managed (`VmPMobjSpawnPlayerTail1117Slice.cs`) | Native (`p_mobj.cpp`) |\n|-----------------------------------------------|---------------------|\n| Spawn-player tail + ednum reject | **6427\u20136576** |\n| Band hull (exclusive slice) | **6427\u20136576** |\n\n### Chunk **1117** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1116** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjSpawnPlayerTail1117Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "P_SpawnPlayer tail and SpawnMapThing head",
+          "start": 6427,
+          "end": 6576,
+          "tests": [
+            "VmPMobjSpawnPlayerTail1117SliceTests.RunSpawnPlayerTail_RespawnClearsSoundTargetsAndDropsCeiling",
+            "VmPMobjSpawnPlayerTail1117SliceTests.RunSpawnPlayerTail_SkipsScriptsForTemporaryPlayer",
+            "VmPMobjSpawnPlayerTail1117SliceTests.RejectMapThingEditorNumber_RejectsZeroAndMinusOne",
+            "VmPMobjSpawnPlayerTail1117SliceTests.ApplyDemoChaseCam_SetsCheatWhenWatching"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 162,
+      "conversionManagedCommit": "632f68764788c96a31b008d24cbcc5b6990cdcdb"
     }
   ],
   "behaviorNativeChecksum": 508086,
