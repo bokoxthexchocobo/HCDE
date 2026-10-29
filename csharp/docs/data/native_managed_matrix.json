@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 277586
+    "managedCSharpLoc": 277726
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 108586,
+    "convertedThisRunNative": 108758,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 134782,
+    "convertedThisRunManaged": 134922,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 380286,
+    "remainingNative": 380114,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 127113,
+    "convertedBehaviorNative": 127285,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 127800,
-    "convertedBehaviorManaged": 144453,
+    "combinedBehaviorNative": 127972,
+    "convertedBehaviorManaged": 144593,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -43300,6 +43300,33 @@
         "nativeLoc": 224,
         "managedLoc": 204,
         "conversionManagedCommit": "7edfcbc8365e555b9184753a37d4404cd331a9c2"
+      },
+      {
+        "name": "heretic-start-chunk1232",
+        "bucket": "conversion",
+        "note": "Heretic LOADING screen, thermometer notches, and status text from startscreen_heretic.cpp (1-172).",
+        "auditSeams": "LOADING must be exactly 4000 bytes or the constructor errors before the bitmap. Column 49 of text row 2 is overwritten with the character 3. The bitmap is 640x400. The thermometer origin is (112, 224), the width is 404, and the height is 16. A notch is computed from CurPos + 1 times that width, divided by MaxPos, before the base progress call. It paints only when the result differs from the previous notch and the low two bits are clear. The paint is the light-green text-mode entry, from the old notch to the new one. The base call stretches the budget only when advance is 1 and the cursor is inside the headroom, and that stretch happens after the notch. Loading status draws each byte at column 17 plus the index on the current message row, then always bumps the row, cleans, and renders with force left false. An empty message still bumps the row. Append draws at the running status column on row 24 with attribute 31 and adds the byte count. A color above 255 is truncated to a byte. When CurPos is already at MaxPos the notch divide is skipped and the base call still runs.",
+        "auditRationale": "UNCredited startscreen_heretic.cpp 1-172 (+172). The file ends at 172. A full tally line scan shows no overlap.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/startscreen/startscreen_heretic.cpp --start 1 --end 172 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Constructor and version patch (**65\u201395**) | yes |\n| Thermometer progress (**105\u2013122**) | yes |\n| Loading status (**132\u2013143**) | yes |\n| Status line append (**153\u2013164**) | yes |\n| Create and countdown (**167\u2013172**) | yes |\n| Band hull (**1\u2013172**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nNotch 2 does not paint. Notch 4 paints four pixels at x=112, then notch 8 paints the next four at x=116. The 404-wide budget stretches to 2452 only after the notch is chosen.\n\n| Managed (`VmHereticStart1232Slice.cs`) | Native (`startscreen_heretic.cpp`) |\n|------------------------------------------|--------------------------------------|\n| Version patch, notches, and status text | **1\u2013172** |\n| Band hull (exclusive slice) | **1\u2013172** |\n\n### Chunk **1232** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **172** |\n| **Net headline** | **+172** vs post-**1231** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmHereticStart1232Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/startscreen/startscreen_heretic.cpp",
+            "symbol": "CreateHereticStartScreen",
+            "start": 1,
+            "end": 172,
+            "tests": [
+              "VmHereticStart1232SliceTests.Create_PatchesTheVersionAndPaintsAlignedNotches",
+              "VmHereticStart1232SliceTests.Progress_StretchesAfterTheNotchAndStatusUsesBytes"
+            ]
+          }
+        ],
+        "nativeLoc": 172,
+        "managedLoc": 140,
+        "conversionManagedCommit": "adb812dfb7cd5e0a434e58e8f792032848e0b068"
       }
     ],
     "behaviorNativeChecksum": 508086,
