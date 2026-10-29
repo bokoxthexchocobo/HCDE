@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 264981
+    "managedCSharpLoc": 265224
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 98432,
+    "convertedThisRunNative": 98645,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 122177,
+    "convertedThisRunManaged": 122420,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 390440,
+    "remainingNative": 390227,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 116959,
+    "convertedBehaviorNative": 117172,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 117646,
-    "convertedBehaviorManaged": 131848,
+    "combinedBehaviorNative": 117859,
+    "convertedBehaviorManaged": 132091,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -41990,6 +41990,34 @@
         "nativeLoc": 212,
         "managedLoc": 128,
         "conversionManagedCommit": "6f772d98f1de4c02c321d3b0b5fbd0fe14aeda42"
+      },
+      {
+        "name": "t-prepro-scan-chunk1184",
+        "bucket": "conversion",
+        "note": "FraggleScript comment blanking, brace scan, dry run, and include from t_prepro.cpp (213\u2013425).",
+        "auditSeams": "Section create and hash lookup are chunk 1183. GetTokens, lump lookup, and Run are host callbacks. script_error throws. A missing include lump records the fatal and returns.",
+        "auditRationale": "UNCredited t_prepro.cpp 213\u2013425 (+213). ProcessFindChar starts at 213 and ParseInclude ends at 425, which is the end of the file. The section table 1\u2013212 is chunk 1183. A full tally line scan shows no overlap.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_prepro.cpp --start 213 --end 425 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| ProcessFindChar (**213\u2013303**) | yes |\n| DryRunScript (**328\u2013374**) | yes |\n| Preprocess (**382\u2013387**) | yes |\n| ParseInclude (**401\u2013425**) | yes |\n| Band hull (**213\u2013425**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1\u2013212** | section registration and hash lookup stay chunk 1183 |\n\nA block comment is blanked, including its delimiters. A line comment is blanked up to, and not through, the newline. A quoted span hides a closing brace, and a backslash skips the next character. A colon stores a label at the separator before the name. An empty name still creates the label and prints the native typo. Script number -1 skips labels. A brace pushes a section, scans for its closer, and stores that index. A missing closer or an open comment is fatal. Dry run sets if, elseif, else, and loop types only for a function token, and while or for also store the line start. Preprocess sets the length to one less than the buffer and then scans. Include reads the lump, blanks it, and runs that span.\n\n| Managed (`VmTPreproScan1184Slice.cs`) | Native (`t_prepro.cpp`) |\n|----------------------------------------|------------------------|\n| Scan, dry run, and include | **213\u2013425** |\n| Band hull (exclusive slice) | **213\u2013425** |\n\n### Chunk **1184** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **213** |\n| **Net headline** | **+213** vs post-**1183** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmTPreproScan1184Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/fragglescript/t_prepro.cpp",
+            "symbol": "DFsScript::ProcessFindChar",
+            "start": 213,
+            "end": 425,
+            "tests": [
+              "VmTPreproScan1184SliceTests.Scan_BlanksCommentsHidesQuotedBracesAndStoresLabels",
+              "VmTPreproScan1184SliceTests.Braces_NestAndFatalErrorsStopTheScan",
+              "VmTPreproScan1184SliceTests.DryRun_TypesSectionsAndIncludeBlanksTheLump"
+            ]
+          }
+        ],
+        "nativeLoc": 213,
+        "managedLoc": 243,
+        "conversionManagedCommit": "1fcbbb6a55af7f0c2c3afdd0ad75161f9682121e"
       }
     ],
     "behaviorNativeChecksum": 508086,
