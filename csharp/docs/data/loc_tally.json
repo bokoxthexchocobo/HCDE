@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 98034,
+  "convertedThisRunNative": 98220,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 121553,
+  "convertedThisRunManaged": 122049,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 390838,
+  "remainingNative": 390652,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 116561,
+  "convertedBehaviorNative": 116747,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 117248,
-  "convertedBehaviorManaged": 131224,
+  "combinedBehaviorNative": 117434,
+  "convertedBehaviorManaged": 131720,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -41917,6 +41917,35 @@
       "nativeLoc": 218,
       "managedLoc": 167,
       "conversionManagedCommit": "dd5feb0553eb3bb75e26e908beec7d4f040e14fe"
+    },
+    {
+      "name": "t-cmd-emulate-chunk1182",
+      "bucket": "conversion",
+      "note": "FraggleScript legacy console commands from t_cmd.cpp (1\u2013186).",
+      "auditSeams": "OpenMem uses the classic FScanner: a bare semicolon or // comments out the rest of the line, and a quoted semicolon is the token Compare(\";\") can match. Skill count is the host AllSkills size. DF_NO_MONSTERS is 1<<12. ChangeLevel and give commands are recorded on the host. VmFScriptCmd stays untouched.",
+      "auditRationale": "UNCredited t_cmd.cpp 1\u2013186 (+186). Chunk 858 retired this file with empty native ranges. The file ends at 186. A full tally line scan shows no overlap.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_cmd.cpp --start 1 --end 186 and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "FS_EmulateCmd and FS_MapCmd call FScanner (OpenMem, GetString, Compare, MustGetNumber, MustGetFloat) and strtoull. That scanner is classic mode: semicolon and // comments, block comments, quoted strings, and base-0 integers. Those calls sit inside this band, and the retired VmFScriptCmd port treats a bare semicolon as a token and uses 4 for DF_NO_MONSTERS, so this slice cannot wrap it. The extra managed lines are that scanner and the hex color parse.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| FS_Gimme (**35\u201360**) | yes |\n| FS_MapCmd (**69\u2013101**) | yes |\n| FS_EmulateCmd (**109\u2013186**) | yes |\n| Band hull (**1\u2013186**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nGive rewrites a Legacy prefix before the %.72s format. Shotgun is tested before supershotgun, and map is tested before fullmap. Map starts from reset-inventory and reset-health, adds no-monsters only when dmflags has 1<<12, clamps the skill with the host skill count, and copies at most eight map characters. A bare semicolon comments out the rest of the line. A quoted semicolon stops a gimme list or a skip loop. Map reads until the scanner ends, so it consumes a following command. Fog density is integer number*70/400 and does not skip, but a following gravity command is still inside gravity's own skip once gravity runs. A bad float aborts the command.\n\n| Managed (`VmTCmdEmulate1182Slice.cs`) | Native (`t_cmd.cpp`) |\n|----------------------------------------|--------------------|\n| Gimme, map, and emulate | **1\u2013186** |\n| Band hull (exclusive slice) | **1\u2013186** |\n\n### Chunk **1182** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **186** |\n| **Net headline** | **+186** vs post-**1181** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmTCmdEmulate1182Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/fragglescript/t_cmd.cpp",
+          "symbol": "FS_EmulateCmd",
+          "start": 1,
+          "end": 186,
+          "tests": [
+            "VmTCmdEmulate1182SliceTests.Gimme_RewritesLegacyPrefixesInOrder",
+            "VmTCmdEmulate1182SliceTests.MapCmd_AppliesSkillMonstersAndTheRealNoMonstersBit",
+            "VmTCmdEmulate1182SliceTests.EmulateCmd_CommentsBareSemicolonsAndStillHonorsAQuotedOne"
+          ]
+        }
+      ],
+      "nativeLoc": 186,
+      "managedLoc": 496,
+      "conversionManagedCommit": "f08202ae6002fc57928bcacbabf694656856e419"
     }
   ],
   "behaviorNativeChecksum": 508086,
