@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 92340,
+  "convertedThisRunNative": 92627,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 113895,
+  "convertedThisRunManaged": 114175,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 396532,
+  "remainingNative": 396245,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 110867,
+  "convertedBehaviorNative": 111154,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 111554,
-  "convertedBehaviorManaged": 123566,
+  "combinedBehaviorNative": 111841,
+  "convertedBehaviorManaged": 123846,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -41275,6 +41275,36 @@
       "nativeLoc": 219,
       "managedLoc": 250,
       "conversionManagedCommit": "5f4f048df5fbeb4a13a0fb1be65a678c39fa3183"
+    },
+    {
+      "name": "p-maputl-side-chunk1160",
+      "bucket": "conversion",
+      "note": "Rough search, side tests, and BSP walks from `p_maputl.cpp` (**1820\u20132106**).",
+      "auditSeams": "The blockmap spiral and RoughBlockCheck stay host-supplied. This slice builds the front line and classifies points.",
+      "auditRationale": "UNCredited **`p_maputl.cpp`** **1820\u20132106** (+287), through the end of the 2106-line file, with no conversion or recognition overlap.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_maputl.cpp --start 1820 --end 2106` and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "Sign-bit side tests, vanilla fixed products, and the two BSP walks match native; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `P_RoughMonsterSearch` (**1821\u20131835**) | yes |\n| `R_PointOnSideSlow` (**1846\u20131896**) | yes |\n| `P_VanillaPointOnLineSide` (**1906\u20131938**) | yes |\n| `PointInSubsector` (**1946\u20131962**) | yes |\n| `PointInSectorBuggy` (**1971\u20131991**) | yes |\n| `PointInRenderSubsector` (**1999\u20132018**) | yes |\n| `BoxOnLineSide` and the three side actions (**2030\u20132106**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1788\u20131819** | `RoughBlockCheck` is already credited |\n| `P_BlockmapSearch` | the spiral search stays host-supplied |\n\n`ML_COMPATSIDE` is **0x800**. `EQUAL_EPSILON` is **1/65536**. A front-only search stores the actor origin and a front line of `-sin(yaw)`, `-cos(yaw)`. Any other search leaves that line at zero and still returns the host actor. A missing actor finds nothing.\n\n`FloatToFixed` rounds half to even at **16** bits. A zero `dx` compares the fixed X and returns the sign of `dy`. A zero `dy` compares the fixed Y and returns the sign of `dx`. Otherwise the sign bits of `dy ^ dx ^ pointDx ^ pointDy` pick a side before any multiply. The remaining points compare `(double)dy * pointDx` with `(double)pointDy * dx`, and an equal product is the back side. The precise node test is `DMulScale(y-node.y, dx, node.x-x, dy, 32) > 0`, so an equal product is the front side. Vanilla diagonals use `MulScale((int)(delta * 256), fixed, 16)` and the same back-side tie. The precise point test is the cross product above **1/65536**. A compat line uses vanilla unless the action forces precise.\n\nAn empty game tree returns subsector **0**, or the supplied empty sector. Otherwise the precise walk converts the point once and follows children. The low bit marks a subsector. The buggy sector walk uses the slow test and returns that subsector's sector. An empty render tree returns **0**. A render walk consumes fixed coordinates and the precise test. A vertical box compares both edges with `<`. A horizontal box compares both edges with `>`. A negative delta flips those bits. A positive diagonal tests the left-top and right-bottom corners. A negative diagonal tests the other two. Matching corners return that side; otherwise the box crosses and the result is **-1**. An actor box is the center expanded by its radius.\n\n| Managed (`VmPMaputlSide1160Slice.cs`) | Native (`p_maputl.cpp`) |\n|---------------------------------------|--------------------------|\n| Search, sides, and BSP walks | **1820\u20132106** |\n| Band hull (exclusive slice) | **1820\u20132106** |\n\n### Chunk **1160** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **287** |\n| **Net headline** | **+287** vs post-**1159** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMaputlSide1160Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_maputl.cpp",
+          "symbol": "Rough search and point on side",
+          "start": 1820,
+          "end": 2106,
+          "tests": [
+            "VmPMaputlSide1160SliceTests.Search_BuildsTheFrontLineAndReturnsTheHostActor",
+            "VmPMaputlSide1160SliceTests.SlowAndVanilla_SplitOnTheLineAndKeepTheSignShortcut",
+            "VmPMaputlSide1160SliceTests.Walk_UsesPreciseForGameNodesAndSlowForTheBuggySector",
+            "VmPMaputlSide1160SliceTests.Box_CrossesAVerticalAndUsesCompatOnlyWhenImprecise"
+          ]
+        }
+      ],
+      "nativeLoc": 287,
+      "managedLoc": 280,
+      "conversionManagedCommit": "3c5bab435d6b99a57d668f84d9dae9c7eb6e06fd"
     }
   ],
   "behaviorNativeChecksum": 508086,
