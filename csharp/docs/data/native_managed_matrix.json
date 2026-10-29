@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 263478
+    "managedCSharpLoc": 263953
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 97230,
+    "convertedThisRunNative": 97586,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 120674,
+    "convertedThisRunManaged": 121149,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 391642,
+    "remainingNative": 391286,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 115757,
+    "convertedBehaviorNative": 116113,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 116444,
-    "convertedBehaviorManaged": 130345,
+    "combinedBehaviorNative": 116800,
+    "convertedBehaviorManaged": 130820,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -41849,6 +41849,34 @@
         "nativeLoc": 158,
         "managedLoc": 203,
         "conversionManagedCommit": "9cfe93a3c5152df2738cbecfb216fc7bb20374ea"
+      },
+      {
+        "name": "t-oper-logic-chunk1179",
+        "bucket": "conversion",
+        "note": "FraggleScript operator table and handlers through OPmultiply from t_oper.cpp (1\u2013356).",
+        "auditSeams": "FindVariable, SetValue, and EvaluateExpression are host callbacks. intvalue, fixedvalue, and floatvalue follow t_variable.cpp. OPdivide at 357 stays outside this slice.",
+        "auditRationale": "UNCredited t_oper.cpp 1\u2013356 (+356). OPmultiply closes at 349 and the following banner ends at 356. A full tally line scan shows no overlap. OPdivide starts at 357.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_oper.cpp --start 1 --end 356 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Operator table and count (**39\u201365**) | yes |\n| OPequals, OPor, OPand, OPcmp, OPnotcmp (**75\u2013195**) | yes |\n| OPlessthan, OPgreaterthan, OPnot (**203\u2013250**) | yes |\n| OPplus, OPminus, OPmultiply (**258\u2013349**) | yes |\n| Band hull (**1\u2013356**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **357\u2013626** | divide, remainder, bitwise, increment, and structure handlers are already credited or stay past this band |\n\nThe table lists 21 operators. Assignment is the only backward operator. Handlers whose bodies start at divide are recorded on the row and are not run here.\n\nAssignment looks the name up in the global script. A hit evaluates the right side into the result and stores that value. A miss prints `unknown variable '%s'` and leaves the result alone.\n\nOr and and return an int. A true left side of or, and a false left side of and, skip the right side. Compare checks strings, then mobj references, then fixed-point integers, then ints. Not-equal runs compare and flips a zero result to one. Less-than and greater-than use the fixed integer when either side is fixed, so a fixed value of \u22121 is less than int zero. Logical not evaluates only the right span.\n\nPlus concatenates two strings, formats a fixed right side with four decimal places, and formats any other right side with its int. Two fixed sides add the 16.16 bits. Minus of an operator in the left slot evaluates only the right side and subtracts it from a zero int, so a fixed right side stays fixed. Multiply of a fixed side converts both sides to doubles, multiplies, and truncates back to fixed. An int multiply stays in ints.\n\n| Managed (`VmTOperLogic1179Slice.cs`) | Native (`t_oper.cpp`) |\n|---------------------------------------|------------------------|\n| Table and handlers through multiply | **1\u2013356** |\n| Band hull (exclusive slice) | **1\u2013356** |\n\n### Chunk **1179** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **356** |\n| **Net headline** | **+356** vs post-**1178** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmTOperLogic1179Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/fragglescript/t_oper.cpp",
+            "symbol": "OPmultiply",
+            "start": 1,
+            "end": 356,
+            "tests": [
+              "VmTOperLogic1179SliceTests.Table_ListsTheOperatorsAndStopsBeforeDivide",
+              "VmTOperLogic1179SliceTests.Logic_ShortCircuitsComparesAndAssigns",
+              "VmTOperLogic1179SliceTests.Arithmetic_AddsFixedBitsAndTruncatesTheProduct"
+            ]
+          }
+        ],
+        "nativeLoc": 356,
+        "managedLoc": 475,
+        "conversionManagedCommit": "db9f9bfd9d23df669d509f0a3c4f99cae5268273"
       }
     ],
     "behaviorNativeChecksum": 508086,
