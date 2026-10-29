@@ -1,0 +1,29 @@
+[
+  {
+    "name": "am-map-draw-line-chunk1133",
+    "bucket": "conversion",
+    "note": "drawMline thickness and antialias offsets, grid block spacing, and the AM_FakeFlat early return from `am_map.cpp` (**1801–1950**); follows **1132**.",
+    "auditSeams": "Host `AddThickLine` / `AddLine` stay outside. `AM_FakeFlat` height transfer begins at **1951**.",
+    "auditRationale": "UNCredited **`am_map.cpp`** **1801–1950** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 1801 --end 1950` and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "Thickness, the nine-stroke pattern including the repeated top-center sample, and 128-unit grid starts match native; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Endpoint B and thickness (**1801–1804**) | yes |\n| Antialias divisors and stroke offsets (**1806–1862**) | yes |\n| Color-index overload is the palette lookup around **1866–1868** | yes |\n| `drawGrid` cover length and block starts (**1877–1936**) | yes |\n| `AM_FakeFlat` null height-sector return (**1947–1950**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1793–1800** | clip gate and endpoint A already credited by **1132** |\n| **1951+** | viewer position and height transfer |\n\nThe thick antialias list repeats offset `(0,-1)` as its last sample, matching the native bottom-center call. `MAPBLOCKUNITS` is **128**. Alpha is `lineAlpha * 255 / divisor` truncated to a byte. Grid rotation is mode 1, or mode 2 while the view is active.\n\n| Managed (`VmAmMapDrawLine1133Slice.cs`) | Native (`am_map.cpp`) |\n|------------------------------------------|---------------------|\n| Strokes, grid, fake-flat gate | **1801–1950** |\n| Band hull (exclusive slice) | **1801–1950** |\n\n### Chunk **1133** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1132** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmAmMapDrawLine1133Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "Automap line strokes and grid",
+        "start": 1801,
+        "end": 1950,
+        "tests": [
+          "VmAmMapDrawLine1133SliceTests.DrawThickness_PrefersAPositiveRequestAndSplitsAntialiasAlpha",
+          "VmAmMapDrawLine1133SliceTests.AntialiasOffsets_RepeatTheTopCenterOnTheLastThickStroke",
+          "VmAmMapDrawLine1133SliceTests.VerticalGridLines_StepByMapBlocksFromTheCeiledOrigin",
+          "VmAmMapDrawLine1133SliceTests.KeepOriginalSector_WhenThereIsNoHeightSector"
+        ]
+      }
+    ]
+  }
+]
