@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 85970,
+  "convertedThisRunNative": 86120,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 107125,
+  "convertedThisRunManaged": 107242,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 402902,
+  "remainingNative": 402752,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 104497,
+  "convertedBehaviorNative": 104647,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 105184,
-  "convertedBehaviorManaged": 116796,
+  "combinedBehaviorNative": 105334,
+  "convertedBehaviorManaged": 116913,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -40175,6 +40175,37 @@
       "nativeLoc": 150,
       "managedLoc": 131,
       "conversionManagedCommit": "f200ebb239f4073b3b109da4ff91142553420730"
+    },
+    {
+      "name": "am-map-overlay-color-chunk1123",
+      "bucket": "conversion",
+      "note": "Overlay color CVARs, AMColor packing, color-set names, and initFromCVars almost-background from `am_map.cpp` (**301\u2013450**); follows **1122**.",
+      "auditSeams": "Host `FColorCVar` storage stays outside this slice; `initFromColors` begins at **453**.",
+      "auditRationale": "UNCredited **`am_map.cpp`** **301\u2013450** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 301 --end 450` and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "Overlay defaults, opaque packing, name table, and almost-background math match the native color-set head; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Overlay color CVARs and fill alpha (**301\u2013318**) | yes |\n| `AMColor` opaque pack / invalid RGB (**326\u2013349**) | yes |\n| `ColorNames` through almost-background (**357\u2013385**) | yes |\n| `AMColorset` indexes (**387\u2013418**) | yes |\n| `initFromCVars` almost-background and lock flags (**426\u2013450**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **320\u2013325**, **351\u2013356**, **419\u2013425** | section comments |\n| **453+** | `initFromColors` and later tables outside hull |\n\n| Managed (`VmAmMapOverlayColor1123Slice.cs`) | Native (`am_map.cpp`) |\n|---------------------------------------------|---------------------|\n| Overlay defaults, pack, names, initFromCVars | **301\u2013450** |\n| Band hull (exclusive slice) | **301\u2013450** |\n\n### Chunk **1123** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1122** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmAmMapOverlayColor1123Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "Automap overlay colors and initFromCVars",
+          "start": 301,
+          "end": 450,
+          "tests": [
+            "VmAmMapOverlayColor1123SliceTests.DefaultOverlayColors_MatchLockedThingAndPortal",
+            "VmAmMapOverlayColor1123SliceTests.ForceOpaque_SetsAlphaAndInvalidRgbStaysRejected",
+            "VmAmMapOverlayColor1123SliceTests.DeriveAlmostBackground_WrapsChannelsBelowZero",
+            "VmAmMapOverlayColor1123SliceTests.InitFromCvars_PaintsAlmostBackgroundAndEnablesLocks",
+            "VmAmMapOverlayColor1123SliceTests.ColorNames_EndAtAlmostBackground"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 117,
+      "conversionManagedCommit": "b4e392a8878ffbe17da5a0adca1febd4d8603fd1"
     }
   ],
   "behaviorNativeChecksum": 508086,
