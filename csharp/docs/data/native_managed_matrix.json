@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 250727
+    "managedCSharpLoc": 250834
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 86720,
+    "convertedThisRunNative": 86870,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 107923,
+    "convertedThisRunManaged": 108030,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 402152,
+    "remainingNative": 402002,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 105247,
+    "convertedBehaviorNative": 105397,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 105934,
-    "convertedBehaviorManaged": 117594,
+    "combinedBehaviorNative": 106084,
+    "convertedBehaviorManaged": 117701,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -40342,6 +40342,37 @@
         "nativeLoc": 150,
         "managedLoc": 86,
         "conversionManagedCommit": "3ea35aa012088a401a6d3be005fa669224903729"
+      },
+      {
+        "name": "am-map-scale-mark-chunk1128",
+        "bucket": "conversion",
+        "note": "GetPosition, activateNewScale, save/restore scale, addMark, and findMinMaxBoundaries seeds from `am_map.cpp` (**1051\u20131200**); follows **1127**.",
+        "auditSeams": "Camera position and mark-font texture validity stay host-injected. The vertex walk assignment begins at **1201**.",
+        "auditRationale": "UNCredited **`am_map.cpp`** **1051\u20131200** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 1051 --end 1200` and a full tally line scan \u2192 no overlap.",
+        "auditManagedLocJustification": "Window center, scale restore, mark wrap, and FLT_MAX/FIXED_MIN seeds match native; managed LOC exceeds 50%.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `GetPosition` window center (**1100\u20131103**) | yes |\n| `activateNewScale` (**1111\u20131121**) | yes |\n| `saveScaleAndLoc` / `restoreScaleAndLoc` (**1129\u20131163**) | yes |\n| `addMark` font gate and wrap (**1171\u20131184**) | yes |\n| `findMinMaxBoundaries` seeds and first X test (**1193\u20131200**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1051\u20131098** | method declarations and section comments |\n| **1201+** | vertex min/max assignments outside hull |\n\n`DEFAULT_FONT_NAME` compare is case-insensitive. `FIXED_MIN` is signed **0x80000000**. Follow-player restore uses the host camera.\n\n| Managed (`VmAmMapScaleMark1128Slice.cs`) | Native (`am_map.cpp`) |\n|------------------------------------------|---------------------|\n| Scale, marks, bound seeds | **1051\u20131200** |\n| Band hull (exclusive slice) | **1051\u20131200** |\n\n### Chunk **1128** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1127** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Client/VmAmMapScaleMark1128Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "Automap scale save and marks",
+            "start": 1051,
+            "end": 1200,
+            "tests": [
+              "VmAmMapScaleMark1128SliceTests.GetPosition_IsWindowCenter",
+              "VmAmMapScaleMark1128SliceTests.ActivateNewScale_RecentersOnFrameToMapSize",
+              "VmAmMapScaleMark1128SliceTests.RestoreScaleAndLoc_FollowsCameraOrSavedOrigin",
+              "VmAmMapScaleMark1128SliceTests.TryAddMark_WrapsAndRejectsMissingDefaultDigits",
+              "VmAmMapScaleMark1128SliceTests.SeedVertexBounds_UsesFloatMaxAndFixedMin"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 107,
+        "conversionManagedCommit": "1f08ed7a29a405c9bec1fc0fce85dcc914594d82"
       }
     ],
     "behaviorNativeChecksum": 508086,
