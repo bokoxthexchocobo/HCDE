@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 100339,
+  "convertedThisRunNative": 100505,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 125115,
+  "convertedThisRunManaged": 125285,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 388533,
+  "remainingNative": 388367,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 118866,
+  "convertedBehaviorNative": 119032,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 119553,
-  "convertedBehaviorManaged": 134786,
+  "combinedBehaviorNative": 119719,
+  "convertedBehaviorManaged": 134956,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -42256,6 +42256,33 @@
       "nativeLoc": 195,
       "managedLoc": 180,
       "conversionManagedCommit": "8e275362a730f65c5a6f5d92cdfb9956cae8ac3f"
+    },
+    {
+      "name": "console-buffer-chunk1194",
+      "bucket": "conversion",
+      "note": "Console text, line breaks, and old-line deletion from c_consolebuffer.cpp (1\u2013166).",
+      "auditSeams": "V_BreakLines is a host call and always receives preservecolor true. PrintColors is the console color table. An empty string has no terminator, so it does not read a character before the start of the text. An append or replace on an empty buffer stores the new line only.",
+      "auditRationale": "UNCredited c_consolebuffer.cpp 1\u2013166 (+166). The file ends at 166. A full tally line scan shows no overlap.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/console/c_consolebuffer.cpp --start 1 --end 166 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| FConsoleBuffer::FConsoleBuffer (**35\u201345**) | yes |\n| FConsoleBuffer::AddText (**60\u2013103**) | yes |\n| FConsoleBuffer::FormatText (**111\u2013150**) | yes |\n| FConsoleBuffer::ResizeBuffer (**158\u2013166**) | yes |\n| Band hull (**1\u2013166**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nA critical line keeps the tan prefix. Other levels below the print-level count use the color table. Bold uses green. A log line and a level at or above the count stay tan. A carriage return makes the next add replace the line. A missing terminator makes the next add continue it, and the continued line keeps its original color. Format rebuilds every paragraph when the font, width, or cleared flag changes. Otherwise it rebuilds only the last paragraph when that paragraph was continued. Resize deletes the oldest lines and marks the buffer cleared when the text is longer than the new size.\n\n| Managed (`VmConsoleBuffer1194Slice.cs`) | Native (`c_consolebuffer.cpp`) |\n|------------------------------------------|------------------------------|\n| Console text buffer | **1\u2013166** |\n| Band hull (exclusive slice) | **1\u2013166** |\n\n### Chunk **1194** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **166** |\n| **Net headline** | **+166** vs post-**1193** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmConsoleBuffer1194Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/console/c_consolebuffer.cpp",
+          "symbol": "FConsoleBuffer::AddText",
+          "start": 1,
+          "end": 166,
+          "tests": [
+            "VmConsoleBuffer1194SliceTests.AddText_ColorsContinuesAndReplacesLines",
+            "VmConsoleBuffer1194SliceTests.FormatText_RebuildsTheDirtyTailAndDropsOldLines"
+          ]
+        }
+      ],
+      "nativeLoc": 166,
+      "managedLoc": 170,
+      "conversionManagedCommit": "d4281a58add3060e731ba0acafa2119732df2a4c"
     }
   ],
   "behaviorNativeChecksum": 508086,
