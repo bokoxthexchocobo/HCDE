@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 91401,
+  "convertedThisRunNative": 91564,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 112505,
+  "convertedThisRunManaged": 112761,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 397471,
+  "remainingNative": 397308,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 109928,
+  "convertedBehaviorNative": 110091,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 110615,
-  "convertedBehaviorManaged": 122176,
+  "combinedBehaviorNative": 110778,
+  "convertedBehaviorManaged": 122432,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -41157,6 +41157,35 @@
       "nativeLoc": 163,
       "managedLoc": 238,
       "conversionManagedCommit": "ee8e53561355f14cf1f1144a1977876e3c2c9e7e"
+    },
+    {
+      "name": "p-lnspec-hate-chunk1156",
+      "bucket": "conversion",
+      "note": "Thing_Hate from `p_lnspec.cpp` (**1565\u20131727**).",
+      "auditSeams": "Tid iterators stay host-supplied lists. A hatee scan that would spin on the hater alone stops after one pass.",
+      "auditRationale": "UNCredited **`p_lnspec.cpp`** **1565\u20131727** (+163), inside the file, with no conversion or recognition overlap.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 1565 --end 1727` and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "Hatee filters, mode bits, and the shared-versus-rescan iterator match native; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `LS_Thing_Hate` (**1565\u20131726**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1728+** | `Thing_ProjectileAimed` is outside this hole |\n\n`MF_SHOOTABLE` is **4**. `MF2_DORMANT` is **0x10000000**. `MF3_NOSIGHTCHECK` is **0x80**. `MF3_HUNTPLAYERS` is **0x80000000**. `MF4_NOHATEPLAYERS` is **1**. A non-zero hatee tid keeps the first shootable living non-dormant actor. Tid **0** for the hater uses the activator, and a player activator returns false before any write. Other hater tids take each living shootable actor, including a dormant one. Without a see state the actor is left unchanged. Mode **0** keeps that first hatee for every hater and does not record a tid. Any other mode records the hatee tid, clears the last-look actor, and drops a target or last enemy whose tid differs. Modes **2**, **4**, and **6** set no-sight-check; **3** and **4** set hunt-players; **5** and **6** set no-hate-players. Every other mode clears the bit. A non-zero mode then continues the hatee iterator, wrapping once through the host list and skipping itself, the dead, the unshootable, and the dormant. The native do-while restarts on a null iterator and can spin when the only acceptable actor is the hater; this slice stops after one pass. The target is replaced only when the hatee exists, is not the hater, and either the mode is **0** or the hater has a goal that is not already the target. The previous target becomes the last enemy. A living non-dormant hater then enters its see state. Hater tid **0** handles only the activator.\n\n| Managed (`VmPLnspecHate1156Slice.cs`) | Native (`p_lnspec.cpp`) |\n|---------------------------------------|--------------------------|\n| Thing_Hate | **1565\u20131727** |\n| Band hull (exclusive slice) | **1565\u20131727** |\n\n### Chunk **1156** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **163** |\n| **Net headline** | **+163** vs post-**1155** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPLnspecHate1156Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "Thing_Hate",
+          "start": 1565,
+          "end": 1727,
+          "tests": [
+            "VmPLnspecHate1156SliceTests.SpecificHate_SkipsAPlayerActivatorAndRemembersTheOldTarget",
+            "VmPLnspecHate1156SliceTests.GroupModes_SetTheHuntBitsAndStillRequireAGoal",
+            "VmPLnspecHate1156SliceTests.Rescan_WrapsPastTheFirstHateeAndSharesASpecificOne"
+          ]
+        }
+      ],
+      "nativeLoc": 163,
+      "managedLoc": 256,
+      "conversionManagedCommit": "3b4371006adde319e2f7005bfc04802e51e6cc5a"
     }
   ],
   "behaviorNativeChecksum": 508086,
