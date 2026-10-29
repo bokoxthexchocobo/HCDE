@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 265305
+    "managedCSharpLoc": 265426
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 98801,
+    "convertedThisRunNative": 98964,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 122501,
+    "convertedThisRunManaged": 122622,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 390071,
+    "remainingNative": 389908,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 117328,
+    "convertedBehaviorNative": 117491,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 118015,
-    "convertedBehaviorManaged": 132172,
+    "combinedBehaviorNative": 118178,
+    "convertedBehaviorManaged": 132293,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -42046,6 +42046,34 @@
         "nativeLoc": 156,
         "managedLoc": 81,
         "conversionManagedCommit": "9a5d3c506efc4c24aae738a8e4f991ac2f2041c7"
+      },
+      {
+        "name": "a-keys-lock-check-chunk1186",
+        "bucket": "conversion",
+        "note": "LOCKDEFS key, group, and lock checks from a_keys.cpp (1\u2013163).",
+        "auditSeams": "Class identity, species, dehacked replacee, and the key-kind test are fields on the host actor. AddOneKey at 164 stays outside this slice.",
+        "auditRationale": "UNCredited a_keys.cpp 1\u2013163 (+163). The keyword table closes at 157. The AddOneKey banner is 159\u2013163 and the function starts at 164. A full tally line scan shows no overlap.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/gamedata/a_keys.cpp --start 1 --end 163 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| OneKey::check (**51\u201379**) | yes |\n| Keygroup::check (**91\u201398**) | yes |\n| Lock::check (**114\u2013138**) | yes |\n| keywords_lock (**150\u2013157**) | yes |\n| Band hull (**1\u2013163**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **164\u2013585** | lock parsing and the later key queries stay outside this band |\n\nOne key matches the carrier class, the carrier species name, a dehacked replacee, or the dehacked species field. Otherwise it walks the inventory for the class or the species name. A group matches if any key matches. An empty group does not. A lock with no groups accepts any inventory item that is a key. A lock with groups requires every group. A voodoo doll is redirected to the real player body before that test. The keyword list ends with a null slot. Keys are not initialized yet.\n\n| Managed (`VmAKeys1186Slice.cs`) | Native (`a_keys.cpp`) |\n|----------------------------------|----------------------|\n| Lock checks and keywords | **1\u2013163** |\n| Band hull (exclusive slice) | **1\u2013163** |\n\n### Chunk **1186** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **163** |\n| **Net headline** | **+163** vs post-**1185** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmAKeys1186Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/a_keys.cpp",
+            "symbol": "OneKey::check",
+            "start": 1,
+            "end": 163,
+            "tests": [
+              "VmAKeys1186SliceTests.OneKey_MatchesTheCarrierThePickupAndTheInventory",
+              "VmAKeys1186SliceTests.Locks_RequireEveryGroupUnlessTheListIsEmpty",
+              "VmAKeys1186SliceTests.Keywords_ListTheLockdefWordsAndStartUninitialized"
+            ]
+          }
+        ],
+        "nativeLoc": 163,
+        "managedLoc": 121,
+        "conversionManagedCommit": "90741d1bab1fa448b0578efab096e6b20eda1285"
       }
     ],
     "behaviorNativeChecksum": 508086,
