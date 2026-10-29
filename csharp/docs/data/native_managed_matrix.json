@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 250641
+    "managedCSharpLoc": 250727
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 86570,
+    "convertedThisRunNative": 86720,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 107837,
+    "convertedThisRunManaged": 107923,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 402302,
+    "remainingNative": 402152,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 105097,
+    "convertedBehaviorNative": 105247,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 105784,
-    "convertedBehaviorManaged": 117508,
+    "combinedBehaviorNative": 105934,
+    "convertedBehaviorManaged": 117594,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -40312,6 +40312,36 @@
         "nativeLoc": 150,
         "managedLoc": 264,
         "conversionManagedCommit": "51c63863588458250779747c99f60a48e10013c3"
+      },
+      {
+        "name": "am-map-static-init-chunk1127",
+        "bucket": "conversion",
+        "note": "AM_StaticInit arrow lumps, mark textures, pan increment, and FTOM/MTOF/CXMTOF/CYMTOF from `am_map.cpp` (**901\u20131050**); follows **1126**.",
+        "auditSeams": "Texture manager lookups and `I_FatalError` stay host-injected. Later drawer methods begin at **1051**.",
+        "auditRationale": "UNCredited **`am_map.cpp`** **901\u20131050** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 901 --end 1050` and a full tally line scan \u2192 no overlap.",
+        "auditManagedLocJustification": "Optional arrow lumps, AMMNUM names, 140/35 pan step, and the four coordinate transforms match native; managed LOC exceeds 50%.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Optional map/cheat arrows and required key arrows (**904\u2013907**) | yes |\n| Empty map-arrow fatal gate (**908**) | yes |\n| `AMMNUM%d` mark textures (**912\u2013916**) | yes |\n| `F_PANINC` 140/`TICRATE` and `scale_mtof` .2 (**933\u2013940**) | yes |\n| `FTOM` / `MTOF` / `CXMTOF` / `CYMTOF` (**1006\u20131025**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **901\u2013903**, **910\u2013911**, **918\u20131005**, **1027\u20131050** | clears already credited by **1126**, field storage, and method declarations |\n\n`TICRATE` is **35**, so the pan step is **4**. `CXMTOF`/`CYMTOF` truncate toward zero. The commented `f_x`/`f_y` terms stay omitted.\n\n| Managed (`VmAmMapStaticInit1127Slice.cs`) | Native (`am_map.cpp`) |\n|-------------------------------------------|---------------------|\n| Static init tail and scale helpers | **901\u20131050** |\n| Band hull (exclusive slice) | **901\u20131050** |\n\n### Chunk **1127** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1126** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Client/VmAmMapStaticInit1127Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "Automap static init and scale helpers",
+            "start": 901,
+            "end": 1050,
+            "tests": [
+              "VmAmMapStaticInit1127SliceTests.ArrowLumpsToLoad_SkipsEmptyOptionalNamesAndAlwaysLoadsKeys",
+              "VmAmMapStaticInit1127SliceTests.MarkTextureNames_AreAmmnumZeroThroughNine",
+              "VmAmMapStaticInit1127SliceTests.PanIncrement_IsFourPixelsPerTic",
+              "VmAmMapStaticInit1127SliceTests.FrameMapScale_TruncatesWindowCoordinates"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 86,
+        "conversionManagedCommit": "3ea35aa012088a401a6d3be005fa669224903729"
       }
     ],
     "behaviorNativeChecksum": 508086,
