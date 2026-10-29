@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 90668,
+  "convertedThisRunNative": 90890,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 111631,
+  "convertedThisRunManaged": 111794,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 398204,
+  "remainingNative": 397982,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 109195,
+  "convertedBehaviorNative": 109417,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 109882,
-  "convertedBehaviorManaged": 121302,
+  "combinedBehaviorNative": 110104,
+  "convertedBehaviorManaged": 121465,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -41041,6 +41041,35 @@
       "nativeLoc": 272,
       "managedLoc": 248,
       "conversionManagedCommit": "093f58231546f67f0f35179182fa60e6b8dd6b08"
+    },
+    {
+      "name": "p-mobj-state-chunk1152",
+      "bucket": "conversion",
+      "note": "State duration, SetState, and inventory teardown from `p_mobj.cpp` (**823\u20131044**).",
+      "auditSeams": "Skin lookup, action calls, and the use-inventory VM stay host-supplied. Predicting-client logging is not behavior.",
+      "auditRationale": "UNCredited **`p_mobj.cpp`** **823\u20131044** (+222), inside the 9061-line file, with no conversion or recognition overlap.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 823 --end 1044` and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "Fast/slow tics, sprite rules, the 300000-state loop, and inventory destruction match native; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `GetTics` (**834\u2013846**) | yes |\n| `AActor::SetState` (**856\u2013961**) | yes |\n| `DestroyAllInventory` (**978\u20131005**) | yes |\n| `AActor::UseInventory` (**1024\u20131035**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **818\u2013822** | `IsMapActor` sits before this hole |\n| **858\u2013859** | predicting-client log only |\n| **963\u2013969** and **1007\u20131012** | VM thunks forwarded to the host |\n| **1037\u20131044** | `DropInventory` comment; the body begins at **1045** and is already credited |\n| **1501\u20131685**, **2421\u20135075**, **5577\u20135726**, **7880\u20137900** | standing skips |\n\n`SPR_FIXED` is **1** and `SPR_NOCHANGE` is **2**. `SUF_ACTOR` is **1**. `RF_FULLBRIGHT` is **0x0010**. `MF4_NOSKIN` is **0x00000020**. `OF_EuthanizeMe` is **1<<5**. `MF8_RECREATELIGHTS` is **0x00000100**. `LEVEL3_LIGHTCREATED` is **0x00080000**. The state loop limit is the literal **300000**: the check decrements first and fails on the **300000**th entry, after **299999** states. `GetTics` uses client tics on the client side. A fast actor on a fast state returns `duration - (duration >> 1)` and wins over slow. Otherwise a slow actor on a slow state returns `duration << 1`. A null state, a missing actor-use flag, or the loop limit destroys the actor and returns false before the light flags. `SPR_FIXED` keeps both sprite and frame. Otherwise the frame changes unless the same-frame flag is set, and `SPR_NOCHANGE` keeps the sprite. With no `MF4_NOSKIN`, a sprite equal to the spawn sprite uses the player skin when a player and at least one skin exist; otherwise it changes only when it differs from the previous state's sprite. Every other sprite is copied. An action that sets `OF_EuthanizeMe` returns false before the jump. A returned jump state forces tics to **0** and skips `GetNextState`. `nofunction` skips the action. After a live state, light associations, a lit new state, or a lit previous state set both light flags. `DestroyAllInventory` unlinks each item, then destroys the ones that are not already euthanized, in list order. `UseInventory` returns the VM result when a virtual exists and false otherwise.\n\n| Managed (`VmPMobjState1152Slice.cs`) | Native (`p_mobj.cpp`) |\n|--------------------------------------|------------------------|\n| Tics, state, inventory | **823\u20131044** |\n| Band hull (exclusive slice) | **823\u20131044** |\n\n### Chunk **1152** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **222** |\n| **Net headline** | **+222** vs post-**1151** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjState1152Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "Actor state and inventory teardown",
+          "start": 823,
+          "end": 1044,
+          "tests": [
+            "VmPMobjState1152SliceTests.GetTics_HalvesFastStatesBeforeDoublingSlowOnes",
+            "VmPMobjState1152SliceTests.SetState_WalksZeroTicsAndKeepsASkinSprite",
+            "VmPMobjState1152SliceTests.Inventory_DestroysSurvivorsAndUsesOnlyThroughTheVm"
+          ]
+        }
+      ],
+      "nativeLoc": 222,
+      "managedLoc": 163,
+      "conversionManagedCommit": "ee5a1b3460e5c402618e9712c5cb5bcb4ceab946"
     }
   ],
   "behaviorNativeChecksum": 508086,
