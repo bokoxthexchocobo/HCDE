@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 85370,
+  "convertedThisRunNative": 85520,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 106645,
+  "convertedThisRunManaged": 106767,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 403502,
+  "remainingNative": 403352,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 103897,
+  "convertedBehaviorNative": 104047,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 104584,
-  "convertedBehaviorManaged": 116316,
+  "combinedBehaviorNative": 104734,
+  "convertedBehaviorManaged": 116438,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -40054,6 +40054,36 @@
       "nativeLoc": 150,
       "managedLoc": 132,
       "conversionManagedCommit": "c20f9e3c91f381e6b8cd291e1e6b446e89834ff1"
+    },
+    {
+      "name": "pmobj-missile-angles-chunk1119",
+      "bucket": "conversion",
+      "note": "`P_OldSpawnMissile` body, `P_SpawnMissileZAimed`, `P_SpawnMissileAngleZSpeed`, and `P_SpawnSubMissile` friend head from `p_mobj.cpp` (**8051\u20138200**); follows **1118**.",
+      "auditSeams": "`Spawn`, `VelFromAngle`, `P_PlaySpawnSound`, and shadow handling remain host-injected; sub-missile aim continues at **8204**.",
+      "auditRationale": "UNCredited **`p_mobj.cpp`** **8051\u20138200** (+150) with no conversion or recognition line overlap.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 8051 --end 8200` and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "Vertical-speed formulas and floorclip/friend gates match native branches; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Old missile Z and vertical speed (**8051\u20138061**) | yes |\n| Spectral friend on old missile (**8063\u20138066**) | yes |\n| Aimed vz = (destZ-sourceZ)/ (dist/speed) (**8104\u20138107**) | yes |\n| Angle-speed floorclip and owner default (**8139\u20138147**) | yes |\n| Yaw, vz, spectral, spawn check (**8151\u20138161**) | yes |\n| Sub-missile spectral friend copy (**8192\u20138200**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **8047\u20138049** | null gate credited on **1118** |\n| **8055**, **8068\u20138069**, **8108\u20138109** | host sound/net/shadow |\n| **8073\u20138079**, **8112\u20138118**, **8166\u20138176** | VM thunks |\n| **8204+** | aim pitch outside hull |\n\n| Managed (`VmPMobjMissileAngles1119Slice.cs`) | Native (`p_mobj.cpp`) |\n|---------------------------------------------|---------------------|\n| Old/aimed/angle missile policy | **8051\u20138200** |\n| Band hull (exclusive slice) | **8051\u20138200** |\n\n### Chunk **1119** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1118** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjMissileAngles1119Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "Old and angled missile spawn",
+          "start": 8051,
+          "end": 8200,
+          "tests": [
+            "VmPMobjMissileAngles1119SliceTests.AimedVerticalSpeed_UsesTravelTimeWhenDistancePositive",
+            "VmPMobjMissileAngles1119SliceTests.RunOldSpawnMissile_PlacesThirtyTwoAboveSource",
+            "VmPMobjMissileAngles1119SliceTests.RunSpawnMissileAngleZSpeed_AppliesFloorclipAndFailsCheck",
+            "VmPMobjMissileAngles1119SliceTests.ApplySubMissileFriend_CopiesSpectralMissileOwner"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 122,
+      "conversionManagedCommit": "b1fd993a2e702076a43de6a5659c102934f3330b"
     }
   ],
   "behaviorNativeChecksum": 508086,
