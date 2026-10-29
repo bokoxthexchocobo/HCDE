@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 278708
+    "managedCSharpLoc": 279144
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 109723,
+    "convertedThisRunNative": 110034,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 135904,
+    "convertedThisRunManaged": 136340,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 379149,
+    "remainingNative": 378838,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 128250,
+    "convertedBehaviorNative": 128561,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 128937,
-    "convertedBehaviorManaged": 145575,
+    "combinedBehaviorNative": 129248,
+    "convertedBehaviorManaged": 146011,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -43435,6 +43435,33 @@
         "nativeLoc": 273,
         "managedLoc": 330,
         "conversionManagedCommit": "ad3377c4e7ff0c98f45a8f1d7249d7342ae4d270"
+      },
+      {
+        "name": "patch-texture-chunk1237",
+        "bucket": "conversion",
+        "note": "Doom patch probe, column posts, and the bad-patch scan from patchtexture.cpp (1-311).",
+        "auditSeams": "CheckIfPatch rejects a lump shorter than 13 bytes. Width and height in that probe are signed. TryCreate reads width and height as unsigned and rejects them unless both are in 1..2048, width is less than the length divided by 4, and both offsets have absolute value under 4096. A column offset equal to width*4+8 clears the leading gap even when that offset is past the lump; any other offset at or past the lump rejects the patch. The alpha bit is VmMd5Check1214Slice.CheckPatchForAlpha and is stored only after the gap check passes. A column directory that runs past the lump is a logged fault. CreatePalettedPixels stops a column at length-3, so a post that begins on the last three bytes is not read. topdelta 0xFF ends the column. A later post whose topdelta is less than or equal to the running top adds that delta instead of replacing it. Posts are clipped to the image height, and a clipped length of 0 is not drawn. The source is column-major. Index 0 stays 0 in the buffer until a post writes it. GetRemap selects GrayscaleMap for luminance, GrayRamp for luminance alpha, GrayMap for alpha, and Remap otherwise. noremap0 copies Remap and forces index 0 to 0 only when that table was selected. CopyPixels on a non-alpha image forces luminance back to normal and blits with the base palette; an alpha image ignores the conversion, draws with normal, and blits with the grayscale palette. Palette alpha 0 leaves the destination byte, which starts at 0. A pixel read past the lump is a logged fault and the rest of that draw stops. DetectBadPatches returns before scanning when the lump is shorter than Width*Height/2. It marks the image bad only when the header height is 256 and every header column is a single post of topdelta 0 and length 0 followed by 0xFF at column+260. That path zeros the offsets, clears the mask, and the bad draw copies Height bytes from column+3. A short header or a column that cannot hold that terminator is a logged fault and is not bad. SupportRemap0 is the inverse of the bad flag.",
+        "auditRationale": "UNCredited patchtexture.cpp 1-311 (+311). The file ends at 311. A full tally line scan shows no overlap.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/textures/formats/patchtexture.cpp --start 1 --end 311 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Patch and post headers (**32\u201348**) | yes |\n| Patch class (**58\u201368**) | yes |\n| Column-directory probe (**76\u2013118**) | yes |\n| Try-create gate and construct (**126\u2013161**) | yes |\n| Paletted posts and the bad draw (**169\u2013258**) | yes |\n| Alpha versus base copy (**266\u2013270**) | yes |\n| Bad-patch scan (**278\u2013311**) | yes |\n| Band hull (**1\u2013311**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nA column that starts exactly at the end of the directory makes the patch eligible. A later column at or past the lump still rejects it. Empty posts update top and do not paint. A deep post overwrites an earlier pixel in the same column. The sky remap clears only index 0 of the game remap. Luminance asked of a non-alpha copy is drawn as normal. The bad scan uses the header width, while the draw uses the image width and height. A 300-tall image whose header is a 256-tall bad patch paints the pad and the 0xFF before the fault stops the column.\n\n| Managed (`VmPatchTexture1237Slice.cs`) | Native (`patchtexture.cpp`) |\n|----------------------------------------|----------------------------|\n| Probe, posts, copy, and the bad scan | **1\u2013311** |\n| Band hull (exclusive slice) | **1\u2013311** |\n\n### Chunk **1237** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **311** |\n| **Net headline** | **+311** vs post-**1236** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPatchTexture1237Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/textures/formats/patchtexture.cpp",
+            "symbol": "FPatchTexture::CreatePalettedPixels",
+            "start": 1,
+            "end": 311,
+            "tests": [
+              "VmPatchTexture1237SliceTests.Probe_RejectsTheGapAndDrawsClippedPosts",
+              "VmPatchTexture1237SliceTests.BadScan_ZerosOffsetsAndPaintsRawColumns"
+            ]
+          }
+        ],
+        "nativeLoc": 311,
+        "managedLoc": 436,
+        "conversionManagedCommit": "90971624eb22ecbfd2b51ac2ae0b9835c5ee42a8"
       }
     ],
     "behaviorNativeChecksum": 508086,
