@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 107509,
+  "convertedThisRunNative": 107703,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 133468,
+  "convertedThisRunManaged": 133739,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 381363,
+  "remainingNative": 381169,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 126036,
+  "convertedBehaviorNative": 126230,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 126723,
-  "convertedBehaviorManaged": 143139,
+  "combinedBehaviorNative": 126917,
+  "convertedBehaviorManaged": 143410,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -43149,6 +43149,33 @@
       "nativeLoc": 220,
       "managedLoc": 195,
       "conversionManagedCommit": "415b584417f2fd41b70e4ef6651251d424ae2339"
+    },
+    {
+      "name": "directory-scan-chunk1227",
+      "bucket": "conversion",
+      "note": "Directory lump scan, backup-name skip, and the cached entry reader from file_directory.cpp (1-194).",
+      "auditSeams": "The stored directory name is the full path with a trailing slash. nosubdir is kept and is not passed into the scan. The base path is the prefix of the first scanned entry, taken from the last match of the relative path, and a miss keeps the whole path. Directories set that base and are not added. Backup names are skipped after a C-locale fold when the lowered leaf contains .orig, .bak, or .cache. The filter sees that lowered leaf and the original full path. A null filter or a null callback accepts the file. Files longer than 0x7fffffff are ignored. The relative path is stored unchanged while the lump name is the normalized relative path. Flags are full path, the resource id is -1, the method is stored, the namespace is global, and the position is the accepted index. Open still returns true when the scan fails, and a failed rescan does not drop the entries or the base already stored. GetEntryReader joins the base to the relative path selected by that position. Only reader type 2 consumes the file bytes. An entry outside the accepted count returns an empty reader. The third reader argument is ignored.",
+      "auditRationale": "UNCredited file_directory.cpp 1-194 (+194). The file ends at 194. A full tally line scan shows no overlap.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/filesystem/source/file_directory.cpp --start 1 --end 194 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Full path and trailing slash (**65\u201371**) | yes |\n| Directory scan and backup skip (**79\u2013141**) | yes |\n| Open always succeeds (**149\u2013155**) | yes |\n| Cached reader join (**163\u2013178**) | yes |\n| CheckDir keeps the object (**186\u2013192**) | yes |\n| Band hull (**1\u2013194**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nA backup leaf is skipped after the fold, while a folder named `.orig` still contributes its file. The base path stays on a failed rescan. The cached reader uses the position from before the name sort.\n\n| Managed (`VmDirectory1227Slice.cs`) | Native (`file_directory.cpp`) |\n|-------------------------------------|-------------------------------|\n| Scan, backup skip, and cached reader | **1\u2013194** |\n| Band hull (exclusive slice) | **1\u2013194** |\n\n### Chunk **1227** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **194** |\n| **Net headline** | **+194** vs post-**1226** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmDirectory1227Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/filesystem/source/file_directory.cpp",
+          "symbol": "FDirectory::AddDirectory",
+          "start": 1,
+          "end": 194,
+          "tests": [
+            "VmDirectory1227SliceTests.Add_SkipsBackupsAndKeepsTheRelativePath",
+            "VmDirectory1227SliceTests.Read_JoinsTheBaseAfterTheNameSort"
+          ]
+        }
+      ],
+      "nativeLoc": 194,
+      "managedLoc": 271,
+      "conversionManagedCommit": "e16f66850d84d314bd9577e7ef0f645b3f2979fe"
     }
   ],
   "behaviorNativeChecksum": 508086,
