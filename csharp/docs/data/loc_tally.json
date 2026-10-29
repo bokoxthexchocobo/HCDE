@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 87770,
+  "convertedThisRunNative": 87920,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 108828,
+  "convertedThisRunManaged": 108953,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 401102,
+  "remainingNative": 400952,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 106297,
+  "convertedBehaviorNative": 106447,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 106984,
-  "convertedBehaviorManaged": 118499,
+  "combinedBehaviorNative": 107134,
+  "convertedBehaviorManaged": 118624,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -40538,6 +40538,36 @@
       "nativeLoc": 150,
       "managedLoc": 127,
       "conversionManagedCommit": "9e2ca12b476d80410ae5b9dfb6cf2db14efc652e"
+    },
+    {
+      "name": "am-map-subsector-fill-chunk1135",
+      "bucket": "conversion",
+      "note": "Subsector projection, textured floor and 3D-floor choice, unseen tint, and sector-fill fallback from `am_map.cpp` (**2101\u20132250**); follows **1134**.",
+      "auditSeams": "Texture lookup, plane Z, and yaw rotation stay host-supplied. Polygon draw begins at **2255**.",
+      "auditRationale": "UNCredited **`am_map.cpp`** **2101\u20132250** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 2101 --end 2250` and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "Projection, rover rejection order, cheat tint, and solid-fill defaults match native; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Vertex projection (**2104\u20132116**) | yes |\n| Textured alpha, sample point, scales (**2121\u20132168**) | yes |\n| 3D-floor walk and plane light (**2170\u20132202**) | yes |\n| Sky skip, origin rotation, unseen tint, fade table (**2203\u20132238**) | yes |\n| Sector-fill white texture and alpha (**2239\u20132250**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2100\u20132102** | portal skip already credited by **1134** |\n| **2251\u20132253** | `originpt` zeros that finish the same else-if |\n| **2255+** | polygon triangulation and shade |\n\n`FF_EXISTS` is **1**, `FF_RENDERPLANES` **8**, `FF_FOG` **0x1000**, `FF_INVERTPLANES` **0x2000**, `FF_THISINSIDE` **0x40000000**. `LEVEL_HASFADETABLE` is **8**. Invert selects floor (**0**); otherwise ceiling (**1**). A rover below the sector floor stops the walk. Unseen tint runs only when the subsector is not drawn and `am_cheat` is below **4**.\n\n| Managed (`VmAmMapSubsectorFill1135Slice.cs`) | Native (`am_map.cpp`) |\n|------------------------------------------------|---------------------|\n| Projection, rovers, fill | **2101\u20132250** |\n| Band hull (exclusive slice) | **2101\u20132250** |\n\n### Chunk **1135** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1134** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmAmMapSubsectorFill1135Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "Automap subsector fill",
+          "start": 2101,
+          "end": 2250,
+          "tests": [
+            "VmAmMapSubsectorFill1135SliceTests.Project_MapsWorldToFrameAndSamplesTheCameraSector",
+            "VmAmMapSubsectorFill1135SliceTests.SelectRover_TakesTheHighestFloorBelowTheCamera",
+            "VmAmMapSubsectorFill1135SliceTests.TintUnseen_AveragesTowardTheCheatPalette",
+            "VmAmMapSubsectorFill1135SliceTests.SectorFill_UsesWhiteScaleAndTheSuppliedAlpha"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 125,
+      "conversionManagedCommit": "b8131d7a39fc8a1eabd37f55d186c5bd642b4eab"
     }
   ],
   "behaviorNativeChecksum": 508086,
