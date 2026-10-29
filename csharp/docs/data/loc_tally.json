@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 89728,
+  "convertedThisRunNative": 89959,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 110762,
+  "convertedThisRunManaged": 110966,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 399144,
+  "remainingNative": 398913,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 108255,
+  "convertedBehaviorNative": 108486,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 108942,
-  "convertedBehaviorManaged": 120433,
+  "combinedBehaviorNative": 109173,
+  "convertedBehaviorManaged": 120637,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -40924,6 +40924,36 @@
       "nativeLoc": 158,
       "managedLoc": 143,
       "conversionManagedCommit": "0c3810a17369aa9e784e641bb5718e88d46a1874"
+    },
+    {
+      "name": "p-enemy-look-chunk1148",
+      "bucket": "conversion",
+      "note": "Sight, targetable players, block enemies, and LookForEnemiesEx from `p_enemy.cpp` (**1258\u20131488**); follows **1147**.",
+      "auditSeams": "Sight, the angle delta, and the block iterator stay host-supplied. A null target list aborts instead of throwing.",
+      "auditRationale": "UNCredited **`p_enemy.cpp`** **1258\u20131488** (+231), inside the 3488-line file, with no conversion or recognition overlap. The band closes the hole in front of credited `P_LookForMonsters`.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_enemy.cpp --start 1258 --end 1488` and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "FOV order, shadow rolls, and the friend-target refusal match native; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `P_IsVisible` (**1268\u20131314**) | yes |\n| `isTargetablePlayer` (**1316\u20131363**) | yes |\n| `ValidEnemyInBlock` (**1365\u20131440**) | yes |\n| `LookForEnemiesEx` (**1451\u20131478**) | yes |\n| Look range macros (**1486\u20131487**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1100\u20131257** | random chase already credited by **1147** |\n| **1489+** | `P_LookForMonsters` already credited |\n\n`MF8_MVISBLOCKED` is **0x2000**. A parameter block uses its distances and, unless all-around, its FOV; otherwise the FOV is **0** or **180**. Zero distances are ignored. Outside the FOV still reacts when there is no minimum and the distance is within `meleerange + radius`. Sight is `SF_SEEPASTSHOOTABLELINES` (**2**) and runs last. A missing pawn, a non-shootable pawn, a friend, `CF_NOTARGET` (**8**), a dead player, or a failed sight check rejects the player. Without `MF6_SEEINVISIBLE`, a shadow (unless `COMPATF_INVISIBILITY`) or a ghost sneaks when farther than **128** and slower than **25** speed squared, and otherwise needs `pr_lookforplayers() >= 225`. `ValidEnemyInBlock` requires shootable, not self, alive, not dormant, a monster, and not never-target. A friendly monster pursues other hostiles and other players' friends. It does not adopt its friend's current target: `keepChecking` stays false, so that path returns false. A hostile pursues a friendly only with `MF8_SEEFRIENDLYMONSTERS`. An engaged healthy friend is skipped when `pr_skiptarget() > 100`. `LookForEnemiesEx` aborts on a null list, replaces range **-1** with `friendlyseeblocks * 128`, and returns the list size including entries already present. Players are skipped when `noPlayers` is set. `MONS_LOOK_RANGE` is **1280** and `MONS_LOOK_LIMIT` is **64**.\n\n| Managed (`VmPEnemyLook1148Slice.cs`) | Native (`p_enemy.cpp`) |\n|----------------------------------------|----------------------|\n| Look scan | **1258\u20131488** |\n| Band hull (exclusive slice) | **1258\u20131488** |\n\n### Chunk **1148** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **231** |\n| **Net headline** | **+231** vs post-**1147** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPEnemyLook1148Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "Enemy look and visibility",
+          "start": 1258,
+          "end": 1488,
+          "tests": [
+            "VmPEnemyLook1148SliceTests.IsVisible_RejectsDistanceAndFovAfterTheBlockFlag",
+            "VmPEnemyLook1148SliceTests.IsTargetablePlayer_MissesSneakingShadowsUnlessTheRollClears",
+            "VmPEnemyLook1148SliceTests.ValidEnemy_KeepsHostileTargetsAndDoesNotAdoptAFriendsTarget",
+            "VmPEnemyLook1148SliceTests.LookForEnemies_UsesSeeBlocksAndSkipsPlayersWhenAsked"
+          ]
+        }
+      ],
+      "nativeLoc": 231,
+      "managedLoc": 204,
+      "conversionManagedCommit": "fc91c1c793e2c55326b3858ae19c05143391d8ef"
     }
   ],
   "behaviorNativeChecksum": 508086,
