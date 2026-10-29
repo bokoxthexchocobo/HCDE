@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 262520
+    "managedCSharpLoc": 262865
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 96501,
+    "convertedThisRunNative": 96704,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 119716,
+    "convertedThisRunManaged": 120061,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 392371,
+    "remainingNative": 392168,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 115028,
+    "convertedBehaviorNative": 115231,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 115715,
-    "convertedBehaviorManaged": 129387,
+    "combinedBehaviorNative": 115918,
+    "convertedBehaviorManaged": 129732,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -41764,6 +41764,35 @@
         "nativeLoc": 238,
         "managedLoc": 321,
         "conversionManagedCommit": "ec75395cdea661cfc5d45170644cd2270853cd36"
+      },
+      {
+        "name": "p-destructible-geometry-line-chunk1176",
+        "bucket": "conversion",
+        "note": "Health-group init, geometry line attack, and radius-attack helpers from p_destructible.cpp (239\u2013441).",
+        "auditSeams": "P_CheckLinedefVulnerable and P_CheckSectorVulnerable stay host-supplied. Damage calls the chunk 1175 health routines. P_GeometryRadiusAttack at 442 is chunk 661.",
+        "auditRationale": "UNCredited p_destructible.cpp 239\u2013441 (+203). Chunk 1175 ends at 238. 442\u2013688 is chunk 661. A full tally line scan shows no overlap. 910\u2013917 stays uncredited.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_destructible.cpp --start 239 --end 441 and a full tally line scan \u2192 no overlap.",
+        "auditManagedLocJustification": "Init warnings, the wall and 3D-floor attack branches, and the closest-point helper are separate walks. Managed LOC is above 150% of 203 because each branch records the host trace beside the damage call.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `P_InitHealthGroups` (**239\u2013294**) | yes |\n| `P_GeometryLineAttack` (**303\u2013376**) | yes |\n| Radius helper struct and closest point (**385\u2013408**) | yes |\n| Explosion block and closer-point insert (**410\u2013438**) | yes |\n| Band hull (**239\u2013441**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1\u2013238** | health-group damage is chunk **1175** |\n| **442\u2013688** | `P_GeometryRadiusAttack` is chunk **661** |\n| **689\u2013909** | projectile hits are chunk **1168** |\n| **910\u2013917** | opening of the later `DamageLinedef` stays uncredited |\n\nInit clears the groups, then builds one from every line and sector plane whose group id is positive. A member whose health differs from the group warns with the group's health before any raise, and a higher value replaces the group health. A sector is stored on its floor group only when that group is not the ceiling group. After the walk, each mismatched id reports the highest health that remains.\n\nA wall hit on a 3D-floor tier damages the model when that model has 3D health. A vulnerable linedef then damages the back sector's floor or ceiling for a lower or upper tier, and damages the linedef when its health is positive. A floor or ceiling hit walks solid 3D floors that are not shoot-through. A plane within one map unit of 1/65536 counts as the hit, damages 3D health when it is positive, and returns before the real sector plane. The closest-point helper clamps to the segment. An explosion probe lifts the check by one map unit, shortens the distance by one half, and blocks with the block-everything flag. A blocked probe is not stored. An equal distance keeps the earlier point.\n\n| Managed (`VmPDestructibleGeometry1176Slice.cs`) | Native (`p_destructible.cpp`) |\n|--------------------------------------------------|--------------------------------|\n| Init, line attack, and radius helpers | **239\u2013441** |\n| Band hull (exclusive slice) | **239\u2013441** |\n\n### Chunk **1176** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **203** |\n| **Net headline** | **+203** vs post-**1175** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPDestructibleGeometry1176Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_destructible.cpp",
+            "symbol": "P_GeometryLineAttack",
+            "start": 239,
+            "end": 441,
+            "tests": [
+              "VmPDestructibleGeometry1176SliceTests.Init_KeepsTheHighestHealthAndSharesOneSector",
+              "VmPDestructibleGeometry1176SliceTests.Attack_DamagesThe3DFloorAndStopsAtThePlane",
+              "VmPDestructibleGeometry1176SliceTests.Helpers_ClampTheSegmentAndKeepTheNearerGroup"
+            ]
+          }
+        ],
+        "nativeLoc": 203,
+        "managedLoc": 345,
+        "conversionManagedCommit": "1e79246cae25507635000b45f76e54333bc82231"
       }
     ],
     "behaviorNativeChecksum": 508086,
