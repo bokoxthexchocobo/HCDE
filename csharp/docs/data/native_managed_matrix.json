@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 264853
+    "managedCSharpLoc": 264981
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 98220,
+    "convertedThisRunNative": 98432,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 122049,
+    "convertedThisRunManaged": 122177,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 390652,
+    "remainingNative": 390440,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 116747,
+    "convertedBehaviorNative": 116959,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 117434,
-    "convertedBehaviorManaged": 131720,
+    "combinedBehaviorNative": 117646,
+    "convertedBehaviorManaged": 131848,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -41962,6 +41962,34 @@
         "nativeLoc": 186,
         "managedLoc": 496,
         "conversionManagedCommit": "f08202ae6002fc57928bcacbabf694656856e419"
+      },
+      {
+        "name": "t-prepro-sections-chunk1183",
+        "bucket": "conversion",
+        "note": "FraggleScript section registration, serialize, and hash lookup from t_prepro.cpp (1\u2013212).",
+        "auditSeams": "Serialize calls the base serializer before copying fields. NewSection records the GC write barrier. Destroy clears the saved link only after the walk has copied it. ProcessFindChar at 213 stays outside this slice.",
+        "auditRationale": "UNCredited t_prepro.cpp 1\u2013212 (+212). FindSectionEnd closes at 197. The ProcessFindChar banner is 199\u2013212 and the function starts at 213. The whole file is 425 lines, over the 400 ceiling, so this band stops on that boundary. Chunk 857 retired the later preprocessor with empty native ranges. A full tally line scan shows no overlap.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_prepro.cpp --start 1 --end 212 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| DFsSection registration (**53\u201357**) | yes |\n| Serialize (**65\u201373**) | yes |\n| SectionStart (**81\u201384**) | yes |\n| SectionEnd (**92\u201395**) | yes |\n| SectionLoop (**103\u2013106**) | yes |\n| ClearSections (**114\u2013127**) | yes |\n| NewSection (**135\u2013145**) | yes |\n| FindSectionStart (**153\u2013167**) | yes |\n| FindSectionEnd (**176\u2013197**) | yes |\n| Band hull (**1\u2013212**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **213\u2013425** | ProcessFindChar, dry run, preprocess, and include stay in the next band |\n\nThe class is not abstract and publishes the next pointer. Serialize runs the base serializer first, then copies type, start, end, loop, and next. Start, end, and loop are the stored indexes. Clear walks all 17 hash slots, saves the link, destroys the section, then nulls the slot. NewSection hashes the brace index by 17, pushes the section on that chain, stores the start index, and records a write barrier. Find start searches only that chain. Find end searches every chain because the hash is the opening brace.\n\n| Managed (`VmTPreproSections1183Slice.cs`) | Native (`t_prepro.cpp`) |\n|--------------------------------------------|------------------------|\n| Section table | **1\u2013212** |\n| Band hull (exclusive slice) | **1\u2013212** |\n\n### Chunk **1183** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **212** |\n| **Net headline** | **+212** vs post-**1182** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmTPreproSections1183Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/fragglescript/t_prepro.cpp",
+            "symbol": "DFsScript::FindSectionEnd",
+            "start": 1,
+            "end": 212,
+            "tests": [
+              "VmTPreproSections1183SliceTests.RegistrationAndSerialize_RecordThePointerAndRunSuperFirst",
+              "VmTPreproSections1183SliceTests.NewSection_PushesTheFrontOfTheHashChain",
+              "VmTPreproSections1183SliceTests.ClearSections_DestroysTheSavedLinkBeforeNullingTheSlot"
+            ]
+          }
+        ],
+        "nativeLoc": 212,
+        "managedLoc": 128,
+        "conversionManagedCommit": "6f772d98f1de4c02c321d3b0b5fbd0fe14aeda42"
       }
     ],
     "behaviorNativeChecksum": 508086,
