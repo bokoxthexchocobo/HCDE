@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 88520,
+  "convertedThisRunNative": 88670,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 109634,
+  "convertedThisRunManaged": 109795,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 400352,
+  "remainingNative": 400202,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 107047,
+  "convertedBehaviorNative": 107197,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 107734,
-  "convertedBehaviorManaged": 119305,
+  "combinedBehaviorNative": 107884,
+  "convertedBehaviorManaged": 119466,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -40687,6 +40687,36 @@
       "nativeLoc": 150,
       "managedLoc": 159,
       "conversionManagedCommit": "a2391498f7f2474fed13db0c7629163672128c91"
+    },
+    {
+      "name": "am-map-player-arrow-chunk1140",
+      "bucket": "conversion",
+      "note": "Glyph endpoints and player arrows from `am_map.cpp` (**2851\u20133000**); follows **1139**.",
+      "auditSeams": "Point rotation and actor position stay host-supplied. Key-inventory filtering begins at **3002**.",
+      "auditRationale": "UNCredited **`am_map.cpp`** **2851\u20133000** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 2851 --end 3000` and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "Glyph placement, arrow selection, ally skips, and HSV clamp match native; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Glyph rotate and translate (**2854\u20132876**) | yes |\n| Thing-sprite early out and single-player arrow (**2885\u20132928**) | yes |\n| Ally, deathmatch, HSV, and rotated marks (**2930\u20132982**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2701\u20132850** | wall colors and glyph scale already credited by **1139** |\n| **3001+** | key iterator body |\n\n`DF2_NO_AUTOMAP_ALLIES` is **1<<19**. Cheat **4** still draws arrows when thing sprites are on; cheats **2**, **3**, and **5+** return early when `am_showthingsprites > 0`. A rotated single-player arrow uses **90** degrees and the cheat arrow only when `am_cheat != 0` and that list is non-empty. The draw scale is **0**. Remote marks with alpha below **1** use the almost-background color. Otherwise HSV is converted and each channel is `clamp((int)(c * 255), 0, 255)`. A rotated remote angle is `yaw - (cameraYaw - 90)`.\n\n| Managed (`VmAmMapPlayerArrow1140Slice.cs`) | Native (`am_map.cpp`) |\n|---------------------------------------------|---------------------|\n| Glyphs and player arrows | **2851\u20133000** |\n| Band hull (exclusive slice) | **2851\u20133000** |\n\n### Chunk **1140** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1139** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmAmMapPlayerArrow1140Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "Automap player arrows",
+          "start": 2851,
+          "end": 3000,
+          "tests": [
+            "VmAmMapPlayerArrow1140SliceTests.FinishGlyph_ScalesRotatesAndTranslatesBothEnds",
+            "VmAmMapPlayerArrow1140SliceTests.SinglePlayerMark_UsesNorthWhenRotatedAndTheCheatArrowWhenPresent",
+            "VmAmMapPlayerArrow1140SliceTests.RemoteMark_SkipsAlliesAndDeathmatchStrangers",
+            "VmAmMapPlayerArrow1140SliceTests.RemoteMark_ColorsFromHsvAndRotatesTheOffsetPosition"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 161,
+      "conversionManagedCommit": "10ebb606689622cd12e7f62585e159c894d14673"
     }
   ],
   "behaviorNativeChecksum": 508086,
