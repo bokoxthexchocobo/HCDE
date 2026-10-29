@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 263953
+    "managedCSharpLoc": 264190
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 97586,
+    "convertedThisRunNative": 97816,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 121149,
+    "convertedThisRunManaged": 121386,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 391286,
+    "remainingNative": 391056,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 116113,
+    "convertedBehaviorNative": 116343,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 116800,
-    "convertedBehaviorManaged": 130820,
+    "combinedBehaviorNative": 117030,
+    "convertedBehaviorManaged": 131057,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -41877,6 +41877,34 @@
         "nativeLoc": 356,
         "managedLoc": 475,
         "conversionManagedCommit": "db9f9bfd9d23df669d509f0a3c4f99cae5268273"
+      },
+      {
+        "name": "t-spec-control-chunk1180",
+        "bucket": "conversion",
+        "note": "FraggleScript brace, if, elseif, else, while, and for from t_spec.cpp (1\u2013230).",
+        "auditSeams": "FindOperator, EvaluateExpression, SectionEnd, and SectionLoop are host callbacks. intvalue is the chunk 1179 conversion. CreateVariable at 231 stays outside this slice.",
+        "auditRationale": "UNCredited t_spec.cpp 1\u2013230 (+230). spec_for closes at 221. The CreateVariable banner is 223\u2013230 and the function starts at 231. A full tally line scan shows no overlap.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_spec.cpp --start 1 --end 230 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| spec_brace (**31\u201346**) | yes |\n| spec_if (**54\u201384**) | yes |\n| spec_elseif (**92\u2013127**) | yes |\n| spec_else (**135\u2013139**) | yes |\n| spec_while (**147\u2013168**) | yes |\n| spec_for (**176\u2013221**) | yes |\n| Band hull (**1\u2013230**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **231\u2013605** | variable creation and the later specials stay outside this band |\n\nA closing brace on an if or else section does nothing. A closing brace on a loop section jumps to the loop start. An opening brace returns immediately. Other section types are left in place.\n\nif and elseif report the parse error and return false when the closing parenthesis is missing. A true previous branch makes elseif skip to the section end and return true without evaluating its condition. Otherwise the condition is tokens 2 through the token before the parenthesis. A braced form whose parenthesis is the last token skips to the section end when the condition is zero. Any other true condition with tokens after the parenthesis evaluates that tail. The result is nonzero-as-true, including a string of zero.\n\nelse skips to the section end only when the previous branch matched. while without a section, or without a parenthesis, reports its own error. A zero condition skips to the section end.\n\nfor without a section reports the delimiter error. A missing comma stops before the second search when the first comma is absent, and reports the argument error. The first visit evaluates only the initializer. A return to the same section evaluates the step, then the condition, and leaves the loop when that condition is zero.\n\n| Managed (`VmTSpecControl1180Slice.cs`) | Native (`t_spec.cpp`) |\n|----------------------------------------|------------------------|\n| Brace and control statements | **1\u2013230** |\n| Band hull (exclusive slice) | **1\u2013230** |\n\n### Chunk **1180** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **230** |\n| **Net headline** | **+230** vs post-**1179** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmTSpecControl1180Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/fragglescript/t_spec.cpp",
+            "symbol": "spec_for",
+            "start": 1,
+            "end": 230,
+            "tests": [
+              "VmTSpecControl1180SliceTests.BraceAndIf_SkipClosedLoopsAndBareStatements",
+              "VmTSpecControl1180SliceTests.ElseIfAndElse_SkipWhenThePreviousBranchMatched",
+              "VmTSpecControl1180SliceTests.Loops_RunTheInitOnceAndTheStepOnTheWayBack"
+            ]
+          }
+        ],
+        "nativeLoc": 230,
+        "managedLoc": 237,
+        "conversionManagedCommit": "ec42bac904531473a8396bb65216f0b77f56ccc5"
       }
     ],
     "behaviorNativeChecksum": 508086,
