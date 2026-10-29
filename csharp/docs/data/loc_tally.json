@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 106436,
+  "convertedThisRunNative": 106823,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 132084,
+  "convertedThisRunManaged": 132586,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 382436,
+  "remainingNative": 382049,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 124963,
+  "convertedBehaviorNative": 125350,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 125650,
-  "convertedBehaviorManaged": 141755,
+  "combinedBehaviorNative": 126037,
+  "convertedBehaviorManaged": 142257,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -43041,6 +43041,33 @@
       "nativeLoc": 337,
       "managedLoc": 442,
       "conversionManagedCommit": "04a621cbdf5a0d2a10b49a71cb008e5d44e38086"
+    },
+    {
+      "name": "protocol-chunk1223",
+      "bucket": "conversion",
+      "note": "User-command packing, demo-command scan, and IFF chunk lengths from d_protocol.cpp (1-387).",
+      "auditSeams": "Integers on the stream are big-endian. Button bytes carry seven bits plus a continuation flag, and the fourth byte stores only bits 21-28, so bits 29-31 survive only when the basis already had them. Pitch, yaw, and the three move axes are written whenever they differ from the basis or are nonzero. Roll is written only when it differs. WriteUserCmdMessage emits an empty command for a steady roll and a full command for a steady nonzero yaw. Unpack into the same address does not copy the basis over itself. Skip and read stop when Net_SkipCommand does not shrink the stream. RunPlayerCommands does nothing when gametic modulo TicDup is nonzero, and it rereads the stored payload on the next tic. FinishChunk with no open chunk returns. SkipChunk of length -1 advances zero bytes. An odd chunk length is padded with one zero.",
+      "auditRationale": "UNCredited d_protocol.cpp 1-387 (+387). The file ends at 387. A full tally line scan shows no overlap.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/d_protocol.cpp --start 1 --end 387 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Serialize (**31\u201349**) | yes |\n| UnpackUserCmd (**51\u2013103**) | yes |\n| PackUserCmd (**105\u2013199**) | yes |\n| WriteUserCmdMessage (**201\u2013235**) | yes |\n| SkipUserCmdMessage (**239\u2013283**) | yes |\n| ReadUserCmdMessage (**285\u2013335**) | yes |\n| RunPlayerCommands (**337\u2013350**) | yes |\n| StartChunk, FinishChunk, SkipChunk (**357\u2013387**) | yes |\n| Band hull (**1\u2013387**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nA steady nonzero roll that matches the basis becomes DEM_EMPTYUSERCMD. Button bits above bit 28 are not stored in the fourth byte. A skip callback that does not consume bytes ends the scan, and the bytes already read are the stored prefix.\n\n| Managed (`VmProtocol1223Slice.cs`) | Native (`d_protocol.cpp`) |\n|------------------------------------|--------------------------|\n| Command pack, scan, and IFF lengths | **1\u2013387** |\n| Band hull (exclusive slice) | **1\u2013387** |\n\n### Chunk **1223** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **387** |\n| **Net headline** | **+387** vs post-**1222** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmProtocol1223Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_protocol.cpp",
+          "symbol": "PackUserCmd",
+          "start": 1,
+          "end": 387,
+          "tests": [
+            "VmProtocol1223SliceTests.Pack_ResendsHeldAxesAndDropsButtonsAboveBit28",
+            "VmProtocol1223SliceTests.Read_StopsWhenSkipStallsAndPadsAnOddChunk"
+          ]
+        }
+      ],
+      "nativeLoc": 387,
+      "managedLoc": 502,
+      "conversionManagedCommit": "87d076c5daab31596b18c3abf418bbcb49a7b8e9"
     }
   ],
   "behaviorNativeChecksum": 508086,
