@@ -1,0 +1,26 @@
+[
+  {
+    "name": "superfasthash-chunk1200",
+    "bucket": "conversion",
+    "note": "SuperFastHash and its case-insensitive twin from superfasthash.cpp (1–153).",
+    "auditSeams": "Sixteen-bit loads use the portable little-endian byte pair, which is the path this build takes. A one-byte remainder is a signed char. The insensitive hash folds A-Z with C-locale tolower, including tolower of a signed -1 staying -1. A null pointer or a non-positive insensitive length returns 0.",
+    "auditRationale": "UNCredited superfasthash.cpp 1–153 (+153). The file ends at 153. A full tally line scan shows no overlap.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/thirdparty/superfasthash.cpp --start 1 --end 153 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| get16bits (**39–48**, **100–102**) | yes |\n| SuperFastHash (**50–96**) | yes |\n| SuperFastHashI (**104–150**) | yes |\n| Band hull (**1–153**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nBoth hashes return 0 for a null pointer. The case-sensitive hash also returns 0 for length 0. The insensitive hash returns 0 for length 0 or below. The main loop consumes four bytes at a time: add the first pair, xor the second pair shifted left 11, xor the hash shifted left 16, then add the hash shifted right 11. A remainder of 3, 2, or 1 uses the matching tail. The final avalanche is the same six shifts. Insensitive loads and the one-byte tail fold A-Z to a-z before those steps.\n\n| Managed (`VmSuperFastHash1200Slice.cs`) | Native (`superfasthash.cpp`) |\n|------------------------------------------|------------------------------|\n| SuperFastHash | **1–153** |\n| Band hull (exclusive slice) | **1–153** |\n\n### Chunk **1200** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **153** |\n| **Net headline** | **+153** vs post-**1199** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmSuperFastHash1200Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/thirdparty/superfasthash.cpp",
+        "symbol": "SuperFastHash",
+        "start": 1,
+        "end": 153,
+        "tests": [
+          "VmSuperFastHash1200SliceTests.Hash_MatchesNativeLengthsAndSignedTail",
+          "VmSuperFastHash1200SliceTests.HashI_FoldsAsciiAndKeepsHighBytes"
+        ]
+      }
+    ]
+  }
+]
