@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 99147,
+  "convertedThisRunNative": 99317,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 122907,
+  "convertedThisRunManaged": 123142,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 389725,
+  "remainingNative": 389555,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 117674,
+  "convertedBehaviorNative": 117844,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 118361,
-  "convertedBehaviorManaged": 132578,
+  "combinedBehaviorNative": 118531,
+  "convertedBehaviorManaged": 132813,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -42087,6 +42087,34 @@
       "nativeLoc": 183,
       "managedLoc": 285,
       "conversionManagedCommit": "b65cea0f3038b0ab86bb200e2ccd858d44bf0ebb"
+    },
+    {
+      "name": "doom-font-init-chunk1188",
+      "bucket": "conversion",
+      "note": "Doom font selection from doomfont.cpp (1\u2013170).",
+      "auditSeams": "Lump presence, wad container, V_GetFont, FindFont, and the WINUM0 patch are host results. The glyph count is 223, from '!' through byte 255.",
+      "auditRationale": "UNCredited doomfont.cpp 1\u2013170 (+170). The file ends at 170. A full tally line scan shows no overlap.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/gamedata/doomfont.cpp --start 1 --end 170 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| font constants (**30\u201334**) | yes |\n| InitDoomFonts (**36\u2013170**) | yes |\n| Band hull (**1\u2013170**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nA registered SmallFont is kept. Otherwise FONTA_S in the default namespace builds the small font, and a graphics FONTA33 from a file after the IWAD drops the file template. The same wad, or a missing FONTA33, keeps defsmallfont. Both of those set the cursor to '['. With no FONTA_S, STCFN033 in the graphics namespace builds the Doom-template font and does not set a cursor. OriginalSmallFont follows the same lumps and is always the IWAD copy. SmallFont2 uses STBFN033 only when it is not already registered. BigFont uses FONTB_S when it is not registered, then ZBIGFONT. OriginalBigFont uses FONTB_S or the generic bigfont. A folder BigUpper is deleted and replaced when BigFont is not a folder. A missing BigUpper aliases BigFont. A missing console font aliases the small font, and a still-missing console font is fatal before the later aliases. WINUM0 selects IntermissionFont_Doom; otherwise the intermission font aliases BigFont. Missing originals fall back to the console font, the small font, and the original big font.\n\n| Managed (`VmDoomFont1188Slice.cs`) | Native (`doomfont.cpp`) |\n|-------------------------------------|--------------------------|\n| Font selection | **1\u2013170** |\n| Band hull (exclusive slice) | **1\u2013170** |\n\n### Chunk **1188** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **170** |\n| **Net headline** | **+170** vs post-**1187** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmDoomFont1188Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/doomfont.cpp",
+          "symbol": "InitDoomFonts",
+          "start": 1,
+          "end": 170,
+          "tests": [
+            "VmDoomFont1188SliceTests.Init_BuildsAPwadSmallFontAndKeepsTheOriginal",
+            "VmDoomFont1188SliceTests.Init_UsesDoomTemplatesStrifeAndAFolderOverride",
+            "VmDoomFont1188SliceTests.Init_FallsBackAndRejectsAMissingConsoleFont"
+          ]
+        }
+      ],
+      "nativeLoc": 170,
+      "managedLoc": 235,
+      "conversionManagedCommit": "e4216182cef1d8d32045c94a861003430b41aa56"
     }
   ],
   "behaviorNativeChecksum": 508086,
