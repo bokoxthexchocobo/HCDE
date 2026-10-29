@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 108050,
+  "convertedThisRunNative": 108362,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 134151,
+  "convertedThisRunManaged": 134578,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 380822,
+  "remainingNative": 380510,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 126577,
+  "convertedBehaviorNative": 126889,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 127264,
-  "convertedBehaviorManaged": 143822,
+  "combinedBehaviorNative": 127576,
+  "convertedBehaviorManaged": 144249,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -43230,6 +43230,33 @@
       "nativeLoc": 184,
       "managedLoc": 196,
       "conversionManagedCommit": "175dfd4413f0225a257aeef03489b98fde0d2de2"
+    },
+    {
+      "name": "tabcomplete-chunk1230",
+      "bucket": "conversion",
+      "note": "Tab-command insert, completion cycling, and the colored completion list from c_tabcomplete.cpp (1-312).",
+      "auditSeams": "Commands stay sorted by a case-insensitive C compare. A repeated name, including a different ASCII case, bumps the use count and keeps the first spelling. Map is stored as the predefined spelling Map. None is name zero: it can be inserted and Remove leaves it in place. An empty command list returns before the name lookup. A name that was never interned is not removed. The first Tab on a fresh line skips leading spaces, and a blank line returns. A prefix hit records the start and the typed length. When more than one command matches and the list has not been shown, the columns print in a field three wider than the longest name. CVars are green, aliases red, commands light blue, and the header is blue. The column counter is an unsigned subtract of the console width divided by the scale, so a field wider than the console does not wrap. The longest common prefix replaces the typed token when it is longer, keeping the leading spaces, and that fill does not move the caret. The next tab cycles forward or backward and appends a space. Walking off the matches truncates back with the typed length. con_notablist and a list already shown skip the column print. Clearing the commands leaves the tab flags as they were.",
+      "auditRationale": "UNCredited c_tabcomplete.cpp 1-312 (+312). The file ends at 312. A full tally line scan shows no overlap.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/console/c_tabcomplete.cpp --start 1 --end 312 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Sorted insert and removal (**65\u2013135**) | yes |\n| Completion cycle (**137\u2013234**) | yes |\n| Colored column list (**236\u2013312**) | yes |\n| Band hull (**1\u2013312**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nGIVE increments give. None stays after Remove. A wide column on a 5-column console stays on one line. The second single-match tab does not print the list again.\n\n| Managed (`VmTab1230Slice.cs`) | Native (`c_tabcomplete.cpp`) |\n|--------------------------------|------------------------------|\n| Insert, cycle, and the column list | **1\u2013312** |\n| Band hull (exclusive slice) | **1\u2013312** |\n\n### Chunk **1230** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **312** |\n| **Net headline** | **+312** vs post-**1229** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmTab1230Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/console/c_tabcomplete.cpp",
+          "symbol": "C_TabComplete",
+          "start": 1,
+          "end": 312,
+          "tests": [
+            "VmTab1230SliceTests.Add_SortsNamesAndCyclesForward",
+            "VmTab1230SliceTests.Complete_FillsThePrefixAndSkipsASecondList"
+          ]
+        }
+      ],
+      "nativeLoc": 312,
+      "managedLoc": 427,
+      "conversionManagedCommit": "9935cd6ca1713b298b811d651097d9ccaa4ec991"
     }
   ],
   "behaviorNativeChecksum": 508086,
