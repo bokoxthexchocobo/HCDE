@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 102207,
+  "convertedThisRunNative": 102448,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 127344,
+  "convertedThisRunManaged": 127649,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 386665,
+  "remainingNative": 386424,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 120734,
+  "convertedBehaviorNative": 120975,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 121421,
-  "convertedBehaviorManaged": 137015,
+  "combinedBehaviorNative": 121662,
+  "convertedBehaviorManaged": 137320,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -42554,6 +42554,33 @@
       "nativeLoc": 234,
       "managedLoc": 320,
       "conversionManagedCommit": "c7b8573421c0ee6a93d27f25ead7b6f65c08ad2d"
+    },
+    {
+      "name": "dictionary-chunk1205",
+      "bucket": "conversion",
+      "note": "String map, JSON round trip, and iterator from dictionary.cpp (1\u2013241).",
+      "auditSeams": "Pairs are kept in insertion order. TMap walks hash slots in an unspecified order. ToJson and FromJson are the rapidjson object-of-strings codec in serializer.cpp that these exports call. A null load crashes on the native pointer. Saving an iterator is the I_Error string.",
+      "auditRationale": "UNCredited dictionary.cpp 1\u2013241 (+241). The file ends at 241. A full tally line scan shows no overlap.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/scripting/core/dictionary.cpp --start 1 --end 241 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Dictionary::Serialize (**51\u201371**) | yes |\n| DictCreate through DictRemove (**73\u201399**) | yes |\n| Dictionary exports (**107\u2013151**) | yes |\n| DictionaryIterator constructor and Serialize (**159\u2013172**) | yes |\n| init through DictIteratorValue (**174\u2013206**) | yes |\n| DictionaryIterator exports (**214\u2013241**) | yes |\n| Band hull (**1\u2013241**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nInsert adds a key or replaces its value in place. At returns an empty string when the key is absent. Remove of a missing key does nothing. ToJson writes a compact JSON object. FromJson of the exact text null returns a null pointer. An empty string returns an empty map. Any other text that is not a JSON object throws. A JSON value that is not a string throws. Serialize writes that JSON. Serialize reads it, and a null pointer is dereferenced. The iterator starts before the first pair. Next leaves the previous pair in place when it returns false. Key and Value are empty until the first successful step. Saving an iterator throws. Loading an iterator does nothing.\n\n| Managed (`VmDictionary1205Slice.cs`) | Native (`dictionary.cpp`) |\n|--------------------------------------|---------------------------|\n| Dictionary | **1\u2013241** |\n| Band hull (exclusive slice) | **1\u2013241** |\n\n### Chunk **1205** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **241** |\n| **Net headline** | **+241** vs post-**1204** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmDictionary1205Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/core/dictionary.cpp",
+          "symbol": "Dictionary::Serialize",
+          "start": 1,
+          "end": 241,
+          "tests": [
+            "VmDictionary1205SliceTests.Insert_ReplacesInPlaceAndIteratorStopsOnTheLastPair",
+            "VmDictionary1205SliceTests.Json_RoundTripAndRejectsNullAndNonStrings"
+          ]
+        }
+      ],
+      "nativeLoc": 241,
+      "managedLoc": 305,
+      "conversionManagedCommit": "fc7483cee4048ffb9f650a0d04ceb80f7c93bcd0"
     }
   ],
   "behaviorNativeChecksum": 508086,
