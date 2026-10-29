@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 88070,
+  "convertedThisRunNative": 88220,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 109111,
+  "convertedThisRunManaged": 109275,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 400802,
+  "remainingNative": 400652,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 106597,
+  "convertedBehaviorNative": 106747,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 107284,
-  "convertedBehaviorManaged": 118782,
+  "combinedBehaviorNative": 107434,
+  "convertedBehaviorManaged": 118946,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -40598,6 +40598,36 @@
       "nativeLoc": 150,
       "managedLoc": 158,
       "conversionManagedCommit": "cb08eba794361edf1f8b18cf08a6a6e7f6d8ec7f"
+    },
+    {
+      "name": "am-map-floor-boundary-chunk1137",
+      "bucket": "conversion",
+      "note": "Red poly-seg strokes, 3D-floor boundary, and teleport/exit probes from `am_map.cpp` (**2401\u20132550**); follows **1136**.",
+      "auditSeams": "Model identity and the special predicate are host-supplied. Trigger-line filtering begins at **2555**.",
+      "auditRationale": "UNCredited **`am_map.cpp`** **2401\u20132550** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 2401 --end 2550` and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "Floor matching, sector-action order, and teleport/exit specials match native; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Red poly-seg loop (**2401\u20132405**) | yes |\n| `AM_Check3DFloors` (**2418\u20132474**) | yes |\n| `AM_checkSectorActions` (**2479\u20132496**) | yes |\n| `AM_checkSpecialBoundary` (**2501\u20132531**) | yes |\n| Teleport and exit predicates (**2533\u20132550**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2251\u20132400** | shade and debug gate already credited by **1136** |\n| **2551\u20132553** | closing `Exit_Secret` token of the predicate ported above; not a separate credited line |\n| **2555+** | trigger and lock boundary probes |\n\n`FF_EXISTS` is **1** and `FF_THISINSIDE` is **0x40000000**. `SPAC_PlayerActivate` is **1243**. `SECSPAC_Use` is **16**, `SECSPAC_UseWall` is **32**, and `MF_FRIENDLY` is **0x08000000**. A one-sided line requires a use-activated sector action. Teleport specials are **70**, **71**, **39**, and **215**. Exit specials are **74**, **75**, **243**, and **244** (the last token sits on **2551** and is part of this predicate).\n\n| Managed (`VmAmMapFloorBoundary1137Slice.cs`) | Native (`am_map.cpp`) |\n|--------------------------------------------------|---------------------|\n| Boundaries and special probes | **2401\u20132550** |\n| Band hull (exclusive slice) | **2401\u20132550** |\n\n### Chunk **1137** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1136** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmAmMapFloorBoundary1137Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "Automap floor boundary",
+          "start": 2401,
+          "end": 2550,
+          "tests": [
+            "VmAmMapFloorBoundary1137SliceTests.RedPolyStrokes_DrawOnlyTheShownSubsector",
+            "VmAmMapFloorBoundary1137SliceTests.HasFloorBoundary_MatchesModelAndFlags",
+            "VmAmMapFloorBoundary1137SliceTests.SectorActions_RequireUseOnOneSidedLinesAndSkipFriends",
+            "VmAmMapFloorBoundary1137SliceTests.TeleportAndExitBoundaries_PreferTheLineThenTheBackSector"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 164,
+      "conversionManagedCommit": "bfbd6d94a0baeec825cde0a4955fa5b281c01618"
     }
   ],
   "behaviorNativeChecksum": 508086,
