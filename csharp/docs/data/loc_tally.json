@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 102646,
+  "convertedThisRunNative": 102869,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 127838,
+  "convertedThisRunManaged": 128042,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 386226,
+  "remainingNative": 386003,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 121173,
+  "convertedBehaviorNative": 121396,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 121860,
-  "convertedBehaviorManaged": 137509,
+  "combinedBehaviorNative": 122083,
+  "convertedBehaviorManaged": 137713,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -42608,6 +42608,33 @@
       "nativeLoc": 198,
       "managedLoc": 189,
       "conversionManagedCommit": "216c10087f6833fc7c29ccffb34539a161197aa7"
+    },
+    {
+      "name": "scopebarrier-chunk1207",
+      "bucket": "conversion",
+      "note": "ZScript scope sides, field access, and class construction checks from scopebarrier.cpp (1\u2013223).",
+      "auditSeams": "Class and function names stand in for PClass and VMFunction. ValidateCall with a missing type is the native null pointer. X_OTHER abort text has no extra sentence before the detail.",
+      "auditRationale": "UNCredited scopebarrier.cpp 1\u2013223 (+223). The file ends at 223. A full tally line scan shows no overlap.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/scripting/core/scopebarrier.cpp --start 1 --end 223 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| SideFromFlags through StringFromSide (**31\u2013103**) | yes |\n| ChangeSideInFlags and ChangeSideInObjectFlags (**106\u2013120**) | yes |\n| Constructors (**122\u2013140**) | yes |\n| AddFlags (**145\u2013199**) | yes |\n| CheckSidesForFunctionPointer (**201\u2013207**) | yes |\n| ValidateNew and ValidateCall (**210\u2013223**) | yes |\n| Band hull (**1\u2013223**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nUI wins over play when both bits are set. Virtual and clear scope are their own sides, and object flags only distinguish UI, play, and plain data. Changing a side clears the old scope bits, including no-rollback on fields. The first access records the calling side. A plain field inherits the last real side. Only UI may read a UI field. A failed read also bans writes and calls, and later fields in the chain do not replace that error. Different sides cannot be written. A read-only method may still be called across sides when the field stayed readable. Clearscope is plain data for a function pointer, and plain data may point at any side. A class with no VM type cannot be instantiated. Constructing or calling across sides is rejected unless the target is plain data.\n\n| Managed (`VmScopeBarrier1207Slice.cs`) | Native (`scopebarrier.cpp`) |\n|----------------------------------------|------------------------------|\n| Scope barrier | **1\u2013223** |\n| Band hull (exclusive slice) | **1\u2013223** |\n\n### Chunk **1207** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **223** |\n| **Net headline** | **+223** vs post-**1206** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmScopeBarrier1207Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/core/scopebarrier.cpp",
+          "symbol": "FScopeBarrier::AddFlags",
+          "start": 1,
+          "end": 223,
+          "tests": [
+            "VmScopeBarrier1207SliceTests.Sides_MapFlagsAndBlockUiReads",
+            "VmScopeBarrier1207SliceTests.Chain_FreezesAfterTheFirstBanAndConstructionChecksTheClassSide"
+          ]
+        }
+      ],
+      "nativeLoc": 223,
+      "managedLoc": 204,
+      "conversionManagedCommit": "59101555244fb314e642a518d7e7aa223785068f"
     }
   ],
   "behaviorNativeChecksum": 508086,
