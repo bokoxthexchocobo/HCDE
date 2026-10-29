@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 108362,
+  "convertedThisRunNative": 108586,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 134578,
+  "convertedThisRunManaged": 134782,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 380510,
+  "remainingNative": 380286,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 126889,
+  "convertedBehaviorNative": 127113,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 127576,
-  "convertedBehaviorManaged": 144249,
+  "combinedBehaviorNative": 127800,
+  "convertedBehaviorManaged": 144453,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -43257,6 +43257,33 @@
       "nativeLoc": 312,
       "managedLoc": 427,
       "conversionManagedCommit": "9935cd6ca1713b298b811d651097d9ccaa4ec991"
+    },
+    {
+      "name": "endoom-chunk1231",
+      "bucket": "conversion",
+      "note": "ENDOOM lump gate, blink timer, dismiss events, and the console ANSI dump from endoom.cpp (1-224).",
+      "auditSeams": "showendoom clamps to 0..2. Zero or an empty lump name returns before the lookup. A lump below zero or a length other than 4000 returns before the screen. showendoom 2 returns when the lump's container is the IWAD. Otherwise music stops, the 80x25 text screen is drawn on a 640x416 bitmap, the bottom row is cleared black, and TXT_QUITENDOOM is drawn gray on black. The blink flag starts true and the attribute scan never clears it, so a screen with no high bit still blinks. Update paints only when the uint64 clock is greater than the last paint plus 267, then flips the phase, cleans the texture, and renders. The column counter is not used here. The event ring is 128 entries. Key down and key up dismiss. GUI key down, left button, right button, and middle button dismiss. Other events are consumed and the loop continues. A time equal to the last paint plus 267 does not paint. A uint64 add that wraps still paints. The Linux console path ignores FancyStdOut. consoleendoom off or an empty name returns before the lookup. A bad lump returns after the lookup. A good lump reads 4000 bytes and calls vga_to_ansi. ST_Endoom prints the console dump, runs the screen, and exits with that code.",
+      "auditRationale": "UNCredited endoom.cpp 1-224 (+224). The file ends at 224. A full tally line scan shows no overlap.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/startscreen/endoom.cpp --start 1 --end 224 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| showendoom clamp (**58\u201362**) | yes |\n| Screen construct and blink scan (**102\u2013123**) | yes |\n| Blink update (**125\u2013135**) | yes |\n| RunEndoom gates and dismiss loop (**146\u2013190**) | yes |\n| Console ANSI dump (**194\u2013216**) | yes |\n| ST_Endoom exit (**218\u2013224**) | yes |\n| Band hull (**1\u2013224**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nA screen with no blink attribute still blinks. 5267 ms does not paint and 5268 ms does. The ring wraps at 128. GUI key-up and button-up stay in the loop.\n\n| Managed (`VmEndoom1231Slice.cs`) | Native (`endoom.cpp`) |\n|-----------------------------------|------------------------|\n| Clamp, blink, dismiss, and the ANSI dump | **1\u2013224** |\n| Band hull (exclusive slice) | **1\u2013224** |\n\n### Chunk **1231** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **224** |\n| **Net headline** | **+224** vs post-**1230** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmEndoom1231Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/startscreen/endoom.cpp",
+          "symbol": "ST_Endoom",
+          "start": 1,
+          "end": 224,
+          "tests": [
+            "VmEndoom1231SliceTests.Run_ClampsTheCvarAndBlinksPastThePeriod",
+            "VmEndoom1231SliceTests.Console_PrintsAnsiAndGuiButtonsDismiss"
+          ]
+        }
+      ],
+      "nativeLoc": 224,
+      "managedLoc": 204,
+      "conversionManagedCommit": "7edfcbc8365e555b9184753a37d4404cd331a9c2"
     }
   ],
   "behaviorNativeChecksum": 508086,
