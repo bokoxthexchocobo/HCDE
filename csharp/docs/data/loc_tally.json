@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 89570,
+  "convertedThisRunNative": 89728,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 110619,
+  "convertedThisRunManaged": 110762,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 399302,
+  "remainingNative": 399144,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 108097,
+  "convertedBehaviorNative": 108255,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 108784,
-  "convertedBehaviorManaged": 120290,
+  "combinedBehaviorNative": 108942,
+  "convertedBehaviorManaged": 120433,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -40895,6 +40895,35 @@
       "nativeLoc": 150,
       "managedLoc": 111,
       "conversionManagedCommit": "7008447324df9fa3e560102339a2822fea14ffe8"
+    },
+    {
+      "name": "p-enemy-chase-chunk1147",
+      "bucket": "conversion",
+      "note": "Random chase direction from `p_enemy.cpp` (**1100\u20131257**); follows **1146** after the short **451\u2013481** gap.",
+      "auditSeams": "Player slots, sight, and `P_TryWalk` stay host-supplied. The RNG is a scripted `pr_newchasedir` sequence. An empty multiplayer mask stops after **64** slots.",
+      "auditRationale": "UNCredited **`p_enemy.cpp`** **1100\u20131257** (+158), inside the 3488-line file, with no conversion or recognition overlap.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_enemy.cpp --start 1100 --end 1257` and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "Friendly steering, turn order, and the turnaround movecount match native; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Friendly player steer (**1116\u20131195**) | yes |\n| Keep-heading and turn search (**1197\u20131219**) | yes |\n| Turnaround and give-up (**1246\u20131256**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **301\u2013450** | missile range already credited by **1146** |\n| **451\u2013481** | 31-line gap under the floor |\n| **1220\u20131245** | commented-out search, not live |\n| **1268+** | `P_IsVisible` |\n\n`MF_FRIENDLY` is **0x08000000**. `MF8_DONTFOLLOWPLAYERS` is **0x04000000** and skips the player steer. `MAXPLAYERS` is **64**. A friend player uses `FriendPlayer - 1`. Otherwise single-player uses slot **0**, and multiplayer starts at `pr_newchasedir() & 63` and walks the mask. The steer block runs when that roll is odd or the monster cannot see the player. An axis counts only past **128**. The diagonal is `diags[((Y<0)<<1) + (X>0)]`: northwest, northeast, southwest, southeast. It is skipped when it is the turnaround. The two axes swap when the next roll is above **200** or `|Y| > |X|`, then a turnaround axis becomes `DI_NODIR`. A roll below **150** retries the current direction before any turn. The search then steps `\u00b11` from `DI_NODIR` replaced by `roll & 7`, skipping the turnaround. Only a successful turnaround stores `movecount = roll & 15`. Failure sets `DI_NODIR`.\n\n| Managed (`VmPEnemyChase1147Slice.cs`) | Native (`p_enemy.cpp`) |\n|------------------------------------------|----------------------|\n| `P_RandomChaseDir` | **1100\u20131257** |\n| Band hull (exclusive slice) | **1100\u20131257** |\n\n### Chunk **1147** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **158** |\n| **Net headline** | **+158** vs post-**1146** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPEnemyChase1147Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "P_RandomChaseDir",
+          "start": 1100,
+          "end": 1257,
+          "tests": [
+            "VmPEnemyChase1147SliceTests.RandomChaseDir_TurnsAwayFromTheReverseAndKeepsAClearHeading",
+            "VmPEnemyChase1147SliceTests.RandomChaseDir_SteersAFriendlyTowardThePlayer",
+            "VmPEnemyChase1147SliceTests.RandomChaseDir_ReplacesNoDirBeforeTheSearchAndSkipsABlockedReverse"
+          ]
+        }
+      ],
+      "nativeLoc": 158,
+      "managedLoc": 143,
+      "conversionManagedCommit": "0c3810a17369aa9e784e641bb5718e88d46a1874"
     }
   ],
   "behaviorNativeChecksum": 508086,
