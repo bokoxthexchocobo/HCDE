@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 270453
+    "managedCSharpLoc": 270642
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 102448,
+    "convertedThisRunNative": 102646,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 127649,
+    "convertedThisRunManaged": 127838,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 386424,
+    "remainingNative": 386226,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 120975,
+    "convertedBehaviorNative": 121173,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 121662,
-    "convertedBehaviorManaged": 137320,
+    "combinedBehaviorNative": 121860,
+    "convertedBehaviorManaged": 137509,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -42597,6 +42597,33 @@
         "nativeLoc": 241,
         "managedLoc": 305,
         "conversionManagedCommit": "fc7483cee4048ffb9f650a0d04ceb80f7c93bcd0"
+      },
+      {
+        "name": "playlist-chunk1206",
+        "bucket": "conversion",
+        "note": "M3U and PLS playlist load, shuffle, and cursor from s_playlist.cpp (1\u2013198).",
+        "auditSeams": "The playlist text stands in for FileReader. A null text is a failed open and leaves the previous songs in place. NextLine uses a 511-character fgets chunk and signed-char leading skip. Backslashes become slashes after that skip. The directory prefix is ExtractFilePath and includes the trailing slash. This host is not Windows, so a drive letter is not absolute. Shuffle draws from the host rand.",
+        "auditRationale": "UNCredited s_playlist.cpp 1\u2013198 (+198). The file ends at 198. A full tally line scan shows no overlap.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/utility/s_playlist.cpp --start 1 --end 198 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| FPlayList destructor (**33\u201335**) | yes |\n| ChangeList (**37\u2013116**) | yes |\n| NextLine (**118\u2013136**) | yes |\n| Shuffle (**139\u2013149**) | yes |\n| GetNumSongs through GetSong (**151\u2013198**) | yes |\n| Band hull (**1\u2013198**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nA failed open returns false and keeps the current songs. A file that opens is cleared first. Comment and blank lines are skipped. The first real line `[playlist]` selects PLS mode, and only `File` plus digits plus `=` is kept. Reading past the end of that token throws the string-bounds abort. A path that starts with `/`, or whose first slash begins `://`, stays absolute. Every other path is joined to the playlist directory, including an empty `File=` value, which becomes that directory. The destructor body is empty. SetPosition and GetSong treat a negative index as out of range. Advance and Backup wrap, and Backup of an empty list returns -1. Shuffle is an in-place Fisher-Yates over rand and then rewinds to the first song.\n\n| Managed (`VmPlaylist1206Slice.cs`) | Native (`s_playlist.cpp`) |\n|------------------------------------|---------------------------|\n| Playlist | **1\u2013198** |\n| Band hull (exclusive slice) | **1\u2013198** |\n\n### Chunk **1206** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **198** |\n| **Net headline** | **+198** vs post-**1205** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPlaylist1206Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/utility/s_playlist.cpp",
+            "symbol": "FPlayList::ChangeList",
+            "start": 1,
+            "end": 198,
+            "tests": [
+              "VmPlaylist1206SliceTests.ChangeList_JoinsRelativeSongsAndKeepsAFailedOpen",
+              "VmPlaylist1206SliceTests.Cursor_WrapsAndShuffleUsesRand"
+            ]
+          }
+        ],
+        "nativeLoc": 198,
+        "managedLoc": 189,
+        "conversionManagedCommit": "216c10087f6833fc7c29ccffb34539a161197aa7"
       }
     ],
     "behaviorNativeChecksum": 508086,
