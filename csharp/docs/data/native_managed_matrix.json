@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 275611
+    "managedCSharpLoc": 276077
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 106973,
+    "convertedThisRunNative": 107289,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 132807,
+    "convertedThisRunManaged": 133273,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 381899,
+    "remainingNative": 381583,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 125500,
+    "convertedBehaviorNative": 125816,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 126187,
-    "convertedBehaviorManaged": 142478,
+    "combinedBehaviorNative": 126503,
+    "convertedBehaviorManaged": 142944,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -43111,6 +43111,33 @@
         "nativeLoc": 150,
         "managedLoc": 221,
         "conversionManagedCommit": "0ab7633200252e795911b06d43dfb354c23a437e"
+      },
+      {
+        "name": "v-text-chunk1225",
+        "bucket": "conversion",
+        "note": "Text line breaking, broken-line queries, and the generic UI font switch from v_text.cpp (1-316).",
+        "auditSeams": "A single-character color code is not consumed, so the break gives it glyph width, while StringWidth of the stored line skips that same byte. A bracket color is consumed and adds no glyph width. The word-break pointer stays on the first byte of a whitespace run, so a later newline in that run splits there and the following skip eats the newline. A newline clears the carried color unless preservecolor is set. A hard break walks back over UTF-8 continuation bytes. The first glyph is kept even when it is wider than the line. Kerning is added after a glyph is kept and is not part of the overflow test. An out-of-range string query returns a one-byte 0xFF string because the -1 converts through FString(char). UpdateGenericUI uses strtoll base 0, falls the big font back to NewSmallFont, and rewrites only the i and I case-map slots when REQUIRED_CHARACTERS contains U+0130.",
+        "auditRationale": "UNCredited v_text.cpp 1-316 (+316). The file ends at 316. A full tally line scan shows no overlap.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/fonts/v_text.cpp --start 1 --end 316 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| breakit (**40\u201349**) | yes |\n| V_BreakLines (**51\u2013181**) | yes |\n| Serialize (**183\u2013192**) | yes |\n| DBrokenLines (**196\u2013215**) | yes |\n| IMPLEMENT_CLASS (**217\u2013217**) | yes |\n| Count (**219\u2013223**) | yes |\n| StringWidth (**225\u2013230**) | yes |\n| StringAt (**232\u2013238**) | yes |\n| FFont::BreakLines (**240\u2013248**) | yes |\n| CheckFontComplete (**254\u2013259**) | yes |\n| UpdateGenericUI (**261\u2013311**) | yes |\n| ui_generic cvar (**313\u2013316**) | yes |\n| Band hull (**1\u2013316**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nThe color letter is both a glyph and a code. Two color escapes in one line keep the first code. A newline in an open whitespace run splits at the first space of that run.\n\n| Managed (`VmText1225Slice.cs`) | Native (`v_text.cpp`) |\n|---------------------------------|----------------------|\n| Line break, queries, and generic UI | **1\u2013316** |\n| Band hull (exclusive slice) | **1\u2013316** |\n\n### Chunk **1225** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **316** |\n| **Net headline** | **+316** vs post-**1224** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmText1225Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/fonts/v_text.cpp",
+            "symbol": "V_BreakLines",
+            "start": 1,
+            "end": 316,
+            "tests": [
+              "VmText1225SliceTests.Break_WrapsColorUtf8AndRejectsABadIndex",
+              "VmText1225SliceTests.Ui_ParsesStrtollAndFallsBackToTheStockFont"
+            ]
+          }
+        ],
+        "nativeLoc": 316,
+        "managedLoc": 466,
+        "conversionManagedCommit": "bfb426af33cd96853d17854a9bfdb9ad747a1d57"
       }
     ],
     "behaviorNativeChecksum": 508086,
