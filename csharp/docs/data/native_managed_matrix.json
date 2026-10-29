@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 278026
+    "managedCSharpLoc": 278378
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 109147,
+    "convertedThisRunNative": 109450,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 135222,
+    "convertedThisRunManaged": 135574,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 379725,
+    "remainingNative": 379422,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 127674,
+    "convertedBehaviorNative": 127977,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 128361,
-    "convertedBehaviorManaged": 144893,
+    "combinedBehaviorNative": 128664,
+    "convertedBehaviorManaged": 145245,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -43381,6 +43381,33 @@
         "nativeLoc": 203,
         "managedLoc": 168,
         "conversionManagedCommit": "ea28c8f2af9fde89f68a92391f53df378ba8da05"
+      },
+      {
+        "name": "engine-cmds-chunk1235",
+        "bucket": "conversion",
+        "note": "Quit, exit, logfile, directory and wad listing, md5sum, and printlocalized from c_enginecmds.cpp (1-303).",
+        "auditSeams": "Quit and exit call ConsoleEndoom and throw CExitEvent(0). print uses CheckString and reports an unknown name; a missing GetString returns the name when developer is 0. exec stops at the first file that fails. logfile closes an open log before opening the next one. The append flag is true whenever a third argument is present, including the text 0. fopen failure prints Could not start log. error and error_fatal use only argv[1]. crashout is compiled on this Linux build; the null store is logged as a fault and is not performed. dir uses NicePath for an argument and I_GetCWD otherwise. On this host a backslash is not a separator. A base name containing * or ? keeps that pattern and uses the directory portion; otherwise the pattern is * and the scan path is the whole path. Directories print at level 200 and files at level 2. wdir lists every lump unless argc is exactly 2, and a missing wad returns before the list. md5sum prints the usage and still walks the file arguments. Each file is read in 8192-byte chunks into the chunk 1209 MD5. printlocalized lowercases A-Z only. A tag of length 2 throws on index 2. A longer tag builds MAKE_ID from the first three bytes in little-endian order with a zero fourth byte. A missing language string is not passed to printf.",
+        "auditRationale": "UNCredited c_enginecmds.cpp 1-303 (+303). The file ends at 303. A full tally line scan shows no overlap.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/console/c_enginecmds.cpp --start 1 --end 303 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Quit and exit (**52\u201362**) | yes |\n| String-table print (**69\u201385**) | yes |\n| Exec stop on the first miss (**87\u2013100**) | yes |\n| Logfile open and append bit (**102\u2013130**) | yes |\n| Error and fatal usage (**132\u2013154**) | yes |\n| Crashout fault, store not performed (**165\u2013170**) | yes |\n| Directory wildcard split (**173\u2013213**) | yes |\n| Wad directory (**223\u2013243**) | yes |\n| md5sum 8192-byte reads (**253\u2013284**) | yes |\n| printlocalized language id (**286\u2013303**) | yes |\n| Band hull (**1\u2013303**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nA third logfile argument turns append on even when the text is 0. A path with no wildcard scans that path with pattern star. Only a forward slash splits the path on this build. wdir with any argc other than 2 lists every lump. A two-byte language tag hits the string bounds check and does not fall through to GetString. crashout records the null store and returns.\n\n| Managed (`VmEngineCmds1235Slice.cs`) | Native (`c_enginecmds.cpp`) |\n|---------------------------------------|------------------------------|\n| Commands through printlocalized | **1\u2013303** |\n| Band hull (exclusive slice) | **1\u2013303** |\n\n### Chunk **1235** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **303** |\n| **Net headline** | **+303** vs post-**1234** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmEngineCmds1235Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/console/c_enginecmds.cpp",
+            "symbol": "execLogfile",
+            "start": 1,
+            "end": 303,
+            "tests": [
+              "VmEngineCmds1235SliceTests.Quit_PrintsAndStopsTheLog",
+              "VmEngineCmds1235SliceTests.Dir_ListsWildcardsAndHashesFiles"
+            ]
+          }
+        ],
+        "nativeLoc": 303,
+        "managedLoc": 352,
+        "conversionManagedCommit": "87e2751abe0af4c6681b7d658b968c7d0fd73967"
       }
     ],
     "behaviorNativeChecksum": 508086,
