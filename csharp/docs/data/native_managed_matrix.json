@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 264190
+    "managedCSharpLoc": 264357
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 97816,
+    "convertedThisRunNative": 98034,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 121386,
+    "convertedThisRunManaged": 121553,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 391056,
+    "remainingNative": 390838,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 116343,
+    "convertedBehaviorNative": 116561,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 117030,
-    "convertedBehaviorManaged": 131057,
+    "combinedBehaviorNative": 117248,
+    "convertedBehaviorManaged": 131224,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -41905,6 +41905,34 @@
         "nativeLoc": 230,
         "managedLoc": 237,
         "conversionManagedCommit": "ec42bac904531473a8396bb65216f0b77f56ccc5"
+      },
+      {
+        "name": "t-func-actor-names-chunk1181",
+        "bucket": "conversion",
+        "note": "Doom actor-name table and the static script RNG from t_func.cpp (1\u2013218).",
+        "auditSeams": "T_GetMobjType at 219 is chunk 837. The actor-class fill loop at 4019 is chunk 851. This slice only records the name table, the null class slots, and the FScript RNG name.",
+        "auditRationale": "UNCredited t_func.cpp 1\u2013218 (+218). The table closes at 201. ActorTypes is declared at 203. T_GetMobjType starts at 219. A full tally line scan shows no overlap.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 1 --end 218 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| pr_script FScript (**48\u201348**) | yes |\n| ActorNames_init (**60\u2013201**) | yes |\n| ActorTypes null slots (**203\u2013203**) | yes |\n| Band hull (**1\u2013218**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **219\u2013245** | T_GetMobjType stays chunk 837 |\n| **4017\u20134231** | InitFunctions fill stays chunk 851 |\n\nThe table is the original Doom actor order, 139 names, index 0 DoomPlayer through index 138 PointPuller. Cyberdemon is index 21 and Slalagtite is index 97. ActorTypes has one slot per name and static storage starts null. The script RNG stream is named FScript.\n\n| Managed (`VmTFuncActorNames1181Slice.cs`) | Native (`t_func.cpp`) |\n|------------------------------------------------|----------------------|\n| Actor names, null slots, and FScript | **1\u2013218** |\n| Band hull (exclusive slice) | **1\u2013218** |\n\n### Chunk **1181** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **218** |\n| **Net headline** | **+218** vs post-**1180** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmTFuncActorNames1181Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "ActorNames_init",
+            "start": 1,
+            "end": 218,
+            "tests": [
+              "VmTFuncActorNames1181SliceTests.ActorNames_KeepTheOriginalDoomOrder",
+              "VmTFuncActorNames1181SliceTests.ActorTypes_StartNullWithOneSlotPerName",
+              "VmTFuncActorNames1181SliceTests.ScriptRandom_UsesTheFScriptStream"
+            ]
+          }
+        ],
+        "nativeLoc": 218,
+        "managedLoc": 167,
+        "conversionManagedCommit": "dd5feb0553eb3bb75e26e908beec7d4f040e14fe"
       }
     ],
     "behaviorNativeChecksum": 508086,
