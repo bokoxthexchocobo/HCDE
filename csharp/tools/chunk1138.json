@@ -1,0 +1,29 @@
+[
+  {
+    "name": "am-map-wall-pass-chunk1138",
+    "bucket": "conversion",
+    "note": "Trigger and lock probes and the wall pass through the Boom secret color from `am_map.cpp` (**2551–2700**); follows **1137**.",
+    "auditSeams": "Special-info lookup, cheat-mode, and displacement offsets stay host-supplied. Unexplored-secret coloring begins at **2705**.",
+    "auditRationale": "UNCredited **`am_map.cpp`** **2551–2700** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 2551 --end 2700` and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "Trigger filtering, lock arguments, portal passes, and the wall choice match native; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Exit-secret arm (**2551**) | yes |\n| `AM_isTriggerBoundary` (**2555–2573**) | yes |\n| `AM_isLockBoundary` (**2576–2621**) | yes |\n| Portal passes, offsets, rotation (**2631–2677**) | yes |\n| Mapped, dontdraw, style, portal, Boom secret (**2679–2700**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2401–2550** | floor boundary already credited by **1137** |\n| **2701+** | secret-sector draw and the rest of `drawWalls` |\n\n`am_showtriggerlines == 1` hides door specials **10**, **11**, **12**, **14**, **202**, and **249**. Lock args: `FS_Execute` **158** uses `args[2]`; `Door_Animated` **14** and `Door_LockedRaise` **13** use `args[3]`; other locks use `args[4]`. A non-zero `locknumber` wins before the special probe. `ML_DONTDRAW` is **0x80**, `ML_MAPPED` is **0x100**, `WALLF_POLYOBJ` is **64**, and `AMLS_COUNT` is **14**. Style and dontdraw suppression apply when `am_cheat` is **0** or at least **4**.\n\n| Managed (`VmAmMapWallPass1138Slice.cs`) | Native (`am_map.cpp`) |\n|------------------------------------------|---------------------|\n| Triggers, locks, wall pass | **2551–2700** |\n| Band hull (exclusive slice) | **2551–2700** |\n\n### Chunk **1138** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1137** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmAmMapWallPass1138Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "Automap wall pass",
+        "start": 2551,
+        "end": 2700,
+        "tests": [
+          "VmAmMapWallPass1138SliceTests.Triggers_HideUnknownSpecialsAndPlainDoorsInModeOne",
+          "VmAmMapWallPass1138SliceTests.LockBoundary_UsesTheLineLockOrTheSpecialArgument",
+          "VmAmMapWallPass1138SliceTests.PortalPasses_SkipTheMapGroupAndPlaceTheOffset",
+          "VmAmMapWallPass1138SliceTests.ChooseWall_StopsAtStylePortalOrBoomSecret"
+        ]
+      }
+    ]
+  }
+]
