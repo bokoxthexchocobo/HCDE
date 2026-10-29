@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 103095,
+  "convertedThisRunNative": 103331,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 128351,
+  "convertedThisRunManaged": 128578,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 385777,
+  "remainingNative": 385541,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 121622,
+  "convertedBehaviorNative": 121858,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 122309,
-  "convertedBehaviorManaged": 138022,
+  "combinedBehaviorNative": 122545,
+  "convertedBehaviorManaged": 138249,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -42662,6 +42662,33 @@
       "nativeLoc": 226,
       "managedLoc": 309,
       "conversionManagedCommit": "3b22eb96fa739b861029986221e1689c93833e13"
+    },
+    {
+      "name": "md5-chunk1209",
+      "bucket": "conversion",
+      "note": "MD5 init, update, final, and the transform from md5.cpp (1\u2013236).",
+      "auditSeams": "byteSwap is compiled out on this little-endian host. Words are stored little endian. Final wipes the context.",
+      "auditRationale": "UNCredited md5.cpp 1\u2013236 (+236). The file ends at 236. A full tally line scan shows no overlap.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/thirdparty/md5.cpp --start 1 --end 236 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| byteSwap (**24\u201336**) | yes |\n| MD5Context::Init (**42\u201351**) | yes |\n| MD5Context::Update (**57\u201394**) | yes |\n| MD5Context::Final (**100\u2013130**) | yes |\n| F1 through F4 and MD5STEP (**136\u2013144**) | yes |\n| MD5Transform (**151\u2013233**) | yes |\n| Band hull (**1\u2013236**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nInit loads the four MD5 constants and clears the byte count. Update adds the length with a carry into the high word, fills the open 64-byte block, and transforms every full block. Final appends the 0x80 pad, an extra block when the pad does not fit, and the bit length, then writes the digest in little-endian bytes and zeroes the context. A later Final without Init therefore does not repeat the empty digest. A null buffer with a positive length is the native read. A zero length updates nothing.\n\n| Managed (`VmMd51209Slice.cs`) | Native (`md5.cpp`) |\n|-------------------------------|--------------------|\n| MD5 | **1\u2013236** |\n| Band hull (exclusive slice) | **1\u2013236** |\n\n### Chunk **1209** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **236** |\n| **Net headline** | **+236** vs post-**1208** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmMd51209Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/thirdparty/md5.cpp",
+          "symbol": "MD5Context::Update",
+          "start": 1,
+          "end": 236,
+          "tests": [
+            "VmMd51209SliceTests.Final_MatchesTheRfcVectorsAndClearsTheContext",
+            "VmMd51209SliceTests.Update_ConcatenatesChunksAndAZeroLengthCall"
+          ]
+        }
+      ],
+      "nativeLoc": 236,
+      "managedLoc": 227,
+      "conversionManagedCommit": "16b33ec7ad2b2a7095a7afa2e296e5ea28727fd5"
     }
   ],
   "behaviorNativeChecksum": 508086,
