@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 85520,
+  "convertedThisRunNative": 85670,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 106767,
+  "convertedThisRunManaged": 106903,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 403352,
+  "remainingNative": 403202,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 104047,
+  "convertedBehaviorNative": 104197,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 104734,
-  "convertedBehaviorManaged": 116438,
+  "combinedBehaviorNative": 104884,
+  "convertedBehaviorManaged": 116574,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -40084,6 +40084,36 @@
       "nativeLoc": 150,
       "managedLoc": 122,
       "conversionManagedCommit": "b1fd993a2e702076a43de6a5659c102934f3330b"
+    },
+    {
+      "name": "pmobj-player-missile-chunk1120",
+      "bucket": "conversion",
+      "note": "`P_SpawnSubMissile` pitch tail and `P_SpawnPlayerMissile` aim, floor clamp, and velocity mode from `p_mobj.cpp` (**8201\u20138350**); follows **1119**.",
+      "auditSeams": "`P_AimLineAttack`, `Spawn`, and coop missile registration remain host-injected; the 1e37 angle sentinel is past **8350**.",
+      "auditRationale": "UNCredited **`p_mobj.cpp`** **8201\u20138350** (+150) with no conversion or recognition line overlap.",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 8201 --end 8350` and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "Autoaim sweep order and floor clamp follow native control flow; managed LOC exceeds 50%.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Sub-missile pitch speed (**8206\u20138207**) | yes |\n| Missing source/type and local suppress (**8236\u20138250**) | yes |\n| Clear ignore-noautoaim (**8253**) | yes |\n| Weapon no-autoaim keeps pitch (**8263\u20138268**) | yes |\n| Three-angle sweep and freelook break (**8276\u20138298**) | yes |\n| Spawn Z floor clamp (**8302\u20138310**) | yes |\n| Hugger vs 3D velocity and spectral (**8318\u20138329**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **8208**, **8313**, **8338** | host net/spawn |\n| **8214\u20138219**, **8344\u20138350** | VM thunk / parameter list |\n| **8357+** | angle sentinel outside hull |\n\n| Managed (`VmPMobjPlayerMissile1120Slice.cs`) | Native (`p_mobj.cpp`) |\n|---------------------------------------------|---------------------|\n| Sub-missile pitch + player missile aim | **8201\u20138350** |\n| Band hull (exclusive slice) | **8201\u20138350** |\n\n### Chunk **1120** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1119** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjPlayerMissile1120Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "SpawnSubMissile tail and SpawnPlayerMissile",
+          "start": 8201,
+          "end": 8350,
+          "tests": [
+            "VmPMobjPlayerMissile1120SliceTests.SubMissileVerticalSpeed_NegatesSine",
+            "VmPMobjPlayerMissile1120SliceTests.AimRange_UsesSixteenTilesWhenUnset",
+            "VmPMobjPlayerMissile1120SliceTests.RunSpawnPlayerMissile_KeepsPlayerPitchWhenWeaponDisablesAutoAim",
+            "VmPMobjPlayerMissile1120SliceTests.RunSpawnPlayerMissile_ClampsSpawnBelowFloor"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 136,
+      "conversionManagedCommit": "4996e5ff62861f7d1f34dd61a1576af7ffe87298"
     }
   ],
   "behaviorNativeChecksum": 508086,
