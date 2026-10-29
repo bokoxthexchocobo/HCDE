@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 101178,
+  "convertedThisRunNative": 101328,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 126197,
+  "convertedThisRunManaged": 126345,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 387694,
+  "remainingNative": 387544,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 119705,
+  "convertedBehaviorNative": 119855,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 120392,
-  "convertedBehaviorManaged": 135868,
+  "combinedBehaviorNative": 120542,
+  "convertedBehaviorManaged": 136016,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -42392,6 +42392,33 @@
       "nativeLoc": 167,
       "managedLoc": 248,
       "conversionManagedCommit": "74fa42ca09c329547b51c566435a55c66a5e5127"
+    },
+    {
+      "name": "render-style-chunk1199",
+      "bucket": "conversion",
+      "note": "Legacy render styles, alpha, visibility, and fuzz adjustment from renderstyle.cpp (1\u2013150).",
+      "auditSeams": "r_drawtrans and r_drawfuzz are the two cvars declared in this file. CheckFuzz returns the adjusted style instead of mutating a caller-owned object. The legacy table is the nineteen styles in source order.",
+      "auditRationale": "UNCredited renderstyle.cpp 1\u2013150 (+150). The file ends at 150. A full tally line scan shows no overlap.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/engine/renderstyle.cpp --start 1 --end 150 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| r_drawtrans and r_drawfuzz (**30\u201331**) | yes |\n| LegacyRenderStyles (**35\u201356**) | yes |\n| GetAlpha (**58\u201368**) | yes |\n| FRenderStyle::IsVisible (**79\u201399**) | yes |\n| FRenderStyle::CheckFuzz (**110\u2013150**) | yes |\n| Band hull (**1\u2013150**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nGetAlpha returns 0, 1, the passed alpha, or one minus that alpha. Any other selector returns one half. IsVisible rejects STYLEOP_None. Add and reverse-subtract force alpha to 1 when STYLEF_Alpha1 is set and otherwise clamp it to 0 through 1. Those ops are visible when the source factor is not 0 or the destination factor is not 1. Every other blend op is visible. CheckFuzz leaves ordinary ops unchanged. Fuzz-or-add, fuzz-or-sub, and fuzz-or-reverse-sub become add, sub, or reverse-sub when translucent drawing is on and r_drawfuzz is 0. Otherwise r_drawfuzz 2 selects shadow and every other value selects fuzz.\n\n| Managed (`VmRenderStyle1199Slice.cs`) | Native (`renderstyle.cpp`) |\n|---------------------------------------|----------------------------|\n| Render style | **1\u2013150** |\n| Band hull (exclusive slice) | **1\u2013150** |\n\n### Chunk **1199** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1198** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmRenderStyle1199Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/renderstyle.cpp",
+          "symbol": "FRenderStyle::IsVisible",
+          "start": 1,
+          "end": 150,
+          "tests": [
+            "VmRenderStyle1199SliceTests.LegacyTable_MatchesNativeStylesAndAlpha",
+            "VmRenderStyle1199SliceTests.IsVisible_AndCheckFuzz_FollowBlendAndCvars"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 148,
+      "conversionManagedCommit": "36ada46babc8308891a4f43ed4d9e20db9612e6a"
     }
   ],
   "behaviorNativeChecksum": 508086,
