@@ -1,0 +1,26 @@
+[
+  {
+    "name": "animlib-chunk1220",
+    "bucket": "conversion",
+    "note": "DeluxePaint large-page lookup and frame decoder from animlib.cpp (1-290).",
+    "auditSeams": "LittleShort and LittleLong are identity on this little-endian host, and the load writes those values back into the caller buffer. DrawFrame paints from the stored frame through the frame before the request, then stores the request. A short opcode of 0x80 falls through to the long opcode. Skipped pixels keep the previous frame. An odd preamble length skips one extra byte.",
+    "auditRationale": "UNCredited animlib.cpp 1-290 (+290). The file ends at 290. A full tally line scan shows no overlap.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/thirdparty/animlib.cpp --start 1 --end 290 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| findpage (**45–79**) | yes |\n| loadpage (**89–98**) | yes |\n| decodeframe (**115–174**) | yes |\n| renderframe (**184–203**) | yes |\n| drawframe (**213–217**) | yes |\n| ANIM_LoadAnim (**220–272**) | yes |\n| ANIM_DrawFrame (**275–288**) | yes |\n| Band hull (**1–290**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nA bad magic or a file shorter than the header, the 128-byte gap, and 768 palette bytes returns -1 before any state change. Too many page descriptors returns -2 after the header fields are stored. Zero records still copies the palette and returns -1. The first request for frame N paints frames 0 through N-1.\n\n| Managed (`VmAnimLib1220Slice.cs`) | Native (`animlib.cpp`) |\n|------------------------------------|------------------------|\n| Large-page anim | **1–290** |\n| Band hull (exclusive slice) | **1–290** |\n\n### Chunk **1220** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **290** |\n| **Net headline** | **+290** vs post-**1219** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmAnimLib1220Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/thirdparty/animlib.cpp",
+        "symbol": "ANIM_LoadAnim",
+        "start": 1,
+        "end": 290,
+        "tests": [
+          "VmAnimLib1220SliceTests.Load_RejectsAShortFileAndReadsThePalette",
+          "VmAnimLib1220SliceTests.DrawFrame_DecodesFromThePreviousFrameAndKeepsSkippedPixels"
+        ]
+      }
+    ]
+  }
+]
