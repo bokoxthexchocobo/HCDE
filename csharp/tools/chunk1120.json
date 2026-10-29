@@ -1,0 +1,29 @@
+[
+  {
+    "name": "pmobj-player-missile-chunk1120",
+    "bucket": "conversion",
+    "note": "`P_SpawnSubMissile` pitch tail and `P_SpawnPlayerMissile` aim, floor clamp, and velocity mode from `p_mobj.cpp` (**8201–8350**); follows **1119**.",
+    "auditSeams": "`P_AimLineAttack`, `Spawn`, and coop missile registration remain host-injected; the 1e37 angle sentinel is past **8350**.",
+    "auditRationale": "UNCredited **`p_mobj.cpp`** **8201–8350** (+150) with no conversion or recognition line overlap.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 8201 --end 8350` and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "Autoaim sweep order and floor clamp follow native control flow; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Sub-missile pitch speed (**8206–8207**) | yes |\n| Missing source/type and local suppress (**8236–8250**) | yes |\n| Clear ignore-noautoaim (**8253**) | yes |\n| Weapon no-autoaim keeps pitch (**8263–8268**) | yes |\n| Three-angle sweep and freelook break (**8276–8298**) | yes |\n| Spawn Z floor clamp (**8302–8310**) | yes |\n| Hugger vs 3D velocity and spectral (**8318–8329**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **8208**, **8313**, **8338** | host net/spawn |\n| **8214–8219**, **8344–8350** | VM thunk / parameter list |\n| **8357+** | angle sentinel outside hull |\n\n| Managed (`VmPMobjPlayerMissile1120Slice.cs`) | Native (`p_mobj.cpp`) |\n|---------------------------------------------|---------------------|\n| Sub-missile pitch + player missile aim | **8201–8350** |\n| Band hull (exclusive slice) | **8201–8350** |\n\n### Chunk **1120** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1119** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjPlayerMissile1120Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "SpawnSubMissile tail and SpawnPlayerMissile",
+        "start": 8201,
+        "end": 8350,
+        "tests": [
+          "VmPMobjPlayerMissile1120SliceTests.SubMissileVerticalSpeed_NegatesSine",
+          "VmPMobjPlayerMissile1120SliceTests.AimRange_UsesSixteenTilesWhenUnset",
+          "VmPMobjPlayerMissile1120SliceTests.RunSpawnPlayerMissile_KeepsPlayerPitchWhenWeaponDisablesAutoAim",
+          "VmPMobjPlayerMissile1120SliceTests.RunSpawnPlayerMissile_ClampsSpawnBelowFloor"
+        ]
+      }
+    ]
+  }
+]
