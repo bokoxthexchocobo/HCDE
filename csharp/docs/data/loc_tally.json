@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 100846,
+  "convertedThisRunNative": 100691,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 125765,
+  "convertedThisRunManaged": 125543,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 388026,
+  "remainingNative": 388181,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 119373,
+  "convertedBehaviorNative": 119218,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 120060,
-  "convertedBehaviorManaged": 135436,
+  "combinedBehaviorNative": 119905,
+  "convertedBehaviorManaged": 135214,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -42311,33 +42311,6 @@
       "nativeLoc": 186,
       "managedLoc": 258,
       "conversionManagedCommit": "d251286198265cec6c9053566d0dc2c1ab427f9b"
-    },
-    {
-      "name": "stb-texture-chunk1196",
-      "bucket": "conversion",
-      "note": "stb_image probe, BGRA copy, and column-major palette from stbtexture.cpp (1\u2013155).",
-      "auditSeams": "stbi_info and stbi_load are host results. The slice seeks to the start, copies RGBA into a BGRA bitmap, and frees nothing itself. A missing decode leaves the bitmap unchanged and still returns -1. Alpha 0 is not written. The palette step then treats alpha below 128 as index 0 and does not pass that alpha into the color match.",
-      "auditRationale": "UNCredited stbtexture.cpp 1\u2013155 (+155). The file ends at 155. A full tally line scan shows no overlap.",
-      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/textures/formats/stbtexture.cpp --start 1 --end 155 and a full tally line scan \u2192 no overlap.",
-      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Callbacks (**62\u201366**) | yes |\n| StbImage_TryCreate (**73\u201384**) | yes |\n| FStbTexture constructor (**92\u201399**) | yes |\n| FStbTexture::CreatePalettedPixels (**107\u2013138**) | yes |\n| FStbTexture::CopyPixels (**146\u2013155**) | yes |\n| Band hull (**1\u2013155**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nTryCreate rewinds the reader and keeps a texture only when the probe result is 1. The constructor stores the lump and clears both offsets. CopyPixels opens that lump, and on a decode copies RGBA into BGRA with the source row stride. Alpha 0 stays untouched. The copy is clipped to the bitmap. The call returns -1 whether or not a decode exists. CreatePalettedPixels builds a zeroed bitmap at the texture size, copies into it, then walks BGRA in row order and writes palette indices in column order. Alpha below 128 becomes 0. Otherwise the color uses the 256k cube, or luminance when the conversion requests it. That luminance multiplies by a full alpha of 255, so a visible pixel keeps its luminance.\n\n| Managed (`VmStbTexture1196Slice.cs`) | Native (`stbtexture.cpp`) |\n|--------------------------------------|---------------------------|\n| stb texture | **1\u2013155** |\n| Band hull (exclusive slice) | **1\u2013155** |\n\n### Chunk **1196** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **155** |\n| **Net headline** | **+155** vs post-**1195** |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmStbTexture1196Slice.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/common/textures/formats/stbtexture.cpp",
-          "symbol": "FStbTexture::CreatePalettedPixels",
-          "start": 1,
-          "end": 155,
-          "tests": [
-            "VmStbTexture1196SliceTests.TryCreate_SeeksAndKeepsOnlyASuccessfulProbe",
-            "VmStbTexture1196SliceTests.CreatePalettedPixels_TransposesClippedRgbaAndZerosLowAlpha"
-          ]
-        }
-      ],
-      "nativeLoc": 155,
-      "managedLoc": 222,
-      "conversionManagedCommit": "0375aedc0129afad3cecf2d8e082a5b40bbe6e50"
     }
   ],
   "behaviorNativeChecksum": 508086,
