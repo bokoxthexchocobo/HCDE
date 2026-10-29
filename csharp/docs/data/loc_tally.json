@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 105153,
+  "convertedThisRunNative": 105469,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 130480,
+  "convertedThisRunManaged": 130728,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 383719,
+  "remainingNative": 383403,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 123680,
+  "convertedBehaviorNative": 123996,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 124367,
-  "convertedBehaviorManaged": 140151,
+  "combinedBehaviorNative": 124683,
+  "convertedBehaviorManaged": 140399,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -42932,6 +42932,33 @@
       "nativeLoc": 210,
       "managedLoc": 201,
       "conversionManagedCommit": "0f5bafd764f1c4737cfcdb2082575f98542ecf25"
+    },
+    {
+      "name": "buttons-chunk1219",
+      "bucket": "conversion",
+      "note": "Button slots, name lookup, and axis clamp from c_buttons.cpp (1-316).",
+      "auditSeams": "The double-click bit is masked with 0x7FFF. Key 0 is the console force path. FName lookup is ASCII case-fold and no-create, so None and an unknown name both return -1. Duplicate names keep the later index. CheckWildcards, key bindings, and the axis table are caller-supplied. The 32-byte matcher keeps 31 characters while the printed command uses the full name. A name longer than 14 characters overflows the native 16-byte strcpy and the port passes the full name.",
+      "auditRationale": "UNCredited c_buttons.cpp 1-316 (+316). The file ends at 316. A full tally line scan shows no overlap.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/console/c_buttons.cpp --start 1 --end 316 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| SetButtons (**40\u201351**) | yes |\n| ListActionCommands (**59\u201380**) | yes |\n| FindButtonIndex (**89\u2013100**) | yes |\n| Reset triggers and states (**109\u2013133**) | yes |\n| GetAxes (**141\u2013153**) | yes |\n| PressKey (**161\u2013199**) | yes |\n| ReleaseKey (**207\u2013249**) | yes |\n| AddAxes (**257\u2013296**) | yes |\n| AddButtonTabCommands (**304\u2013316**) | yes |\n| Band hull (**1\u2013316**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nThe downward scan keeps the lowest free slot. A repeated key does not change the button. The seventh key prints the overflow line and leaves the slots unchanged. Releasing one of several keys sets the up flag and leaves the button down. The axis sum uses only values greater than zero, then clamps to the unit interval with a comparison that leaves a NaN unchanged.\n\n| Managed (`VmButtons1219Slice.cs`) | Native (`c_buttons.cpp`) |\n|------------------------------------|-------------------------|\n| Button map | **1\u2013316** |\n| Band hull (exclusive slice) | **1\u2013316** |\n\n### Chunk **1219** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **316** |\n| **Net headline** | **+316** vs post-**1218** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmButtons1219Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/console/c_buttons.cpp",
+          "symbol": "FButtonStatus::PressKey",
+          "start": 1,
+          "end": 316,
+          "tests": [
+            "VmButtons1219SliceTests.PressKey_FillsTheLowestSlotAndMasksTheDoubleClickBit",
+            "VmButtons1219SliceTests.FindAndAxes_FoldNamesAndClampTheAxis"
+          ]
+        }
+      ],
+      "nativeLoc": 316,
+      "managedLoc": 248,
+      "conversionManagedCommit": "158fe54b0add8982d46b97836d93e572de7cb709"
     }
   ],
   "behaviorNativeChecksum": 508086,
