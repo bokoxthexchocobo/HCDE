@@ -306,12 +306,16 @@ def require_explicit_conversion_buckets(chunks: list[dict]) -> None:
             )
 
 
-def write_loc_tally_json(path: Path, loc_tally: dict) -> None:
-    """Atomic replace so parallel readers never parse a partial loc_tally.json."""
-    text = json.dumps(loc_tally, indent=2) + "\n"
-    tmp = path.with_name(f"{path.name}.tmp")
+def write_text_atomic(path: Path, text: str) -> None:
+    """Atomic replace so parallel readers never parse a partial file."""
+    tmp = path.with_name(f".{path.name}.tmp")
     tmp.write_text(text, encoding="utf-8")
     tmp.replace(path)
+
+
+def write_loc_tally_json(path: Path, loc_tally: dict) -> None:
+    """Atomic replace so parallel readers never parse a partial loc_tally.json."""
+    write_text_atomic(path, json.dumps(loc_tally, indent=2) + "\n")
 
 
 def sync_loc_tally(loc_tally: dict) -> dict:
@@ -528,9 +532,9 @@ def main() -> int:
     loc_tally = sync_loc_tally(loc_tally)
     matrix = build_matrix(loc_tally)
     DATA.mkdir(parents=True, exist_ok=True)
-    (DATA / "native_managed_matrix.json").write_text(json.dumps(matrix, indent=2) + "\n", encoding="utf-8")
-    (DOCS / "HCDE_CSHARP_NATIVE_MANAGED_MATRIX.md").write_text(render_markdown(matrix), encoding="utf-8")
-    tally_path.write_text(json.dumps(loc_tally, indent=2) + "\n", encoding="utf-8")
+    write_text_atomic(DATA / "native_managed_matrix.json", json.dumps(matrix, indent=2) + "\n")
+    write_text_atomic(DOCS / "HCDE_CSHARP_NATIVE_MANAGED_MATRIX.md", render_markdown(matrix))
+    write_loc_tally_json(tally_path, loc_tally)
     print(f"Wrote matrix with {len(matrix['acsPcode'])} ACS opcodes")
     return 0
 
