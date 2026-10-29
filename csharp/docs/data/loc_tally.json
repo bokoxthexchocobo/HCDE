@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 96704,
+  "convertedThisRunNative": 97072,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 120061,
+  "convertedThisRunManaged": 120471,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 392168,
+  "remainingNative": 391800,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 115231,
+  "convertedBehaviorNative": 115599,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 115918,
-  "convertedBehaviorManaged": 129732,
+  "combinedBehaviorNative": 116286,
+  "convertedBehaviorManaged": 130142,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -41777,6 +41777,34 @@
       "nativeLoc": 203,
       "managedLoc": 345,
       "conversionManagedCommit": "1e79246cae25507635000b45f76e54333bc82231"
+    },
+    {
+      "name": "po-man-rotate-poly-chunk1177",
+      "bucket": "conversion",
+      "note": "Poly thinker registration, lifecycle, rotate tick, and EV_RotatePoly from po_man.cpp (1\u2013368).",
+      "auditSeams": "FPolyMirrorIterator::NextMirror at 1805 stays a host list. RotatePolyobj, SetInterpolation, and the sound sequencer are host callbacks. DPolyDoor::Tick at 527 is chunk 671.",
+      "auditRationale": "UNCredited po_man.cpp 1\u2013368 (+368). DMovePoly::Tick starts at 376. A full tally line scan shows no overlap. 369\u2013526 is the next slice.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/po_man.cpp --start 1 --end 368 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Class registration and DPolyAction lifecycle (**141\u2013193**) | yes |\n| DRotatePoly, DMovePoly, DMovePolyTo, DPolyDoor construct and serialize (**201\u2013280**) | yes |\n| DRotatePoly::Tick (**290\u2013313**) | yes |\n| EV_RotatePoly (**322\u2013368**) | yes |\n| Band hull (**1\u2013368**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **369\u2013526** | move and move-to thinkers are the next slice |\n| **527\u2013625** | DPolyDoor::Tick is chunk **671** |\n| **1781\u20131842** | mirror iterator body stays a host list |\n\nRegistration records DPolyAction with its interpolation pointer and the four derived classes. Construct stores the poly, zeroes speed and distance, and takes an interpolation reference. Destroy clears specialdata only when it still points at this thinker, drops that reference, and chains the base destroy. Stop stops the sequence and then destroys.\n\nThe rotate tick returns when the poly is missing. A non-perpetual distance shorter than the absolute speed clamps the signed speed to that distance before the rotate. A failed rotate keeps the distance. Perpetual distance \u22121 rotates and returns without subtracting. Any other success subtracts the absolute speed and, when the distance is exactly zero, stops the sequence and destroys.\n\nEV_RotatePoly prints the invalid-poly message and returns false when the id is missing. The host mirror list is walked from the current poly. A busy or blocked poly stops the walk unless override is set. Linked polyportals (portal flag 2) stop the walk before a thinker is created. Otherwise a rotate thinker is stored, the poly is unblocked, and the distance is a perpetual \u22121 for byte angle 255, byteAngle\u00d7(90/64) for any other non-zero byte, or 360 when the byte is zero. Speed is speed\u00d7direction\u00d7(90/512). The door sequence starts at mode 0, then the direction sign flips for the next mirror. The call returns whether any thinker was created.\n\n| Managed (`VmPoManRotate1177Slice.cs`) | Native (`po_man.cpp`) |\n|----------------------------------------|------------------------|\n| Registration, lifecycle, rotate tick, EV_RotatePoly | **1\u2013368** |\n| Band hull (exclusive slice) | **1\u2013368** |\n\n### Chunk **1177** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **368** |\n| **Net headline** | **+368** vs post-**1176** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPoManRotate1177Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "EV_RotatePoly",
+          "start": 1,
+          "end": 368,
+          "tests": [
+            "VmPoManRotate1177SliceTests.Lifecycle_RegistersClassesAndClearsThePoly",
+            "VmPoManRotate1177SliceTests.RotateTick_ClampsSpeedAndStopsAtZero",
+            "VmPoManRotate1177SliceTests.RotatePoly_RejectsBusyMirrorsAndScalesTheAngle"
+          ]
+        }
+      ],
+      "nativeLoc": 368,
+      "managedLoc": 410,
+      "conversionManagedCommit": "0b666fed8fba7655979d1e8bd4e9581a1fb0b41f"
     }
   ],
   "behaviorNativeChecksum": 508086,
