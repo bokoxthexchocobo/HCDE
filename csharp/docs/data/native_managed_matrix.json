@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 300720
+    "managedCSharpLoc": 300952
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 127594,
+    "convertedThisRunNative": 127766,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 157916,
+    "convertedThisRunManaged": 158148,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 361278,
+    "remainingNative": 361106,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 146121,
+    "convertedBehaviorNative": 146293,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 146808,
-    "convertedBehaviorManaged": 167587,
+    "combinedBehaviorNative": 146980,
+    "convertedBehaviorManaged": 167819,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -45360,6 +45360,33 @@
         "nativeLoc": 203,
         "managedLoc": 196,
         "conversionManagedCommit": "13ec7927448ba1fd3c7a859d092b7aa8d23a74c3"
+      },
+      {
+        "name": "gl-renderer-chunk1308",
+        "bucket": "conversion",
+        "note": "Renderer setup, the offscreen framebuffer, and the save-picture buffers from gl_renderer.cpp (1-172).",
+        "auditSeams": "OpenGL object ids come from the host. FlushModels and TexMan.FlushAll are host calls at the start of destroy. The hardware texture bind, the static unbind, and ClearLastMaterial are host calls. Initialize accepts width and height and does not size the buffers.",
+        "auditRationale": "UNCredited gl_renderer.cpp 1-172 (+172). A full tally line scan shows no overlap. The file ends at line 172.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/gl/gl_renderer.cpp --start 1 --end 172 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Constructor (**66\u201369**) | yes |\n| Initialize buffers, shaders, and the VAO (**71\u201392**) | yes |\n| Destructor flush and deletes (**94\u2013113**) | yes |\n| StartOffscreen (**121\u2013131**) | yes |\n| EndOffscreen (**139\u2013142**) | yes |\n| BindToFrameBuffer (**150\u2013158**) | yes |\n| BeginFrame (**166\u2013170**) | yes |\n| Band hull (**1\u2013172**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| OpenGL entry points | host records the call; this band decides when and with which arguments |\n| Hardware texture bodies | callee on the texture; this band passes zeros and the texture size |\n\nThe constructor stores the framebuffer host. Initialize allocates the screen and save buffer objects, points the current buffers at the screen object, and creates the present, checker, column, row, and shadow shaders. It generates a vertex array, binds it, and labels it FGLRenderer.mVAOID. It then stores framebuffer ids of 0 and creates the shader and sampler managers. The width and height arguments are unused. Destroy flushes models and textures first. It deletes a live shader manager, a live sampler manager, a nonzero framebuffer, and a nonzero vertex array. The vertex array is unbound before it is deleted. It deletes the current buffer object and the save buffer object, then each live present shader. StartOffscreen generates the framebuffer only while its id is 0, queries the current binding, binds the new id, and labels OffscreenFB only on that first bind. Later calls still query and bind, and the method returns true. EndOffscreen binds the queried id. BindToFrameBuffer requires the hardware texture from slot 0 and flags 0, binds or creates it with zeros, unbinds unit 0, clears the last material, and binds the texture to the framebuffer at its width and height. BeginFrame sets up the screen buffers from the screen and scene viewports and the save buffers at 216 by 162.\n\n| Managed (`VmGlRenderer1308Slice.cs`) | Native (`gl_renderer.cpp`) |\n|--------------------------------------|----------------------------|\n| Setup, offscreen, and save buffers | **1\u2013172** |\n| Band hull (exclusive slice) | **1\u2013172** |\n\n### Chunk **1308** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **172** |\n| **Net headline** | **+172** vs post-**1307** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmGlRenderer1308Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/rendering/gl/gl_renderer.cpp",
+            "symbol": "FGLRenderer::Initialize",
+            "start": 1,
+            "end": 172,
+            "tests": [
+              "VmGlRenderer1308SliceTests.Initialize_LabelsTheVaoAndBindsOffscreenOnce",
+              "VmGlRenderer1308SliceTests.Bind_UsesTheBaseLayerAndDestroyBeforeInitOnlyFlushes"
+            ]
+          }
+        ],
+        "nativeLoc": 172,
+        "managedLoc": 232,
+        "conversionManagedCommit": "a2e4ff6722ace90613cb23908bb0eb877acc545a"
       }
     ],
     "behaviorNativeChecksum": 508086,
