@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 120636,
+  "convertedThisRunNative": 120901,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 149835,
+  "convertedThisRunManaged": 150165,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 368236,
+  "remainingNative": 367971,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 139163,
+  "convertedBehaviorNative": 139428,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 139850,
-  "convertedBehaviorManaged": 159506,
+  "combinedBehaviorNative": 140115,
+  "convertedBehaviorManaged": 159836,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -44668,6 +44668,33 @@
       "nativeLoc": 293,
       "managedLoc": 326,
       "conversionManagedCommit": "3ebe450048d9b460e224a7e1948a5f5453c4ce09"
+    },
+    {
+      "name": "aabb-tree-chunk1283",
+      "bucket": "conversion",
+      "note": "Static and dynamic AABB build, longest-axis split, and the moved-line refresh from doom_aabbtree.cpp (1-265).",
+      "auditSeams": "Level lines are host records of the float vertices, the back sector, and the polyobject flag. FindNodePath is included so Update can walk from the stored line point. That walk is not credited.",
+      "auditRationale": "UNCredited doom_aabbtree.cpp 1-265 (+265). A full tally line scan shows no overlap. The file ends at line 265.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/hwrenderer/doom_aabbtree.cpp --start 1 --end 265 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Centroids and the static miss (**23\u201337**) | yes |\n| Dynamic root (**39\u201371**) | yes |\n| One-sided split (**74\u2013107**) | yes |\n| Moved line (**109\u2013155**) | yes |\n| Longest axis (**158\u2013265**) | yes |\n| Band hull (**1\u2013265**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Path walk | companion lookup, not this file |\n\nA level with no one-sided static line returns before the dynamic subtree is built, so a polyobject-only level stays empty. One-sided lines with the polyobject flag and a front sidedef go to the dynamic tree. The same flag without a front sidedef stays static. Two-sided lines are ignored. The dynamic line cursor is taken while the tree-line list is still empty, so it stays zero and a later refresh walks every stored line. Equal axis lengths try X before Y. A centroid on the positive side of the median, including zero, goes left. When both axes leave one side empty, the original order is split in half and the sort buffer is discarded. Children are stored before the parent. A shared root is the union of the static and dynamic roots. A refresh compares the four floats by their bits, so negative zero differs from positive zero. The leaf box becomes the new endpoints, then each parent is the union of its children. An empty path leaves the stored line and the boxes unchanged.\n\n| Managed (`VmAabbTree1283Slice.cs`) | Native (`doom_aabbtree.cpp`) |\n|------------------------------------|------------------------------|\n| Build and refresh | **1\u2013265** |\n| Band hull (exclusive slice) | **1\u2013265** |\n\n### Chunk **1283** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **265** |\n| **Net headline** | **+265** vs post-**1282** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmAabbTree1283Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/rendering/hwrenderer/doom_aabbtree.cpp",
+          "symbol": "DoomLevelAABBTree::DoomLevelAABBTree",
+          "start": 1,
+          "end": 265,
+          "tests": [
+            "VmAabbTree1283SliceTests.Build_SplitsStaticFromPolyAndHalvesATiedAxis",
+            "VmAabbTree1283SliceTests.Update_RefreshesParentsAndLeavesAPointOutsideTheBox"
+          ]
+        }
+      ],
+      "nativeLoc": 265,
+      "managedLoc": 330,
+      "conversionManagedCommit": "84cba42023c537e5105e97def64eda3862d8c6e1"
     }
   ],
   "behaviorNativeChecksum": 508086,
