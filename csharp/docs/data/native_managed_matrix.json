@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 290809
+    "managedCSharpLoc": 291045
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 118950,
+    "convertedThisRunNative": 119221,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 148005,
+    "convertedThisRunManaged": 148241,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 369922,
+    "remainingNative": 369651,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 137477,
+    "convertedBehaviorNative": 137748,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 138164,
-    "convertedBehaviorManaged": 157676,
+    "combinedBehaviorNative": 138435,
+    "convertedBehaviorManaged": 157912,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -44522,6 +44522,33 @@
         "nativeLoc": 255,
         "managedLoc": 369,
         "conversionManagedCommit": "12dc11d1095e35492615b0c77fa2c44943c828ea"
+      },
+      {
+        "name": "lighting-chunk1277",
+        "bucket": "conversion",
+        "note": "Fog table, light level, light color, and the fog-boundary check from hw_lighting.cpp (1-271).",
+        "auditSeams": "The sky flat number is a host input. The slice keeps the integer fog table, the half-even curve, the byte color truncate, and the empty fog-boundary arms.",
+        "auditRationale": "UNCredited hw_lighting.cpp 1-271 (+271). A full tally line scan shows no overlap. The file ends at line 271.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/hwrenderer/scene/hw_lighting.cpp --start 1 --end 271 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Distance-fog callback (**36\u201361**) | yes |\n| CalcLightLevel (**69\u2013104**) | yes |\n| CalcLightColor (**112\u2013138**) | yes |\n| GetFogDensity (**158\u2013207**) | yes |\n| CheckFog (**220\u2013271**) | yes |\n| Band hull (**1\u2013271**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Sky flat number | host texture id |\n| Saved previous mode | unused local |\n\nSetting the distance-fog cvar rebuilds both 256-entry tables. The first row uses integer division, with a break at 164 and a zero at 230. The second row adds six below 128, then a float ramp through 215. Night vision and the weapon-light cvar do not enter that rebuild. A negative cvar keeps the arithmetic shift and toward-zero division. A non-positive light level returns zero before the final clamp. Doom and Doom-dark are dark modes, and software lighting with a positive blend is dark as well. Below 192, a dark non-weapon light above 100 uses the half-even curve. A curve result whose sum with the relative light is below 20 is divided by five after that floor. A weapon uses that curve only when the pure-light flag is set. Every other path adds the relative light, then clamps to 1 through 255. Software color with a zero blend returns the source, including its alpha. Any other color multiplies in integers and stores alpha 255, and a channel outside a byte is truncated. Legacy fog uses the level density, or 18 when that density is zero, before a sector density is considered. Black fog reads the standard row only for linear mode and the other row otherwise, after clamping the light into 0 through 255. Doom software with a zero blend, and the no-fade flag, store zero. Software lighting with a positive blend rewrites the mode to Doom before those cases. An outside color matches only when its alpha is not 255. Otherwise a level density wins, then a light below 248 clamps 255 minus that light into 30 through 255. The same sector object is not a fog boundary. A black front returns immediately. A front alpha, an outside match, and a level or legacy density are empty arms and do not reject a bright front. A black back is an empty arm. An outside match, a level or legacy density, or a back light below 248 rejects the back. The boundary remains when at least one ceiling is not the sky.\n\n| Managed (`VmLighting1277Slice.cs`) | Native (`hw_lighting.cpp`) |\n|------------------------------------|---------------------------|\n| Fog table, light, and boundary | **1\u2013271** |\n| Band hull (exclusive slice) | **1\u2013271** |\n\n### Chunk **1277** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **271** |\n| **Net headline** | **+271** vs post-**1276** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmLighting1277Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/rendering/hwrenderer/scene/hw_lighting.cpp",
+            "symbol": "CalcLightLevel",
+            "start": 1,
+            "end": 271,
+            "tests": [
+              "VmLighting1277SliceTests.FogTable_DividesInIntegersAndIgnoresNightVision",
+              "VmLighting1277SliceTests.Levels_ClampAfterTheCurveAndKeepTheEmptyFogArms"
+            ]
+          }
+        ],
+        "nativeLoc": 271,
+        "managedLoc": 236,
+        "conversionManagedCommit": "0fd60d2c9edcb466e2c5ffc6b81af1aac535ef09"
       }
     ],
     "behaviorNativeChecksum": 508086,
