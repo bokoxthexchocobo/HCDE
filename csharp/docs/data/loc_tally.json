@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 114309,
+  "convertedThisRunNative": 114474,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 142829,
+  "convertedThisRunManaged": 142927,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 374563,
+  "remainingNative": 374398,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 132836,
+  "convertedBehaviorNative": 133001,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 133523,
-  "convertedBehaviorManaged": 152500,
+  "combinedBehaviorNative": 133688,
+  "convertedBehaviorManaged": 152598,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -43885,6 +43885,33 @@
       "nativeLoc": 155,
       "managedLoc": 167,
       "conversionManagedCommit": "3bceda793e16d15f215a1be9f7ed0b53695c0fc3"
+    },
+    {
+      "name": "postshader-chunk1254",
+      "bucket": "conversion",
+      "note": "Post-process shader enable and uniform writes from hw_postprocessshader.cpp (1-165), through end of file.",
+      "auditSeams": "The shader list is host storage. A missing uniform is inserted the way TMap operator[] inserts, with an undefined type and four zeros, and these writers do not change that type. Name compare is case-sensitive.",
+      "auditRationale": "UNCredited hw_postprocessshader.cpp 1-165 (+165). A full tally line scan shows no overlap. The file ends at line 165.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/hwrenderer/postprocessing/hw_postprocessshader.cpp --start 1 --end 165 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| SetEnabled (**27\u201345**) | yes |\n| SetUniform1f (**47\u201371**) | yes |\n| SetUniform2f (**73\u201394**) | yes |\n| SetUniform3f (**96\u2013118**) | yes |\n| SetUniform4f (**120\u2013143**) | yes |\n| SetUniform1i (**145\u2013165**) | yes |\n| Band hull (**1\u2013165**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Shader storage | host list |\n| VM parameter prologue | host call |\n\nEvery shader whose name matches is updated, and a different case is a different name. A missing name changes nothing. Enabling does not touch uniforms. A one-float write stores the value and then 0, 0, and 1. Two floats store x, y, 0, and 1. Three floats store x, y, z, and 1. Four floats store all four lanes, including a w that is not forced to 1. An integer uniform stores the int as a double and then 0, 0, and 1. A later shorter write replaces the lanes a longer write left behind. The uniform type is left as it was, including the undefined type of a uniform created by the write. Each action returns 0.\n\n| Managed (`VmPostShader1254Slice.cs`) | Native (`hw_postprocessshader.cpp`) |\n|--------------------------------------|--------------------------------------|\n| Enable and the five uniform writes | **1\u2013165** |\n| Band hull (exclusive slice) | **1\u2013165** |\n\n### Chunk **1254** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **165** |\n| **Net headline** | **+165** vs post-**1253** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPostShader1254Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/rendering/hwrenderer/postprocessing/hw_postprocessshader.cpp",
+          "symbol": "ShaderSetEnabled",
+          "start": 1,
+          "end": 165,
+          "tests": [
+            "VmPostShader1254SliceTests.Enabled_UpdatesEveryCaseSensitiveMatch",
+            "VmPostShader1254SliceTests.Uniform_FillsUnusedLanesAndLeavesTheTypeAlone"
+          ]
+        }
+      ],
+      "nativeLoc": 165,
+      "managedLoc": 98,
+      "conversionManagedCommit": "7a3ca7bc84b11a64ccbc06a9dfc55fcdedf6ed50"
     }
   ],
   "behaviorNativeChecksum": 508086,
