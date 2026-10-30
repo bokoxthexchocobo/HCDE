@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 281332
+    "managedCSharpLoc": 281741
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 111426,
+    "convertedThisRunNative": 111644,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 138528,
+    "convertedThisRunManaged": 138937,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 377446,
+    "remainingNative": 377228,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 129953,
+    "convertedBehaviorNative": 130171,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 130640,
-    "convertedBehaviorManaged": 148199,
+    "combinedBehaviorNative": 130858,
+    "convertedBehaviorManaged": 148608,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -43572,6 +43572,34 @@
         "nativeLoc": 296,
         "managedLoc": 572,
         "conversionManagedCommit": "d5155fa7227d1f982fc7a65e3bf0a7e55e0ad2e2"
+      },
+      {
+        "name": "hw-material-chunk1242",
+        "bucket": "conversion",
+        "note": "Material shader index, texture layers, and validate from hw_material.cpp (1-218).",
+        "auditSeams": "The constructor pushes the base texture, then stops after a software canvas whose color format is 0, an indexed scale flag, or a hardware canvas. A hardware canvas copies a user shader index without consulting gl_customshader and sets the clamp to the camera sampler. The other path uses a nonzero warp value as the shader, otherwise a normal plus specular pair, otherwise the four PBR maps. It then calls the brightmap scan, and fills missing bright, detail, and glow slots from game texture 1. Detail uses clamp none. A matching user shader appends non-null custom textures with clamp 0 and replaces the shader index. A mismatched type or a missing table entry leaves the shader alone. Validate forces indexed flags to that one bit, clears expand when sprites do not expand, and creates only when the slot is empty. GetLayer sends indexed layers 1 and 2 to the callback and returns nothing for any later indexed layer. An indexed base layer forces the translation to -1. DeleteMaterial does not clear the texture slot. The destructor body is empty.",
+        "auditRationale": "UNCredited hw_material.cpp 1-218 (+218). The file ends at 218. A full tally line scan shows no overlap.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/textures/hw_material.cpp --start 1 --end 218 and a full tally line scan \u2192 no overlap.",
+        "auditManagedLocJustification": "The constructor calls CreateDefaultBrightmap and ColorMatcher.Pick, which are not source lines in this file. Pick calls BestColor. The managed port contains that brightmap scan and the closest-color search, because the following layer is the created brightmap when a remap entry matches white. The destructor body is empty and has no managed method. That host surface is why the managed file is over 150% of the 218-line source.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Custom-shader cvar and layer callback (**28\u201337**) | yes |\n| Constructor (**45\u2013150**) | yes |\n| Destructor (**158\u2013160**) | yes |\n| GetLayer (**169\u2013189**) | yes |\n| ValidateTexture (**198\u2013213**) | yes |\n| DeleteMaterial (**215\u2013218**) | yes |\n| Band hull (**1\u2013218**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nThe destructor body is empty, so the slice has no method for it. Delete leaves the material pointer in the texture slot. Indexed layers 1 and 2 use the callback. A hardware canvas stores a user shader index without the custom-shader cvar. A null placeholder is logged and stored as texture 0. A shader index past the user table is logged and does not change the shader.\n\n| Managed (`VmHwMaterial1242Slice.cs`) | Native (`hw_material.cpp`) |\n|--------------------------------------|-----------------------------|\n| Shader index, layers, and validate | **1\u2013218** |\n| Band hull (exclusive slice) | **1\u2013218** |\n\n### Chunk **1242** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **218** |\n| **Net headline** | **+218** vs post-**1241** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmHwMaterial1242Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/textures/hw_material.cpp",
+            "symbol": "FMaterial::FMaterial",
+            "start": 1,
+            "end": 218,
+            "tests": [
+              "VmHwMaterial1242SliceTests.Build_ChoosesShaderLayersAndBrightmap",
+              "VmHwMaterial1242SliceTests.Query_ValidatesFlagsAndRoutesIndexedLayers"
+            ]
+          }
+        ],
+        "nativeLoc": 218,
+        "managedLoc": 409,
+        "conversionManagedCommit": "8b0e3ced6aa355ff0e7a49a2d500a521f0343dfa"
       }
     ],
     "behaviorNativeChecksum": 508086,
