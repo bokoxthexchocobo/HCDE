@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 124092,
+  "convertedThisRunNative": 124358,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 153943,
+  "convertedThisRunManaged": 154281,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 364780,
+  "remainingNative": 364514,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 142619,
+  "convertedBehaviorNative": 142885,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 143306,
-  "convertedBehaviorManaged": 163614,
+  "combinedBehaviorNative": 143572,
+  "convertedBehaviorManaged": 163952,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -45047,6 +45047,33 @@
       "nativeLoc": 266,
       "managedLoc": 377,
       "conversionManagedCommit": "feaa1ad92222fe07a2b67f6b47b339a390a44146"
+    },
+    {
+      "name": "vk-commandbuffer-chunk1297",
+      "bucket": "conversion",
+      "note": "Command submit, timestamp groups, and the frame wait from vk_commandbuffer.cpp (1-266).",
+      "auditSeams": "The device, swapchain image, and timestamp period are host services. Fence waits are counters.",
+      "auditRationale": "UNCredited vk_commandbuffer.cpp 1-266 (+266). A full tally line scan shows no overlap. The file ends at line 266.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/vulkan/system/vk_commandbuffer.cpp --start 1 --end 266 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Construct and commands (**40\u201399**) | yes |\n| Flush (**101\u2013161**) | yes |\n| Wait and delete (**163\u2013206**) | yes |\n| Timestamp groups (**208\u2013238**) | yes |\n| Gpu stats (**240\u2013266**) | yes |\n| Band hull (**1\u2013266**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Device queue | host device |\n| Swapchain image | host framebuffer |\n| Timestamp period | host limit |\n\nThe constructor builds eight semaphores and eight fences. Time queries reset the full pool through the draw buffer. Getters create and begin a buffer once. BeginFrame resets only the used query count and then clears the cursor. An upload-only flush skips the render-pass end, ends the transfer buffer, and leaves the draw buffer open. Transfer is submitted before draw. The first submit does not wait. A later submit waits on the previous semaphore at the top of the pipe. Finish with a present image waits and signals that image. The last submit does not signal the submit semaphore. A submit at the ring size waits the wrapped fence first. Wait always flushes with last-submit set. It limits the frame only when finish is set and vsync is off, then waits the smaller of the submit count and eight fences. Delete replaces the transfer list, and replaces the draw list only when the flush is not upload-only. A finish wait copies the running command count into the published count and then clears the running count, so a later finish with no new buffers publishes zero. Push records a start query and the stack index before the query is stored. Pop with time queries off leaves the end index at zero, and the stat line is skipped when the end is not past the start. A backwards timestamp clamps to zero milliseconds. The stat text uses two digits after the decimal. Update copies the keep flag onto the active flag and then clears the keep flag. It does not clear the query cursor. Destroy does not release the pool.\n\n| Managed (`VmVkCommandBuffer1297Slice.cs`) | Native (`vk_commandbuffer.cpp`) |\n|------------------------------------------|-------------------------------|\n| Submit, groups, and the frame wait | **1\u2013266** |\n| Band hull (exclusive slice) | **1\u2013266** |\n\n### Chunk **1297** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **266** |\n| **Net headline** | **+266** vs post-**1296** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmVkCommandBuffer1297Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/rendering/vulkan/system/vk_commandbuffer.cpp",
+          "symbol": "VkCommandBufferManager::FlushCommands",
+          "start": 1,
+          "end": 266,
+          "tests": [
+            "VmVkCommandBuffer1297SliceTests.Flush_SubmitsTransferFirstAndFinishPublishesZero",
+            "VmVkCommandBuffer1297SliceTests.Stats_SkipsAnOpenGroupAndBeginFrameResetsTheCursor"
+          ]
+        }
+      ],
+      "nativeLoc": 266,
+      "managedLoc": 338,
+      "conversionManagedCommit": "bf8644766dbb1437d5567cdabf454cd5ce53e732"
     }
   ],
   "behaviorNativeChecksum": 508086,
