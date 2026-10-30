@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 117747,
+  "convertedThisRunNative": 117973,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 146745,
+  "convertedThisRunManaged": 146927,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 371125,
+  "remainingNative": 370899,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 136274,
+  "convertedBehaviorNative": 136500,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 136961,
-  "convertedBehaviorManaged": 156416,
+  "combinedBehaviorNative": 137187,
+  "convertedBehaviorManaged": 156598,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -44371,6 +44371,33 @@
       "nativeLoc": 229,
       "managedLoc": 264,
       "conversionManagedCommit": "5b30abb24e23a3174f568e3041c08d13fe1152c7"
+    },
+    {
+      "name": "walldraw-chunk1272",
+      "bucket": "conversion",
+      "note": "Striped wall bands and the normal wall drawer setup from r_walldraw.cpp (1-226).",
+      "auditSeams": "The projected light planes, the texture, and the viewport are host inputs. The slice keeps the band clamp, the colormap delay, the shared clip allocation, and the fixed-light priority.",
+      "auditRationale": "UNCredited r_walldraw.cpp 1-226 (+226). A full tally line scan shows no overlap. The file ends at line 226.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/swrenderer/line/r_walldraw.cpp --start 1 --end 226 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| RenderWallPart (**56\u201359**) | yes |\n| Render (**61\u201391**) | yes |\n| ProcessStripedWall (**93\u2013119**) | yes |\n| ProcessNormalWall (**121\u2013205**) | yes |\n| GetLightList (**207\u2013225**) | yes |\n| Band hull (**1\u2013226**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Plane projection | host wall setup |\n| Texture pixels | host picture |\n\nA missing picture returns before any setup. A missing thread faults. A fixed colormap, a fixed light level at or above zero, or an empty light list draws one ordinary wall. Otherwise each light plane is visited. A plane culled above the wall does not draw and does not swap the ping-pong rows, but it still installs its colormap. A visible plane writes max of the bottom and the minimum of the projected row and the current top, draws that band with the colormap already installed, and then swaps the two scratch rows. The colormap for a plane is installed after its band, so the first band keeps the base colormap and the closing band uses the last plane. The closing band draws down to the original bottom. An ordinary wall promotes an unmasked, non-additive, fully opaque masked request to an opaque style. A lower alpha, a mask request that is false, an additive blend, or a masked picture keeps the caller style. A fixed light level wins over a fixed colormap. Ignoring the sector color selects the fullbright colormap on that path. Otherwise the fixed colormap is used, and with neither the light varies and can be foggy. Paletted frac bits are 32 minus the height bits, and a one-pixel texture stores zero. A BGRA texture stores 32 frac bits and mipmaps only when both the cvar and the picture ask for them. The top and bottom copies share one buffer of twice the span, addressed minus x1. A fixed light or a fixed colormap drops the dynamic light list. Otherwise the list is kept only when the sidedef index is inside it.\n\n| Managed (`VmWall1272Slice.cs`) | Native (`r_walldraw.cpp`) |\n|--------------------------------|---------------------------|\n| Stripes, style, and clip copy | **1\u2013226** |\n| Band hull (exclusive slice) | **1\u2013226** |\n\n### Chunk **1272** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **226** |\n| **Net headline** | **+226** vs post-**1271** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmWall1272Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/rendering/swrenderer/line/r_walldraw.cpp",
+          "symbol": "RenderWallPart",
+          "start": 1,
+          "end": 226,
+          "tests": [
+            "VmWall1272SliceTests.Stripes_PingPongTheBandsAndKeepTheLastColormap",
+            "VmWall1272SliceTests.Styles_PromoteOpaqueAndPreferAFixedLight"
+          ]
+        }
+      ],
+      "nativeLoc": 226,
+      "managedLoc": 182,
+      "conversionManagedCommit": "464a135fc3d3670d56cf053ea432c7555bf13a4e"
     }
   ],
   "behaviorNativeChecksum": 508086,
