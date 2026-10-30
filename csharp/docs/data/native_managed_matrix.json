@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 286109
+    "managedCSharpLoc": 286272
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 114785,
+    "convertedThisRunNative": 114942,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 143305,
+    "convertedThisRunManaged": 143468,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 374087,
+    "remainingNative": 373930,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 133312,
+    "convertedBehaviorNative": 133469,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 133999,
-    "convertedBehaviorManaged": 152976,
+    "combinedBehaviorNative": 134156,
+    "convertedBehaviorManaged": 153139,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -43982,6 +43982,33 @@
         "nativeLoc": 158,
         "managedLoc": 150,
         "conversionManagedCommit": "88703a6acb4d9d608b40e322347af4432961e8f4"
+      },
+      {
+        "name": "fogboundary-chunk1257",
+        "bucket": "conversion",
+        "note": "Fog-boundary span walk and the colormap split from r_fogboundary.cpp (1-157).",
+        "auditSeams": "The wall shade is a host step. Drawing a fog row and storing the drawer light are host steps. The colormap index is the call-site clamp: visibility is capped at 24, converted with half-even, subtracted from the shade, shifted 16 bits, and clamped to 0..31.",
+        "auditRationale": "UNCredited r_fogboundary.cpp 1-157 (+157). A full tally line scan shows no overlap. The file ends at line 157.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/swrenderer/line/r_fogboundary.cpp --start 1 --end 157 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Render (**54\u2013148**) | yes |\n| RenderSection (**150\u2013156**) | yes |\n| Band hull (**1\u2013157**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Light level to shade | host step |\n| Drawer light and the fog row | host steps |\n\nThe walk starts at the right column. A taller span is filled with that column. Each step left subtracts the light step and recomputes the colormap. Column 0 is the identity map, so a change away from it does not draw. A change away from any other column draws the open rows, then grows the span and fills it. While the colormap stays off the identity map, a row that just closed is drawn from the stored right edge, and a row that just opened is marked. While it stays on the identity map, the open span shrinks and nothing is drawn. The rows still open at the left edge are drawn only when that last colormap is not the identity map.\n\n| Managed (`VmFogBoundary1257Slice.cs`) | Native (`r_fogboundary.cpp`) |\n|----------------------------------------|------------------------------|\n| Span walk and the section draw | **1\u2013157** |\n| Band hull (exclusive slice) | **1\u2013157** |\n\n### Chunk **1257** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **157** |\n| **Net headline** | **+157** vs post-**1256** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmFogBoundary1257Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/rendering/swrenderer/line/r_fogboundary.cpp",
+            "symbol": "Render",
+            "start": 1,
+            "end": 157,
+            "tests": [
+              "VmFogBoundary1257SliceTests.Split_SkipsTheIdentityMapAndDrawsOnAColormapChange",
+              "VmFogBoundary1257SliceTests.Span_DrawsAClosedRowAndClampsTheLookup"
+            ]
+          }
+        ],
+        "nativeLoc": 157,
+        "managedLoc": 163,
+        "conversionManagedCommit": "a37e640923ad2a5d00cadb0ea09f624f78364196"
       }
     ],
     "behaviorNativeChecksum": 508086,
