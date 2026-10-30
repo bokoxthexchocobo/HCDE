@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 114942,
+  "convertedThisRunNative": 115112,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 143468,
+  "convertedThisRunManaged": 143683,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 373930,
+  "remainingNative": 373760,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 133469,
+  "convertedBehaviorNative": 133639,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 134156,
-  "convertedBehaviorManaged": 153139,
+  "combinedBehaviorNative": 134326,
+  "convertedBehaviorManaged": 153354,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -43993,6 +43993,33 @@
       "nativeLoc": 157,
       "managedLoc": 163,
       "conversionManagedCommit": "a37e640923ad2a5d00cadb0ea09f624f78364196"
+    },
+    {
+      "name": "flatvertices-chunk1258",
+      "bucket": "conversion",
+      "note": "Reserved flat vertices, pipeline upload, and the vertex-cursor cap from flatvertices.cpp (1-170).",
+      "auditSeams": "Creating and deleting the GPU buffers is a host step. The shadow stores twenty vertices. A copy reads that shadow from its first vertex and writes the run at the requested index on every pipeline. The cursor add happens before the cap test. The cap is 1999500.",
+      "auditRationale": "UNCredited flatvertices.cpp 1-170 (+170). A full tally line scan shows no overlap. The file ends at line 170.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/hwrenderer/data/flatvertices.cpp --start 1 --end 170 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| FFlatVertexBuffer (**37\u201397**) | yes |\n| ~FFlatVertexBuffer (**105\u2013115**) | yes |\n| OutputResized (**123\u2013130**) | yes |\n| AllocVertices (**138\u2013148**) | yes |\n| Copy (**156\u2013170**) | yes |\n| Band hull (**1\u2013170**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| GPU buffer create and delete | host steps |\n\nThe constructor fills twenty shadow vertices: a uniform quad, a fullscreen quad, a postprocess quad, and two stencil caps. The five-argument write stores -1 as the lightmap index and leaves the lightmap coordinates unchanged. The index buffer is given four bytes and static usage. Each pipeline buffer is sized to two million vertices of 32 bytes and given three attributes: position at offset 0, texture at offset 12, and lightmap at offset 20. The cursor and the reserved count start at 20, then the reserved run is copied. A copy maps each pipeline, writes the leading shadow vertices at the start index, unmaps a zero-length range because the cursor did not move, and uploads the copied byte range. The current pipeline is restored afterward. A resize rewrites the fullscreen quad and copies four vertices at index 4, which uploads the leading quad rather than the fullscreen quad. Allocating returns the cursor from before the add. The add is kept when the sum reaches the cap, and no vertex is returned.\n\n| Managed (`VmFlatVertices1258Slice.cs`) | Native (`flatvertices.cpp`) |\n|----------------------------------------|---------------------------|\n| Reserved vertices, copy, and the cap | **1\u2013170** |\n| Band hull (exclusive slice) | **1\u2013170** |\n\n### Chunk **1258** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **170** |\n| **Net headline** | **+170** vs post-**1257** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmFlatVertices1258Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/rendering/hwrenderer/data/flatvertices.cpp",
+          "symbol": "FFlatVertexBuffer",
+          "start": 1,
+          "end": 170,
+          "tests": [
+            "VmFlatVertices1258SliceTests.Build_FillsTheReservedQuadsAndUploadsBothPipelines",
+            "VmFlatVertices1258SliceTests.Resize_UploadsTheLeadingQuadAndAllocStopsAtTheCap"
+          ]
+        }
+      ],
+      "nativeLoc": 170,
+      "managedLoc": 215,
+      "conversionManagedCommit": "f0dd51ff8164aeecbb3258d180f84b115f600dfc"
     }
   ],
   "behaviorNativeChecksum": 508086,
