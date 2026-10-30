@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 286487
+    "managedCSharpLoc": 286666
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 115112,
+    "convertedThisRunNative": 115290,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 143683,
+    "convertedThisRunManaged": 143862,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 373760,
+    "remainingNative": 373582,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 133639,
+    "convertedBehaviorNative": 133817,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 134326,
-    "convertedBehaviorManaged": 153354,
+    "combinedBehaviorNative": 134504,
+    "convertedBehaviorManaged": 153533,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -44036,6 +44036,33 @@
         "nativeLoc": 170,
         "managedLoc": 215,
         "conversionManagedCommit": "f0dd51ff8164aeecbb3258d180f84b115f600dfc"
+      },
+      {
+        "name": "configctor-chunk1259",
+        "bucket": "conversion",
+        "note": "Config construction, copy, clear, and destruction from configfile.cpp (1-178).",
+        "auditSeams": "Reading the file is a host step. The path constructor calls that read and then forces the writable and existed flags on. Clearing a section drops its entries before the section itself is dropped. Copying a section reuses a case-insensitive name and appends entries. The entry allocation is the section object size, 40 bytes, plus the key length.",
+        "auditRationale": "UNCredited configfile.cpp 1-178 (+178). A full tally line scan shows no overlap. CreateSectionAtStart starts at line 179 and stays outside this band.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/utility/configfile.cpp --start 1 --end 178 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| FConfigFile (**39\u201347**) | yes |\n| FConfigFile path (**55\u201363**) | yes |\n| FConfigFile copy (**72\u201380**) | yes |\n| ~FConfigFile (**89\u2013108**) | yes |\n| operator= (**116\u2013134**) | yes |\n| ClearConfig (**145\u2013157**) | yes |\n| ChangePathName (**165\u2013168**) | yes |\n| Band hull (**1\u2013178**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| The file reader | host step |\n| Section creation helper | already credited |\n\nA default object is writable, marked as existed, and has an empty path and no sections. A path object stores the path, runs the reader, and then sets both flags on, even when the reader cleared them. Sections the reader added stay. Assignment clears the destination, then copies each section. A repeated name, compared without case, keeps the first section and appends the new entries. The stored key keeps the case that was passed. An empty key uses only the section object size. Assignment does not change the destination path or the two flags. A copy object takes the source path, the copied sections, and the source flags. Destruction frees each entry value, then the entry, then the section. Clear frees the entries, drops the section, and points the tail back at the head.\n\n| Managed (`VmConfigCtor1259Slice.cs`) | Native (`configfile.cpp`) |\n|--------------------------------------|------------------------|\n| Constructors, copy, clear, destroy | **1\u2013178** |\n| Band hull (exclusive slice) | **1\u2013178** |\n\n### Chunk **1259** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **178** |\n| **Net headline** | **+178** vs post-**1258** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmConfigCtor1259Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/utility/configfile.cpp",
+            "symbol": "FConfigFile",
+            "start": 1,
+            "end": 178,
+            "tests": [
+              "VmConfigCtor1259SliceTests.Open_ForcesExistedAfterTheLoad",
+              "VmConfigCtor1259SliceTests.Assign_KeepsDestinationFlagsAndMergesSections"
+            ]
+          }
+        ],
+        "nativeLoc": 178,
+        "managedLoc": 179,
+        "conversionManagedCommit": "24cbf08fba9dbe291c64276ea8424c328dae340d"
       }
     ],
     "behaviorNativeChecksum": 508086,
