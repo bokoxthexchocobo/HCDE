@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 116487,
+  "convertedThisRunNative": 116686,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 145324,
+  "convertedThisRunManaged": 145482,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 372385,
+  "remainingNative": 372186,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 135014,
+  "convertedBehaviorNative": 135213,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 135701,
-  "convertedBehaviorManaged": 154995,
+  "combinedBehaviorNative": 135900,
+  "convertedBehaviorManaged": 155153,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -44209,6 +44209,33 @@
       "nativeLoc": 213,
       "managedLoc": 269,
       "conversionManagedCommit": "86b40426bb0c851c2e621de7385e27fcdf48fb63"
+    },
+    {
+      "name": "hwclock-chunk1266",
+      "bucket": "conversion",
+      "note": "Profile reset, the one-second render-time cache, and the bench command from hw_clock.cpp (1-199).",
+      "auditSeams": "The cycle counter and the millisecond clock are host inputs. Opening benchmarks.txt and hiding the console are host steps. The slice keeps which cycles reset, the text formulas, the one-second cache, and the bench wait.",
+      "auditRationale": "UNCredited hw_clock.cpp 1-199 (+199). A full tally line scan shows no overlap. The file ends at line 199.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/hwrenderer/data/hw_clock.cpp --start 1 --end 199 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| ResetProfilingData (**48\u201370**) | yes |\n| AppendRenderTimes (**78\u201398**) | yes |\n| AppendRenderStats (**100\u2013106**) | yes |\n| AppendLightStats (**108\u2013112**) | yes |\n| rendertimes (**114\u2013126**) | yes |\n| renderstats (**128\u2013133**) | yes |\n| lightstats (**135\u2013140**) | yes |\n| CheckBench (**147\u2013174**) | yes |\n| bench (**176\u2013191**) | yes |\n| checkBenchActive (**195\u2013199**) | yes |\n| Band hull (**1\u2013199**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Cycle counter sample | host timer |\n| benchmarks.txt | host file |\n\nReset clears the cycles named in that function and then clocks All only while profiling is active. Finish, the 2D pair, and the command-buffer count are left as they were. The BSP field subtracts the clip cycle from the BSP cycle. Worker wait subtracts the three setup cycles from the worker total. Render times stay cached until the clock moves by more than one second, so a later BSP value is not shown inside that second. The first sample at exactly one second still returns the empty cache. Wall, flat, sprite, and light lines are formatted on every call. Bench sets the print flag, turns the FPS counter on and records the wait when that counter was off, and leaves the counter alone while clearing the switch when it was already on. A console that is up refreshes the wait in that second case. The console is hidden either way. The save waits while the start is still inside five seconds. It appends three blank lines, prints the saved line even when the file does not open, turns FPS back off only when bench enabled it, and clears the print flag. The active flag is on when the render-time stat is present and active, or when a bench print is pending.\n\n| Managed (`VmHwClock1266Slice.cs`) | Native (`hw_clock.cpp`) |\n|-----------------------------------|--------------------------|\n| Reset, cache, and bench | **1\u2013199** |\n| Band hull (exclusive slice) | **1\u2013199** |\n\n### Chunk **1266** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **199** |\n| **Net headline** | **+199** vs post-**1265** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmHwClock1266Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/rendering/hwrenderer/data/hw_clock.cpp",
+          "symbol": "ResetProfilingData",
+          "start": 1,
+          "end": 199,
+          "tests": [
+            "VmHwClock1266SliceTests.Times_CacheForOneSecondAndLeaveFinishAlone",
+            "VmHwClock1266SliceTests.Bench_WaitsFiveSecondsAndPrintsWhenTheFileFails"
+          ]
+        }
+      ],
+      "nativeLoc": 199,
+      "managedLoc": 158,
+      "conversionManagedCommit": "eeb1df07761f992fb4426ec184afbd5b86cfdc93"
     }
   ],
   "behaviorNativeChecksum": 508086,
