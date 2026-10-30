@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 111644,
+  "convertedThisRunNative": 111891,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 138937,
+  "convertedThisRunManaged": 139552,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 377228,
+  "remainingNative": 376981,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 130171,
+  "convertedBehaviorNative": 130418,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 130858,
-  "convertedBehaviorManaged": 148608,
+  "combinedBehaviorNative": 131105,
+  "convertedBehaviorManaged": 149223,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -43584,6 +43584,34 @@
       "nativeLoc": 218,
       "managedLoc": 409,
       "conversionManagedCommit": "8b0e3ced6aa355ff0e7a49a2d500a521f0343dfa"
+    },
+    {
+      "name": "png-preidat-chunk1243",
+      "bucket": "conversion",
+      "note": "Pre-IDAT chunk walk, palette setup, and alpha remap from pngtexture.cpp (177-423). The gray and palette IDAT read at 424-465 stays chunk 106.",
+      "auditSeams": "MemoryReader rejects a seek that would leave the buffer and leaves the position unchanged. The first length and id are zeroed when the native locals are uninitialized, and a short read is logged. Continuation reads overlay the previous length and the IEND preset, so a zero-byte id read stops the walk. A tRNS longer than 256 bytes stores 256 and still consumes the chunk. A missing PLTE on a paletted image uses zeros. SetupPalette copies GrayMap and clears one index without writing the shared table; when the palette size is not 256 the copy is still 256 bytes because the native memcpy is. MakeRemap sorts equal colors with foreign entries first and keeps the original order when the comparator ties, then matches only the foreign entry sitting immediately before a local color. BestColor searches indices 1 through 254 and returns on a zero distance, so an exact local at index 255 is reachable only through that neighbor match. Luminance uses weights 77, 143, and 37. CreatePalettedPixels reads the raw length and id and does not decode IDAT. A missing lump is an empty reader. The pixel buffer is capped at 1048576 bytes.",
+      "auditRationale": "UNCredited pngtexture.cpp 177-423 (+247). Chunk 106 already owns 74-117, 164-176, and 424-465. A full tally line scan shows no overlap with 177-423.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/textures/formats/pngtexture.cpp --start 177 --end 423 and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "SetupPalette calls MakeRemap, and ReadAlphaRemap calls Luminance. MakeRemap calls BestColor. None of those functions are source lines in pngtexture.cpp. The managed port contains the remap sort, the closest-color search, and the luminance weights, because the palette map and the alpha table are the values those calls produce. The memory-file reader is included so a short chunk and a seek past either end follow MemoryReader. That host surface is why the managed file is over 150% of the 247-line source.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Constructor call (**177\u2013184**) | yes |\n| FPNGTexture constructor (**185\u2013293**) | yes |\n| SetupPalette (**295\u2013374**) | yes |\n| ReadAlphaRemap (**382\u2013395**) | yes |\n| CreatePalettedPixels prologue (**403\u2013423**) | yes |\n| Band hull (**177\u2013423**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Gray and palette IDAT decode | already chunk 106 |\n\nGrayscale with a transparency sample below 256 defers the gray map and masks the image. Every other grayscale and gray-alpha image shares the gray map. Paletted transparency of 0 masks that index and forces the remap entry to 0. A grab offset outside the signed 16-bit range becomes 0. The IDAT prologue fills with 0x99 when the IDAT offset is 0 and otherwise logs the raw header without decoding.\n\n| Managed (`VmPngTexture1243Slice.cs`) | Native (`pngtexture.cpp`) |\n|--------------------------------------|---------------------------|\n| Pre-IDAT walk, palette setup, alpha remap, pixel prologue | **177\u2013423** |\n| Band hull (exclusive slice) | **177\u2013423** |\n\n### Chunk **1243** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **247** |\n| **Net headline** | **+247** vs post-**1242** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPngTexture1243Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/textures/formats/pngtexture.cpp",
+          "symbol": "FPNGTexture::FPNGTexture",
+          "start": 177,
+          "end": 423,
+          "tests": [
+            "VmPngTexture1243SliceTests.Walk_DefersGrayAndRemapsPalette",
+            "VmPngTexture1243SliceTests.Edge_CapsShortReadsAndLeavesIdatUndecoded"
+          ]
+        }
+      ],
+      "nativeLoc": 247,
+      "managedLoc": 615,
+      "conversionManagedCommit": "c3ac982ab3ed0d4356cc1af36c73693a501ea1c1"
     }
   ],
   "behaviorNativeChecksum": 508086,
