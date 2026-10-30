@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 297804
+    "managedCSharpLoc": 298155
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 124960,
+    "convertedThisRunNative": 125253,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 155000,
+    "convertedThisRunManaged": 155351,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 363912,
+    "remainingNative": 363619,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 143487,
+    "convertedBehaviorNative": 143780,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 144174,
-    "convertedBehaviorManaged": 164671,
+    "combinedBehaviorNative": 144467,
+    "convertedBehaviorManaged": 165022,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -45144,6 +45144,33 @@
         "nativeLoc": 297,
         "managedLoc": 415,
         "conversionManagedCommit": "9b362cfb10f773850853f590f5bf108668f913e8"
+      },
+      {
+        "name": "vk-raytrace-chunk1300",
+        "bucket": "conversion",
+        "note": "Null mesh, the level-mesh swap, and the bottom and top acceleration structures from vk_raytrace.cpp (1-293).",
+        "auditSeams": "Build sizes and device addresses are host services. The device idle and the upload wait are counters.",
+        "auditRationale": "UNCredited vk_raytrace.cpp 1-293 (+293). A full tally line scan shows no overlap. The file ends at line 293.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/vulkan/renderer/vk_raytrace.cpp --start 1 --end 293 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Null mesh and level-mesh swap (**29\u201377**) | yes |\n| Reset and object creation (**79\u2013100**) | yes |\n| Vertex and index buffers (**102\u2013150**) | yes |\n| Bottom-level acceleration structure (**152\u2013209**) | yes |\n| Top-level acceleration structure (**211\u2013293**) | yes |\n| Band hull (**1\u2013293**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Build-size query results | host device |\n| Device addresses | host device |\n\nThe constructor seeds a twelve-vertex null mesh and index elements 0 through 11, then sets a null mesh. That first assignment does not idle, because no mesh is current yet. A later call with the same mesh, including null while the null mesh is already current, does not idle or rebuild. A change away from a current mesh idles, retires the eleven buffers and acceleration structures in source order, and stores the new mesh. Ray tracing is read after that store. When it is off, the retired objects stay queued and alive and no new build runs. When it is on, vertex bytes are twelve times the vertex count and index bytes are four times the element count. The vertex copy starts at source offset zero and the index copy starts just after the vertices. Both copies use destination offset zero and the destination buffer size. The transfer barrier is transfer-write to shader-read, from the transfer stage to acceleration-structure build. The bottom level uses one triangle geometry, opaque, a twelve-byte stride, unsigned 32-bit indices, and a max vertex of count minus one. The primitive count is the element count divided by three. Scratch and storage sizes come from that primitive count. The top-level instance is an identity 3\u00d74 matrix with mask 255 and culling disabled, and it references the bottom-level address. Its copy is a sixty-four-byte whole-buffer copy. The top-level build asks for one instance and records a primitive count of one. Its closing barrier is acceleration-structure write to shader-read, from build to the fragment stage. The upload wait is `WaitForCommands(false, true)` and runs only after the objects exist, so the wait reclaims the retired set and leaves the new one alive.\n\n| Managed (`VmVkRaytrace1300Slice.cs`) | Native (`vk_raytrace.cpp`) |\n|--------------------------------------|---------------------------|\n| Null mesh, swap, and acceleration structures | **1\u2013293** |\n| Band hull (exclusive slice) | **1\u2013293** |\n\n### Chunk **1300** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **293** |\n| **Net headline** | **+293** vs post-**1299** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmVkRaytrace1300Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/rendering/vulkan/renderer/vk_raytrace.cpp",
+            "symbol": "VkRaytrace::SetLevelMesh",
+            "start": 1,
+            "end": 293,
+            "tests": [
+              "VmVkRaytrace1300SliceTests.NullMesh_SkipsTheIdleAndBuildsFourTriangles",
+              "VmVkRaytrace1300SliceTests.MeshChange_IdlesBeforeResetAndSkipsTheBuildWhenRaytracingIsOff"
+            ]
+          }
+        ],
+        "nativeLoc": 293,
+        "managedLoc": 351,
+        "conversionManagedCommit": "fd207530fa2f9721fd4c0fb7d6fa06d0e867e7f9"
       }
     ],
     "behaviorNativeChecksum": 508086,
