@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 116686,
+  "convertedThisRunNative": 116904,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 145482,
+  "convertedThisRunManaged": 145795,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 372186,
+  "remainingNative": 371968,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 135213,
+  "convertedBehaviorNative": 135431,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 135900,
-  "convertedBehaviorManaged": 155153,
+  "combinedBehaviorNative": 136118,
+  "convertedBehaviorManaged": 155466,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -44236,6 +44236,33 @@
       "nativeLoc": 199,
       "managedLoc": 158,
       "conversionManagedCommit": "eeb1df07761f992fb4426ec184afbd5b86cfdc93"
+    },
+    {
+      "name": "light-chunk1267",
+      "bucket": "conversion",
+      "note": "Camera colormap, visibility distances, and the sprite shade from r_light.cpp (1-218).",
+      "auditSeams": "Colormap tables, the viewport, and the palette index are host seams. The slice keeps the camera selection, the focal early return, the visibility clamps, the +12 shade, and the particle and weapon-sprite adjustments.",
+      "auditRationale": "UNCredited r_light.cpp 1-218 (+218). A full tally line scan shows no overlap. The file ends at line 218.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/swrenderer/scene/r_light.cpp --start 1 --end 218 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Instance (**50\u201354**) | yes |\n| SetCamera (**56\u201393**) | yes |\n| SetVisibility (**98\u2013144**) | yes |\n| LightLevelToShadeImpl (**146\u2013161**) | yes |\n| SetColormap (**165\u2013217**) | yes |\n| Band hull (**1\u2013218**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Colormap tables | host palette |\n| Viewport size | host screen |\n\nA missing actor faults before the player is read. The camera player replaces the actor player. A null camera matches a null body. A colormap index in range selects that special map and the real colormap, and a minimum extralight is left unchanged. Otherwise a light level in range is stored as the level times 256, and the fullbright colormap is selected only when sector color is ignored. When the colormap is still empty and extralight is at its minimum, the inverse map is selected and extralight is cleared. Visibility stores the clamped value and returns before any divide when either focal term is zero, leaving the previous distances in place. Wall and floor distances clamp on each sign against their own maxima, then the wall distance is rescaled. The shade uses the +12 term. A level that disables light fade and is not foggy uses the remaining-light shift instead, including a zero result when the rescaled level is above 255. Particles halve sprite visibility after the distance read. Weapon sprites then force visibility to zero and subtract 24 from the shade. Fade to black with the invert flag writes a white fade and clears the flag so the color is not inverted again. A fixed colormap still wins after that replacement.\n\n| Managed (`VmLight1267Slice.cs`) | Native (`r_light.cpp`) |\n|----------------------------------|------------------------|\n| Camera, distances, and shade | **1\u2013218** |\n| Band hull (exclusive slice) | **1\u2013218** |\n\n### Chunk **1267** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **218** |\n| **Net headline** | **+218** vs post-**1266** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmLight1267Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/rendering/swrenderer/scene/r_light.cpp",
+          "symbol": "CameraLight",
+          "start": 1,
+          "end": 218,
+          "tests": [
+            "VmLight1267SliceTests.Camera_UsesTheCameraPlayerAndClearsExtralightOnlyWhenUnmapped",
+            "VmLight1267SliceTests.Distances_ClampEachPlaneAndHalveParticleVisibility"
+          ]
+        }
+      ],
+      "nativeLoc": 218,
+      "managedLoc": 313,
+      "conversionManagedCommit": "4d18aa27d2a045eca148c087427ce515f7a69314"
     }
   ],
   "behaviorNativeChecksum": 508086,
