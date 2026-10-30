@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 300524
+    "managedCSharpLoc": 300720
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 127391,
+    "convertedThisRunNative": 127594,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 157720,
+    "convertedThisRunManaged": 157916,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 361481,
+    "remainingNative": 361278,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 145918,
+    "convertedBehaviorNative": 146121,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 146605,
-    "convertedBehaviorManaged": 167391,
+    "combinedBehaviorNative": 146808,
+    "convertedBehaviorManaged": 167587,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -45333,6 +45333,33 @@
         "nativeLoc": 330,
         "managedLoc": 323,
         "conversionManagedCommit": "4de6b2a70c2b1e95236bcbed03bbf1d14c6995a3"
+      },
+      {
+        "name": "hw-cvars-chunk1307",
+        "bucket": "conversion",
+        "note": "Fog, gamma, black point, and texture-filter cvars from hw_cvars.cpp (1-203).",
+        "auditSeams": "SetTextureFilterMode is the screen callee. Each anisotropic or texture-filter assignment counts one call, and an out-of-range filter assignment counts a second call from the reentered callback. gamma_syncing is process lifetime and is cleared only at the end of the callback that set it. The virtual black and white internals start at 1 and are written by the archive cvars.",
+        "auditRationale": "UNCredited hw_cvars.cpp 1-203 (+203). A full tally line scan shows no overlap. The file ends at line 203.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/hwrenderer/data/hw_cvars.cpp --start 1 --end 203 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| gl_fogmode clamp (**32\u201336**) | yes |\n| Portal, mirror, and seamless stores (**40\u201343**) | yes |\n| Portal recursion clamp (**45\u201349**) | yes |\n| Plane reflection mirror (**51\u201355**) | yes |\n| Gamma clamp and fix conversion (**57\u201378**) | yes |\n| vid_gamma sync (**83\u201399**) | yes |\n| Named gamma cvar (**102\u2013116**) | yes |\n| vid_fixgamma sync (**118\u2013131**) | yes |\n| Contrast and saturation clamps (**133\u2013143**) | yes |\n| Black and white points (**145\u2013175**) | yes |\n| Saturation formula store (**179**) | yes |\n| Texture filter callbacks (**186\u2013195**) | yes |\n| Precache store (**197**) | yes |\n| Shadowmap filter clamp (**200\u2013203**) | yes |\n| Band hull (**1\u2013203**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| screen SetTextureFilterMode | host records the call; this band decides when it runs |\n\nFog mode clamps to 0..2 and portal recursion clamps to 0..16. The plane-reflection callback copies the bool into the header flag. Gamma clamps to 0.1..3.0. While gamma_syncing is clear, vid_gamma normalizes itself, writes the named gamma cvar, and writes vid_fixgamma. The named gamma cvar writes vid_gamma and vid_fixgamma. vid_fixgamma clamps to the low fix value..1 and writes vid_gamma only. Assigning the same value still runs the callback. The sync flag stops that reentry from looping, and the flag is clear when the outer callback returns. Contrast clamps to 0..5 and saturation clamps to -3..3. Black point squares the clamped 0..1 value and stores the min of the white-point buffer, that square, and 0.8. White point cubes the shifted value and stores the max of the black-point buffer, that shape, and 0.2. The gap subtracted and added around the internals is the double 0.2, then narrowed to float. Anisotropic filtering stores any float and asks for a texture-filter update. The texture filter outside 0..6 becomes 6 and asks twice, because the assignment reenters before the outer call asks. The shadowmap filter outside 0..8 becomes 0 and does not ask. Precache and the saturation formula are plain stores.\n\n| Managed (`VmHwCvars1307Slice.cs`) | Native (`hw_cvars.cpp`) |\n|-----------------------------------|-------------------------|\n| Fog, gamma, points, and filters | **1\u2013203** |\n| Band hull (exclusive slice) | **1\u2013203** |\n\n### Chunk **1307** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **203** |\n| **Net headline** | **+203** vs post-**1306** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmHwCvars1307Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/rendering/hwrenderer/data/hw_cvars.cpp",
+            "symbol": "gl_fogmode",
+            "start": 1,
+            "end": 203,
+            "tests": [
+              "VmHwCvars1307SliceTests.Gamma_ClampsAndResyncsWithoutLeavingTheGuardSet",
+              "VmHwCvars1307SliceTests.BlackWhite_UsesTheOtherInternalAndFiltersReenter"
+            ]
+          }
+        ],
+        "nativeLoc": 203,
+        "managedLoc": 196,
+        "conversionManagedCommit": "13ec7927448ba1fd3c7a859d092b7aa8d23a74c3"
       }
     ],
     "behaviorNativeChecksum": 508086,
