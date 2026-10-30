@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 118695,
+  "convertedThisRunNative": 118950,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 147636,
+  "convertedThisRunManaged": 148005,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 370177,
+  "remainingNative": 369922,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 137222,
+  "convertedBehaviorNative": 137477,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 137909,
-  "convertedBehaviorManaged": 157307,
+  "combinedBehaviorNative": 138164,
+  "convertedBehaviorManaged": 157676,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -44479,6 +44479,33 @@
       "nativeLoc": 271,
       "managedLoc": 251,
       "conversionManagedCommit": "f338b6835b3183d9ab97c676b91d4fd5b88f9cff"
+    },
+    {
+      "name": "draw2d-chunk1276",
+      "bucket": "conversion",
+      "note": "Hardware 2D command walk, scissor clip, and the shape-buffer reset from hw_draw2d.cpp (1-255).",
+      "auditSeams": "Vertex upload, the 2D viewpoint, and the screen buffer are host inputs. The slice keeps the first-pass channel swap, the mip-cache short-circuit, the scissor clip, and the shape reset.",
+      "auditRationale": "UNCredited hw_draw2d.cpp 1-255 (+255). A full tally line scan shows no overlap. The file ends at line 255.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/hwrenderer/hw_draw2d.cpp --start 1 --end 255 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Viewport wrapper (**44\u201348**) | yes |\n| Clock and setup (**52\u201364**) | yes |\n| Empty return (**70\u201374**) | yes |\n| First-pass swap and upload (**76\u201387**) | yes |\n| Special commands (**91\u2013105**) | yes |\n| Style, fog, and scissor (**108\u2013132**) | yes |\n| Colormap and light (**134\u2013145**) | yes |\n| Model matrix (**147\u2013168**) | yes |\n| Texture, canvas, and burn (**170\u2013194**) | yes |\n| Shape buffer and draw type (**196\u2013231**) | yes |\n| Command tail (**232\u2013237**) | yes |\n| Pass reset (**240\u2013254**) | yes |\n| Band hull (**1\u2013255**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Vertex upload | host buffer |\n| Set2D viewpoint | host screen |\n\nThe viewport wrapper forwards the screen rectangle. Setup clears the stencil, turns depth and multisampling off, and applies line smoothing from the cvar. The mip cache is the 2D mip cvar, and a missing anisotropic callback leaves that cvar in place. A present callback that reports filtering disabled forces the cache off, and a false cvar never calls the callback. An empty command list unclocks before the channel swap and leaves the first pass set. The first pass swaps red and blue on every vertex and later passes leave those bytes. Special stencil, set, and clear commands skip the per-command reset. Any other special value does the same. A scissor command maps the rectangle with half-away rounding, then adds a negative origin back into the size and clamps that origin to zero. A zero alpha on the first colormap keeps the draw mode. A nonzero alpha switches the mode to the fixed colormap and sets both object colors. Fog distance zero stores a negative zero factor. Indexed commands set the soft light before the shared light parameters. The model matrix writes the 2x2 cells in column order and the translation into the fourth column. A null use type, and a null texture, disable texturing before the canvas flip and the burn effect. Use types at or above Special take no upscale flag, a font character takes the font flag, and every other valid use takes the texture flag. Wrapping clamps to none. Without wrapping, the cached mip selects the mip clamp or the no-mip clamp. A hardware canvas loads identity, scales Y by negative one, then translates Y by one. The burn effect is set only for a valid texture. A shape buffer draws triangles from index zero, restores the uploaded buffer, and clears the buffer list only when the counter matches the last command and the buffer index is greater than zero. A matching counter with index zero only stores last command as negative one. Uploaded-once is cleared on every shape command. Lines and points use their draw types. Every other type, including the rotate-sprite value, draws indexed triangles. Each normal command then restores white, clears the second object color and the add color, and disables both matrices and the effect. The pass then clears the scissor, selects translucent style, binds the screen buffer, and clears the first-pass flag before the unclock.\n\n| Managed (`VmDraw2d1276Slice.cs`) | Native (`hw_draw2d.cpp`) |\n|----------------------------------|--------------------------|\n| Command walk, clip, and shape reset | **1\u2013255** |\n| Band hull (exclusive slice) | **1\u2013255** |\n\n### Chunk **1276** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **255** |\n| **Net headline** | **+255** vs post-**1275** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmDraw2d1276Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/rendering/hwrenderer/hw_draw2d.cpp",
+          "symbol": "Draw2D",
+          "start": 1,
+          "end": 255,
+          "tests": [
+            "VmDraw2d1276SliceTests.Empty_LeavesTheFirstPassAndSkipsTheSwap",
+            "VmDraw2d1276SliceTests.Commands_ClipTheScissorAndResetTheShapeBuffer"
+          ]
+        }
+      ],
+      "nativeLoc": 255,
+      "managedLoc": 369,
+      "conversionManagedCommit": "12dc11d1095e35492615b0c77fa2c44943c828ea"
     }
   ],
   "behaviorNativeChecksum": 508086,
