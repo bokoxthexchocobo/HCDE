@@ -1,0 +1,26 @@
+[
+  {
+    "name": "configfile-chunk1256",
+    "bucket": "conversion",
+    "note": "Config section lookup, entry linking, and config load from configfile.cpp (482-639).",
+    "auditSeams": "Opening the path and reading the file are host steps. Name and value compare is ordinal and case-insensitive. The entry allocation is the LP64 size of the section object, 40 bytes, plus the key length, which is the sizeof expression in NewConfigEntry. SetValue replaces the stored text.",
+    "auditRationale": "UNCredited configfile.cpp 482-639 (+158). A full tally line scan shows no overlap. ReadConfig starts at line 640 and stays outside this band.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/utility/configfile.cpp --start 482 --end 639 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| EnsureValueForKey (**492–512**) | yes |\n| FindSection (**520–529**) | yes |\n| RenameSection (**537–545**) | yes |\n| FindEntry (**553–563**) | yes |\n| NewConfigSection (**571–587**) | yes |\n| NewConfigEntry (**595–611**) | yes |\n| LoadConfigFile (**619–632**) | yes |\n| Band hull (**482–639**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| File open and the line reader | host steps |\n| ReadConfig body | later in the file |\n\nA null current section does not add an entry. An existing key and value, compared without case, is left in place. A different value is appended, and the stored key keeps the case that was passed. Finding a section is case-insensitive and returns the first match. Renaming a missing section does nothing. Creating a section that already exists returns that section and does not clear its entries. A new section is appended. A new entry is appended, then its value is copied. The allocation count is the section object size plus the key length, so an empty key uses only that size. Load clears the existed flag, returns without reading when the path does not open, and stores the read result only after the path opens.\n\n| Managed (`VmConfigFile1256Slice.cs`) | Native (`configfile.cpp`) |\n|--------------------------------------|---------------------------|\n| Sections, entries, and load | **482–639** |\n| Band hull (exclusive slice) | **482–639** |\n\n### Chunk **1256** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **158** |\n| **Net headline** | **+158** vs post-**1255** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmConfigFile1256Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/utility/configfile.cpp",
+        "symbol": "EnsureValueForKey",
+        "start": 482,
+        "end": 639,
+        "tests": [
+          "VmConfigFile1256SliceTests.Ensure_KeepsAnExistingValueAndReusesTheSection",
+          "VmConfigFile1256SliceTests.Load_SetsExistedOnlyAfterASuccessfulRead"
+        ]
+      }
+    ]
+  }
+]
