@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 292969
+    "managedCSharpLoc": 293241
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 120901,
+    "convertedThisRunNative": 121189,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 150165,
+    "convertedThisRunManaged": 150437,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 367971,
+    "remainingNative": 367683,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 139428,
+    "convertedBehaviorNative": 139716,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 140115,
-    "convertedBehaviorManaged": 159836,
+    "combinedBehaviorNative": 140403,
+    "convertedBehaviorManaged": 160108,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -44711,6 +44711,33 @@
         "nativeLoc": 265,
         "managedLoc": 330,
         "conversionManagedCommit": "84cba42023c537e5105e97def64eda3862d8c6e1"
+      },
+      {
+        "name": "wall-vertex-chunk1284",
+        "bucket": "conversion",
+        "note": "Upper and lower edge splits, the open height inserts, and the vertex count from hw_walls_vertex.cpp (1-288).",
+        "auditSeams": "The sidedef, segment fractions, and height lists are host records. The ceiling and floor slope factors are calculated and discarded.",
+        "auditRationale": "UNCredited hw_walls_vertex.cpp 1-288 (+288). A full tally line scan shows no overlap. The file ends at line 288.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/hwrenderer/scene/hw_walls_vertex.cpp --start 1 --end 288 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Upper edge (**31\u201362**) | yes |\n| Lower edge (**70\u2013101**) | yes |\n| Left edge (**109\u2013140**) | yes |\n| Right edge (**148\u2013179**) | yes |\n| Create (**187\u2013202**) | yes |\n| Count edges (**212\u2013271**) | yes |\n| Make (**279\u2013288**) | yes |\n| Band hull (**1\u2013288**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Ceiling slope | calculated, never stored |\n| Floor slope | calculated, never stored |\n\nThe upper walk stops at the first fraction at or past the right edge and skips a fraction at or before the left edge. The lower walk runs backward, continues past a fraction at or past the right edge, and stops at a fraction at or before the left edge. A left height at or below the bottom is skipped, and a height at the top is not inserted. The right walk never considers slot zero, and a height at or above the top is skipped before the downward insert. A zero-height edge stores a zero texture factor. The upper split is suppressed only when the no-split-upper flag is set and the side has more than one segment. The lower split also requires the side to have more than one segment. The count adds one less than the segment count for each edge whose flag is clear, even when those segments fall outside the fraction range, and an empty side wraps that unsigned add. A second build leaves the stored index alone. Seamless off, a missing side, the polyobject flag, the no-split flag, and an explicit no-split argument all reserve four corners.\n\n| Managed (`VmWallVertex1284Slice.cs`) | Native (`hw_walls_vertex.cpp`) |\n|--------------------------------------|--------------------------------|\n| Splits and the count | **1\u2013288** |\n| Band hull (exclusive slice) | **1\u2013288** |\n\n### Chunk **1284** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **288** |\n| **Net headline** | **+288** vs post-**1283** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmWallVertex1284Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/rendering/hwrenderer/scene/hw_walls_vertex.cpp",
+            "symbol": "HWWall::SplitUpperEdge",
+            "start": 1,
+            "end": 288,
+            "tests": [
+              "VmWallVertex1284SliceTests.Create_InsertsTheOpenHeightsAndSkipsTheRightZeroSlot",
+              "VmWallVertex1284SliceTests.Count_OverAllocatesOutsideSplitsAndWrapsAnEmptySide"
+            ]
+          }
+        ],
+        "nativeLoc": 288,
+        "managedLoc": 272,
+        "conversionManagedCommit": "2458f51630c7e9a79e92e2f8efb6d2464710d2f2"
       }
     ],
     "behaviorNativeChecksum": 508086,
