@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 121189,
+  "convertedThisRunNative": 121496,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 150437,
+  "convertedThisRunManaged": 150733,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 367683,
+  "remainingNative": 367376,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 139716,
+  "convertedBehaviorNative": 140023,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 140403,
-  "convertedBehaviorManaged": 160108,
+  "combinedBehaviorNative": 140710,
+  "convertedBehaviorManaged": 160404,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -44722,6 +44722,33 @@
       "nativeLoc": 288,
       "managedLoc": 272,
       "conversionManagedCommit": "2458f51630c7e9a79e92e2f8efb6d2464710d2f2"
+    },
+    {
+      "name": "skyplane-chunk1285",
+      "bucket": "conversion",
+      "note": "Sky offset, cylinder width, and the column stripe from r_skyplane.cpp (1-307).",
+      "auditSeams": "Cap colors are a host pair. The short draw height on the tall path is stored and not passed to the stripe. A missing software texture is the Missing flag.",
+      "auditRationale": "UNCredited r_skyplane.cpp 1-307 (+307). A full tally line scan shows no overlap. The file ends at line 307.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/swrenderer/plane/r_skyplane.cpp --start 1 --end 307 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Offset and cylinders (**66\u2013111**) | yes |\n| Sky pick (**113\u2013215**) | yes |\n| Column stripe (**217\u2013267**) | yes |\n| Tall and power columns (**269\u2013288**) | yes |\n| Draw loop (**290\u2013307**) | yes |\n| Band hull (**1\u2013307**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Cap color pair | host seam |\n| Short draw height | computed, never passed to the stripe |\n\nA null sky texture returns before the offset is chosen. Height 256 stores offset 166. Old freelook stores offset 0. The second cylinder uses scale Y, and a front position is always reduced modulo the first cylinder, including when the front texture is the second sky. A mirror column flips the angle index by subtracting the start column from the view width and leaves the destination column unchanged. A single sky still multiplies the back cylinder into the unused second angle. Swap without a double sky draws the second texture from the first sky position. An exact sky-flat flag draws the second texture from the second position and still uses the first cylinder as the modulus. A linedef sky with swap and a valid bottom texture uses the bottom offsets, and a missing bottom texture falls through to the swapped sky while the scroll stays on the first sky position. A power-of-two height repeats by scale Y. A taller texture wraps the fractional top and stores the truncated short height. Stretch scales the linedef mid by the texture height over 228 plus the sky offset.\n\n| Managed (`VmSkyPlane1285Slice.cs`) | Native (`r_skyplane.cpp`) |\n|------------------------------------|---------------------------|\n| Offset, pick, and the stripe | **1\u2013307** |\n| Band hull (exclusive slice) | **1\u2013307** |\n\n### Chunk **1285** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **307** |\n| **Net headline** | **+307** vs post-**1284** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmSkyPlane1285Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/rendering/swrenderer/plane/r_skyplane.cpp",
+          "symbol": "RenderSkyPlane::RenderSkyPlane",
+          "start": 1,
+          "end": 307,
+          "tests": [
+            "VmSkyPlane1285SliceTests.Setup_PicksTheOffsetAndTheSecondCylinderFromScaleY",
+            "VmSkyPlane1285SliceTests.Render_KeepsTheSky1ModulusAndFlipsOnlyTheAngleX"
+          ]
+        }
+      ],
+      "nativeLoc": 307,
+      "managedLoc": 296,
+      "conversionManagedCommit": "1be67491c0624a279880d3469f17b6517b354294"
     }
   ],
   "behaviorNativeChecksum": 508086,
