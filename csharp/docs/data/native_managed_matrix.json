@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 291457
+    "managedCSharpLoc": 291734
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 119499,
+    "convertedThisRunNative": 119776,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 148653,
+    "convertedThisRunManaged": 148930,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 369373,
+    "remainingNative": 369096,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 138026,
+    "convertedBehaviorNative": 138303,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 138713,
-    "convertedBehaviorManaged": 158324,
+    "combinedBehaviorNative": 138990,
+    "convertedBehaviorManaged": 158601,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -44576,6 +44576,33 @@
         "nativeLoc": 278,
         "managedLoc": 412,
         "conversionManagedCommit": "9f2a2301c93170801a78f1efa03c8adf65c13dc6"
+      },
+      {
+        "name": "k8lighting-chunk1279",
+        "bucket": "conversion",
+        "note": "Profile apply, capability notes, and the preset reset from hw_k8vavoom_lighting.cpp (1-277).",
+        "auditSeams": "The framebuffer, hardware-renderer flag, and ray-query support are host inputs. The slice keeps the reentered profile callback, the shadow floor, the note order, and the reset that does not restore the snapshot flags.",
+        "auditRationale": "UNCredited hw_k8vavoom_lighting.cpp 1-277 (+277). A full tally line scan shows no overlap. The file ends at line 277.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/hwrenderer/data/hw_k8vavoom_lighting.cpp --start 1 --end 277 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Apply profile (**80\u2013141**) | yes |\n| Capability probe (**149\u2013180**) | yes |\n| Prepare (**182\u2013200**) | yes |\n| Profile callback (**206\u2013216**) | yes |\n| Status (**218\u2013254**) | yes |\n| Reset (**256\u2013277**) | yes |\n| Band hull (**1\u2013277**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Framebuffer queries | host device |\n| Hardware-renderer flag | host video mode |\n\nA profile at or below zero clears the snapshot and returns before any cvar write. A positive profile forces the shadow map, priority, bloom, budget, and fallback on. Quality rises only when it is below 1024 with the boost, or below 512 without it. A zero tonemap or ambient-occlusion value becomes one, and a nonzero value stays, including a negative one. A zero light cap becomes 512 or 256. A zero filter becomes one. Ray tracing is enabled only when the passed device can query and the flag is still off. The snapshot copies the live values after those writes, and its ray flag is the boost or the probe argument. Assigning the profile stores the value and then runs the callback. A value below zero or above one assigns the clamped value, which runs the callback again, and the outer call still applies. The auto profile turns off only when the stored value is already zero and the previous value was positive, so a negative assignment that clamps to zero leaves auto on. Prepare returns for a null device or a software renderer. On capable hardware with auto still on and the profile still zero, the boost follows ray-query support, the probe flag is set only when queries exist, and the profile assignment applies before the auto line. A later ray enable uses the passed device, which can differ from the global screen used inside apply. The status text prints the snapshot beside the live cvars and the first matching capability note. Reset assigns profile zero, then writes the default cvars and a fresh snapshot. The live priority and fallback stay on while that snapshot stays off.\n\n| Managed (`VmK8Lighting1279Slice.cs`) | Native (`hw_k8vavoom_lighting.cpp`) |\n|--------------------------------------|-------------------------------------|\n| Profile, probe, and reset | **1\u2013277** |\n| Band hull (exclusive slice) | **1\u2013277** |\n\n### Chunk **1279** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **277** |\n| **Net headline** | **+277** vs post-**1278** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmK8Lighting1279Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/rendering/hwrenderer/data/hw_k8vavoom_lighting.cpp",
+            "symbol": "HCDE_K8vavoomApplyLightingProfile",
+            "start": 1,
+            "end": 277,
+            "tests": [
+              "VmK8Lighting1279SliceTests.Profile_ClampsOutsideTheRangeAndRaisesTheShadowFloor",
+              "VmK8Lighting1279SliceTests.Prepare_UsesThePassedFramebufferAndKeepsTheNoteOrder"
+            ]
+          }
+        ],
+        "nativeLoc": 277,
+        "managedLoc": 277,
+        "conversionManagedCommit": "b87a846436d3995ef75bc074d7e51fb7d976accf"
       }
     ],
     "behaviorNativeChecksum": 508086,
