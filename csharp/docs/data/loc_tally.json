@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 119776,
+  "convertedThisRunNative": 120053,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 148930,
+  "convertedThisRunManaged": 149161,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 369096,
+  "remainingNative": 368819,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 138303,
+  "convertedBehaviorNative": 138580,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 138990,
-  "convertedBehaviorManaged": 158601,
+  "combinedBehaviorNative": 139267,
+  "convertedBehaviorManaged": 158832,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -44587,6 +44587,33 @@
       "nativeLoc": 277,
       "managedLoc": 277,
       "conversionManagedCommit": "b87a846436d3995ef75bc074d7e51fb7d976accf"
+    },
+    {
+      "name": "postprocess-chunk1280",
+      "bucket": "conversion",
+      "note": "Scene post process, stereo flush, gamma present, and letterbox clear from gl_postprocess.cpp (1-277).",
+      "auditSeams": "The scene buffers, bloom callback, eye count, and present shader are host inputs. The slice keeps the pass order, the stereo flush, the gamma identity path, and the letterbox scissor tests.",
+      "auditRationale": "UNCredited gl_postprocess.cpp 1-277 (+277). A full tally line scan shows no overlap. The file ends at line 277.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/gl/gl_postprocess.cpp --start 1 --end 277 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Screen quad (**52\u201357**) | yes |\n| Scene passes (**59\u201374**) | yes |\n| Ambient occlusion (**82\u201389**) | yes |\n| Eye blur (**91\u2013105**) | yes |\n| Tonemap clear (**107\u2013110**) | yes |\n| Flush (**118\u2013144**) | yes |\n| Copy to backbuffer (**152\u2013179**) | yes |\n| Present texture (**181\u2013234**) | yes |\n| Letterbox clear (**242\u2013275**) | yes |\n| Band hull (**1\u2013277**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Draw arrays and texture binds | host GL |\n| Post-process shader objects | host pipeline |\n\nThe scene pass stores the delta as a float, the frame time divided by one thousand as a float, and the world timer divided by thirty-five as a float. It runs the first pass, binds the current framebuffer, calls the callback only when one was passed, then runs the second pass. Ambient occlusion logs the passed factor with the scene size. Blur walks every eye and advances to the next eye only while more than one eye remains. A single eye copies to the backbuffer with gamma applied. Any other eye count, including zero, draws two-dimensional content per eye, advances under the same remaining-eye test, clears the two-dimensional queue, and presents stereo. Copy draws two-dimensional content, clears that queue, and runs the screen shader. A non-null bounds rect is used as the viewport and skips the border clear. A null bounds rect clears the borders and then uses the letterbox. Present sets the viewport, binds dither, and chooses a linear filter only when linear scale is on. Gamma, contrast, saturation, black, and white stay at the identity values, and the gray formula is left unchanged, when gamma is not applied or hardware gamma is active. Otherwise inverse gamma is one over the gamma clamped from one tenth to four, and contrast, saturation, black, and white are clamped to their own ranges before the gray formula is stored. High dynamic range color scale is used only when that mode is active and the framebuffer is fullscreen. A bits-per-channel value of minus one selects 1023 in that mode and 255 otherwise. Any other bits-per-channel value selects one shifted by that count, minus one. Scale is the screen size divided by the buffer size as floats, and the offset stays zero. A zero client width or height returns before any border scissor. Otherwise the letterbox top, bottom, left, and right bars are scissored only when that bar's size is greater than zero.\n\n| Managed (`VmPostProcess1280Slice.cs`) | Native (`gl_postprocess.cpp`) |\n|---------------------------------------|--------------------------------|\n| Passes, flush, and present | **1\u2013277** |\n| Band hull (exclusive slice) | **1\u2013277** |\n\n### Chunk **1280** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **277** |\n| **Net headline** | **+277** vs post-**1279** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPostProcess1280Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/rendering/gl/gl_postprocess.cpp",
+          "symbol": "FGLRenderer::PostProcessScene",
+          "start": 1,
+          "end": 277,
+          "tests": [
+            "VmPostProcess1280SliceTests.Scene_PassesTheCallbackBetweenTheTwoPasses",
+            "VmPostProcess1280SliceTests.Present_ClampsGammaAndSkipsBordersWhenTheClientIsEmpty"
+          ]
+        }
+      ],
+      "nativeLoc": 277,
+      "managedLoc": 231,
+      "conversionManagedCommit": "213297b4fc6a185e3247085c3f16b5f814717f0a"
     }
   ],
   "behaviorNativeChecksum": 508086,
