@@ -1,0 +1,26 @@
+[
+  {
+    "name": "vk-hwbuffer-chunk1294",
+    "bucket": "conversion",
+    "note": "Upload padding, resize copy, and the buffer lock from vk_hwbuffer.cpp (1-253).",
+    "auditSeams": "The device, delete lists, descriptor update, and vertex-format id are host services. A detached device skips reset and destroy.",
+    "auditRationale": "UNCredited vk_hwbuffer.cpp 1-253 (+253). A full tally line scan shows no overlap. The file ends at line 253.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/vulkan/system/vk_hwbuffer.cpp --start 1 --end 253 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Construct and reset (**32–57**) | yes |\n| SetData (**59–139**) | yes |\n| SetSubData (**141–159**) | yes |\n| Resize (**161–190**) | yes |\n| Map and lock (**192–238**) | yes |\n| Format and bind (**242–253**) | yes |\n| Band hull (**1–253**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Device | host registration |\n| Delete lists | host command buffers |\n| Vertex format | host id |\n\nEvery allocation is at least 16 bytes. SetData stores the requested size. Static and stream buffers keep a staging copy and copy the whole allocation. Persistent buffers stay mapped. A mappable subdata write is padded to 16 bytes and does not queue a copy. Resize stores the padded size, copies only the previous stored size, waits without finishing, and updates descriptors. The retired resize buffer goes to the transfer list. Lock with no buffer uploads through a static SetData. Reset leaves the stored size and does nothing when the device is gone. Destroy removes the buffer only while the device is attached. Bind stores the start and ignores the length. A storage buffer that needs resize also sets both transfer usage bits.\n\n| Managed (`VmVkHardwareBuffer1294Slice.cs`) | Native (`vk_hwbuffer.cpp`) |\n|--------------------------------------------|---------------------------|\n| Upload, resize, and lock | **1–253** |\n| Band hull (exclusive slice) | **1–253** |\n\n### Chunk **1294** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **253** |\n| **Net headline** | **+253** vs post-**1293** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmVkHardwareBuffer1294Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/rendering/vulkan/system/vk_hwbuffer.cpp",
+        "symbol": "VkHardwareBuffer::SetData",
+        "start": 1,
+        "end": 253,
+        "tests": [
+          "VmVkHardwareBuffer1294SliceTests.SetData_PadsSixteenAndResizeCopiesTheStoredSize",
+          "VmVkHardwareBuffer1294SliceTests.Lock_UploadsAStaticBufferAndSubDataPadsTheWrite"
+        ]
+      }
+    ]
+  }
+]
