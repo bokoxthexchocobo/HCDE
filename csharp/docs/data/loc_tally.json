@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 115442,
+  "convertedThisRunNative": 115694,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 144057,
+  "convertedThisRunManaged": 144297,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 373430,
+  "remainingNative": 373178,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 133969,
+  "convertedBehaviorNative": 134221,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 134656,
-  "convertedBehaviorManaged": 153728,
+  "combinedBehaviorNative": 134908,
+  "convertedBehaviorManaged": 153968,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -44074,6 +44074,33 @@
       "nativeLoc": 152,
       "managedLoc": 195,
       "conversionManagedCommit": "bf6276073b01f257dea2fee8f0fd79c2b0218de9"
+    },
+    {
+      "name": "configcursor-chunk1261",
+      "bucket": "conversion",
+      "note": "Section cursor, clear, delete, and key lookup from configfile.cpp (214-465).",
+      "auditSeams": "Finding and creating a section reuse the already-credited helpers. A null current section faults on key removal and on value lookup. Deleting the first section clears it, then faults because the predecessor walk ends on a null pointer. The entry cursor is left in place by clear and by delete.",
+      "auditRationale": "UNCredited configfile.cpp 214-465 (+252). A full tally line scan shows no overlap. The setter that follows this band stays outside it.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/utility/configfile.cpp --start 214 --end 465 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| SetSection (**226\u2013240**) | yes |\n| SetFirstSection (**251\u2013260**) | yes |\n| SetNextSection (**271\u2013283**) | yes |\n| GetCurrentSection (**293\u2013300**) | yes |\n| ClearCurrentSection (**310\u2013327**) | yes |\n| DeleteCurrentSection (**339\u2013363**) | yes |\n| ClearKey (**374\u2013397**) | yes |\n| SectionIsEmpty (**408\u2013411**) | yes |\n| NextInSection (**423\u2013434**) | yes |\n| GetValueForKey (**445\u2013454**) | yes |\n| Band hull (**214\u2013465**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Section and entry allocators | already credited |\n| The setter after this band | already credited |\n\nA missing name without create leaves the current section and the entry cursor unchanged. Create appends a section and selects it, with the entry cursor on its first entry. A repeated name, compared without case, selects the existing section and does not add another. First and next selection copy that section's first entry into the cursor. Advancing past the last section clears the section cursor and leaves the entry cursor where it was. An empty file does the same for first selection. Clearing removes every entry and points the entry tail at the head, and it does not move the entry cursor. Deleting a later section clears it, unlinks it, and selects the following section without moving the entry cursor. Deleting the last section points the section tail at the predecessor. Deleting the first section clears it and then faults, leaving it linked. Key removal compares without case, drops only the first match, and moves the entry tail when that match was last. An empty section returns before the search. Value lookup returns the first case-insensitive match and does not move the cursor. A section with no current section, or with no entries, is empty.\n\n| Managed (`VmConfigCursor1261Slice.cs`) | Native (`configfile.cpp`) |\n|----------------------------------------|------------------------|\n| Cursor, clear, delete, key lookup | **214\u2013465** |\n| Band hull (exclusive slice) | **214\u2013465** |\n\n### Chunk **1261** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **252** |\n| **Net headline** | **+252** vs post-**1260** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmConfigCursor1261Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/utility/configfile.cpp",
+          "symbol": "FConfigFile::SetSection",
+          "start": 214,
+          "end": 465,
+          "tests": [
+            "VmConfigCursor1261SliceTests.Walk_ResetsTheCursorAndLeavesItOnAFailedAdvance",
+            "VmConfigCursor1261SliceTests.Delete_UnlinksTheMiddleAndClearKeyDropsTheFirstMatch"
+          ]
+        }
+      ],
+      "nativeLoc": 252,
+      "managedLoc": 240,
+      "conversionManagedCommit": "aa69fad61b3145a0ad0120de1f9eb968520c639e"
     }
   ],
   "behaviorNativeChecksum": 508086,
