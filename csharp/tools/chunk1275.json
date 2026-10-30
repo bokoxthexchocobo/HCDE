@@ -1,0 +1,26 @@
+[
+  {
+    "name": "swrenderer-chunk1275",
+    "bucket": "conversion",
+    "note": "Software renderer precache, camera views, and the default colormap from r_swrenderer.cpp (1-271).",
+    "auditSeams": "Shade maps, texture pixels, and the scene draw are host inputs. The slice keeps the sprite-hit overwrite, the column-mode mask, the camera early return, and the colormap priority.",
+    "auditRationale": "UNCredited r_swrenderer.cpp 1-271 (+271). A full tally line scan shows no overlap. The file ends at line 271.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/swrenderer/r_swrenderer.cpp --start 1 --end 271 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Freelook cvar (**49–53**) | yes |\n| Init and create (**64–73**) | yes |\n| PreparePrecache (**75–92**) | yes |\n| PrecacheTexture (**94–117**) | yes |\n| Precache (**119–174**) | yes |\n| RenderView (**176–188**) | yes |\n| WriteSavePic (**192–204**) | yes |\n| DrawRemaining (**206–213**) | yes |\n| SetClearColor (**215–218**) | yes |\n| RenderTextureView (**222–255**) | yes |\n| SetColormap (**257–271**) | yes |\n| Band hull (**1–271**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Shade map build | host colormap |\n| Scene pixels | host drawer |\n\nThe old freelook cvar stores its value and sends pitch limits only while a user game is running. Init builds shade maps and then software colormaps. Prepare reads true color before it rejects a missing, invalid, or canvas texture. Checked pixels unload only when the cache value is zero. Unchecked pixels register only when the cache is nonzero, and that path reads true color again. A column fetch wins when the cache shares any wall, sky, or sprite bit, including a sprite hit alone. A flat uses the pixel fetch. Zero cache does neither. Precache marks sprites from the last index downward and writes the sprite hit over the previous value. A sprite index past the list faults before those writes. Frames walk forward, and only valid rotations are stored. Precache then prepares every texture from the end, then fetches every texture from the end. Render installs the global view, draws, and copies the scene view back before any camera. A missing camera texture returns after that install and does not restore a later camera pitch. A present camera saves the light, switches to the camera field of view, draws with the first-update flag, restores the field of view and the light, and copies the camera view back. The save picture draws without that flag and writes a paletted image, right side up, for the restored sector. Remaining player sprites install, draw, and copy the view back. The default colormap is white with no desaturation, then the level fade. A nonzero global colormap selects the custom name. A zero fade and a zero global colormap select the fade table. Any other fade leaves the name unset.\n\n| Managed (`VmSwRenderer1275Slice.cs`) | Native (`r_swrenderer.cpp`) |\n|--------------------------------------|-----------------------------|\n| Precache, views, and colormap | **1–271** |\n| Band hull (exclusive slice) | **1–271** |\n\n### Chunk **1275** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **271** |\n| **Net headline** | **+271** vs post-**1274** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmSwRenderer1275Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/rendering/swrenderer/r_swrenderer.cpp",
+        "symbol": "FSoftwareRenderer",
+        "start": 1,
+        "end": 271,
+        "tests": [
+          "VmSwRenderer1275SliceTests.Precache_OverwritesSpriteHitsAndLeavesAFlatOnPixels",
+          "VmSwRenderer1275SliceTests.Views_RestoreAfterTheDrawAndSkipAMissingCamera"
+        ]
+      }
+    ]
+  }
+]
