@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 116904,
+  "convertedThisRunNative": 117096,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 145795,
+  "convertedThisRunManaged": 145948,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 371968,
+  "remainingNative": 371776,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 135431,
+  "convertedBehaviorNative": 135623,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 136118,
-  "convertedBehaviorManaged": 155466,
+  "combinedBehaviorNative": 136310,
+  "convertedBehaviorManaged": 155619,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -44263,6 +44263,33 @@
       "nativeLoc": 218,
       "managedLoc": 313,
       "conversionManagedCommit": "4d18aa27d2a045eca148c087427ce515f7a69314"
+    },
+    {
+      "name": "clipsegment-chunk1268",
+      "bucket": "conversion",
+      "note": "Solid-segment clip list, the opening check, and the crunch from r_clipsegment.cpp (1-192).",
+      "auditSeams": "The wall visitor is a host callback. The slice keeps the sentinel posts, the contained-span rejection, the solid insert, and the crunch copy.",
+      "auditRationale": "UNCredited r_clipsegment.cpp 1-192 (+192). A full tally line scan shows no overlap. The file ends at line 192.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/swrenderer/segments/r_clipsegment.cpp --start 1 --end 192 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Clear (**43\u201350**) | yes |\n| Check (**52\u201374**) | yes |\n| IsVisible (**76\u201393**) | yes |\n| Clip (**95\u2013191**) | yes |\n| Band hull (**1\u2013192**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Wall visitor | host callback |\n\nClear writes the left sentinel through the left edge and the right sentinel from the right edge through the maximum short. A span that does not cross a pixel is hidden. A span contained in one post is hidden and is not drawn. A visitor that rejects an otherwise open span leaves the posts unchanged. A solid span that ends on the next post slides that post's first edge back instead of inserting a new one. A solid span that sticks past a post extends that post, and a span that bridges two posts copies one slot past the cursor, leaving a trailing zero post in the list. A pass wall is drawn and does not close the opening. A missing visitor faults when a draw is required.\n\n| Managed (`VmClip1268Slice.cs`) | Native (`r_clipsegment.cpp`) |\n|---------------------------------|-------------------------------|\n| Sentinels, check, and crunch | **1\u2013192** |\n| Band hull (exclusive slice) | **1\u2013192** |\n\n### Chunk **1268** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **192** |\n| **Net headline** | **+192** vs post-**1267** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmClip1268Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/rendering/swrenderer/segments/r_clipsegment.cpp",
+          "symbol": "RenderClipSegment",
+          "start": 1,
+          "end": 192,
+          "tests": [
+            "VmClip1268SliceTests.Openings_InsertExtendAndSlideTheRightSentinel",
+            "VmClip1268SliceTests.Crunch_KeepsTheSlotPastTheCursorAndAPassWallDoesNotClose"
+          ]
+        }
+      ],
+      "nativeLoc": 192,
+      "managedLoc": 153,
+      "conversionManagedCommit": "0e5e129fba3abad9f969dcbbc79a6ba8624b606c"
     }
   ],
   "behaviorNativeChecksum": 508086,
