@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 298632
+    "managedCSharpLoc": 298155
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 125613,
+    "convertedThisRunNative": 125253,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 155828,
+    "convertedThisRunManaged": 155351,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 363259,
+    "remainingNative": 363619,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 144140,
+    "convertedBehaviorNative": 143780,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 144827,
-    "convertedBehaviorManaged": 165499,
+    "combinedBehaviorNative": 144467,
+    "convertedBehaviorManaged": 165022,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -45171,33 +45171,6 @@
         "nativeLoc": 293,
         "managedLoc": 351,
         "conversionManagedCommit": "fd207530fa2f9721fd4c0fb7d6fa06d0e867e7f9"
-      },
-      {
-        "name": "vk-postprocess-chunk1301",
-        "bucket": "conversion",
-        "note": "Automatic uniforms, the scene blit, present gamma, and the shadow-map transition from vk_postprocess.cpp (1-360).",
-        "auditSeams": "GetDeltaTime, ViewportLinearScale, and the shadow-map collect flag are host inputs. The uniform buffer release is the member destructor. NextEye records the call and does not change the pipeline image.",
-        "auditRationale": "UNCredited vk_postprocess.cpp 1-360 (+360). A full tally line scan shows no overlap. The file ends at line 360.",
-        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/vulkan/renderer/vk_postprocess.cpp --start 1 --end 360 and a full tally line scan \u2192 no overlap.",
-        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Automatic uniforms (**50\u201362**) | yes |\n| Active target and scene pass (**64\u2013108**) | yes |\n| Scene blit and resolve (**110\u2013165**) | yes |\n| Scene image transition (**167\u2013177**) | yes |\n| Current-image blit and copy (**179\u2013247**) | yes |\n| Present gamma (**249\u2013309**) | yes |\n| Ambient, blur, tonemap, shadow, and the eye call (**311\u2013360**) | yes |\n| Band hull (**1\u2013360**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| GetDeltaTime | host clock, default current argument false |\n| ViewportLinearScale | host bool |\n| Shadow-map collect flag | host bool |\n\nThe constructor creates a 16-byte uniform buffer, usage uniform, memory CPU-to-GPU, named AutomaticUniformsBuffer. The destructor body adds nothing. Destroying the object releases that buffer once. Post-process maps offset 0 for 16 bytes: delta time, frame time divided by 1000, world timer divided by the tic rate, and a zero pad. Pass 1 runs, then the active target, then the callback, then pass 2. The pipeline index stays put. The active target transitions the current pipeline image to color and the pipeline depth to depth-stencil, both with a defined source, on the draw queue. The render target uses the buffer width and height, RGBA16F, and one sample. The scene blit ends the pass, forces pipeline image 0, and transitions scene color to transfer-source (defined) and that pipeline image to transfer-dest (undefined). Any sample count other than one, including zero, resolves with the scene-color extent on both ends. One sample blits nearest, and both extents are still the scene-color size. The scene transition writes color, fog, and normal to color-attachment and depth to depth-stencil, all with the caller\u2019s undefined flag, and it does not end the pass. Blit-current ends the pass, uses each image\u2019s own size, nearest, then moves only the destination to the final layout with a defined source. The default final layout is shader-read. Copy-current ends the pass first. A width or height mismatch returns before any transition. A match copies the source extent and then returns the source to color-attachment and the destination to the final layout, both defined. Present runs the screen shader only when this is not a screenshot, and that run is before the uniforms. Gamma off writes inverse gamma, contrast, saturation, and white point as 1 and black point as 0, and it leaves the gray formula unset. Gamma on clamps gamma to 0.1\u20134 and stores its reciprocal, contrast to 0.1\u20133, saturation to -15\u201315, black point to 0\u20131, and white point to 0\u20135, then stores the integer saturation formula. Color scale is 255 when dither bits are -1, otherwise one shifted by that count, minus one. A screenshot keeps both scale axes positive and the offset at zero and targets the next image. Otherwise the Y scale is negated, the Y offset is 1, and the target is the swapchain. HDR mode is 1 only when gamma is applied, the color space is extended sRGB linear, and this is not a screenshot. The current input is linear when the host scale flag is set and nearest otherwise. The dither input is nearest and repeating. Window-position parity is never written. Ambient occlusion records the scene size and then transitions the scene with a defined source. Blur runs once per eye. It records an eye advance with the eye count when more than one eye remains, so one eye and zero eyes record none, and three eyes record two advances of 3. The pipeline image is unchanged. The tonemap clear only bumps that counter. The shadow update does nothing when the collect flag is off. When it is on, the shadow image goes to shader-read with a defined source and the finish call follows the transition.\n\n| Managed (`VmVkPostprocess1301Slice.cs`) | Native (`vk_postprocess.cpp`) |\n|----------------------------------------|------------------------------|\n| Uniforms, blit, present, and shadow | **1\u2013360** |\n| Band hull (exclusive slice) | **1\u2013360** |\n\n### Chunk **1301** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **360** |\n| **Net headline** | **+360** vs post-**1300** |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmVkPostprocess1301Slice.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/common/rendering/vulkan/renderer/vk_postprocess.cpp",
-            "symbol": "VkPostprocess::PostProcessScene",
-            "start": 1,
-            "end": 360,
-            "tests": [
-              "VmVkPostprocess1301SliceTests.Scene_ResolvesAboveOneSampleAndSkipsAMismatchedCopy",
-              "VmVkPostprocess1301SliceTests.Present_ClampsGammaAndAdvancesEveryEyeButTheLast"
-            ]
-          }
-        ],
-        "nativeLoc": 360,
-        "managedLoc": 477,
-        "conversionManagedCommit": "ba7770ed2bc45edc9c4c78fc0e8fcc653d9fe0b1"
       }
     ],
     "behaviorNativeChecksum": 508086,
