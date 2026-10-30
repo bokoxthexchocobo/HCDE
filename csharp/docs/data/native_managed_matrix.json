@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 288976
+    "managedCSharpLoc": 289285
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 117295,
+    "convertedThisRunNative": 117518,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 146172,
+    "convertedThisRunManaged": 146481,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 371577,
+    "remainingNative": 371354,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 135822,
+    "convertedBehaviorNative": 136045,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 136509,
-    "convertedBehaviorManaged": 155843,
+    "combinedBehaviorNative": 136732,
+    "convertedBehaviorManaged": 156152,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -44333,6 +44333,33 @@
         "nativeLoc": 199,
         "managedLoc": 224,
         "conversionManagedCommit": "c570dee80b0e31cadb0b68dc20322516f396ef32"
+      },
+      {
+        "name": "drawsegment-chunk1270",
+        "bucket": "conversion",
+        "note": "Portal segment stacks, sprite clip groups, and the drawn-range backup from r_drawsegment.cpp (1-223).",
+        "auditSeams": "The frame allocator and the view height are host inputs. The slice keeps the reverse segment index, the portal resize, the group of 100, the silhouette min and max, and the backup gate.",
+        "auditRationale": "UNCredited r_drawsegment.cpp 1-223 (+223). A full tally line scan shows no overlap. The file ends at line 223.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/swrenderer/segments/r_drawsegment.cpp --start 1 --end 223 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| DrawSegmentList (**53\u201356**) | yes |\n| Clear (**58\u201367**) | yes |\n| PushPortal (**69\u201373**) | yes |\n| PopPortal (**75\u201382**) | yes |\n| Push (**84\u201387**) | yes |\n| PushTranslucent (**89\u201392**) | yes |\n| BuildSegmentGroups (**94\u2013168**) | yes |\n| SetTopClip (**172\u2013185**) | yes |\n| SetBottomClip (**187\u2013200**) | yes |\n| SetBackupClip (**202\u2013207**) | yes |\n| SetRangeDrawn (**209\u2013213**) | yes |\n| SetRangeUndrawn (**215\u2013222**) | yes |\n| Band hull (**1\u2013223**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Frame allocator | host memory |\n| View height | host viewport |\n\nClear plants a zero start on both stacks. Segment zero is the newest push, and a count stops at the current portal. Pop resizes both stacks back to the saved start and then drops that start. A pop of the baseline start leaves the stacks empty, and another pop faults. Groups walk the visible segments in bands of one hundred. The first segment in a band seeds the screen edges and the near and far depth, and each later segment widens them. Columns in that span start at a zero top and a bottom of the view height, stored in sixteen bits. A bottom silhouette keeps the lesser column and a top silhouette keeps the greater column, so a negative top does not replace zero. The group copies those columns into new buffers. A missing segment or a missing allocator faults. Clip storage is the allocated buffer minus x1, so a later column index is absolute. A null source faults after the allocation and does not replace the previous buffer. Marking a range drawn fills the top with the view height. Marking it undrawn does nothing unless it was drawn. The drawn flag drops before the backup copy, so a missing backup faults with the flag already clear and leaves the filled columns in place. A later undrawn call then does nothing.\n\n| Managed (`VmDrawSeg1270Slice.cs`) | Native (`r_drawsegment.cpp`) |\n|-----------------------------------|------------------------------|\n| Stacks, groups, and clip backup | **1\u2013223** |\n| Band hull (exclusive slice) | **1\u2013223** |\n\n### Chunk **1270** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **223** |\n| **Net headline** | **+223** vs post-**1269** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmDrawSeg1270Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/rendering/swrenderer/segments/r_drawsegment.cpp",
+            "symbol": "DrawSegmentList",
+            "start": 1,
+            "end": 223,
+            "tests": [
+              "VmDrawSeg1270SliceTests.Portals_HideTheOuterSegmentsAndSplitGroupsOfOneHundred",
+              "VmDrawSeg1270SliceTests.Clips_MergeSilhouetteAndRestoreOnlyTheDrawnRange"
+            ]
+          }
+        ],
+        "nativeLoc": 223,
+        "managedLoc": 309,
+        "conversionManagedCommit": "d4d946dc9d98ce5ca4b7a5a2958dbe2728c0bdf5"
       }
     ],
     "behaviorNativeChecksum": 508086,
