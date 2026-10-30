@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 295535
+    "managedCSharpLoc": 295780
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 123077,
+    "convertedThisRunNative": 123320,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 152731,
+    "convertedThisRunManaged": 152976,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 365795,
+    "remainingNative": 365552,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 141604,
+    "convertedBehaviorNative": 141847,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 142291,
-    "convertedBehaviorManaged": 162402,
+    "combinedBehaviorNative": 142534,
+    "convertedBehaviorManaged": 162647,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -44955,6 +44955,33 @@
         "nativeLoc": 158,
         "managedLoc": 209,
         "conversionManagedCommit": "5df9803fa5b0230413a0e3f7b8c170bb6756acb0"
+      },
+      {
+        "name": "gl-interface-chunk1293",
+        "bucket": "conversion",
+        "note": "Version gate, extension flags, and the startup log from gl_interface.cpp (1-243).",
+        "auditSeams": "GL strings and integer queries are host inputs. The Windows vendor check is a host flag because that branch is compiled only for Win32. The unused function-pointer macro has no call.",
+        "auditRationale": "UNCredited gl_interface.cpp 1-243 (+243). A full tally line scan shows no overlap. The file ends at line 243.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/gl_load/gl_interface.cpp --start 1 --end 243 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Extension list (**48\u201377**) | yes |\n| Context reset (**87\u201391**) | yes |\n| Version gate and flags (**101\u2013187**) | yes |\n| Startup log (**195\u2013231**) | yes |\n| Version pair (**233\u2013243**) | yes |\n| Band hull (**1\u2013243**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| GL strings | host queries |\n| GL integers | host queries |\n| Win32 compile | host flag |\n| Pointer macro | no call site |\n\nA reload appends extension names and clears the flag word before the version test. Below 3.3 the load is fatal, the real version is still stored, and a previous shader version, vendor, and bindless bit stay. An override from 3 up to but not including 3.3 is promoted to 3.3. If the driver is older than that request, the driver string is kept and no emulation line is printed. Otherwise the emulation line names the request. The compared version is the parsed value plus a hundredth. Below 4 the shader version is forced to 3.31, and a Windows vendor containing ATI Tech sets the no-clip flag. At 4.5 and above, buffer storage is set, and shader storage is cleared when the vertex block count is 0. Invalidate and debug follow 4.3 or the matching extension. The uniform block is capped. Extension names match with ASCII case folding. The startup log reads the live strings and integers. The core profile bit selects Core, and any other mask selects Compatibility. Setting the version does not clear the bindless bit.\n\n| Managed (`VmGlInterface1293Slice.cs`) | Native (`gl_interface.cpp`) |\n|---------------------------------------|-----------------------------|\n| Version, flags, and the log | **1\u2013243** |\n| Band hull (exclusive slice) | **1\u2013243** |\n\n### Chunk **1293** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **243** |\n| **Net headline** | **+243** vs post-**1292** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmGlInterface1293Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/rendering/gl_load/gl_interface.cpp",
+            "symbol": "gl_LoadExtensions",
+            "start": 1,
+            "end": 243,
+            "tests": [
+              "VmGlInterface1293SliceTests.Load_CapsTheBlockAndPrintsTheLiveQueries",
+              "VmGlInterface1293SliceTests.Reload_KeepsStaleExtensionsAndClearsFlagsOnFailure"
+            ]
+          }
+        ],
+        "nativeLoc": 243,
+        "managedLoc": 245,
+        "conversionManagedCommit": "30f68a36366b76ea3a79b23b04852fc3975fb7e7"
       }
     ],
     "behaviorNativeChecksum": 508086,
