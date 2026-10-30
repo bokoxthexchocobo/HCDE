@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 112925,
+  "convertedThisRunNative": 113133,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 141254,
+  "convertedThisRunManaged": 141394,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 375947,
+  "remainingNative": 375739,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 131452,
+  "convertedBehaviorNative": 131660,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 132139,
-  "convertedBehaviorManaged": 150925,
+  "combinedBehaviorNative": 132347,
+  "convertedBehaviorManaged": 151065,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -43723,6 +43723,33 @@
       "nativeLoc": 218,
       "managedLoc": 298,
       "conversionManagedCommit": "3f689d2712b26e20fe262d5624c0eac71d19b45e"
+    },
+    {
+      "name": "matrix-mul-chunk1248",
+      "bucket": "conversion",
+      "note": "Column-major matrix multiply, 3x3 and 4x4 determinants, and the 4x4 adjoint from matrix.cpp (516-723). inverseMatrix at 724 stays on the earlier matrix chunk.",
+      "auditSeams": "A null or short matrix returns false or a zero determinant. FLOATTYPE is float because USE_DOUBLE is off. The determinant is computed in float and returned as double, matching the native return.",
+      "auditRationale": "UNCredited matrix.cpp 516-723 (+208). loadIdentity through computeNormalMatrix and inverseMatrix are already credited. A full tally line scan shows no overlap with 516-723.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/utility/matrix.cpp --start 516 --end 723 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| multMatrix (**520\u2013537**) | yes |\n| mat3Determinant (**539\u2013544**) | yes |\n| mat4Determinant (**546\u2013590**) | yes |\n| mat4Adjoint (**592\u2013722**) | yes |\n| Band hull (**516\u2013723**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Earlier transforms | matrix chunk 96 |\n| Inverse divide | later in this file |\n\nMultiply replaces the left matrix with left times right. The product is accumulated into a temporary so the left matrix can also be the right matrix. The 4\u00d74 determinant expands four 3\u00d73 minors of column 0. The adjoint stores each cofactor in column-major order. A 3\u00d73 block is row-major inside that expansion.\n\n| Managed (`VmMatrix1248Slice.cs`) | Native (`matrix.cpp`) |\n|-----------------------------------|----------------------|\n| Multiply, determinants, adjoint | **516\u2013723** |\n| Band hull (exclusive slice) | **516\u2013723** |\n\n### Chunk **1248** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **208** |\n| **Net headline** | **+208** vs post-**1247** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmMatrix1248Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/utility/matrix.cpp",
+          "symbol": "VSMatrix::multMatrix",
+          "start": 516,
+          "end": 723,
+          "tests": [
+            "VmMatrix1248SliceTests.Multiply_AppendsTheRightMatrixInColumnMajorOrder",
+            "VmMatrix1248SliceTests.Determinant_ExpandsMinorsAndRejectsAShortMatrix"
+          ]
+        }
+      ],
+      "nativeLoc": 208,
+      "managedLoc": 140,
+      "conversionManagedCommit": "4522342a83d8c69ebbdc81c266d8c6b938ef774e"
     }
   ],
   "behaviorNativeChecksum": 508086,
