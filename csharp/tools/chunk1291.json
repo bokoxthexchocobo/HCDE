@@ -1,0 +1,26 @@
+[
+  {
+    "name": "player-menu-chunk1291",
+    "bucket": "conversion",
+    "note": "Player menu color, name, class, skin, and cvar setters from playermenu.cpp (1-246).",
+    "auditSeams": "The class display name and the skin name are host inputs. A closed menu does not write.",
+    "auditRationale": "UNCredited playermenu.cpp 1-246 (+246). A full tally line scan shows no overlap. The file ends at line 246.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/menu/playermenu.cpp --start 1 --end 246 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Color and name (**44–91**) | yes |\n| Color set, class, and skin (**99–150**) | yes |\n| Aim, team, and gender (**158–210**) | yes |\n| Pickup and run (**218–246**) | yes |\n| Band hull (**1–246**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Class display name | host string |\n| Skin table | host name for the selected index |\n\nEvery setter returns 0. Nothing is written while the menu is closed. The color bits are the red, green, and blue channels shifted into one integer. The console color and color-set lines are limited to 23 characters. A name escapes quotes and backslashes. Class -1 stores Random. Team 0 stores 255, and any other team stores the value minus one. Gender values outside 0..3 do not write a cvar. A non-zero pickup or run value stores true.\n\n| Managed (`VmPlayerMenu1291Slice.cs`) | Native (`playermenu.cpp`) |\n|--------------------------------------|---------------------------|\n| Menu setters | **1–246** |\n| Band hull (exclusive slice) | **1–246** |\n\n### Chunk **1291** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **246** |\n| **Net headline** | **+246** vs post-**1290** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPlayerMenu1291Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/menu/playermenu.cpp",
+        "symbol": "DPlayerMenu::ColorChanged",
+        "start": 1,
+        "end": 246,
+        "tests": [
+          "VmPlayerMenu1291SliceTests.Menu_EscapesTheNameAndStoresTheTeam",
+          "VmPlayerMenu1291SliceTests.Closed_LeavesTheCommandsUntouched"
+        ]
+      }
+    ]
+  }
+]
