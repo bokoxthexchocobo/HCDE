@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 125613,
+  "convertedThisRunNative": 125999,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 155828,
+  "convertedThisRunManaged": 156372,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 363259,
+  "remainingNative": 362873,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 144140,
+  "convertedBehaviorNative": 144526,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 144827,
-  "convertedBehaviorManaged": 165499,
+  "combinedBehaviorNative": 145213,
+  "convertedBehaviorManaged": 166043,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -45182,6 +45182,33 @@
       "nativeLoc": 360,
       "managedLoc": 477,
       "conversionManagedCommit": "ba7770ed2bc45edc9c4c78fc0e8fcc653d9fe0b1"
+    },
+    {
+      "name": "vk-hwtexture-chunk1302",
+      "bucket": "conversion",
+      "note": "Texture upload, the wipe image, and material descriptor sets from vk_hwtexture.cpp (1-386).",
+      "auditSeams": "Palette tokens, the scene depth format, and the linear allocation size are host services. Mip generation is the existing image transition and leaves the shader-read layout.",
+      "auditRationale": "UNCredited vk_hwtexture.cpp 1-386 (+386). A full tally line scan shows no overlap. The file ends at line 386.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/vulkan/textures/vk_hwtexture.cpp --start 1 --end 386 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Construct, destroy, and reset (**40\u201365**) | yes |\n| Image and depth-stencil getters (**67\u2013104**) | yes |\n| Canvas and texel upload (**106\u2013199**) | yes |\n| Software buffer and wipe (**201\u2013301**) | yes |\n| Material descriptors (**305\u2013386**) | yes |\n| Band hull (**1\u2013386**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Palette translation token | host table |\n| Scene depth format and allocation byte count | host device |\n| Mipmap blit chain | already credited in vk_imagetransition.cpp |\n\nThe constructor stores the channel count and registers the texture. Destroy removes it only while the device is still attached, and the image members are released immediately rather than through the draw list. Reset does nothing when the device is gone. Otherwise it unmaps, then retires the post framebuffer, the render-pass framebuffers in key order, the depth-only view, the view, and the image onto the draw list, and it puts the aspect back to color and the layout back to undefined. GetImage creates once. A non-canvas image requests a buffer with the process-data flag added. Indexed data is one byte, R8, and has no mip chain, so the layout stays transfer-dest. Other data is four-byte BGRA and runs mip generation, which leaves shader-read. A hardware canvas skips the upload. HDR uses RGBA32 float and the rest uses RGBA8, with color-attachment and sampled usage, then a transfer-queue transition to shader-read with an undefined source. A zero or negative size throws before any staging buffer exists. The staging buffer is transfer-source and CPU-only. The copy uses the color aspect, one layer, and the image extent. The staging buffer is queued, and a transfer total strictly above 64 megabytes waits with finish false and upload true, which drops the transfer list. Depth-stencil is created once: one sample, depth-stencil usage, depth and stencil aspects, and a transfer-queue transition to the depth layout with an undefined source. AllocateBuffer resets when the size or the texel size differs, then creates a linear sampled image. Four bytes select BGRA and every other size selects R8. Memory is unknown, dedicated and mapped, host-visible and host-coherent, preferring device-local as well. The pitch is the allocated byte count divided by height and then by the texel size. The layout is general. Map returns the same pointer on the second call. The software CreateTexture ignores a null buffer and still returns zero. A buffer uses the stored texel size and ignores the texture unit and the name. Wipe stores four texels, BGRA, sampled and transfer-dest, GPU-only, under the caller\u2019s name. A positive framebuffer size blits to shader-read. Otherwise the image is cleared to black with alpha one while it is transfer-dest, then moved to shader-read with a defined source. The material registers on construct and removes on destroy only while attached. Member descriptors that were not already queued die with the object. DeleteDescriptors queues them on the draw list and clears the cache, and it does nothing when detached. The cache key is the clamp mode after the canvas and warp rules, plus the remap. A luminosity translation (positive with bit 30 set) is its own remap. Anything else asks the palette for the type in the high byte and the low 16 bits. A software canvas forces no-filter even when the texture is also a hardware canvas. A hardware canvas forces the camera clamp. A warped texture, or a user shader at index 15 or above, forces no clamp when the requested mode is XY or below, and it leaves XY-no-mip alone. Layer 0 is sampled with the state translation. Extra indexed layers are 1 and 2, fetched with that same translation and sampled with translation 0, and the layer count becomes 3. Other materials sample every layer, with extra layers at translation 0. Slots are the max of the layer count and 11. Dummy bindings then fill through binding 10 with the null view and shader-read, so an indexed material with 12 layers allocates 12 slots and leaves binding 11 unwritten.\n\n| Managed (`VmVkHwTexture1302Slice.cs`) | Native (`vk_hwtexture.cpp`) |\n|--------------------------------------|----------------------------|\n| Upload, wipe, and descriptors | **1\u2013386** |\n| Band hull (exclusive slice) | **1\u2013386** |\n\n### Chunk **1302** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **386** |\n| **Net headline** | **+386** vs post-**1301** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmVkHwTexture1302Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/rendering/vulkan/textures/vk_hwtexture.cpp",
+          "symbol": "VkHardwareTexture::CreateTexture",
+          "start": 1,
+          "end": 386,
+          "tests": [
+            "VmVkHwTexture1302SliceTests.Upload_WaitsAboveSixtyFourMegabytesAndSkipsANullBuffer",
+            "VmVkHwTexture1302SliceTests.Descriptors_CacheTheClampAndLeaveTheTwelfthBindingEmpty"
+          ]
+        }
+      ],
+      "nativeLoc": 386,
+      "managedLoc": 544,
+      "conversionManagedCommit": "76c3bafb68dbced079f5e56b7ddbe915690392b0"
     }
   ],
   "behaviorNativeChecksum": 508086,
