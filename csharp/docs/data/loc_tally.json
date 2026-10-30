@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 122504,
+  "convertedThisRunNative": 122673,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 152123,
+  "convertedThisRunManaged": 152357,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 366368,
+  "remainingNative": 366199,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 141031,
+  "convertedBehaviorNative": 141200,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 141718,
-  "convertedBehaviorManaged": 161794,
+  "combinedBehaviorNative": 141887,
+  "convertedBehaviorManaged": 162028,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -44858,6 +44858,33 @@
       "nativeLoc": 153,
       "managedLoc": 182,
       "conversionManagedCommit": "e2fc0a0739c7d7b374e6cd09e99b86fef8da5a27"
+    },
+    {
+      "name": "launcher-window-chunk1290",
+      "bucket": "conversion",
+      "note": "Modal frame, tab order, and the launcher layout from launcherwindow.cpp (1-169).",
+      "auditSeams": "String lookup and the page objects are host inputs. The event loop returns after the host calls start or exit.",
+      "auditRationale": "UNCredited launcherwindow.cpp 1-169 (+169). A full tally line scan shows no overlap. The file ends at line 169.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/widgets/launcherwindow.cpp --start 1 --end 169 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Modal frame (**34\u201347**) | yes |\n| Constructor (**49\u201381**) | yes |\n| Page commands (**83\u2013130**) | yes |\n| Language and layout (**132\u2013169**) | yes |\n| Band hull (**1\u2013169**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| String table | host lookup returns the key when it is missing |\n| Child pages | host language and value counts |\n| Event loop | host calls start or exit |\n\nThe window title is HCDE. The changelog tab is added first only when both release flags are set, so the initial focus is that tab. Otherwise focus stays on Play. Multiplayer is the network page, and hosting also requires that page's host flag. Start always writes the settings, then the network page or the play page, and the changelog when it exists. Close clears the result. The modal frame is 615 by 700, centered on the screen. The constructor lays the children out before that frame is applied, so a zero client size leaves the button bar above the top and the page height at zero. A short client floors the page height at zero.\n\n| Managed (`VmLauncherWindow1290Slice.cs`) | Native (`launcherwindow.cpp`) |\n|------------------------------------------|-------------------------------|\n| Frame, tabs, and the layout | **1\u2013169** |\n| Band hull (exclusive slice) | **1\u2013169** |\n\n### Chunk **1290** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **169** |\n| **Net headline** | **+169** vs post-**1289** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmLauncherWindow1290Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/widgets/launcherwindow.cpp",
+          "symbol": "LauncherWindow::ExecModal",
+          "start": 1,
+          "end": 169,
+          "tests": [
+            "VmLauncherWindow1290SliceTests.Setup_PutsTheChangelogFirstAndStartsTheVisiblePage",
+            "VmLauncherWindow1290SliceTests.Layout_StacksTheBannerAndFloorsThePages"
+          ]
+        }
+      ],
+      "nativeLoc": 169,
+      "managedLoc": 234,
+      "conversionManagedCommit": "ed2cf8e73d117ae6241aa1b5e3c778d373fc7157"
     }
   ],
   "behaviorNativeChecksum": 508086,
