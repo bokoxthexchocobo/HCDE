@@ -1,0 +1,26 @@
+[
+  {
+    "name": "particle-chunk1282",
+    "bucket": "conversion",
+    "note": "Particle projection, square sprite edges, and the masked segment test from r_particle.cpp (1-293).",
+    "auditSeams": "The portal side, plane height, colormap table, and column shade are host inputs. The slice keeps the unmoved portal test, the square scale, the clip order, and the texture step across a blocked column.",
+    "auditRationale": "UNCredited r_particle.cpp 1-293 (+293). A full tally line scan shows no overlap. The file ends at line 293.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/swrenderer/things/r_particle.cpp --start 1 --end 293 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Time and portal (**81–93**) | yes |\n| View reject (**95–127**) | yes |\n| Edge clip (**129–148**) | yes |\n| Height sector (**150–200**) | yes |\n| Sprite record (**202–228**) | yes |\n| Column walk (**230–265**) | yes |\n| Masked segs (**267–292**) | yes |\n| Band hull (**1–293**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Column shade | host light table |\n| Colormap bytes | host palette |\n\nA paused or frozen view forces the time fraction to zero before the velocity is applied. The portal side test reads the particle position, not the position after velocity, and any nonzero side rejects the particle. A depth below 1/128 is behind the view. An X mirror rewrites the horizontal view coordinate to the view width minus that coordinate minus one before the side test. The side test rejects when depth is less than or equal to the absolute horizontal coordinate. The stored vertical scale is the horizontal scale, while the aspect multiplier applies only to the height delta. Ceiling clips raise the top in two steps, and floor clips lower the bottom in two steps. A top that is past the bottom rejects. A solid floor rejects when the moved height is below the plane sampled at the unmoved position. A solid ceiling rejects when that height is greater than or equal to the plane. Sky pictures skip those tests. The above-ceiling and below-floor choices take the height-sector colors, and the center choice takes the sector colors. The fullbright flag is only the low bit. A column walk whose height or width is not positive returns before masked segments. A blocked column still advances the texture coordinate. A masked segment is drawn only when its interpolated depth is strictly nearer than the particle and the portal id matches, using the integer midpoint of the particle edges.\n\n| Managed (`VmParticle1282Slice.cs`) | Native (`r_particle.cpp`) |\n|------------------------------------|---------------------------|\n| Projection and masked test | **1–293** |\n| Band hull (exclusive slice) | **1–293** |\n\n### Chunk **1282** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **293** |\n| **Net headline** | **+293** vs post-**1281** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmParticle1282Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/rendering/swrenderer/things/r_particle.cpp",
+        "symbol": "RenderParticle::Project",
+        "start": 1,
+        "end": 293,
+        "tests": [
+          "VmParticle1282SliceTests.Project_KeepsTheParticleSquareAndUsesTheUnmovedPosition",
+          "VmParticle1282SliceTests.Render_StepsTheTextureAcrossABlockedColumn"
+        ]
+      }
+    ]
+  }
+]
