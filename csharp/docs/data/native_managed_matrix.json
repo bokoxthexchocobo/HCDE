@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 282909
+    "managedCSharpLoc": 283242
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 112212,
+    "convertedThisRunNative": 112363,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 140105,
+    "convertedThisRunManaged": 140438,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 376660,
+    "remainingNative": 376509,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 130739,
+    "convertedBehaviorNative": 130890,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 131426,
-    "convertedBehaviorManaged": 149776,
+    "combinedBehaviorNative": 131577,
+    "convertedBehaviorManaged": 150109,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -43656,6 +43656,34 @@
         "nativeLoc": 321,
         "managedLoc": 553,
         "conversionManagedCommit": "c1f91edec66df1fd2d7eb4e87f0a0703f9b78ad8"
+      },
+      {
+        "name": "tga-copy-chunk1245",
+        "bucket": "conversion",
+        "note": "TGA CopyPixels from tgatexture.cpp (368-518). The header check, the RLE reader, and CreatePalettedPixels stay on earlier TGA chunks. Bitmap expansion uses the chunk 1241 copier.",
+        "auditSeams": "CopyPixels calls ReadCompressed. That function is already credited, and its managed copy is private, so this slice repeats the packet loop. A repeat packet clears the high bit before the remaining-pixel subtract. The memory-file reader rejects a seek that would leave the buffer. A short header is zeros. The palette starts at 0 when the file has no colormap; native leaves that table uninitialized. A 15-bit image uses one byte per pixel because the width shift is bpp>>3, and the copier may read one byte into a four-byte tail of zeros. Remap and conversion are unused parameters. The destination bitmap starts as the caller fill, which is 0 unless a test sets it.",
+        "auditRationale": "UNCredited tgatexture.cpp 368-518 (+151). Chunk 98 owns 84-110, 133-161, and 169-266. Chunk 101 owns 267-367. A full tally line scan shows no overlap with 368-518.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/textures/formats/tgatexture.cpp --start 368 --end 518 and a full tally line scan \u2192 no overlap.",
+        "auditManagedLocJustification": "CopyPixels calls ReadCompressed and the bitmap copier. Neither function is a source line in this band. The managed port keeps the colormap walk, the flip, and the format switch, and it repeats the RLE loop because the earlier port keeps that method private. The chunk 1241 copier is the seam for CopyPixelData and CopyPixelDataRGB. That host surface is why the managed file is over 150% of the 151-line source.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| CopyPixels signature and locals (**376\u2013384**) | yes |\n| Header, id skip, and colormap (**385\u2013431**) | yes |\n| Raw or compressed pixels and the vertical flip (**433\u2013460**) | yes |\n| Paletted, RGB, and gray expansion (**462\u2013517**) | yes |\n| Band hull (**368\u2013518**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Header check and RLE reader | earlier TGA chunks |\n| CreatePalettedPixels | earlier TGA chunks |\n\nA colormap of 15, 16, 24, or 32 bits fills palette entries from the first index. A 32-bit entry keeps its alpha only when the descriptor low nibble is 8, and a value other than 0 or 255 marks the texture translucent. Uncompressed pixels are a raw read. Compressed pixels are the RLE loop. The image is bottom-up unless descriptor bit 5 is set. Paletted and 8-bit gray use the palette copier. 15-bit and 16-bit RGB use RGB555, 24-bit and 32-bit without alpha use BGR, 32-bit with alpha uses BGRA and returns -1, and 16-bit gray uses the high byte.\n\n| Managed (`VmTgaTexture1245Slice.cs`) | Native (`tgatexture.cpp`) |\n|--------------------------------------|---------------------------|\n| CopyPixels colormap, flip, and format switch | **368\u2013518** |\n| Band hull (exclusive slice) | **368\u2013518** |\n\n### Chunk **1245** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **151** |\n| **Net headline** | **+151** vs post-**1244** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmTgaTexture1245Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/textures/formats/tgatexture.cpp",
+            "symbol": "FTGATexture::CopyPixels",
+            "start": 368,
+            "end": 518,
+            "tests": [
+              "VmTgaTexture1245SliceTests.Copy_ExpandsPaletteRgbAndGray",
+              "VmTgaTexture1245SliceTests.Copy_ReadsRleAndRejectsShortFiles"
+            ]
+          }
+        ],
+        "nativeLoc": 151,
+        "managedLoc": 333,
+        "conversionManagedCommit": "7e1761e0d19878990706635fe5b577b8dd72fff2"
       }
     ],
     "behaviorNativeChecksum": 508086,
