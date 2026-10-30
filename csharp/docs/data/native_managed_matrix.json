@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 297085
+    "managedCSharpLoc": 297389
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 124358,
+    "convertedThisRunNative": 124663,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 154281,
+    "convertedThisRunManaged": 154585,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 364514,
+    "remainingNative": 364209,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 142885,
+    "convertedBehaviorNative": 143190,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 143572,
-    "convertedBehaviorManaged": 163952,
+    "combinedBehaviorNative": 143877,
+    "convertedBehaviorManaged": 164256,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -45090,6 +45090,33 @@
         "nativeLoc": 266,
         "managedLoc": 338,
         "conversionManagedCommit": "bf8644766dbb1437d5567cdabf454cd5ce53e732"
+      },
+      {
+        "name": "vk-renderbuffers-chunk1298",
+        "bucket": "conversion",
+        "note": "Sample count, pipeline images, and the output framebuffer from vk_renderbuffers.cpp (1-305).",
+        "auditSeams": "The sample mask, format support, and swapchain size are host services. Command waits are counters.",
+        "auditRationale": "UNCredited vk_renderbuffers.cpp 1-305 (+305). A full tally line scan shows no overlap. The file ends at line 305.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/vulkan/textures/vk_renderbuffers.cpp --start 1 --end 305 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Sample count and frame (**42\u201385**) | yes |\n| Pipeline images (**87\u2013147**) | yes |\n| Scene images (**149\u2013253**) | yes |\n| Output framebuffer (**255\u2013305**) | yes |\n| Band hull (**1\u2013305**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Sample mask | host device limits |\n| Format support | host device |\n| Swapchain size | host framebuffer |\n\nA non-positive sample request returns the one-sample bit without reading the device mask. The walk keeps the highest supported bit at or below the clamped request. The stored sample count starts at one. A frame whose size and sample bit are unchanged does not wait, and a scene-size-only change stores the new scene size without recreating images. A size change waits, resets, and rebuilds both pipeline and scene. A sample-only change waits and rebuilds the scene, and leaves the pipeline images in place. Pipeline color and depth images are one sample. Scene images use the chosen sample bit. Pipeline color includes both transfer directions. Scene color omits the transfer destination. Fog is RGBA8. Depth starts at the 24-bit format and falls back to the 32-bit format, and both failures are fatal after the format member has already changed. Normals start at the packed format, fall back to RGBA8 without a second support check, and do not fatal. Output transitions the texture to color attachment. The undefined flag is set only for the next pipeline image. Scene or pipeline stencil adds that depth image with a defined layout. An existing framebuffer is kept, including its pass and attachment count. A null texture uses the swapchain slot for the present index and does not transition. Destroy does not release the images.\n\n| Managed (`VmVkRenderBuffers1298Slice.cs`) | Native (`vk_renderbuffers.cpp`) |\n|------------------------------------------|-------------------------------|\n| Samples, images, and output | **1\u2013305** |\n| Band hull (exclusive slice) | **1\u2013305** |\n\n### Chunk **1298** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **305** |\n| **Net headline** | **+305** vs post-**1297** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmVkRenderBuffers1298Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/rendering/vulkan/textures/vk_renderbuffers.cpp",
+            "symbol": "VkRenderBuffers::BeginFrame",
+            "start": 1,
+            "end": 305,
+            "tests": [
+              "VmVkRenderBuffers1298SliceTests.Samples_LeaveThePipelineWhenOnlyTheCountChanges",
+              "VmVkRenderBuffers1298SliceTests.Output_CachesTheFramebufferAndDepthFallbackFatals"
+            ]
+          }
+        ],
+        "nativeLoc": 305,
+        "managedLoc": 304,
+        "conversionManagedCommit": "53c86c79c133f6e418e4fe301bdb49992b3ab97a"
       }
     ],
     "behaviorNativeChecksum": 508086,
