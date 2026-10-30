@@ -1,0 +1,26 @@
+[
+  {
+    "name": "hw-precache-chunk1306",
+    "bucket": "conversion",
+    "note": "Texture collection, sprite translations, and the model vertex buffers from hw_precache.cpp (1-330).",
+    "auditSeams": "AddSkins is the model callee. This band chooses a null surface-skin pointer when i times 32 is past the array, and otherwise passes the tail. ValidateTexture, hardware-texture lookup, and image registration are host calls. The upscale helper returns the texture flag only when the mask bit is set.",
+    "auditRationale": "UNCredited hw_precache.cpp 1-330 (+330). A full tally line scan shows no overlap. The file ends at line 330.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/hwrenderer/hw_precache.cpp --start 1 --end 330 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| PrecacheTexture and PrecacheSprite (**43–80**) | yes |\n| Texture collection and skybox faces (**89–130**) | yes |\n| Actor states, model skins, and sprite frames (**132–195**) | yes |\n| Unused models, material marks, and CleanUnused (**199–258**) | yes |\n| Image register, precache, and model buffers (**260–329**) | yes |\n| Band hull (**1–330**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| AddSkins body | virtual callee on the model; this band passes the surface-skin tail or null |\n| shouldUpscale | one-line mask and flag check used by this band |\n\nThe collect loop starts at texture 1. A texture is kept when it is valid, has an image, is not a font character, and its use type is below Special. Each of its layers is marked and inserted once. A sky hit expands six faces onto the flat bit even for a font character, and a missing game texture throws. Index 0 is not expanded there. Actor states insert the remap index, or 0 when the remap is missing, then look up a model frame with the dropped flag clear. A valid skin sets the flat bit and skips AddSkins. An invalid skin with a model id calls AddSkins with the tail at slot times 32, or null when that index is past the array, and then marks the model. Sprite frames are walked from the last sprite toward the first, so a shared picture keeps the lower sprite. Pictures at index 0 or below are skipped. Unused models lose their vertex buffer before precaching starts. The mark walk includes index 0 and runs even when the precache cvar is off. Wall marks pass the upscale bit only. Sprite marks pass 1 and true, ignoring the upscale bit computed beside that call. CleanUnused follows insertion order. When the cvar is on, a wall image is registered only when the hardware texture for the upscale flag (0 or 1, not the expand bit) is missing, and a sprite image is registered when translation 0 is present. PrecacheSprite does use the expand bit and the upscale bit. A null material does not precache. Used models are built on one renderer created with -1, then that renderer is deleted. The notify line prints the elapsed time to three decimals.\n\n| Managed (`VmHwPrecache1306Slice.cs`) | Native (`hw_precache.cpp`) |\n|--------------------------------------|----------------------------|\n| Collect, sprites, and model buffers | **1–330** |\n| Band hull (exclusive slice) | **1–330** |\n\n### Chunk **1306** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **330** |\n| **Net headline** | **+330** vs post-**1305** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmHwPrecache1306Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/rendering/hwrenderer/hw_precache.cpp",
+        "symbol": "hw_PrecacheTexture",
+        "start": 1,
+        "end": 330,
+        "tests": [
+          "VmHwPrecache1306SliceTests.Collect_ExpandsSkyFacesAndPrecachesTranslatedSprites",
+          "VmHwPrecache1306SliceTests.Precache_StopsBeforeImagesWhenTheCvarIsOff"
+        ]
+      }
+    ]
+  }
+]
