@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 110379,
+  "convertedThisRunNative": 110747,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 137090,
+  "convertedThisRunManaged": 137492,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 378493,
+  "remainingNative": 378125,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 128906,
+  "convertedBehaviorNative": 129274,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 129593,
-  "convertedBehaviorManaged": 146761,
+  "combinedBehaviorNative": 129961,
+  "convertedBehaviorManaged": 147163,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -43474,6 +43474,33 @@
       "nativeLoc": 345,
       "managedLoc": 750,
       "conversionManagedCommit": "2ca13b89550691c44d0753b2471f58b45b461462"
+    },
+    {
+      "name": "startup-texture-chunk1239",
+      "bucket": "conversion",
+      "note": "Startup picture, notch, and Strife background pixels from startuptexture.cpp (1-368).",
+      "auditSeams": "CheckIfRaw is the host probe this file calls. A buffer whose length is not the desired size is rejected. Dimensions that look like a patch reject the buffer as raw only when every column offset equals width*4+8. Any other column accepts it: an offset at or past the last byte, a topdelta of 255, or a post walk that runs off the end. The startup constructor expands 16 colors from 6-bit components (alpha 63 becomes 255 via (d<<2)|((d>>4)&0x03030303)) into the shared palette. Pal8 is the Pick seam (r*3+g*5+b*7)&255. Pal32 is the expanded dword. Game palette is always false. PlanarToChunky keeps the outer >>4 outside the OR. Startup paletted pixels decode from source+48 through pal8, then FlipNonSquareBlockRemap. Startup CopyPixels writes pal32 into the bitmap with no flip and returns 0. The frame argument is logged and unused. The notch paletted loop condition is i * width * height / 2 with no less-than, so it never runs. The work buffer native leaves uninitialized is zero here, and the log says so. After the flip, every byte is remap[0], which is 7. Notch CopyPixels uses the correct pair count, writes pal32 nibbles, and does not flip. Strife pictures and the background do not override CopyPixels in this file, so the slice logs copy none and returns -1. Strife pixels flip the raw source through GetRemap. Luminance is Gray i^0x22. Other conversions are Remap with [0]=7. The background fills 64000 bytes with 0xF0, seeks to 57*320, and reads 95*320 bytes onto offset 41*320. Rows 0-40 and 136-199 stay 0xF0.",
+      "auditRationale": "UNCredited startuptexture.cpp 1-368 (+368). The file ends at 368. A full tally line scan shows no overlap.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/textures/formats/startuptexture.cpp --start 1 --end 368 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Sizes, Strife table, shared palette (**1\u201355**) | yes |\n| Image classes (**63\u201391**) | yes |\n| Raw probe declaration (**99**) | yes |\n| Name gate (**107\u2013138**) | yes |\n| Startup palette (**147\u2013172**) | yes |\n| Planar decode (**182\u2013213**) | yes |\n| Startup paletted pixels and copy (**221\u2013246**) | yes |\n| Notch pixels and copy (**255\u2013303**) | yes |\n| Strife picture pixels (**313\u2013333**) | yes |\n| Background window (**342\u2013367**) | yes |\n| Band hull (**1\u2013368**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nA notch whose header looks like a patch with every column at width*4+8 is rejected. A zero header of the right length is accepted. The notch paletted loop does not paint, so the flipped result is remap[0] even after a startup palette load. Startup copy returns the unflipped pal32 expansion. Strife and the background have no CopyPixels in this file.\n\n| Managed (`VmStartupTexture1239Slice.cs`) | Native (`startuptexture.cpp`) |\n|------------------------------------------|----------------------------|\n| Probe, palette, planar, notch, strife, background | **1\u2013368** |\n| Band hull (exclusive slice) | **1\u2013368** |\n\n### Chunk **1239** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **368** |\n| **Net headline** | **+368** vs post-**1238** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmStartupTexture1239Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/textures/formats/startuptexture.cpp",
+          "symbol": "FStartupTexture::CreatePalettedPixels",
+          "start": 1,
+          "end": 368,
+          "tests": [
+            "VmStartupTexture1239SliceTests.Probe_RejectsAPatchAndDecodesStrifeAndTheBackgroundWindow",
+            "VmStartupTexture1239SliceTests.Startup_SharesThePaletteWithNotchesAndSkipsTheFlipOnCopy"
+          ]
+        }
+      ],
+      "nativeLoc": 368,
+      "managedLoc": 402,
+      "conversionManagedCommit": "83f9fdf75762ba370b99ef0b140409552e9878d3"
     }
   ],
   "behaviorNativeChecksum": 508086,
