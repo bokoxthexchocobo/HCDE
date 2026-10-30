@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 297389
+    "managedCSharpLoc": 297804
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 124663,
+    "convertedThisRunNative": 124960,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 154585,
+    "convertedThisRunManaged": 155000,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 364209,
+    "remainingNative": 363912,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 143190,
+    "convertedBehaviorNative": 143487,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 143877,
-    "convertedBehaviorManaged": 164256,
+    "combinedBehaviorNative": 144174,
+    "convertedBehaviorManaged": 164671,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -45117,6 +45117,33 @@
         "nativeLoc": 305,
         "managedLoc": 304,
         "conversionManagedCommit": "53c86c79c133f6e418e4fe301bdb49992b3ab97a"
+      },
+      {
+        "name": "vk-descriptorset-chunk1299",
+        "bucket": "conversion",
+        "note": "Descriptor pools, the null texture set, and the postprocess input from vk_descriptorset.cpp (1-297).",
+        "auditSeams": "Device objects, sampler instances, and buffer storage are host services. The draw delete list is reclaimed by WaitForCommands.",
+        "auditRationale": "UNCredited vk_descriptorset.cpp 1-297 (+297). A full tally line scan shows no overlap. The file ends at line 297.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/vulkan/renderer/vk_descriptorset.cpp --start 1 --end 297 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Constructor, init, deinit, and begin frame (**42\u201372**) | yes |\n| HW buffer set (**74\u201392**) | yes |\n| Fixed set (**94\u2013111**) | yes |\n| Texture reset and the null set (**113\u2013145**) | yes |\n| Texture allocate and layout (**147\u2013183**) | yes |\n| Materials (**185\u2013195**) | yes |\n| Postprocess input and pool (**197\u2013253**) | yes |\n| Layouts and pools (**255\u2013297**) | yes |\n| Band hull (**1\u2013297**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Device, sampler, and buffer objects | host services |\n| Delete-list storage | reclaimed when the slice waits |\n\nA null descriptor is not pushed onto the delete list. The eleventh HW or fixed allocate moves the current set first, try-allocate fails, and `WaitForCommands(false)` reclaims every queued set before the next allocate. Dynamic uniform ranges stay the viewpoint, matrix, and stream struct sizes even when the buffer object has a different size. Storage ranges use the buffer size. Ray tracing is read when the fixed layout and pool are created, and again when the fixed set is written, so a later flag change adds or omits the acceleration structure without rebuilding the layout. Texture pools refill when the set counter is zero or the descriptor remainder is below the request, including a request above 2000 that leaves a negative remainder. Growing the layout vector does not create the missing lower layouts. The null set is allocated once at 11 layers with the clamp-xy-nomip sampler and is not written again. Reset deletes material descriptors in list order, retires the texture pools and the null set, and leaves the materials registered. Deinit and the destructor remove materials from the back. `DeleteDescriptors` runs while the material still has its device pointer, then that pointer is cleared. A material whose device pointer is already null does not retire its sets. Postprocess input prefers a depth-only view, always writes the automatic uniform at binding 15 as a uniform buffer, and adds the three light storage buffers only when requested. The image transition uses shader-read layout and a defined flag, and it runs on the draw commands after the descriptor write. The postprocess pool is retired only when try-allocate fails. A wait that reclaims the queued sets lets the next allocate reuse that pool. The one hundred first allocate retires the full pool before creating the replacement, and the new set is queued after that pool.\n\n| Managed (`VmVkDescriptorSet1299Slice.cs`) | Native (`vk_descriptorset.cpp`) |\n|------------------------------------------|-------------------------------|\n| Pools, the null set, and postprocess input | **1\u2013297** |\n| Band hull (exclusive slice) | **1\u2013297** |\n\n### Chunk **1299** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **297** |\n| **Net headline** | **+297** vs post-**1298** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmVkDescriptorSet1299Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/rendering/vulkan/renderer/vk_descriptorset.cpp",
+            "symbol": "VkDescriptorSetManager::GetInput",
+            "start": 1,
+            "end": 297,
+            "tests": [
+              "VmVkDescriptorSet1299SliceTests.HwSets_WaitBeforeTheEleventhAllocateAndReadRaytracingLive",
+              "VmVkDescriptorSet1299SliceTests.Textures_RefillBelowTheDescriptorFloorAndPostprocessRetiresAFullPool"
+            ]
+          }
+        ],
+        "nativeLoc": 297,
+        "managedLoc": 415,
+        "conversionManagedCommit": "9b362cfb10f773850853f590f5bf108668f913e8"
       }
     ],
     "behaviorNativeChecksum": 508086,
