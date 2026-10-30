@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 115290,
+  "convertedThisRunNative": 115442,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 143862,
+  "convertedThisRunManaged": 144057,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 373582,
+  "remainingNative": 373430,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 133817,
+  "convertedBehaviorNative": 133969,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 134504,
-  "convertedBehaviorManaged": 153533,
+  "combinedBehaviorNative": 134656,
+  "convertedBehaviorManaged": 153728,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -44047,6 +44047,33 @@
       "nativeLoc": 178,
       "managedLoc": 179,
       "conversionManagedCommit": "24cbf08fba9dbe291c64276ea8424c328dae340d"
+    },
+    {
+      "name": "imagetransition-chunk1260",
+      "bucket": "conversion",
+      "note": "Image-layout barriers and the mip chain from vk_imagetransition.cpp (1-152).",
+      "auditSeams": "Recording the barrier and issuing the blit are host steps. The slice keeps the access and stage bits this file selects, including the builder defaults of one array layer at index 0. A missing layout aborts before the barrier and before the layout store. Mip generation passes transfer and shader access directly and does not consult the layout table.",
+      "auditRationale": "UNCredited vk_imagetransition.cpp 1-152 (+152). A full tally line scan shows no overlap. The file ends at line 152.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/vulkan/textures/vk_imagetransition.cpp --start 1 --end 152 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| AddImage (**25\u201398**) | yes |\n| Execute (**100\u2013104**) | yes |\n| GenerateMipmaps (**108\u2013152**) | yes |\n| Band hull (**1\u2013152**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Barrier record and blit | host steps |\n| Layout enumeration headers | not in this file |\n\nA matching layout returns before either stage mask changes. Source and destination masks accumulate with a bitwise or across later images. An unknown source aborts with the stage masks left as they were. An unknown destination aborts after the source stage bit is set, and it does not record a barrier or change the layout. Execute runs only after a barrier was recorded, and it passes the accumulated masks. Asking for an undefined old layout changes the recorded old layout only. The access bits still come from the layout the image currently has. Mip generation halves each side and keeps a floor of one. Each step records a transfer source and an undefined destination, blits with a linear filter, then moves the finished level to shader read. A one-by-one image skips the loop and still transitions mip zero from a transfer destination to shader read. The texture layout ends as shader read. The mip barriers always use the color aspect, not the texture aspect mask.\n\n| Managed (`VmImageTransition1260Slice.cs`) | Native (`vk_imagetransition.cpp`) |\n|------------------------------------------|-----------------------------------|\n| Layout table, execute, mip chain | **1\u2013152** |\n| Band hull (exclusive slice) | **1\u2013152** |\n\n### Chunk **1260** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **152** |\n| **Net headline** | **+152** vs post-**1259** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmImageTransition1260Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/rendering/vulkan/textures/vk_imagetransition.cpp",
+          "symbol": "VkImageTransition",
+          "start": 1,
+          "end": 152,
+          "tests": [
+            "VmImageTransition1260SliceTests.Add_AccumulatesStageMasksAndSkipsAMatchingLayout",
+            "VmImageTransition1260SliceTests.Mipmaps_HalvesUntilOneAndLeavesTheLastLevelReadable"
+          ]
+        }
+      ],
+      "nativeLoc": 152,
+      "managedLoc": 195,
+      "conversionManagedCommit": "bf6276073b01f257dea2fee8f0fd79c2b0218de9"
     }
   ],
   "behaviorNativeChecksum": 508086,
