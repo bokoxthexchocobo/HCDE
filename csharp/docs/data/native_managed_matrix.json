@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 285959
+    "managedCSharpLoc": 286109
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 114627,
+    "convertedThisRunNative": 114785,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 143155,
+    "convertedThisRunManaged": 143305,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 374245,
+    "remainingNative": 374087,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 133154,
+    "convertedBehaviorNative": 133312,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 133841,
-    "convertedBehaviorManaged": 152826,
+    "combinedBehaviorNative": 133999,
+    "convertedBehaviorManaged": 152976,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -43955,6 +43955,33 @@
         "nativeLoc": 153,
         "managedLoc": 228,
         "conversionManagedCommit": "39b41119ae1a45a3502366a38117a5a6d48e16fb"
+      },
+      {
+        "name": "configfile-chunk1256",
+        "bucket": "conversion",
+        "note": "Config section lookup, entry linking, and config load from configfile.cpp (482-639).",
+        "auditSeams": "Opening the path and reading the file are host steps. Name and value compare is ordinal and case-insensitive. The entry allocation is the LP64 size of the section object, 40 bytes, plus the key length, which is the sizeof expression in NewConfigEntry. SetValue replaces the stored text.",
+        "auditRationale": "UNCredited configfile.cpp 482-639 (+158). A full tally line scan shows no overlap. ReadConfig starts at line 640 and stays outside this band.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/utility/configfile.cpp --start 482 --end 639 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| EnsureValueForKey (**492\u2013512**) | yes |\n| FindSection (**520\u2013529**) | yes |\n| RenameSection (**537\u2013545**) | yes |\n| FindEntry (**553\u2013563**) | yes |\n| NewConfigSection (**571\u2013587**) | yes |\n| NewConfigEntry (**595\u2013611**) | yes |\n| LoadConfigFile (**619\u2013632**) | yes |\n| Band hull (**482\u2013639**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| File open and the line reader | host steps |\n| ReadConfig body | later in the file |\n\nA null current section does not add an entry. An existing key and value, compared without case, is left in place. A different value is appended, and the stored key keeps the case that was passed. Finding a section is case-insensitive and returns the first match. Renaming a missing section does nothing. Creating a section that already exists returns that section and does not clear its entries. A new section is appended. A new entry is appended, then its value is copied. The allocation count is the section object size plus the key length, so an empty key uses only that size. Load clears the existed flag, returns without reading when the path does not open, and stores the read result only after the path opens.\n\n| Managed (`VmConfigFile1256Slice.cs`) | Native (`configfile.cpp`) |\n|--------------------------------------|---------------------------|\n| Sections, entries, and load | **482\u2013639** |\n| Band hull (exclusive slice) | **482\u2013639** |\n\n### Chunk **1256** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **158** |\n| **Net headline** | **+158** vs post-**1255** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmConfigFile1256Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/utility/configfile.cpp",
+            "symbol": "EnsureValueForKey",
+            "start": 482,
+            "end": 639,
+            "tests": [
+              "VmConfigFile1256SliceTests.Ensure_KeepsAnExistingValueAndReusesTheSection",
+              "VmConfigFile1256SliceTests.Load_SetsExistedOnlyAfterASuccessfulRead"
+            ]
+          }
+        ],
+        "nativeLoc": 158,
+        "managedLoc": 150,
+        "conversionManagedCommit": "88703a6acb4d9d608b40e322347af4432961e8f4"
       }
     ],
     "behaviorNativeChecksum": 508086,
