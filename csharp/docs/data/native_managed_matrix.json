@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 285731
+    "managedCSharpLoc": 285959
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 114474,
+    "convertedThisRunNative": 114627,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 142927,
+    "convertedThisRunManaged": 143155,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 374398,
+    "remainingNative": 374245,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 133001,
+    "convertedBehaviorNative": 133154,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 133688,
-    "convertedBehaviorManaged": 152598,
+    "combinedBehaviorNative": 133841,
+    "convertedBehaviorManaged": 152826,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -43928,6 +43928,33 @@
         "nativeLoc": 165,
         "managedLoc": 98,
         "conversionManagedCommit": "7a3ca7bc84b11a64ccbc06a9dfc55fcdedf6ed50"
+      },
+      {
+        "name": "drawlist-chunk1255",
+        "bucket": "conversion",
+        "note": "Hardware draw-list routing for walls, mirrors, flats, and sprites from hw_drawlistadd.cpp (1-153), through end of file.",
+        "auditSeams": "The pass-flag table is the static array this file indexes. Segment length is the CRT square root. MakeVertices, dynamic lights, and decals are host steps. The stored wall is a copy.",
+        "auditRationale": "UNCredited hw_drawlistadd.cpp 1-153 (+153). A full tally line scan shows no overlap. The file ends at line 153.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/hwrenderer/scene/hw_drawlistadd.cpp --start 1 --end 153 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| AddWall (**35\u201358**) | yes |\n| AddMirrorSurface (**66\u201388**) | yes |\n| AddFlat (**99\u2013131**) | yes |\n| AddSprite (**138\u2013153**) | yes |\n| Band hull (**1\u2013153**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Pass-flag table | other file |\n| Light upload | host step |\n\nA translucent wall goes to the translucent list before the sky hack is considered. A sky-hack two-sided wall goes to the offset masked list. A pass flag of 1 ignores a masked texture and uses the plain list. Any other pass flag uses the masked list only when a texture is masked. The mirror path sets the source type, copies the wall, clears the copy vertex count, writes the segment normal into every texture coordinate, builds vertices, runs lights only when decals exist and the scene is not fullbright and dynamic lights are on, runs decals, then stores light index -1. A flat whose style is not translucent, whose alpha is below 1 minus float epsilon, that is fog, or that has no texture, uses the translucent list when it is a 3D plane and the border list otherwise. A translucent texture with a stack, or a sloped 3D plane, does not use that translucent list. A sprite with the translucent flag, no actor, or neither a model frame nor a wall sprite, uses the translucent list. A model frame or a wall sprite uses the model list.\n\n| Managed (`VmDrawList1255Slice.cs`) | Native (`hw_drawlistadd.cpp`) |\n|------------------------------------|--------------------------------|\n| Wall, mirror, flat, and sprite lists | **1\u2013153** |\n| Band hull (exclusive slice) | **1\u2013153** |\n\n### Chunk **1255** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **153** |\n| **Net headline** | **+153** vs post-**1254** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmDrawList1255Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/rendering/hwrenderer/scene/hw_drawlistadd.cpp",
+            "symbol": "AddWall",
+            "start": 1,
+            "end": 153,
+            "tests": [
+              "VmDrawList1255SliceTests.Wall_RoutesSkyhackAndCopiesTheMirrorNormal",
+              "VmDrawList1255SliceTests.Flat_KeepsAFullAlphaAndSendsModelsToTheirOwnList"
+            ]
+          }
+        ],
+        "nativeLoc": 153,
+        "managedLoc": 228,
+        "conversionManagedCommit": "39b41119ae1a45a3502366a38117a5a6d48e16fb"
       }
     ],
     "behaviorNativeChecksum": 508086,
