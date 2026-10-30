@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 121496,
+  "convertedThisRunNative": 121812,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 150733,
+  "convertedThisRunManaged": 151132,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 367376,
+  "remainingNative": 367060,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 140023,
+  "convertedBehaviorNative": 140339,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 140710,
-  "convertedBehaviorManaged": 160404,
+  "combinedBehaviorNative": 141026,
+  "convertedBehaviorManaged": 160803,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -44749,6 +44749,33 @@
       "nativeLoc": 307,
       "managedLoc": 296,
       "conversionManagedCommit": "1be67491c0624a279880d3469f17b6517b354294"
+    },
+    {
+      "name": "shader-patch-chunk1286",
+      "bucket": "conversion",
+      "note": "Legacy uniform blanking, sampler binding removal, and the shader count from hw_shaderpatcher.cpp (1-316).",
+      "auditSeams": "Deprecation prints are warning flags. A missing semicolon blanks through the last stored character.",
+      "auditRationale": "UNCredited hw_shaderpatcher.cpp 1-316 (+316). A full tally line scan shows no overlap. The file ends at line 316.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/hwrenderer/data/hw_shaderpatcher.cpp --start 1 --end 316 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Tokens (**35\u201367**) | yes |\n| Legacy uniforms (**70\u2013156**) | yes |\n| Sampler bindings (**158\u2013224**) | yes |\n| Layout locations (**226\u2013276**) | yes |\n| Tables and the count (**280\u2013316**) | yes |\n| Band hull (**1\u2013316**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Deprecation print | warning flag |\n| Name walk | stored, not used in the product |\n\nThe exact timer and sampler phrases are replaced before the keyword scan. The texture2d scan continues from that cursor, so an earlier texture2d stays and a later non token still raises the warning. An underscore does not protect texture2d. A vertical tab does not start a uniform keyword. A timer with no semicolon blanks through the last character and still warns. timerX is left alone. A sampler binding accepts a hexadecimal, octal, or negative value and records only a real sampler uniform. A float, a sampler array, a capital sampler, and a prefixed layout stay. A failed binding search resumes seven characters later. Layout blanking replaces every character, including a newline, and an unclosed layout stops the scan. The keyword in does not match inout. The shader count multiplies the pass count by the full default table, including its terminator, plus the user shaders, the effect count, and the no texture index.\n\n| Managed (`VmShaderPatch1286Slice.cs`) | Native (`hw_shaderpatcher.cpp`) |\n|---------------------------------------|----------------------------------|\n| Blanking, bindings, and the count | **1\u2013316** |\n| Band hull (exclusive slice) | **1\u2013316** |\n\n### Chunk **1286** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **316** |\n| **Net headline** | **+316** vs post-**1285** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmShaderPatch1286Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/rendering/hwrenderer/data/hw_shaderpatcher.cpp",
+          "symbol": "RemoveLegacyUserUniforms",
+          "start": 1,
+          "end": 316,
+          "tests": [
+            "VmShaderPatch1286SliceTests.Legacy_SkipsAnEarlyTexture2dAndBlanksTheTabTimer",
+            "VmShaderPatch1286SliceTests.Bindings_ParseTheBaseAndStopAtAnOpenLayout"
+          ]
+        }
+      ],
+      "nativeLoc": 316,
+      "managedLoc": 399,
+      "conversionManagedCommit": "b5d4ce5130d248422a32ccf15674a2a3e818c5b2"
     }
   ],
   "behaviorNativeChecksum": 508086,
