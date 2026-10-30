@@ -1,0 +1,26 @@
+[
+  {
+    "name": "gl-debug-chunk1305",
+    "bucket": "conversion",
+    "note": "Debug groups, the message log, and the breakpoint callback from gl_debug.cpp (1-365).",
+    "auditSeams": "HasDebugApi is the RFL_DEBUG bit (128) on the renderer flags. The debug level and breakpoint are the gl_debug_level and gl_debug_breakpoint cvars. GPU stat strings are the renderer globals. The message cap and the elapsed-query list are process lifetime, shared by every debug object.",
+    "auditRationale": "UNCredited gl_debug.cpp 1-365 (+365). A full tally line scan shows no overlap. The file ends at line 365.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/gl/gl_debug.cpp --start 1 --end 365 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Debug-level cvar callback (**31–37**) | yes |\n| Update query drain (**59–83**) | yes |\n| Object labels (**92–106**) | yes |\n| PushGroup and PopGroup (**115–142**) | yes |\n| Breakpoint mode and logging level (**153–188**) | yes |\n| Severity filter and message log (**197–252**) | yes |\n| PrintMessage and DebugCallback (**260–308**) | yes |\n| Source, type, and severity names (**316–363**) | yes |\n| Band hull (**1–365**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| OpenGL entry points | host records the call; this band decides when and with which arguments |\n\nThe cvar callback prints only when the debug-api flag is clear. Update always clears the stat string, reads each elapsed query, deletes it, and appends name=%04.2f ms. It then copies the keep flag onto the active flag and clears keep. Without the debug api it returns after that drain. Labels and debug groups run only when the api flag is set and the level is not zero. A GPU stat that is active still begins a time query and still ends it on pop, even when the debug group is skipped. Breakpoint mode installs the callback with the debug object and enables synchronous output only when the cvar differs from the stored mode; clearing it passes a null callback and disables synchronous output. The logging level is stored as an unsigned enum, so a negative cvar enables every severity. The log is read only when that stored level is greater than zero, fifty messages at a time, and a message that does not fit the buffer stays queued. Push and pop group types are dropped. A repeated message does not advance the counter. The fiftieth new message prints only the suppression line. The fifty-first is remembered and not printed. Later messages return before they are remembered. The callback skips filtered severities before the notification assert, and a severity that is not a notification fails that assert after the print. Names for an unknown source, type, or severity are the decimal value.\n\n| Managed (`VmGlDebug1305Slice.cs`) | Native (`gl_debug.cpp`) |\n|-----------------------------------|-------------------------|\n| Queries, groups, log, and callback | **1–365** |\n| Band hull (exclusive slice) | **1–365** |\n\n### Chunk **1305** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **365** |\n| **Net headline** | **+365** vs post-**1304** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmGlDebug1305Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/rendering/gl/gl_debug.cpp",
+        "symbol": "FGLDebug::Update",
+        "start": 1,
+        "end": 365,
+        "tests": [
+          "VmGlDebug1305SliceTests.Update_DrainsQueriesAndArmsTheBreakpointOnce",
+          "VmGlDebug1305SliceTests.Log_StopsAtFiftyAndTheCallbackAsserts"
+        ]
+      }
+    ]
+  }
+]
