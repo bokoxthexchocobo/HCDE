@@ -1,0 +1,26 @@
+[
+  {
+    "name": "registers-scope-chunk1349",
+    "bucket": "conversion",
+    "note": "Debugger register scope from RegistersScopeStateNode.cpp (1-283), through end of file.",
+    "auditSeams": "CreateNodeForVariable and GetVMValue stay injected. GetVMScriptFunction returns null for a missing or native function. The register arrays and the extra-stack base are the frame the scope reads.",
+    "auditRationale": "UNCredited RegistersScopeStateNode.cpp 1-283 (+283). A full tally line scan shows no overlap. This is the largest remaining hole of at most 400 lines, ahead of StatePointerNode.cpp 1-281.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/scripting/dap/Nodes/RegistersScopeStateNode.cpp --start 1 --end 283 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Register scope names and protocol scope (**37–100**) | yes |\n| Register variable text and child indexes (**102–138**) | yes |\n| Pointer, string, float, int, and parameter registers (**140–240**) | yes |\n| Special setup registers (**242–283**) | yes |\n| Band hull (**1–283**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| CreateNodeForVariable | the node built from a value and a type is supplied by the caller |\n| GetVMValue | the special-setup read is the address plus the type, and the memory decode stays outside this file |\n\nThe scope name is Registers, the hint is registers, and indexed variables are forced to 0. Child names are appended, not replaced. SpecialInits is included only when the function is a script function. Lookup is case-insensitive and same-length. A miss leaves the output node unchanged. Each lookup builds a new node and stores the requested spelling. Parameter and special serialization write the fixed titles and the indexed count, and they leave a previous named count in place. The other groups write the requested name, the bracket count, and the named count, and they leave a previous indexed count in place. Child indexes are prefix plus the decimal index. The pointer group repeats that parse. std::stoi accepts a sign, leading C whitespace, and trailing junk, treats a leading zero as decimal, and throws on an empty suffix or a value outside int. A suffix that starts past the end of the name throws before the parse. A negative index or an index at the register count returns false and does not create a node. String values are the address of the string slot. Pointer, float, int, and parameter values are read from the live frame. Special setup uses the extra base plus the stored offset and the stored type. A native or missing function makes the special count throw.\n\n| Managed (VmRegisters1349Slice.cs) | Native (RegistersScopeStateNode.cpp) |\n|------------------------------------|---------------------------------------|\n| Scope, register groups, and special setup | **1–283** |\n| Band hull (exclusive slice) | **1–283** |\n\n### Chunk **1349** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **283** |\n| **Net headline** | **+283** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmRegisters1349Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/dap/Nodes/RegistersScopeStateNode.cpp",
+        "symbol": "RegistersScopeStateNode",
+        "start": 1,
+        "end": 283,
+        "tests": [
+          "VmRegisters1349SliceTests.ScopeNamesAndSerialize",
+          "VmRegisters1349SliceTests.ChildIndexAndSpecialSetup"
+        ]
+      }
+    ]
+  }
+]
