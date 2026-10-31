@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 129645,
+  "convertedThisRunNative": 129846,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 160307,
+  "convertedThisRunManaged": 160542,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 359227,
+  "remainingNative": 359026,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 148172,
+  "convertedBehaviorNative": 148373,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 148859,
-  "convertedBehaviorManaged": 169978,
+  "combinedBehaviorNative": 149060,
+  "convertedBehaviorManaged": 170213,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -45560,6 +45560,33 @@
       "nativeLoc": 218,
       "managedLoc": 265,
       "conversionManagedCommit": "45d2f70c902f47561fc79143053e18a7d7e9fff4"
+    },
+    {
+      "name": "malloc-chunk1316",
+      "bucket": "conversion",
+      "note": "Counted malloc, the size prefix, and the free report from m_alloc.cpp (1-201).",
+      "auditSeams": "malloc, realloc, free, and _msize are host operations. The sun stub returns zero from _msize.",
+      "auditRationale": "UNCredited m_alloc.cpp 1-201 (+201). A full tally line scan shows no overlap. The file ends at line 201.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/utility/m_alloc.cpp --start 1 --end 201 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Release malloc and realloc (**54\u2013114**) | yes |\n| Release calloc (**116\u2013121**) | yes |\n| Debug malloc and realloc (**123\u2013187**) | yes |\n| Free and the prefix free (**190\u2013201**) | yes |\n| Band hull (**1\u2013201**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| The libc heap | the host returns the block and its measured size |\n\nThe release path fatals with the byte count and no file. The debug path appends the file and the line, and on a non-Microsoft build the debug allocator is ordinary malloc, so the file and the line do not change the heap size. A null realloc on the ordinary path still calls realloc and reports a realloc from a zero old size. A null realloc on the size-prefix path calls malloc instead and reports an alloc. The prefix is one size_t stored in front of the user pointer. Reports use _msize of the user pointer, which the sun stub forces to zero. Free of null does nothing. Free of a live block reports that measured size, then frees the user pointer or the prefix base. Calloc multiplies with size_t wrap and clears that many user bytes. A failed realloc leaves the old block in place and writes no report.\n\n| Managed (`VmCountedAlloc1316Slice.cs`) | Native (`m_alloc.cpp`) |\n|----------------------------------------|------------------------|\n| Counted malloc and the free report | **1\u2013201** |\n| Band hull (exclusive slice) | **1\u2013201** |\n\n### Chunk **1316** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **201** |\n| **Net headline** | **+201** vs post-**1315** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmCountedAlloc1316Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/utility/m_alloc.cpp",
+          "symbol": "M_Malloc",
+          "start": 1,
+          "end": 201,
+          "tests": [
+            "VmCountedAlloc1316SliceTests.Release_ReportsMsizeAndLeavesTheBlockOnFailure",
+            "VmCountedAlloc1316SliceTests.Debug_StoresThePrefixAndNamesTheFile"
+          ]
+        }
+      ],
+      "nativeLoc": 201,
+      "managedLoc": 235,
+      "conversionManagedCommit": "370c6fa94ca2b96348446ae261508cd2167e83e4"
     }
   ],
   "behaviorNativeChecksum": 508086,
