@@ -1,0 +1,26 @@
+[
+  {
+    "name": "call-resolve-tail-chunk1379",
+    "bucket": "conversion",
+    "note": "FxVMFunctionCall::Resolve argument placement, default fill, casts, and the empty-call check from codegen.cpp (9936-10139).",
+    "auditSeams": "The named-argument search at 9882-9935 stays outside this band. IndexAt is the running index after that search. Resolve, RequestAddress, and NewPointer are callees. VARF_Optional is 1<<0, VARF_Out is 1<<11, VARF_Ref is 1<<16, and VARF_VarArg is 1<<19. The failed-call delete at 10140 stays outside the band.",
+    "auditRationale": "UNCredited codegen.cpp 9936-10139 (+204). After chunk 1378 this ties d_net.cpp 4992-5195. Path order takes this file. Gaps longer than 400 lines stay whole and are not sliced.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/scripting/backend/codegen.cpp --start 9936 --end 10139 and a full tally line scan, including recognition ranges, show no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Named-branch close (**9936–9938**) | yes |\n| Slot placement and vararg push (**9939–9969**) | yes |\n| Ordered-list move (**9971–9972**) | yes |\n| Default fill and casts (**9974–10113**) | yes |\n| Trailing insufficient check (**10115–10125**) | yes |\n| Empty-call else (**10127–10139**) | yes |\n| Band hull (**9936–10139**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Named-argument search **9882–9935** | below this band |\n| `if (failed)` delete **10140–10144** | below this band |\n| `Resolve`, `RequestAddress`, `NewPointer` | callees |\n\nAn empty argument list checks `ArgFlags` at the implicit index and rejects a required parameter. A non-empty list places each argument at the index already chosen above this band. A named node stores its value and clears that value. An index at or past `count` pushes the raw argument when the prototype is vararg, and otherwise reports too many arguments and deletes the call. Missing optional arguments become a one-register constant, or a vector of `float64` constants when the register count is not 1. A reference default forces `TypeNullPtr` after asserting the original type is a pointer, while the default cursor still advances by the original register count. Implicit parameters consume default words first. Varargs marked `VARF_VarArg` resolve in place, and `name` or `sound` values get a string cast and a second resolve. Other values are cast to the parameter type unless the parameter is `ref` or `out`. A real pointer to a dynamic array, map, or map iterator is dereferenced and `SAFE_RESOLVE` aborts the call when that resolve fails. A struct-pointer passed as the same struct-pointer skips `RequestAddress`. An `out` parameter that is not writable deletes the call. A `ref` parameter is rewrapped with `NewPointer`. A reference type mismatch records the error and continues with `failed` set. `hasStringArgs` is set only when the resolved value is `TypeString` and `failed` is still clear. The trailing check uses `Variants[0].ArgFlags` and deletes the call when another required parameter remains.\n\n| Managed (`VmCallResolveTail1379Slice.cs`) | Native (`codegen.cpp`) |\n|-------------------------------------------|------------------------|\n| Placement, defaults, casts, and the empty call | **9936–10139** |\n| Band hull (exclusive slice) | **9936–10139** |\n\n### Chunk **1379** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **204** |\n| **Net headline** | **+204** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Scripting/VmCallResolveTail1379Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxVMFunctionCall::Resolve",
+        "start": 9936,
+        "end": 10139,
+        "tests": [
+          "VmCallResolveTail1379SliceTests.PlacementFillsDefaultsAndRejectsExtraArgs",
+          "VmCallResolveTail1379SliceTests.RefsVarargsAndInsufficientCalls"
+        ]
+      }
+    ]
+  }
+]
