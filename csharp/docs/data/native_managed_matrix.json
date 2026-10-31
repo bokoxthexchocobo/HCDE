@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 308791
+    "managedCSharpLoc": 309204
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 134044,
+    "convertedThisRunNative": 134412,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 165987,
+    "convertedThisRunManaged": 166400,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 354828,
+    "remainingNative": 354460,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 152571,
+    "convertedBehaviorNative": 152939,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 153258,
-    "convertedBehaviorManaged": 175658,
+    "combinedBehaviorNative": 153626,
+    "convertedBehaviorManaged": 176071,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -45929,6 +45929,33 @@
         "nativeLoc": 373,
         "managedLoc": 373,
         "conversionManagedCommit": "f5c839a0341faea6d9d60ec5152af7e564b236dc"
+      },
+      {
+        "name": "deprecated-flags-chunk1329",
+        "bucket": "conversion",
+        "note": "Deprecated flags, string match, pointer check, and the early actor info properties from thingdef_properties.cpp (249-616).",
+        "auditSeams": "FindClassTentative, FindClass, and ResetBaggage stay callees. The default-actor tail is copied as the bytes supplied for GetDefault. tag at line 617 stays on the later property chunk.",
+        "auditRationale": "UNCredited thingdef_properties.cpp 249-616 (+368). A full tally line scan shows no overlap. CheckActorFlag ends at line 248 and DEFINE_PROPERTY(tag) starts at line 617.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/scripting/thingdef_properties.cpp --start 249 --end 616 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Deprecated flag setters (**260\u2013374**) | yes |\n| Deprecated flag checks (**395\u2013457**) | yes |\n| String match and pointer check (**471\u2013497**) | yes |\n| Game, spawn id, conversation, skip_super, and state usage (**509\u2013613**) | yes |\n| Band hull (**249\u2013616**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| CheckActorFlag | ends at line 248, already credited |\n| DEFINE_PROPERTY(tag) | starts at line 617, already credited |\n| Class search and baggage reset | callees |\n\nA nonzero set value enables the flag. Fire and ice damage store those names, and a cleared flag stores None. Gravity uses one eighth or one quarter, and the clear value is 1. Bounce clears the type mask and the see-sound bit, keeps bits outside that mask, then ors the compatibility mode. Fire resistance writes the Fire factor and the check returns on the first Fire entry. Pickup flash compares the tentative class with FindClass, so two nulls count as set. Inter-hub strip stores 0 when set and 1 when cleared. Higher missile probability checks `<= 160`. Missile-more and missile-even-more fold 0.125, 0.0625, and 0.5. Full-volume sounds set three flags and the check only requires see plus death. An unknown index changes nothing and checks false. MatchString is case-insensitive and stops at a null entry. Pointer check requires both class pointers and a descendant restriction, including the same class. Game names accumulate, Any replaces the mask, and an unknown name errors without changing the mask. Spawn ids outside 0 through 65535 error and leave the previous id. Conversation ids outside 1 through 65535 are read and ignored. skip_super rejects a larger class before it rejects a state block, then copies the default tail and marks the skip. Default state usage stores the integer as given.\n\n| Managed (`VmDeprecatedFlags1329Slice.cs`) | Native (`thingdef_properties.cpp`) |\n|-------------------------------------------|-------------------------------------|\n| Deprecated flags and the early info properties | **249\u2013616** |\n| Band hull (exclusive slice) | **249\u2013616** |\n\n### Chunk **1329** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **368** |\n| **Net headline** | **+368** vs post-**1328** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmDeprecatedFlags1329Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/scripting/thingdef_properties.cpp",
+            "symbol": "HandleDeprecatedFlags",
+            "start": 249,
+            "end": 616,
+            "tests": [
+              "VmDeprecatedFlags1329SliceTests.Handle_SetsTheDeprecatedPropertiesAndChecksThem",
+              "VmDeprecatedFlags1329SliceTests.Properties_MatchStringsAndRejectBadIds"
+            ]
+          }
+        ],
+        "nativeLoc": 368,
+        "managedLoc": 413,
+        "conversionManagedCommit": "99f5ee9ddc6ab5f3adb4cc8cd29748815bb33ba3"
       }
     ],
     "behaviorNativeChecksum": 508086,
