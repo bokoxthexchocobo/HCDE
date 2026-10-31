@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 312547
+    "managedCSharpLoc": 313090
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 136177,
+    "convertedThisRunNative": 136513,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 169743,
+    "convertedThisRunManaged": 170286,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 352695,
+    "remainingNative": 352359,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 154704,
+    "convertedBehaviorNative": 155040,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 155391,
-    "convertedBehaviorManaged": 179414,
+    "combinedBehaviorNative": 155727,
+    "convertedBehaviorManaged": 179957,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -46093,6 +46093,34 @@
         "nativeLoc": 336,
         "managedLoc": 1424,
         "conversionManagedCommit": "22ca174c2de8863f66ab26b35a6c0fe752fc7af5"
+      },
+      {
+        "name": "ceiling-construct-chunk1335",
+        "bucket": "conversion",
+        "note": "DCeiling construct, FLevelLocals::CreateCeiling, the CreateCeiling action wrapper, and EV_DoCeiling from a_ceiling.cpp (216-551), through the in-stasis comment.",
+        "auditSeams": "FindHighestFloorPoint, FindHighestCeilingSurrounding, FindHighestFloorSurrounding, FindNextLowestCeiling, FindNextHighestCeiling, FindLowestCeilingSurrounding, FindShortestUpperAround, FindModelFloorSector, FindModelCeilingSector, and ActivateInStasisCeiling stay callees. PlaneMoving, GetSpecial, DMovingCeiling::Construct, and StopInterpolation write the thinker fields inside this slice.",
+        "auditRationale": "UNCredited a_ceiling.cpp 216-551 (+336). A full tally line scan shows no overlap. This is the largest remaining hole of at most 400 lines, ahead of m_argv.cpp 1-335 and whole-file s_sound_eternity.cpp 1-331. Tick through line 215 stays chunk 797. The ActivateInStasisCeiling body from line 552 stays chunk 797.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/mapthinkers/a_ceiling.cpp --start 216 --end 551 and a full tally line scan \u2192 no overlap.",
+        "auditManagedLocJustification": "CreateCeiling calls DMovingCeiling::Construct, DMover::StopInterpolation, sector_t::PlaneMoving, and sector_t::GetSpecial. None of those functions are source lines in this band. The surrounding height finders, model sectors, and ActivateInStasisCeiling stay delegates. The managed port keeps the construct chain, the special-flag copy, the ceiling-moving check, and StopInterpolation because those calls produce the thinker fields. That host surface is why the managed file is over 150% of the 336-line source.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Tick closing brace (**216\u2013216**) | yes |\n| One-argument construct (**223\u2013226**) | yes |\n| Four-argument construct (**228\u2013242**) | yes |\n| CreateCeiling (**250\u2013479**) | yes |\n| CreateCeiling action wrapper (**481\u2013495**) | yes |\n| EV_DoCeiling (**506\u2013542**) | yes |\n| In-stasis comment (**545\u2013551**) | yes |\n| Band hull (**216\u2013551**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| DCeiling::Tick | chunk 797, lines 125-215 |\n| ActivateInStasisCeiling body | chunk 797, lines 552-568 |\n| FindHighestFloorPoint and the other surrounding-height finders | callees; they may replace the spot vertex |\n| FindModelFloorSector and FindModelCeilingSector | callees; a null model skips the texture change |\n| ActivateInStasisCeiling | callee of EV_DoCeiling; the manual path calls it and then returns only CreateCeiling |\n\nECeiling values follow a_ceiling.h. Crush-and-raise and crush-raise-and-stay fall through into lower-and-crush after storing the current ceiling distance. A moving or blocked ceiling returns false before construct. The four-argument construct stores silent with bit 2 cleared. Instant types replace speed with height before the distance check. When speed is at least the move distance, interpolation stops and silent bit 2 stores 2. Numeric model change uses the floor model only for raise-to-floor and lower-to-floor. Case 2 of that change copies the moving sector. The trigger change copies the front sector. A null model does not fall through to the line. The action wrapper passes tag 0. A manual tag of 0 rewrites the tag with the back sector number or 0x1000000, calls the in-stasis callee, and returns the create result. Only crush-and-raise restarts in-stasis ceilings before the tag iterator. The iterator stops on a negative sector number.\n\n| Managed (`VmACeilingConstruct1335Slice.cs`) | Native (`a_ceiling.cpp`) |\n|------------------------------------------------|--------------------------|\n| Construct, CreateCeiling, the action wrapper, and EV_DoCeiling | **216\u2013551** |\n| Band hull (exclusive slice) | **216\u2013551** |\n\n### Chunk **1335** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **336** |\n| **Net headline** | **+336** vs post-**1334** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmACeilingConstruct1335Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/mapthinkers/a_ceiling.cpp",
+            "symbol": "CreateCeiling",
+            "start": 216,
+            "end": 551,
+            "tests": [
+              "VmACeilingConstruct1335SliceTests.ConstructFieldsTypesAndTextureChange",
+              "VmACeilingConstruct1335SliceTests.EvManualCrushIteratorAndActionTag"
+            ]
+          }
+        ],
+        "nativeLoc": 336,
+        "managedLoc": 543,
+        "conversionManagedCommit": "e3e17926b99fa5c089b27288fa35d4424b66d8ff"
       }
     ],
     "behaviorNativeChecksum": 508086,
