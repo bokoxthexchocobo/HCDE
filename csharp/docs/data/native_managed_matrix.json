@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 302846
+    "managedCSharpLoc": 303111
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 129427,
+    "convertedThisRunNative": 129645,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 160042,
+    "convertedThisRunManaged": 160307,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 359445,
+    "remainingNative": 359227,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 147954,
+    "convertedBehaviorNative": 148172,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 148641,
-    "convertedBehaviorManaged": 169713,
+    "combinedBehaviorNative": 148859,
+    "convertedBehaviorManaged": 169978,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -45549,6 +45549,33 @@
         "nativeLoc": 209,
         "managedLoc": 160,
         "conversionManagedCommit": "edf2ddc25682859b47d02f2829d0d8923f394855"
+      },
+      {
+        "name": "cpuid-chunk1315",
+        "bucket": "conversion",
+        "note": "CPUID leaves, the brand-string spaces, and the feature dump from x86.cpp (1-218).",
+        "auditSeams": "CPUID is a host leaf callback. The non-x86 path is the other half of the same file.",
+        "auditRationale": "UNCredited x86.cpp 1-218 (+218). A full tally line scan shows no overlap. The file ends at line 218.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/utility/x86.cpp --start 1 --end 218 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Leaf walk and vendor id (**32\u2013152**) | yes |\n| Brand spaces and the feature dump (**154\u2013216**) | yes |\n| Band hull (**1\u2013218**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| The CPUID instruction | the host returns the four registers |\n\nThe non-x86 path clears the record and sets the line size to 64. The x86 path does that too, then reads leaf 0, leaf 1, and the extended maximum as an unsigned value. AuthenticAMD is ebx, edx, ecx in that order. Family 15 adds the extended family before the model check, so a non-zero extended family skips the extended model. Family 6 still adds it. AMD applies the extended family and the extended model in the same check. CLFLUSH replaces the line size with ebx bits 15:8 shifted by 5, and a later AMD L1 leaf overwrites that whole word. Leaf 7 is read only when the signed maximum id is at least 7. The brand walk skips leading spaces and collapses a space that follows a space. An empty vendor byte returns an empty dump after that walk. The brief flag does not change the text. Feature names stay in the header bit order, and a vendor id with no trailing zero continues into the brand bytes.\n\n| Managed (`VmCpuId1315Slice.cs`) | Native (`x86.cpp`) |\n|----------------------------------|--------------------|\n| CPUID leaves and the feature dump | **1\u2013218** |\n| Band hull (exclusive slice) | **1\u2013218** |\n\n### Chunk **1315** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **218** |\n| **Net headline** | **+218** vs post-**1314** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmCpuId1315Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/utility/x86.cpp",
+            "symbol": "CheckCPUID",
+            "start": 1,
+            "end": 218,
+            "tests": [
+              "VmCpuId1315SliceTests.Check_DecodesIntelLeavesAndKeepsFamily15ModelFlat",
+              "VmCpuId1315SliceTests.Dump_CondensesTheBrandAndPrintsAmdFamily"
+            ]
+          }
+        ],
+        "nativeLoc": 218,
+        "managedLoc": 265,
+        "conversionManagedCommit": "45d2f70c902f47561fc79143053e18a7d7e9fff4"
       }
     ],
     "behaviorNativeChecksum": 508086,
