@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 144652,
+  "convertedThisRunNative": 144890,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 182455,
+  "convertedThisRunManaged": 182763,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 344220,
+  "remainingNative": 343982,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 163179,
+  "convertedBehaviorNative": 163417,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 163866,
-  "convertedBehaviorManaged": 192126,
+  "combinedBehaviorNative": 164104,
+  "convertedBehaviorManaged": 192434,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -46900,6 +46900,33 @@
       "nativeLoc": 240,
       "managedLoc": 241,
       "conversionManagedCommit": "fb553f48b3d5f67c91f510b55ea12b3db7ff691f"
+    },
+    {
+      "name": "sdl-main-chunk1365",
+      "bucket": "conversion",
+      "note": "Crash info, OS detection, and SDL main from i_main.cpp (1-238), through end of file.",
+      "auditSeams": "cc_install_handlers, signal, SDL, realpath, popen, uname, and fexecve stay injected. GameMain, I_StartupJoysticks, and FArgs stay outside this file. PROGDIR is off unless the caller sets it. The Linux restart body is the compiled path.",
+      "auditRationale": "UNCredited i_main.cpp 1-238 (+238). A full tally line scan, including recognition ranges, shows no overlap. This is the largest remaining hole of at most 400 lines. It is not a tie. file_7z.cpp 1-235 is 235. Gaps longer than 400 lines stay whole and are not sliced. The file ends at line 238.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/platform/posix/sdl/i_main.cpp --start 1 --end 238 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Banner, includes, and prototypes (**1\u2013112**) | yes |\n| `GetCrashInfo` (**115\u2013119**) | yes |\n| `I_DetectOS` (**121\u2013170**) | yes |\n| `main` (**174\u2013238**) | yes |\n| Band hull (**1\u2013238**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| `Mac_I_FatalError` and `Linux_I_FatalError` | declarations; the bodies are not in this file |\n| `SignalHandler`, `GameMain`, and `FArgs` | the bodies are not in this file |\n| `cc_install_handlers`, SDL, `realpath`, `popen`, and `uname` | injected results |\n| Commented `SIGHUP` and `SIGQUIT` | not installed |\n| `PROGDIR` | not defined in this translation unit |\n\n`GetCrashInfo` calls `CrashInfo` only when the pointer is set. The separator is `\\n` and the size is the end-pointer difference. The return is `strlen` after that call, so the callback can shorten the buffer. A null buffer throws `buffer`. A buffer with no NUL throws `buffer`.\n\n`I_DetectOS` tries `/etc/os-release` and then `/usr/lib/os-release`. A nonzero `stat` tries the next path. A null `popen` tries the next path and does not `pclose`. A successful `popen` always `pclose`s and then breaks, including when the text is shorter than 2 bytes. The command is `. <path> && echo ${PRETTY_NAME}`, cut to 255 bytes. The read keeps at most 255 bytes. `strlen` decides the length, and a length above 1 drops the last byte whether or not it is a newline. An embedded NUL ends the string. `uname` failure leaves `sys_ostype` unchanged. An empty result becomes `Unknown` only after that call. Success appends `, ` only when a pretty name was stored. `sys_ostype` is `sysname release on machine` and does not include the pretty name. Empty uname fields still produce `  on `.\n\nOn a non-Apple build, `main` installs handlers with `SIGSEGV`, `SIGILL`, `SIGFPE`, and `SIGBUS` (11, 4, 8, 7), count 4, and `hcde-crash.log`. Apple skips that call. `SIGINT` (2) and `SIGTERM` (15) are installed next. The banner is `HCDE <version> - <git> - SDL version` and `Compiled on <date>`, before `seteuid(getuid())`. `setenv` writes `LC_NUMERIC` `C` with overwrite 1. `setlocale` uses `LC_ALL` (6) and `C`. `SDL_Init(0)` below 0 prints `Could not initialize SDL:` plus the error and returns -1. That path has already printed, dropped privileges, and set the locale, and it does not build `Args`, set `progdir`, start joysticks, call `GameMain`, release the mouse, or quit. A zero or positive init continues. `FArgs` copies `argc` strings and turns a null slot into an empty string. An `argc` past the array throws `argv` before `Args` is replaced. `argc` 0 still leaves an empty `Args` when `argv[0]` is read afterward.\n\nWithout `PROGDIR`, a null `realpath` copies `argv[0]`. The directory keeps the last slash. No slash yields `./`. A backslash is not a separator. A length of at least 4096 throws `program` before joysticks. A null `argv[0]` throws `argv` before `realpath`, after `Args` is stored. A set `PROGDIR`, including an empty one, skips `realpath`. Joysticks run, then `GameMain`. The restart check is next. A true check runs `I_TryRestart` and still sets relative mouse mode to 0 and quits. The process result is `GameMain`'s return, including a negative value. `SDL_Init` failure returns -1 rather than the SDL code. Linux false returns before `getenv`. A set `APPIMAGE`, including an empty string, opens that path read-only, calls `fexecve` with that fd and `environ`, and does not open `/proc/self/exe`. An unset variable opens `/proc/self/exe`. The fd is passed through even when it is -1.\n\n| Managed (`VmSdlMain1365Slice.cs`) | Native (`i_main.cpp`) |\n|-----------------------------------|----------------------|\n| Crash info, OS detection, and SDL main | **1\u2013238** |\n| Band hull (exclusive slice) | **1\u2013238** |\n\n### Chunk **1365** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **238** |\n| **Net headline** | **+238** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmSdlMain1365Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/platform/posix/sdl/i_main.cpp",
+          "symbol": "SdlMain",
+          "start": 1,
+          "end": 238,
+          "tests": [
+            "VmSdlMain1365SliceTests.DetectOsAndCrashInfo",
+            "VmSdlMain1365SliceTests.StartupMain"
+          ]
+        }
+      ],
+      "nativeLoc": 238,
+      "managedLoc": 308,
+      "conversionManagedCommit": "5bf29f08e18cc2050ff011666fdd1953cc4d054e"
     }
   ],
   "behaviorNativeChecksum": 508086,
