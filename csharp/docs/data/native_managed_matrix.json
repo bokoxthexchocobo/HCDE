@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 328785
+    "managedCSharpLoc": 329054
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 147353,
+    "convertedThisRunNative": 147558,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 185981,
+    "convertedThisRunManaged": 186250,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 341519,
+    "remainingNative": 341314,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 165880,
+    "convertedBehaviorNative": 166085,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 166567,
-    "convertedBehaviorManaged": 195652,
+    "combinedBehaviorNative": 166772,
+    "convertedBehaviorManaged": 195921,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -47241,6 +47241,33 @@
         "nativeLoc": 217,
         "managedLoc": 312,
         "conversionManagedCommit": "1e6e891afc2e8c068ed9a0a4927a063cd9e14d0b"
+      },
+      {
+        "name": "door-construct-chunk1377",
+        "bucket": "conversion",
+        "note": "Door sector construct, spawn construct, and EV_DoDoor from a_doors.cpp (343-547).",
+        "auditSeams": "FindLowestCeilingSurrounding, FindHighestFloorPoint, FindLowestCeilingPoint, PointToDist, DoorSound, P_CheckKeys, PlaneMoving, CreateThinker, the sector-tag iterator, SN_CheckSequence, and the player-index subtraction are callees. COMPATF_NODOORLIGHT is 1<<9. SPAC_Push is 1<<4 and SPAC_MPush is 1<<9. CHAN_CEILING is CHAN_VOICE (2). DAnimatedDoor::Construct body at 548 stays chunk 795.",
+        "auditRationale": "UNCredited a_doors.cpp 343-547 (+205). After chunk 1376 this is the unique largest 150-400 hole, ahead of win32basevideo.cpp 1-204. Chunk 794 retired the earlier construct credit. Gaps longer than 400 lines stay whole and are not sliced.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/mapthinkers/a_doors.cpp --start 343 --end 547 and a full tally line scan, including recognition ranges, show no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Blank line after `DoorSound` (**343**) | yes |\n| One-argument `DDoor::Construct` (**344\u2013347**) | yes |\n| Spawn comment (**349\u2013353**) | yes |\n| Spawn `DDoor::Construct` (**355\u2013429**) | yes |\n| `EV_DoDoor` comment and body (**431\u2013537**) | yes |\n| Animated-door banner and `IMPLEMENT_CLASS` (**539\u2013545**) | yes |\n| `DAnimatedDoor::Construct` signature (**547**) | yes |\n| Band hull (**343\u2013547**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| `DDoor::DoorSound` **246\u2013342** | chunk 793 |\n| `DAnimatedDoor::Construct` body **548\u2013551** | chunk 795 |\n| Plane and key helpers | callees |\n\nThe one-argument construct only calls `Super::Construct`. The spawn construct stores speed, delay, countdown, and light tag, then clears the light tag when `COMPATF_NODOORLIGHT` is set. Close, open, raise, and wait-raise take the lowest surrounding ceiling minus 4. Open and raise play the raise sound only when that distance differs from the current ceiling. Close-wait-open copies the ceiling distance and plays the close sound. Wait-close forces type `doorRaise`, direction 0, and the current ceiling distance. The floor block then overwrites the bottom distance: highest floor unless the floor thinker is a lifting plat, in which case the lowest ceiling. `OldFloorDist` is always the floor distance after that block. A manual door with no back side plays `*usefail` on `CHAN_VOICE` at volume 1 and `ATTN_NORM`. A moving boom door returns without reuse. A closing raise door is sent back up and the call still returns false. A non-push activation closes a raise door for a real player when the repeat cooldown does not apply, and that path returns true. Push and monster-push activations do not close. A remote tag walks every sector, skips moving ceilings, and the trace uses the last sector in the iterator. `DAnimatedDoor` is a concrete class with no pointer offsets.\n\n| Managed (`VmDoorConstruct1377Slice.cs`) | Native (`a_doors.cpp`) |\n|-----------------------------------------|------------------------|\n| Sector construct, spawn construct, and `EV_DoDoor` | **343\u2013547** |\n| Band hull (exclusive slice) | **343\u2013547** |\n\n### Chunk **1377** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **205** |\n| **Net headline** | **+205** vs the prior chunk |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmDoorConstruct1377Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/mapthinkers/a_doors.cpp",
+            "symbol": "DDoor::Construct",
+            "start": 343,
+            "end": 547,
+            "tests": [
+              "VmDoorConstruct1377SliceTests.ConstructAppliesTypeLightAndBotDist",
+              "VmDoorConstruct1377SliceTests.EvDoDoorChecksKeysReuseAndRemote"
+            ]
+          }
+        ],
+        "nativeLoc": 205,
+        "managedLoc": 269,
+        "conversionManagedCommit": "c192f1e06d56945630ef19e6b96664fe93f4bac4"
       }
     ],
     "behaviorNativeChecksum": 508086,
