@@ -1,0 +1,29 @@
+[
+  {
+    "name": "am-map-head-chunk1121",
+    "bucket": "conversion",
+    "note": "Automap mark/zoom constants and `am_cheat` / `am_overlay` gates from `am_map.cpp` (**1–150**). `p_mobj.cpp` has no further in-file ≥150 window clear of tally overlap.",
+    "auditSeams": "`UpdateShowAllLines` and CVAR registration remain host-injected; overlay body past **150** continues at **151**.",
+    "auditRationale": "UNCredited **`am_map.cpp`** **1–150** (+150), inside the 3594-line file, with no conversion or recognition overlap. Past-EOF `p_mobj` windows are not used.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 1 --end 150` and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "Zoom factors and net cheat clamp match the native constants and CVAR callbacks; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Mark count and player radius (**68–72**) | yes |\n| Zoom in/out and legacy factors (**73–75**) | yes |\n| `am_cheat` net clamp (**136–139**) | yes |\n| `am_overlay` clears active map (**146–150**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1–58** | license and includes |\n| **118–131** | host CVAR callbacks |\n| **151+** | later CVARs outside hull |\n\n| Managed (`VmAmMapHead1121Slice.cs`) | Native (`am_map.cpp`) |\n|-------------------------------------|---------------------|\n| Zoom constants + cheat/overlay gates | **1–150** |\n| Band hull (exclusive slice) | **1–150** |\n\n### Chunk **1121** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1120** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmAmMapHead1121Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "Automap constants and cheat overlay gates",
+        "start": 1,
+        "end": 150,
+        "tests": [
+          "VmAmMapHead1121SliceTests.ZoomIn_DoublesScaleEachSecond",
+          "VmAmMapHead1121SliceTests.ApplyLegacyZoom_UsesOldFactors",
+          "VmAmMapHead1121SliceTests.ClampAutomapCheat_BlocksNetWithoutCheats",
+          "VmAmMapHead1121SliceTests.ApplyOverlayChange_TurnsAutomapOffWhenOverlayCleared"
+        ]
+      }
+    ]
+  }
+]

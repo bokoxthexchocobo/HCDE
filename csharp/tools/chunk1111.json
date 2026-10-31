@@ -1,0 +1,29 @@
+[
+  {
+    "name": "pmobj-floor-bounce-chunk1111",
+    "bucket": "conversion",
+    "note": "`PlayBounceSound` and `FloorBounceMissile` through bounce-state selection from `p_mobj.cpp` (**2101–2250**); follows **1110** explode-missile band.",
+    "auditSeams": "`S_Sound`, `SpecialBounceHit`, `P_ProjectileHitPlane`, `P_HitFloor`, and `SetState` remain host-injected; MBF rest threshold at **2260** is the next band.",
+    "auditRationale": "UNCredited **`p_mobj.cpp`** **2101–2250** (+150); follows **1110** (**1951–2100**). Skips **1501–1685**.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 2101 --end 2250` and `--chunk 1111 --band` → UNCredited, exit 0.",
+    "auditManagedLocJustification": "Bounce gates encode the inverted special-hit switch, water/sky/count destroys, and Heretic versus Doom reflection; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `PlayBounceSound` quiet/see/wall pick (**2109–2128**) | yes |\n| Special bounce inverted switch (**2143–2148**) | yes |\n| Damageable plane kill (**2153–2161**) | yes |\n| Water explode/destroy (**2164–2179**) | yes |\n| Ceiling/floor/sky flags (**2188–2207**) | yes |\n| Bounce-count exhaustion (**2210–2217**) | yes |\n| Heretic/MBF/Doom reflect (**2221–2240**) | yes |\n| Pitch + bounce state name (**2243–2256**) | yes (policy) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2098–2105** | VM thunk (chunk **1110** edge) |\n| **2119–2127** | host `S_Sound` |\n| **2159**, **2170**, **2213** | host explode/die |\n| **2260+** | MBF rest outside hull |\n\n| Managed (`VmPMobjFloorBounce1111Slice.cs`) | Native (`p_mobj.cpp`) |\n|-------------------------------------------|---------------------|\n| Bounce sound + floor bounce policy | **2101–2250** |\n| Band hull (exclusive slice) | **2101–2250** |\n\n### Chunk **1111** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1110** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjFloorBounce1111Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "PlayBounceSound and FloorBounceMissile",
+        "start": 2101,
+        "end": 2250,
+        "tests": [
+          "VmPMobjFloorBounce1111SliceTests.ResolveBounceSound_UsesWallWhenAirborneAndValid",
+          "VmPMobjFloorBounce1111SliceTests.SpecialBounceMissileOutcome_InvertsNativeCases",
+          "VmPMobjFloorBounce1111SliceTests.RunFloorBounceMissile_DestroysOnSkyWhenFlagged",
+          "VmPMobjFloorBounce1111SliceTests.RunFloorBounceMissile_HereticEntersDeathAndReturnsFalse"
+        ]
+      }
+    ]
+  }
+]

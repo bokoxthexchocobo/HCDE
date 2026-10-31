@@ -1,0 +1,26 @@
+[
+  {
+    "name": "viewport-chunk1281",
+    "bucket": "conversion",
+    "note": "Software world matrix, clip frustum, aspect setup, and the sky angle table from r_viewport.cpp (1-290).",
+    "auditSeams": "The fuzz table and particle texture are host calls. The slice keeps the aspect integer division, the angle mirror, the freelook truncation, and the clip multiply onto the matrix already stored.",
+    "auditRationale": "UNCredited r_viewport.cpp 1-290 (+290). A full tally line scan shows no overlap. The file ends at line 290.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/swrenderer/viewport/r_viewport.cpp --start 1 --end 290 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Poly viewport (**61–72**) | yes |\n| World matrix (**74–89**) | yes |\n| Clip frustum (**91–122**) | yes |\n| Viewport setup (**124–185**) | yes |\n| Freelook (**187–204**) | yes |\n| Buffer seams (**206–210**) | yes |\n| Destination offset (**212–220**) | yes |\n| Sky angles (**222–247**) | yes |\n| View points (**249–269**) | yes |\n| Screen scale (**271–289**) | yes |\n| Band hull (**1–290**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Fuzz table init | host drawer |\n| Particle texture init | host drawer |\n\nA ratio below 1.333 is taller than wide. The viewport multiplies the chosen axis by the aspect multiplier and then divides by 48 with integer division. A null pixel stretch uses 1.2. The wall scale is taken from the inverse aspect before that inverse aspect is multiplied by 1.2 over the stretch. The view-size text is written only when the target is not a canvas, and it keeps at most 15 characters. The fuzz row is the view height minus two. Sky angles start at the center with slope zero and step by the focal tangent over the center. The last written column is the view width, and the left side is the two's complement of the column at view width minus one minus the index. A missing camera leaves the vertical look at half the view height. A camera adds the focal length times the tangent of the negated pitch, and the stored center truncates toward zero. The destination offset adds the window origin and then multiplies by four only for a BGRA target. World-to-view Y is the height delta, and Z is the yaw-rotated horizontal. The screen Y subtracts the view Y over Z times the inverse Z scale. A disabled pixel stretch divides the vertical screen scale by the aspect multiplier. The world matrix translates by the negated float position and does not write the bottom translation element. An X flip scales the first column by negative one, including a zero that becomes negative zero. The clip matrix is loaded from the frustum coefficients, and the world-to-clip slot is multiplied by that matrix instead of being replaced.\n\n| Managed (`VmViewport1281Slice.cs`) | Native (`r_viewport.cpp`) |\n|------------------------------------|---------------------------|\n| Aspect, angles, and clip | **1–290** |\n| Band hull (exclusive slice) | **1–290** |\n\n### Chunk **1281** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **290** |\n| **Net headline** | **+290** vs post-**1280** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmViewport1281Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/rendering/swrenderer/viewport/r_viewport.cpp",
+        "symbol": "RenderViewport::SetViewport",
+        "start": 1,
+        "end": 290,
+        "tests": [
+          "VmViewport1281SliceTests.Viewport_ScalesTheWideRatioAndMirrorsTheSkyAngles",
+          "VmViewport1281SliceTests.Freelook_MultipliesTheClipMatrixAlreadyStored"
+        ]
+      }
+    ]
+  }
+]

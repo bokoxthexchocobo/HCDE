@@ -1,0 +1,28 @@
+[
+  {
+    "name": "p-mobj-spawn-tail-chunk1153",
+    "bucket": "conversion",
+    "note": "Map-thing conversation, UDMF fields, dynamic-light overrides, begin-play, and spawn health from `p_mobj.cpp` (**6942–7094**).",
+    "auditSeams": "Conversation lookup, palette matching, color-name parsing, attached-light objects, and the inner spawn call stay host-supplied.",
+    "auditRationale": "UNCredited **`p_mobj.cpp`** **6942–7094** (+153), inside the 9061-line file, with no conversion or recognition overlap. Last in-file hole of at least 150 lines outside the standing skips.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 6942 --end 7094` and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "UDMF gates, spot-color split, light-flag overrides, and the health bands match native; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Conversation and UDMF fields (**6943–6972**) | yes |\n| Dynamic-light args, flags, and spot angles (**6974–7030**) | yes |\n| `CallBeginPlay`, attached lights, `LevelSpawned` (**7032–7058**) | yes |\n| Spawn health and `DieFromSpawn` (**7060–7074**) | yes |\n| Indexed spawn registration (**7085–7093**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **6882–6941** | spawn compose already credited, including the yaw assignment |\n| **7083** | `dumpspawnedthings` declaration; the printf is below |\n| **7094** | null check whose body is already credited at **7095–7106** |\n| **7095–7106** | indexed spawn body already credited |\n| **1501–1685**, **2421–5075**, **5577–5726**, **7880–7900** | standing skips |\n\n`STYLE_Count` is **19**. `LF_NOSHADOWMAP` is **16**, `LF_DONTLIGHTACTORS` is **32**, `LF_SPOT` is **64**, and `LF_DONTLIGHTMAP` is **256**. `OF_EuthanizeMe` is **1<<5**. A conversation id above **0** assigns the looked-up root only when that root is not **-1**. Alpha is applied at **0** and above. A render style equal to `STYLE_Count` is left alone. A scale axis of **0** is left alone; any other axis multiplies. Pitch, roll, and score change only when they are non-zero. A non-zero fill color keeps its low **24** bits and stores the palette index in the top byte. Dynamic lights with a color name write that RGB into args **0–2**. Otherwise a spot light splits `args[0]` with `RPART`, `GPART`, and `BPART`. Defined light booleans set or clear their flag; an undefined key leaves the class default. Soft radius, linearity, and minimum quality apply when they are **0** or positive. Spot angles then read the map thing's original args **1** and **2**, not the split color. `CallBeginPlay` always runs. Attached lights are updated only for a dynamic light, and a null light is skipped. `LevelSpawned` runs only when the actor is not already euthanized. Positive thing health truncates `health * Health` toward zero and, unless the multiplier is exactly **1**, copies that into `StartHealth`. Non-positive health stores the negated truncation. Health **0** looks up `DieFromSpawn` and sets that state with `nofunction` when it exists. Index **0** registers invasion and coop spawns, then always calls the inner spawn.\n\n| Managed (`VmPMobjSpawn1153Slice.cs`) | Native (`p_mobj.cpp`) |\n|--------------------------------------|------------------------|\n| Spawn tail and index open | **6942–7094** |\n| Band hull (exclusive slice) | **6942–7094** |\n\n### Chunk **1153** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **153** |\n| **Net headline** | **+153** vs post-**1152** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjSpawn1153Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "Map thing spawn tail",
+        "start": 6942,
+        "end": 7094,
+        "tests": [
+          "VmPMobjSpawn1153SliceTests.ConversationAndUdmf_ApplyOnlyDefinedFields",
+          "VmPMobjSpawn1153SliceTests.Light_SplitsSpotColorAndCopiesAttachedLights",
+          "VmPMobjSpawn1153SliceTests.Health_ScalesPositiveValuesAndDiesAtZero"
+        ]
+      }
+    ]
+  }
+]

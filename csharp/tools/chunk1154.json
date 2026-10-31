@@ -1,0 +1,28 @@
+[
+  {
+    "name": "p-pspr-bob-chunk1154",
+    "bucket": "conversion",
+    "note": "Weapon raise, bob smoothing, 2D/3D bob, and extra weapon buttons from `p_pspr.cpp` (**640–834**).",
+    "auditSeams": "The bring-up and bob virtuals, inventory links, and button-state lookup stay host-supplied. The button table itself is chunk **967**.",
+    "auditRationale": "UNCredited **`p_pspr.cpp`** **640–834** (+195), inside the 1600-line file, with no conversion or recognition overlap.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_pspr.cpp --start 640 --end 834` and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "Smoothstep, the euthanize-stopped bob walk, and first-live button precedence match native; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `P_BringUpWeapon` (**659–673**) | yes |\n| `R_WeaponBobSmoothFrac` (**710–724**) | yes |\n| `P_BobWeapon` (**726–751**) | yes |\n| `P_BobWeapon3D` (**753–779**) | yes |\n| `P_CheckWeaponButtons` (**789–814**) | yes |\n| `WOFFlags` (**825–833**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **485–639** | sprite `SetState` already credited |\n| **641–648** and **816–821** | VM thunks that return **0**, forwarded to the host |\n| **663–665** and **672** | debug traces |\n| **704–708** | CVAR callback with no immediate action |\n| **94–102** | button table already credited by chunk **967**; this slice walks the host list |\n| **835+** | overlay writers already credited |\n\n`PSPB_None` is **0**, `PSPB_2D` is **1**, and `PSPB_3D` is **2**. `OF_EuthanizeMe` is **1<<5**. `WF_WEAPONRELOADOK` is **1<<5**, `WF_WEAPONZOOMOK` is **1<<6**, and `WF_USER1OK` through `WF_USER4OK` are **1<<8** through **1<<11**. `BT_RELOAD` is **1<<6**, `BT_ZOOM` is **1<<7**, and `BT_USER1` through `BT_USER4` are **1<<21** through **1<<24**. `WOF_KEEPX` is **1**, `WOF_KEEPY` is **2**, `WOF_ADD` is **4**, `WOF_INTERPOLATE` is **8**, `WOF_RELATIVE` is **16**, and `WOF_ZEROY` is **32**. `P_BringUpWeapon` calls the player-pawn virtual only when it exists. With smoothing off, the tic fraction is returned unchanged, including values outside **0..1**. With smoothing on, values at or below **0** become **0**, values at or above **1** become **1**, and the interior uses `t*t*(3-2*t)`. A missing bob virtual resets interpolation and does not store a sample. A present virtual passes frac **1**, marks 2D interpolation only for `P_BobWeapon`, and walks inventory. A euthanized item ends the walk before its override and before every later item. An item without `ModifyBob` keeps the current sample and still advances. `P_BobWeapon3D` is the same walk with separate translation and rotation, and its interpolation update is not the 2D one. No ready weapon leaves the sprite alone. Otherwise the first check whose weapon-state bit and button bit are both set, and whose state exists, wins. A matching check with no state falls through.\n\n| Managed (`VmPPsprBob1154Slice.cs`) | Native (`p_pspr.cpp`) |\n|------------------------------------|------------------------|\n| Raise, bob, buttons, overlay flags | **640–834** |\n| Band hull (exclusive slice) | **640–834** |\n\n### Chunk **1154** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **195** |\n| **Net headline** | **+195** vs post-**1153** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPPsprBob1154Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_pspr.cpp",
+        "symbol": "Weapon bob and button checks",
+        "start": 640,
+        "end": 834,
+        "tests": [
+          "VmPPsprBob1154SliceTests.Smooth_PassesRawFractionsUntilTheCurveIsEnabled",
+          "VmPPsprBob1154SliceTests.Bob_StopsAtADeadItemAndResetsWithoutAVirtual",
+          "VmPPsprBob1154SliceTests.Buttons_PreferZoomAndSkipAMissingState"
+        ]
+      }
+    ]
+  }
+]

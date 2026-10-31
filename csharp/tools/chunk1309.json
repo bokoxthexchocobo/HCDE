@@ -1,0 +1,26 @@
+[
+  {
+    "name": "build-loader-chunk1309",
+    "bucket": "conversion",
+    "note": "Build ART tile count, palette translation, and tile registration from buildloader.cpp (1-290).",
+    "auditSeams": "ColorMatcher.Pick, StoreTranslation, and GetTranslation are palette callees. AddGameTexture and AddSimpleAnim are texture-manager callees. CheckNumForFullName searches the host lump list from the end, and the container overload also requires the palette container. Multi-byte art fields are little-endian, which is the in-memory word on this target.",
+    "auditRationale": "UNCredited buildloader.cpp 1-290 (+290). A full tally line scan shows no overlap. The file ends at line 290.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/gamedata/textures/buildloader.cpp --start 1 --end 290 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| CountTiles (**48–60**) | yes |\n| Build palette translation (**68–113**) | yes |\n| AddTiles sizes, anim, and rotations (**124–219**) | yes |\n| InitBuildTiles palette and ART scan (**230–289**) | yes |\n| Band hull (**1–290**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| FBuildTexture pixel decode | texture callee; this band passes the pixel span, size, and offsets |\n| BestColor | ColorMatcher.Pick receives the expanded channels |\n\nCountTiles returns 0 unless the first little-endian word is 1 and the end tile is at least the start tile. A buffer shorter than the 16-byte header also returns 0. The palette lump shorter than 768 returns 0. Otherwise the first 765 bytes choose Blood when any is at least 64. VGA channels expand with (v<<2)|(v>>4). Blood channels shift left by 2. The stored palette keeps the low 8 bits, and Pick receives the untruncated integers. Entry 255 is transparent. The stored translation id is masked to 16 bits. AddTiles skips a nonpositive dimension without consuming pixels. The name is the path prefix plus BTIL and a four-digit tile number. Offsets add the signed anim byte to half the size. An anim runs when the low 6 bits and the 64/128/192 field are both set. Those fields select type 2, 0, or 1, and the speed is max(1, (1<<speed)*1000/120). Rotation 1 fills the 16-view frame and sets flip 0x00FC. Rotation 2 fills the 8-view frame and sets flip 0. Init skips a palette hidden by a later lump of the same full name. The base name is lowercased and must be palette.dat, and the file must be at least 768 bytes. A nonempty path that does not end in a slash gains one. ART files are tiles000.art through the first missing name, in the palette container only. A positive tile count is added to the total even when a zero-size tile was skipped inside AddTiles.\n\n| Managed (`VmBuildLoader1309Slice.cs`) | Native (`buildloader.cpp`) |\n|---------------------------------------|----------------------------|\n| Count, palette, tiles, and the scan | **1–290** |\n| Band hull (exclusive slice) | **1–290** |\n\n### Chunk **1309** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **290** |\n| **Net headline** | **+290** vs post-**1308** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmBuildLoader1309Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/textures/buildloader.cpp",
+        "symbol": "InitBuildTiles",
+        "start": 1,
+        "end": 290,
+        "tests": [
+          "VmBuildLoader1309SliceTests.Palette_ExpandsVgaAndShiftsBlood",
+          "VmBuildLoader1309SliceTests.Init_StopsAtTheMissingArtAndCountsZeroTiles"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "name": "am-map-overlay-color-chunk1123",
+    "bucket": "conversion",
+    "note": "Overlay color CVARs, AMColor packing, color-set names, and initFromCVars almost-background from `am_map.cpp` (**301–450**); follows **1122**.",
+    "auditSeams": "Host `FColorCVar` storage stays outside this slice; `initFromColors` begins at **453**.",
+    "auditRationale": "UNCredited **`am_map.cpp`** **301–450** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 301 --end 450` and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "Overlay defaults, opaque packing, name table, and almost-background math match the native color-set head; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Overlay color CVARs and fill alpha (**301–318**) | yes |\n| `AMColor` opaque pack / invalid RGB (**326–349**) | yes |\n| `ColorNames` through almost-background (**357–385**) | yes |\n| `AMColorset` indexes (**387–418**) | yes |\n| `initFromCVars` almost-background and lock flags (**426–450**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **320–325**, **351–356**, **419–425** | section comments |\n| **453+** | `initFromColors` and later tables outside hull |\n\n| Managed (`VmAmMapOverlayColor1123Slice.cs`) | Native (`am_map.cpp`) |\n|---------------------------------------------|---------------------|\n| Overlay defaults, pack, names, initFromCVars | **301–450** |\n| Band hull (exclusive slice) | **301–450** |\n\n### Chunk **1123** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1122** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmAmMapOverlayColor1123Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "Automap overlay colors and initFromCVars",
+        "start": 301,
+        "end": 450,
+        "tests": [
+          "VmAmMapOverlayColor1123SliceTests.DefaultOverlayColors_MatchLockedThingAndPortal",
+          "VmAmMapOverlayColor1123SliceTests.ForceOpaque_SetsAlphaAndInvalidRgbStaysRejected",
+          "VmAmMapOverlayColor1123SliceTests.DeriveAlmostBackground_WrapsChannelsBelowZero",
+          "VmAmMapOverlayColor1123SliceTests.InitFromCvars_PaintsAlmostBackgroundAndEnablesLocks",
+          "VmAmMapOverlayColor1123SliceTests.ColorNames_EndAtAlmostBackground"
+        ]
+      }
+    ]
+  }
+]

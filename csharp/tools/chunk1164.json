@@ -1,0 +1,29 @@
+[
+  {
+    "name": "p-lights-thinkers-chunk1164",
+    "bucket": "conversion",
+    "note": "Flicker, flash, strobe, glow, and phased light thinkers from `a_lights.cpp` (**159–551**).",
+    "auditSeams": "Neighbor minimum light and the next light-sequence sector stay host-supplied. This slice clamps, steps, and phases the thinkers.",
+    "auditRationale": "UNCredited **`a_lights.cpp`** **159–551** (+393). Recognition credit ends at **158** and resumes at **552**. A full tally line scan shows no overlap.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/mapthinkers/a_lights.cpp --start 159 --end 551` and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "The count steps, glow post-increment, and phased sequence walk match native; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `DFlicker::Construct` (**160–167**) | yes |\n| `DLightFlash::Tick` and constructors (**194–237**) | yes |\n| `DStrobe::Tick` and constructors (**264–316**) | yes |\n| `DGlow::Tick` and constructor (**343–385**) | yes |\n| `DGlow2::Tick` and constructor (**411–447**) | yes |\n| `DPhased::Tick`, `PhaseHelper`, `Propagate`, and constructor (**471–544**) | yes |\n| Band hull (**159–551**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **136–158** | `DFlicker::Tick` is already recognition credit |\n| **552–560** | `EV_StartLightFlickering` is already recognition credit |\n| `FindMinSurroundingLight` | the neighbor minimum stays host-supplied |\n| `P_NextSpecialSector` | the next sequence sector stays host-supplied |\n\n`ClampLight` limits a level to the signed **16**-bit range. `SetLightLevel` stores that clamped value. A flicker constructor writes the clamped maximum straight into the sector light. Its count is `(random & 64) + 1`.\n\nA light flash built from the sector keeps that light and the supplied neighbor minimum, with max time **64** and min time **7**. A flash built from arguments clamps both arguments. The count starts as `(random & 64) + 1`. Each tick decrements first. At zero, a sector already at the maximum drops to the minimum and takes `(random & minTime) + 1`. Any other level rises to the maximum and takes `(random & maxTime) + 1`.\n\nA Hexen strobe clamps the upper and lower lights, stores the bright and dark durations, and starts at count **1**. A Doom strobe keeps the sector light, uses the neighbor minimum, and forces that minimum to **0** when the two lights match. Sync starts at **1**. An unsynced start is `(random & 7) + 1`. At zero, a sector at the minimum becomes the maximum for the bright duration. Any other level becomes the minimum for the dark duration.\n\nGlow speed is **8**. Down subtracts it and, on reaching the minimum, adds it back and turns up. Up adds it and, on reaching the maximum, subtracts it and turns down. Any other direction leaves the level and still stores it through `SetLightLevel`. A glow constructed from a sector uses the neighbor minimum, the sector light, and direction **-1**.\n\nGlow2 clamps the ends, stores the duration, and starts the counter at **-1**. The comparison uses the current counter and then increments it. A counter that has reached the duration either sets the end and destroys a one-shot, or swaps the ends and subtracts the duration. The stored level is `((end - start) * tics) / maxTics + start`, with integer division toward zero.\n\nA phased base and phase are stored in **8** bits. Below step **12** the level rises from the base. Below step **24** it falls. After that it stays at the base. Phase **0** becomes **63**. Any other phase decreases by one. `Propagate` increments the valid count and walks from the origin. A missing or already stamped sector returns the index. A zero light uses the incoming base. Index **0** updates the origin. Later indexes spawn a thinker whose phase starts at **0** and is then replaced. Special **3** searches for special **4**. Every other special searches for special **3**. The phase is `((steps - index - 1) * 64) / steps`, and the sector special becomes **0**.\n\n| Managed (`VmALightsThinkers1164Slice.cs`) | Native (`a_lights.cpp`) |\n|-------------------------------------------|--------------------------|\n| Light thinkers | **159–551** |\n| Band hull (exclusive slice) | **159–551** |\n\n### Chunk **1164** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **393** |\n| **Net headline** | **+393** vs post-**1163** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmALightsThinkers1164Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/mapthinkers/a_lights.cpp",
+        "symbol": "Light thinkers",
+        "start": 159,
+        "end": 551,
+        "tests": [
+          "VmALightsThinkers1164SliceTests.FlickerAndFlash_ClampArgsAndSwapWhenTheCountHitsZero",
+          "VmALightsThinkers1164SliceTests.Strobe_StaysInSyncForHexenAndZerosAFlatDoomLight",
+          "VmALightsThinkers1164SliceTests.Glow_TurnsAtTheEdgeAndInterpolatesAfterThePostIncrement",
+          "VmALightsThinkers1164SliceTests.Phase_ChainsSpecialsAndWrapsFromZero"
+        ]
+      }
+    ]
+  }
+]

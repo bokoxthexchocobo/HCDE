@@ -1,0 +1,30 @@
+[
+  {
+    "name": "sound-engine-volume-pitch-query-chunk1103",
+    "bucket": "conversion",
+    "note": "`SetVolume`, `ChangeSoundPitch`, `SetPitch`, `GetSoundPlayingInfo`, `IsChannelUsed`, `IsSourcePlayingSomething`, and `EvictAllChannels` loop head from `s_sound.cpp` (**1051–1200**); follows **1102** StartSound mid band.",
+    "auditSeams": "`GSnd->ChannelVolume/Pitch`, `GetPosition`, and `StopChannel` remain host-injected; **1201+** continues restore-evict recursion.",
+    "auditRationale": "UNCredited **`s_sound.cpp`** **1051–1200** (+150); **601–1050** overlaps credited **659** cluster.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/common/audio/sound/s_sound.cpp --start 1051 --end 1200` and `--chunk 1103 --band` → UNCredited, exit 0.",
+    "auditManagedLocJustification": "Channel scan predicates and evict policy mirror native loops without duplicating recognition rows on **1023–1044**; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `SetVolume` clamp (**1047–1052**) | yes |\n| `ChangeSoundPitch` scan (**1063–1071**) | yes |\n| `SetPitch` floor (**1077–1079**) | yes |\n| `GetSoundPlayingInfo` (**1092–1115**) | yes |\n| `IsChannelUsed` seen mask (**1131–1146**) | yes |\n| `IsSourcePlayingSomething` (**1157–1167**) | yes |\n| `EvictAllChannels` evict/abstime (**1187–1198**) | yes (policy) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1050–1051** | assert / host `GSnd` |\n| **1032–1042** | `ChangeActorVolume` scan (outside hull) |\n| **1192–1197** | host `GSnd->GetPosition` / `StopChannel` |\n| **1201+** | restore recursion outside hull |\n\n| Managed (`VmSoundEngineVolumePitchQuery1103Slice.cs`) | Native (`s_sound.cpp`) |\n|-----------------------------------------------------|-------------------------|\n| Volume/pitch/query/evict predicates | **1051–1200** |\n| Band hull (exclusive slice) | **1051–1200** |\n\n### Chunk **1103** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1102** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmSoundEngineVolumePitchQuery1103Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/audio/sound/s_sound.cpp",
+        "symbol": "SoundEngine volume pitch query evict",
+        "start": 1051,
+        "end": 1200,
+        "tests": [
+          "VmSoundEngineVolumePitchQuery1103SliceTests.ClampUnitVolume_ClampsHighAndLow",
+          "VmSoundEngineVolumePitchQuery1103SliceTests.RunSetVolume_AppliesClampedValue",
+          "VmSoundEngineVolumePitchQuery1103SliceTests.CountPlayingInfo_CountsMatchingOrgId",
+          "VmSoundEngineVolumePitchQuery1103SliceTests.IsChannelUsed_UsesSeenBitmask",
+          "VmSoundEngineVolumePitchQuery1103SliceTests.RunEvictChannel_SetsAbstimeWhenStopping"
+        ]
+      }
+    ]
+  }
+]

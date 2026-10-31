@@ -1,0 +1,26 @@
+[
+  {
+    "name": "voxeldef-init-chunk1338",
+    "bucket": "conversion",
+    "note": "VOX_ReadSpriteNames, VOX_ReadOptions, and R_InitVoxels from voxeldef.cpp (1-331).",
+    "auditSeams": "FindLump, GetSpriteIndex, CheckNumForFullName, and VOX_GetVoxel stay injected. VOX_AddVoxel records the sprite and frame on the shared definition. FScanner token errors throw.",
+    "auditRationale": "UNCredited voxeldef.cpp 1-331 (+331). A full tally line scan shows no overlap. This whole file was tied with s_sound_eternity.cpp 1-331. Path order credited the audio facade as chunk 1337, so this is now the largest remaining hole of at most 400 lines.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/r_data/voxeldef.cpp --start 1 --end 331 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Voxel option defaults (**43–56**) | yes |\n| Sprite name list (**68–105**) | yes |\n| Option block (**116–245**) | yes |\n| R_InitVoxels (**256–331**) | yes |\n| Band hull (**1–331**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| GetSpriteIndex body | callee; only the first four characters are indexed |\n| FindLump and CheckNumForFullName | filesystem callees |\n| VOX_GetVoxel and VOX_AddVoxel bodies | callees; AddVoxel is recorded per frame |\n\nA five-character sprite uppercases the frame character before the range check. Frame letters run from A through the 29-frame limit. A four-character name applies the voxel to every frame. A missing sprite index is skipped. An equals sign ends the name list, and an empty list reports that no sprites were specified. End of file with names still open reports the unexpected end and returns false. Spin writes both spin fields. Placed and dropped spin write one field. A leading minus negates the following number. Angle offset stores the signed degrees plus 90. Offsets accept an integer or a float. Unknown options are reported, and a following equals consumes one token. An option block that runs out of tokens reports that it is unterminated. Each VOXELDEF lump opens its own scanner. The voxel file name is looked up in the voxel namespace. A missing file or a null voxel is reported and skipped. Override palette removes the palette only when a voxel and at least one sprite exist. Frame 255 walks frames from the last frame down to zero and shares one definition.\n\n| Managed (`VmVoxelDef1338Slice.cs`) | Native (`voxeldef.cpp`) |\n|-------------------------------------|-------------------------|\n| Sprite names, options, and R_InitVoxels | **1–331** |\n| Band hull (exclusive slice) | **1–331** |\n\n### Chunk **1338** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **331** |\n| **Net headline** | **+331** vs post-**1337** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmVoxelDef1338Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/r_data/voxeldef.cpp",
+        "symbol": "R_InitVoxels",
+        "start": 1,
+        "end": 331,
+        "tests": [
+          "VmVoxelDef1338SliceTests.SpriteNamesAndOptions",
+          "VmVoxelDef1338SliceTests.InitAppliesEveryFrameAndSkipsMissingFiles"
+        ]
+      }
+    ]
+  }
+]

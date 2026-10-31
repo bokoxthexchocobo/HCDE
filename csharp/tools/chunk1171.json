@@ -1,0 +1,29 @@
+[
+  {
+    "name": "p-map-rail-talk-chunk1171",
+    "bucket": "conversion",
+    "note": "Rail-attack tail, camera offset, and talk facing from `p_map.cpp` (**5568–5821**).",
+    "auditSeams": "The rail trace, puff spawn, damage, blood, decal, splash, and camera trace stay host-supplied. Rail setup **5495–5567** is chunk **482**. Use lines from **5829** are chunk **716**.",
+    "auditRationale": "UNCredited **`p_map.cpp`** **5568–5821** (+254). Chunk **482** ends at **5567**. Chunk **716** starts at **5829**. **5822–5828** is the use-lines comment and stays uncredited. A full tally line scan shows no overlap. Radius damage **6101–6522** is not this band.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_map.cpp --start 5568 --end 5821` and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "Each rail hit, the wall and sky puff, the camera portal walk, and the net-conversation gate are separate branches. Managed LOC is above 150% of 254 because those branches are spelled out beside the host calls.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Rail puff, damage, and trail (**5568–5691**) | yes |\n| Chase cvars and `R_OffsetView` (**5699–5744**) | yes |\n| Conversation actions (**5755–5805**) | yes |\n| `P_TalkFacing` (**5807–5821**) | yes |\n| Band hull (**5568–5821**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **5495–5567** | rail setup is chunk **482** |\n| **5822–5828** | use-lines comment, left uncredited |\n| **5829–6100** | use lines are chunk **716** |\n| **6101–6522** | radius damage stays off the queue |\n| `Trace` / `P_DamageMobj` / `P_SpawnPuff` | the trace and the effect calls stay host-supplied |\n\nA puff class spawns the probe with allow-replace and copies its species. A missing probe uses species `None`. Thru-bits are copied, and the thru-bits enable is cleared unless the probe has `MF8_ALLOWTHRUBITS` (**0x8000**). The trace mask is shootable (**4**) and the wall mask is block-everything.\n\nAn actor with no blood, or a dormant actor, or an invulnerable actor whose puff does not foil invulnerability, spawns a puff whenever the class exists and does not bleed. Any other actor spawns only when always-puff is set, adds the bleed puff flag, and bleeds unless the impact is bloodless. A missing hit puff falls back to the probe. Poison runs when the damage is positive and the duration is not `int.MinValue`, before damage. Damage flags are puff-inflictor, use-angle, and railgun (**8192**), plus player attack, foil-invul, and foil-buddha when those apply. Bleed and the blood spawn use the positive applied damage, otherwise the original amount, at the unshifted hit.\n\nGeometry runs after the hits. A wall with always-puff spawns at the trace angle and destroys that puff on a horizon line when the puff does not sky-explode. Force-decal with a generator decals the defaults; every other wall decals the source. A floor or ceiling with always-puff destroys the puff on the matching sky texture when it does not sky-explode. The fired event sees the probe. Crossed water splashes. Otherwise a floor with no height sector hits water. The probe is destroyed after that, and the trail is drawn with the portal list and the rail parameters. Chase height is **-8** and chase distance is **90**.\n\nAn out-of-bounds hardware view steps by the direction times the distance and reads the render sector. A trace hit pulls the camera back by the minimum of **5** and the hit distance, then adds the normalized delta from the direction angle to the source angle. A miss copies the hit position and the trace sector. When the view is not both out of bounds and hardware, a negative direction Z walks floor portals while the position is below the plane, and a positive Z walks ceiling portals while it is above the plane.\n\n`CanTalk` requires a conversation, health above **0**, and no in-combat flag. `HasConversation` checks only the conversation. A net game with conversation limits refuses a player body that is not a settings controller, and prints the controller message when that body is the console player. Rumble `menu/activate` runs only when rumble and menu haptics are both set. The actor then plays conversation animation **0** and starts the conversation. Talk facing aims at yaw, yaw plus **5.625**, and yaw minus **5.625**, range **128**, pitch **35**, and flags force-no-smart, check-conversation, and portal-restrict. The first actor ends the search, even when the conversation returns false.\n\n| Managed (`VmPMapRailTalk1171Slice.cs`) | Native (`p_map.cpp`) |\n|-----------------------------------------|----------------------|\n| Rail tail, offset view, and talk facing | **5568–5821** |\n| Band hull (exclusive slice) | **5568–5821** |\n\n### Chunk **1171** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **254** |\n| **Net headline** | **+254** vs post-**1170** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapRailTalk1171Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_RailAttack tail",
+        "start": 5568,
+        "end": 5821,
+        "tests": [
+          "VmPMapRailTalk1171SliceTests.Rail_SpawnsTheProbeAndBleedsAtTheReturnedDamage",
+          "VmPMapRailTalk1171SliceTests.Rail_DecalsTheWallAndSplashesBeforeTheProbeDies",
+          "VmPMapRailTalk1171SliceTests.View_PullsTheCameraBackAndWalksDownThroughAFloor",
+          "VmPMapRailTalk1171SliceTests.Talk_StopsAtTheFirstActorAndBlocksANetPlayer"
+        ]
+      }
+    ]
+  }
+]

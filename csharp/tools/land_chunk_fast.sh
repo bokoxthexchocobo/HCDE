@@ -4,7 +4,7 @@
 #        land_chunk_fast.sh consolidate "message" file1 file2 ...  (VM test consolidation; no tally row)
 # Sole supported path to git push in this repo (HOOKS_DIR = repo .git/hooks, not core.hooksPath).
 set -euo pipefail
-REQUIRED_BRANCH="cursor/native-managed-matrix-3df6"
+REQUIRED_BRANCH="cursor/native-managed-matrix-b0e8-3df6"
 require_feature_branch() {
   cd /workspace
   local branch

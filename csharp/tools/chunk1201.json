@@ -1,0 +1,26 @@
+[
+  {
+    "name": "file-rff-chunk1201",
+    "bucket": "conversion",
+    "note": "Blood RFF probe, directory decrypt, and 8.3 names from file_rff.cpp (1–162).",
+    "auditSeams": "NormalizeFileName is a host callback. The default keeps the assembled name. GenerateHash is counted once after the directory walk. LittleLong is the little-endian load used on this build. A short directory read fills the missing bytes with zero before BloodCrypt; the native buffer would be uninitialized.",
+    "auditRationale": "UNCredited file_rff.cpp 1–162 (+162). The file ends at 162. A full tally line scan shows no overlap.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/filesystem/source/file_rff.cpp --start 1 --end 162 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| RFFInfo and RFFLump (**38–58**) | yes |\n| BloodCrypt (**66–74**) | yes |\n| OpenRFF (**83–134**) | yes |\n| CheckRFF (**142–159**) | yes |\n| Band hull (**1–162**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nCheckRFF accepts a file of at least 16 bytes whose first four bytes are RFF and 0x1A, then rewinds. OpenRFF reads the little-endian lump count and directory offset, loads that many 48-byte entries, and decrypts them with BloodCrypt using the directory offset as the key. Each entry copies position, size, and index. Flag bit 0x10 selects the RFF crypt method and the compressed flag. The other entries stay stored. The 8-byte name is terminated, then a dot and the three extension bytes are appended. NormalizeFileName receives that string. GenerateHash runs after the loop. OpenRFF returns success.\n\n| Managed (`VmFileRff1201Slice.cs`) | Native (`file_rff.cpp`) |\n|-----------------------------------|------------------------|\n| RFF container | **1–162** |\n| Band hull (exclusive slice) | **1–162** |\n\n### Chunk **1201** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **162** |\n| **Net headline** | **+162** vs post-**1200** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmFileRff1201Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/filesystem/source/file_rff.cpp",
+        "symbol": "CheckRFF",
+        "start": 1,
+        "end": 162,
+        "tests": [
+          "VmFileRff1201SliceTests.BloodCrypt_XorsWithLowKeyAndHalfIndex",
+          "VmFileRff1201SliceTests.Check_DecryptsDirectoryAndBuildsNames"
+        ]
+      }
+    ]
+  }
+]

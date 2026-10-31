@@ -1,0 +1,27 @@
+[
+  {
+    "name": "colormap-init-chunk1190",
+    "bucket": "conversion",
+    "note": "Colormap lumps and the invulnerability override from colormaps.cpp (1–224).",
+    "auditSeams": "Palette entries, colormap-namespace lumps, and the special-colormap builder are host data. allowCustomColormap is accepted and unused. The first fake colormap's lump is left at 0 because this function never reads it.",
+    "auditRationale": "UNCredited colormaps.cpp 1–224 (+224). The file ends at 224. A full tally line scan shows no overlap.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/r_data/colormaps.cpp --start 1 --end 224 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Invulnerability cvars (**37–50**) | yes |\n| R_DeinitColormaps (**65–69**) | yes |\n| R_InitColormaps (**77–156**) | yes |\n| R_ColormapNumForName (**166–182**) | yes |\n| R_BlendForColormap (**190–194**) | yes |\n| R_UpdateInvulnerabilityColormap (**203–224**) | yes |\n| Band hull (**1–224**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nThe three cvars are archived and do not run their callbacks at startup. Turning the override on or off rebuilds the invulnerability map. A color change rebuilds it only while the override is on. Init clears both lists, keeps the first lump of each colormap name, and brightens that lump's average by the palette brightness. Names are compared eight characters at a time, ignoring case. COLORMAP is always index 0. A missing WATERMAP is the fixed translucent blue. A color that already has alpha is its own blend. The override writes the two colors as floats divided by 128, and turning it off copies the real inverse map onto the inverse map.\n\n| Managed (`VmColormaps1190Slice.cs`) | Native (`colormaps.cpp`) |\n|--------------------------------------|---------------------------|\n| Colormap init | **1–224** |\n| Band hull (exclusive slice) | **1–224** |\n\n### Chunk **1190** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **224** |\n| **Net headline** | **+224** vs post-**1189** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmColormaps1190Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/r_data/colormaps.cpp",
+        "symbol": "R_InitColormaps",
+        "start": 1,
+        "end": 224,
+        "tests": [
+          "VmColormaps1190SliceTests.Init_BuildsBlendsFromTheFirstColormapLump",
+          "VmColormaps1190SliceTests.ColormapNumForName_PrefersTheLastMatchAndWater",
+          "VmColormaps1190SliceTests.Invulnerability_UsesCustomColorsOrRestoresTheRealInverse"
+        ]
+      }
+    ]
+  }
+]

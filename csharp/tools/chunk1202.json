@@ -1,0 +1,26 @@
+[
+  {
+    "name": "theme-data-chunk1202",
+    "bucket": "conversion",
+    "note": "Theme fallback colors, theme.txt commands, and layer mix from themedata.cpp (1–166).",
+    "auditSeams": "The pk3 text and the mod text stand in for the two LoadWidgetData calls. GetString follows the Hexen scanner: whitespace, // comments, semicolon comments, block comments, and #region lines are skipped. MatchString is ordinal case-insensitive. fromRgb is the ZWidget pack of the 24-bit value into opaque RGBA. Color::mix endpoints are preserved. A blend strictly between 0 and 1 is linear sRGB because the OKLCH conversion lives in colorspace.cpp.",
+    "auditRationale": "UNCredited themedata.cpp 1–166 (+166). The file ends at 166. A full tally line scan shows no overlap.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/widgets/themedata.cpp --start 1 --end 166 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Theme storage and command names (**25–55**) | yes |\n| Theme::initilize (**57–149**) | yes |\n| Theme::mix (**151–157**) | yes |\n| Theme getters (**159–166**) | yes |\n| Band hull (**1–166**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\ninitilize returns immediately once a theme is selected. Otherwise it selects the mode, paints the light and dark fallbacks, and sets the accent to 0x7f7f7f. It then reads the pk3 text and the mod text. A three-digit hex color is expanded to six digits. Any other length except six becomes -1, which fromRgb turns into opaque white. Commands match without case. An accent updates even in contrast mode. Layer pairs are skipped while contrast is on, and also while no section has been selected. Those skipped colors stay in the token stream. Theme::mix returns the background at or below 0 and the foreground at or above 1, with alpha 1. The getters read the active theme.\n\n| Managed (`VmThemeData1202Slice.cs`) | Native (`themedata.cpp`) |\n|-------------------------------------|--------------------------|\n| Theme data | **1–166** |\n| Band hull (exclusive slice) | **1–166** |\n\n### Chunk **1202** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **166** |\n| **Net headline** | **+166** vs post-**1201** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmThemeData1202Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/widgets/themedata.cpp",
+        "symbol": "Theme::initilize",
+        "start": 1,
+        "end": 166,
+        "tests": [
+          "VmThemeData1202SliceTests.Initialize_PaintsFallbacksThenAppliesThemeText",
+          "VmThemeData1202SliceTests.Contrast_AndMix_KeepPairsAndBlendEndpoints"
+        ]
+      }
+    ]
+  }
+]

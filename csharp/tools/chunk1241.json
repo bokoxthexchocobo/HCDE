@@ -1,0 +1,27 @@
+[
+  {
+    "name": "bitmap-copy-chunk1241",
+    "bucket": "conversion",
+    "note": "Copy dispatch, clip rect, paletted copy, and bitmap clear from bitmap.cpp (188-483).",
+    "auditSeams": "The dispatch table selects one of twelve format readers and one of ten BGRA operators. Blend shifts use 16 bits. Clip rotations 0-7 and the default path share the unrotated setup. The source pointer advances with the original steps, then the steps are replaced, then the clip uses the new steps. An odd rotation swaps width and height after the offset is chosen and before the pointer moves. A result size of 0 or less rejects the copy. Intersect can leave width or height negative and reports success only when both stay positive. CopyPixelDataRGB walks rows after the clip. The paletted blit ignores its rotate argument because the clip already applied it. A nonzero blend rebuilds the 256-entry palette with a forced copy, and an alpha of 0 stays zero. inf->palette replaces the palette only when the blend is 0. Zero starts at row 0 and treats clip.x as a byte offset; the y loop only counts rows. Special colormap index 0 is the only table this slice holds. Any other special blend logs and writes nothing. A blend of -3 or below is the empty default and writes nothing. A color type or operator outside the tables logs and does not write.",
+    "auditRationale": "UNCredited bitmap.cpp 188-483 (+296). Lines 1-26, 46-63, and 99 stay below the floor. A full tally line scan shows no overlap with 27-45, 64-98, or 100-187.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/textures/bitmap.cpp --start 188 --end 483 and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "CopyPixelData and CopyPixelDataRGB call ClipCopyPixelRect and the header copy tables, which are not source lines in this file. The managed port contains the twelve format readers and the ten BGRA operators those tables select, plus the ice, desaturate, special, modulate, and overlay blend application those calls perform. That host surface is why the managed file is over 150% of the 296-line source.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Dispatch table (**188–220**) | yes |\n| Clip rect (**227–341**) | yes |\n| Intersect (**350–373**) | yes |\n| True-color copy (**380–393**) | yes |\n| Paletted copy (**395–436**) | yes |\n| Palette rebuild and blit (**443–468**) | yes |\n| Clear (**475–483**) | yes |\n| Band hull (**188–483**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| bitmap.cpp 1–26, 46–63, and 99 | each run is shorter than the floor |\n\nZero counts `height - y` rows and still clears from row 0. `clip.x` is a byte offset. The paletted path does not rotate again. Palette rebuild is a forced copy, so alpha 0 stays 0. Blend shifts are 16 bits. A special index other than 0 writes nothing. The empty default blend writes nothing.\n\n| Managed (`VmBitmapCopy1241Slice.cs`) | Native (`bitmap.cpp`) |\n|--------------------------------------|------------------------|\n| Dispatch, clip, paletted copy, and clear | **188–483** |\n| Band hull (exclusive slice) | **188–483** |\n\n### Chunk **1241** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **296** |\n| **Net headline** | **+296** vs post-**1240** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmBitmapCopy1241Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/textures/bitmap.cpp",
+        "symbol": "FBitmap::CopyPixelData",
+        "start": 188,
+        "end": 483,
+        "tests": [
+          "VmBitmapCopy1241SliceTests.Clip_RotatesFlipsAndClearsFromTheFirstRow",
+          "VmBitmapCopy1241SliceTests.Dispatch_ConvertsFormatsAndAppliesPaletteOps"
+        ]
+      }
+    ]
+  }
+]

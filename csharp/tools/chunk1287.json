@@ -1,0 +1,26 @@
+[
+  {
+    "name": "play-game-chunk1287",
+    "bucket": "conversion",
+    "note": "IWAD labels, addon joining, and the launcher layout from playgamepage.cpp (1-243).",
+    "auditSeams": "String lookup and the file dialog are host inputs. The edit control is the joined addon text.",
+    "auditRationale": "UNCredited playgamepage.cpp 1-243 (+243). A full tally line scan shows no overlap. The file ends at line 243.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/widgets/playgamepage.cpp --start 1 --end 243 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Wad labels (**31–77**) | yes |\n| Values and language (**79–101**) | yes |\n| Addon list (**103–196**) | yes |\n| Layout (**198–243**) | yes |\n| Band hull (**1–243**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| String table | host lookup |\n| File dialog | host accept flag and names |\n\nA path is split on a forward slash only, and a trailing slash keeps the wad name alone. The initial selection must be non-negative and below the wad count. Empty arguments leave the parameter text untouched. Carriage return is replaced before line feed, both become the pipe separator, and empty pieces are dropped before each piece is stripped. A byte at or above 128 is not a space. A later addon that matches an earlier one without regard to case is dropped, and the first spelling stays. Dropping a file returns true even when the list does not grow. A cancelled dialog does not refresh the edit. Both welcome placeholders are replaced. The addon row may sit at a negative x, and the game list height floors at zero.\n\n| Managed (`VmPlayGame1287Slice.cs`) | Native (`playgamepage.cpp`) |\n|------------------------------------|-----------------------------|\n| Labels, addons, and the layout | **1–243** |\n| Band hull (exclusive slice) | **1–243** |\n\n### Chunk **1287** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **243** |\n| **Net headline** | **+243** vs post-**1286** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPlayGame1287Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/widgets/playgamepage.cpp",
+        "symbol": "PlayGamePage::PlayGamePage",
+        "start": 1,
+        "end": 243,
+        "tests": [
+          "VmPlayGame1287SliceTests.Setup_FormatsTheWadLabelAndKeepsTheFirstAddon",
+          "VmPlayGame1287SliceTests.Layout_ClampsTheAddonRowAndTheListHeight"
+        ]
+      }
+    ]
+  }
+]

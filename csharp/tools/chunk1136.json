@@ -1,0 +1,29 @@
+[
+  {
+    "name": "am-map-poly-shade-chunk1136",
+    "bucket": "conversion",
+    "note": "Polygon origin, hole-ring copy, shade, secret probe, and subsector debug colors from `am_map.cpp` (**2251–2400**); follows **1135**.",
+    "auditSeams": "Earcut and AddPoly stay host-supplied. Red poly-seg drawing begins at **2401**.",
+    "auditRationale": "UNCredited **`am_map.cpp`** **2251–2400** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 2251 --end 2400` and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "Shade, secret returns, rotated segs, and the debug gate match native; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Fill origin zeros (**2251–2252**) | yes |\n| Hole ring vs cleared indices (**2256–2276**) | yes |\n| Soft and linear fade, texture scale (**2278–2303**) | yes |\n| `AM_CheckSecret` (**2315–2337**) | yes |\n| `drawSeg` / `drawPolySeg` rotation (**2346–2376**) | yes |\n| Subsector debug gate, colors, yellow segs, poly-node match (**2378–2400**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2101–2250** | textured fill already credited by **1135** |\n| **2401–2410** | red poly-seg loop that closes `showSS` |\n| **2418+** | 3D-floor boundary and sector-action probes |\n\n`SSECF_HOLE` is **8**. `ML_SECRET` is **0x20**. `NUMCOLORMAPS` is **32**. Soft fade is `clamp(((64 - (light+12)*0.25) - 12) / 32, 0, 1)`. Linear fade is `1 - clamp(light, 0, 255) / 255`. A revealed former secret returns **1** before a still-secret line without `ML_SECRET` returns **2**. `am_map_secrets == 0` draws neither.\n\n| Managed (`VmAmMapPolyShade1136Slice.cs`) | Native (`am_map.cpp`) |\n|------------------------------------------|---------------------|\n| Shade, secrets, debug segs | **2251–2400** |\n| Band hull (exclusive slice) | **2251–2400** |\n\n### Chunk **1136** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1135** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmAmMapPolyShade1136Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "Automap polygon shade",
+        "start": 2251,
+        "end": 2400,
+        "tests": [
+          "VmAmMapPolyShade1136SliceTests.HoleRing_TriangulatesOnlyWhenFlaggedAndMoreThanThreeLines",
+          "VmAmMapPolyShade1136SliceTests.FadeLevel_UsesTheSoftRampOrTheLinearHardwareScale",
+          "VmAmMapPolyShade1136SliceTests.CheckSecret_PrefersARevealedFrontSector",
+          "VmAmMapPolyShade1136SliceTests.DebugStrokes_RotateSegsAndMarkTheShownSubsector"
+        ]
+      }
+    ]
+  }
+]

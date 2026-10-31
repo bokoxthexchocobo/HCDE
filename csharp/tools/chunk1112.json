@@ -1,0 +1,30 @@
+[
+  {
+    "name": "pmobj-seeker-missile-chunk1112",
+    "bucket": "conversion",
+    "note": "Floor-bounce MBF rest, `P_FaceMobj`, `CanSeek`, and `P_SeekerMissile` turn/aim from `p_mobj.cpp` (**2251–2400**); follows **1111**.",
+    "auditSeams": "`AngleTo`, `VelFromAngle`, and `Vel3DFromAngle` remain host-injected; `P_XYMovement` at **2421** is credited on **724**.",
+    "auditRationale": "UNCredited **`p_mobj.cpp`** **2251–2400** (+150); follows **1111** (**2101–2250**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 2251 --end 2400` and `--chunk 1112 --band` → UNCredited, exit 0.",
+    "auditManagedLocJustification": "Seek turn clamping and visibility gates match native control flow; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| MBF rest / AutoOff clear (**2259–2272**) | yes |\n| `P_FaceMobj` clockwise sign (**2290–2300**) | yes |\n| `CanSeek` invisible gate (**2313–2321**) | yes |\n| Seeker dead/zero-speed (**2349–2360**) | yes |\n| Threshold halve and turn max (**2363–2378**) | yes |\n| Imprecise vertical seek vs precise aim height (**2380–2406**) | yes (policy) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **2324–2329** | VM thunk |\n| **2382**, **2407** | host velocity writers |\n| **2413+** | `P_XYMovement` outside hull |\n\n| Managed (`VmPMobjSeekerMissile1112Slice.cs`) | Native (`p_mobj.cpp`) |\n|---------------------------------------------|---------------------|\n| Bounce rest + seeker policy | **2251–2400** |\n| Band hull (exclusive slice) | **2251–2400** |\n\n### Chunk **1112** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1111** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjSeekerMissile1112Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "FaceMobj CanSeek SeekerMissile",
+        "start": 2251,
+        "end": 2400,
+        "tests": [
+          "VmPMobjSeekerMissile1112SliceTests.ShouldZeroMbfVerticalSpeed_WhenBelowMassGravity",
+          "VmPMobjSeekerMissile1112SliceTests.FaceMobjDirection_ClockwiseWhenDeltaPositive",
+          "VmPMobjSeekerMissile1112SliceTests.CanSeek_RejectsInvisibleWhenFlagged",
+          "VmPMobjSeekerMissile1112SliceTests.RunSeekerMissile_HalvesDeltaAboveThreshold",
+          "VmPMobjSeekerMissile1112SliceTests.PreciseAimHeight_UsesViewZForPlayers"
+        ]
+      }
+    ]
+  }
+]

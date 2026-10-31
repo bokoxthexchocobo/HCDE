@@ -1,0 +1,26 @@
+[
+  {
+    "name": "slope-plane-chunk1320",
+    "bucket": "conversion",
+    "note": "Slope normal, the fixed-point steps, and the span light from r_slopeplane.cpp (1-283).",
+    "auditSeams": "Closed span rows come from the plane. World-to-view and the screen position are the viewport host. The tilted span drawer records the arguments.",
+    "auditRationale": "UNCredited r_slopeplane.cpp 1-283 (+283). A full tally line scan shows no overlap. The file ends at line 283.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/swrenderer/plane/r_slopeplane.cpp --start 1 --end 283 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Slope normal and the scale table (**64–110**) | yes |\n| Fixed-point origin and the U/V axes (**112–166**) | yes |\n| Mirror, fog, shade, and the 1-wide zero (**168–206**) | yes |\n| Row lights and the tilted span (**208–282**) | yes |\n| Band hull (**1–283**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| The tilted pixel drawer | the host records the draw arguments |\n| The top and bottom closure walk | that walk lives in `r_planerenderer.cpp` |\n\nA non-positive alpha returns before the normal is stored. The view-space normal is the camera transform of the plane normal, and a mirror negates its X. Texture scales divide by the physical scale, then by the inverse power-of-two table. The fixed origin uses the round-half-even shift `32` minus the texture bits. The U and V axes stay in the XZ plane until the slope heights fill Y. Only U and V are multiplied by 2^32. A mirror then negates all three X components. Fog follows a fade target, a colormap fade, or the fade-table flag. A positive plane C negates the light. The drawn style is opaque even when the caller passes additive or masked. Shade is on only when the fixed light is negative and there is no fixed colormap. A texture that is one unit wide or tall zeros that axis after the mirror. An inactive light is skipped. An attenuated light stores a negative radius. The span step is the screen-space delta from the first column to the last.\n\n| Managed (`VmSlopePlane1320Slice.cs`) | Native (`r_slopeplane.cpp`) |\n|--------------------------------------|-----------------------------|\n| Slope normal, fixed steps, and the span light | **1–283** |\n| Band hull (exclusive slice) | **1–283** |\n\n### Chunk **1320** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **283** |\n| **Net headline** | **+283** vs post-**1319** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmSlopePlane1320Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/rendering/swrenderer/plane/r_slopeplane.cpp",
+        "symbol": "RenderSlopePlane::Render",
+        "start": 1,
+        "end": 283,
+        "tests": [
+          "VmSlopePlane1320SliceTests.Render_SkipsZeroAlphaAndFixesTheOpaqueSteps",
+          "VmSlopePlane1320SliceTests.RenderLine_PacksActiveLightsAndSkipsTheRest"
+        ]
+      }
+    ]
+  }
+]

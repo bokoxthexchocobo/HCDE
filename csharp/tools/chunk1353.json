@@ -1,0 +1,26 @@
+[
+  {
+    "name": "player-property-chunk1353",
+    "bucket": "conversion",
+    "note": "Activator camera-restore tail and LS_SetPlayerProperty from p_lnspec.cpp (2869-3129).",
+    "auditSeams": "GiveInventoryType, FindActor, FindInventory, and R_ClearPastViewer stay injected. The camera-actor arm of LS_ChangeCamera stays in chunk 931.",
+    "auditRationale": "UNCredited p_lnspec.cpp 2869-3129 (+261). A full tally line scan shows no overlap. This is the largest remaining hole of at most 400 lines, ahead of gi.cpp 1-260.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_lnspec.cpp --start 2869 --end 3129 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Activator camera restore (**2869–2880**) | yes |\n| Property enum (**2882–2909**) | yes |\n| Power give and take (**2911–3024**) | yes |\n| Cheat flag masks and the frozen link (**3026–3128**) | yes |\n| Band hull (**2869–3129**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| GiveInventoryType | inventory creation stays on the actor |\n| FindActor | class lookup stays on the level |\n| FindInventory | name and class lookup stay on the actor |\n| R_ClearPastViewer | the viewer reset stays outside this band |\n| Camera actor arm | lines through **2868** stay in chunk 931 |\n\nThe credited camera lines run only after the null-camera else. They store the activator, clear CF_REVERTPLEASE, and clear the past viewer only when the pointer changed, then return true. A missing activator or a missing player returns false when who is 0. Powers from invulnerability through speed give or take. Unused slots 8 and 9 return false. Allmap writes LEVEL2_ALLMAP only for the console player, and a missing body skips that player. Invulnerability with value 1 stores the inverse special colormap 0x00b60000. The activator take looks up the power name. The every-player take looks up the class. Fly leaves the cheat mask at 0, so the call returns false, and still sets MF7_FLYCHEAT, MF2_FLY, and MF_NOGRAVITY on the activator. Every-player fly does not touch MF7_FLYCHEAT. Noclip2 sets both noclip bits. With the frozen compat bit, clearing or giving one frozen cheat on every player writes both. The activator path does not link those bits.\n\n| Managed (VmPlayerProperty1353Slice.cs) | Native (p_lnspec.cpp) |\n|----------------------------------------|----------------------|\n| Camera tail, powers, and cheat masks | **2869–3129** |\n| Band hull (exclusive slice) | **2869–3129** |\n\n### Chunk **1353** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **261** |\n| **Net headline** | **+261** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPlayerProperty1353Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_SetPlayerProperty",
+        "start": 2869,
+        "end": 3129,
+        "tests": [
+          "VmPlayerProperty1353SliceTests.CameraTailAndPowers",
+          "VmPlayerProperty1353SliceTests.FlagMasksAndFrozenLink"
+        ]
+      }
+    ]
+  }
+]

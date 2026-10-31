@@ -1,0 +1,28 @@
+[
+  {
+    "name": "p-enemy-melee-chunk1145",
+    "bucket": "conversion",
+    "note": "Recursive sound lines, noise alert, and melee range from `p_enemy.cpp` (**151–300**); follows **1144**.",
+    "auditSeams": "Portal sectors and sight checks stay host-supplied. Missile range begins at **307**.",
+    "auditRationale": "UNCredited **`p_enemy.cpp`** **151–300** (+150), inside the 3488-line file, with no conversion or recognition overlap.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_enemy.cpp --start 151 --end 300` and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "Door cuts, sound-block depth, and melee order match native; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Portal plane and line-portal marks (**152–175**) | yes |\n| Two-sided, closed-door, and sound-block cuts (**177–217**) | yes |\n| `P_NoiseAlert` (**230–245**) | yes |\n| `P_CheckMeleeRange` (**253–299**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1–150** | tables and sector mark already credited by **1144** |\n| **307+** | `P_CheckMissileRange` |\n\n`ML_TWOSIDED` is **4** and `ML_SOUNDBLOCK` is **0x40**. A sound-block line is entered only while `soundblocks` is **0**, and the neighbor is then marked with **1**. Equal floor and ceiling planes block sound (`>=`). `CF_NOTARGET` is **8**. `SECF_NOATTACK` is **2048**. `MF5_NOVERTICALMELEERANGE` is **0x04000000**. A reached goal returns before the no-attack, vertical, friend, and sight checks. A negative melee range uses the actor's `meleerange`.\n\n| Managed (`VmPEnemyMelee1145Slice.cs`) | Native (`p_enemy.cpp`) |\n|------------------------------------------|----------------------|\n| Sound lines, alert, melee | **151–300** |\n| Band hull (exclusive slice) | **151–300** |\n\n### Chunk **1145** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1144** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPEnemyMelee1145Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "Enemy sound lines and melee range",
+        "start": 151,
+        "end": 300,
+        "tests": [
+          "VmPEnemyMelee1145SliceTests.SoundLines_StopAtClosedDoorsAndASecondSoundBlock",
+          "VmPEnemyMelee1145SliceTests.BeginNoiseAlert_IgnoresAMissingEmitterAndANoTargetPlayer",
+          "VmPEnemyMelee1145SliceTests.CheckMeleeRange_ReachesAGoalBeforeSectorAndFriendChecks"
+        ]
+      }
+    ]
+  }
+]

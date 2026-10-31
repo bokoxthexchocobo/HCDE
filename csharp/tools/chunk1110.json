@@ -1,0 +1,29 @@
+[
+  {
+    "name": "pmobj-explode-missile-chunk1110",
+    "bucket": "conversion",
+    "note": "`P_ExplodeMissile` gates, sky/horizon destroy, decal fraction, and DeHackEd explosion style from `p_mobj.cpp` (**1951–2100**); follows **1109**.",
+    "auditSeams": "`P_ProjectileHitLinedef`, `FindState`, `S_Sound`, and decal spawn remain host-injected; VM thunk at **2098** is outside the behavior body.",
+    "auditRationale": "UNCredited **`p_mobj.cpp`** **1951–2100** (+150); follows **1109** (**1801–1950**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 1951 --end 2100` and `--chunk 1110 --band` → UNCredited, exit 0.",
+    "auditManagedLocJustification": "Explode policy encodes native early-outs, hit-pointer flags, and render-style branches; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Explocount early return (**1966–1972**) | yes |\n| Hit target/master/tracer (**1981–1988**) | yes |\n| Sky/horizon destroy (**1992–1999**) | yes |\n| Decal fraction clamp (**2019–2021**) | yes |\n| DeHackEd explosion style (**2064–2083**) | yes |\n| Randomize tics + clear missile (**2086–2093**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1963**, **2014–2046**, **2055** | host linedef/decal/sound |\n| **2098–2104** | VM thunk |\n\n| Managed (`VmPMobjExplodeMissile1110Slice.cs`) | Native (`p_mobj.cpp`) |\n|----------------------------------------------|---------------------|\n| Explode missile policy | **1951–2100** |\n| Band hull (exclusive slice) | **1951–2100** |\n\n### Chunk **1110** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1109** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjExplodeMissile1110Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "P_ExplodeMissile",
+        "start": 1951,
+        "end": 2100,
+        "tests": [
+          "VmPMobjExplodeMissile1110SliceTests.RunExplodeMissile_AbortsWhenExploCountBelowThreshold",
+          "VmPMobjExplodeMissile1110SliceTests.RunExplodeMissile_DestroysOnHorizonWithoutSkyExplode",
+          "VmPMobjExplodeMissile1110SliceTests.ClampDecalFraction_ClampsToUnitInterval",
+          "VmPMobjExplodeMissile1110SliceTests.RunExplodeMissile_AppliesAddRocketStyle"
+        ]
+      }
+    ]
+  }
+]

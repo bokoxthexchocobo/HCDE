@@ -1,0 +1,26 @@
+[
+  {
+    "name": "commandbuffer-chunk1222",
+    "bucket": "conversion",
+    "note": "Console line editing, yank buffer, and the scaled prompt draw from c_commandbuffer.cpp (1-337).",
+    "auditSeams": "Cell size divides the new-console font width by 9. The prompt and cursor use the current console font widths of 0x1c and 0x0b. Column count is ConCols divided by the active console scale. Pasted bytes are read by GetCharFromString, which maps Windows-1252 0x80-0x9F and otherwise UTF-8. GetText encodes each code point with utf8_encode and drops a code point that encoder rejects. The copy constructor copies the text and the two cursors and leaves the column count, yank buffer, and cell counters at zero.",
+    "auditRationale": "UNCredited c_commandbuffer.cpp 1-337 (+337). The file ends at 337. A full tally line scan shows no overlap.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/console/c_commandbuffer.cpp --start 1 --end 337 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Copy and GetText (**33–45**) | yes |\n| Draw (**47–85**) | yes |\n| CalcCellSize (**87–96**) | yes |\n| CharsForCells (**99–110**) | yes |\n| MakeStartPosGood (**113–147**) | yes |\n| Cursor motion (**149–204**) | yes |\n| Deletes and yank (**206–269**) | yes |\n| AddChar, AddString, SetString, AddYankBuffer (**271–336**) | yes |\n| Band hull (**1–337**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nWord-left stops when the character before the cursor is a space, so a cursor already at a word start continues through that space. A visible start that lands inside a double-width character moves to the next character. A paste stops at the first CR, LF, or backspace.\n\n| Managed (`VmCommandBuffer1222Slice.cs`) | Native (`c_commandbuffer.cpp`) |\n|------------------------------------------|--------------------------------|\n| Command line and yank buffer | **1–337** |\n| Band hull (exclusive slice) | **1–337** |\n\n### Chunk **1222** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **337** |\n| **Net headline** | **+337** vs post-**1221** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmCommandBuffer1222Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/console/c_commandbuffer.cpp",
+        "symbol": "FCommandBuffer::MakeStartPosGood",
+        "start": 1,
+        "end": 337,
+        "tests": [
+          "VmCommandBuffer1222SliceTests.Edit_YanksWordsAndDecodesThePaste",
+          "VmCommandBuffer1222SliceTests.Draw_SkipsAWideCellAndTheCopyLeavesColumnsZero"
+        ]
+      }
+    ]
+  }
+]

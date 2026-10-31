@@ -1,0 +1,28 @@
+[
+  {
+    "name": "pmobj-water-depth-chunk1114",
+    "bucket": "conversion",
+    "note": "`UpdateWaterDepth` and `SplashCheck` boom-water gate from `p_mobj.cpp` (**5277–5426**); follows **1113** tick tail.",
+    "auditSeams": "Plane `ZatPoint`, `P_HitWater`, and the virtual dive/surface thunk remain host-injected; `UpdateWaterLevel` body continues at **5427**.",
+    "auditRationale": "UNCredited **`p_mobj.cpp`** **5277–5426** (+150); follows **1113** (**5127–5276**).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 5277 --end 5426` and `--chunk 1114 --band` → UNCredited, exit 0.",
+    "auditManagedLocJustification": "Water depth walks height-sector and 3D-floor rules with explicit level thresholds; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Missing sector early return (**5297–5300**) | yes |\n| Underwater sector full height (**5302–5305**) | yes |\n| Height-sec splash/mask depth (**5313–5322**) | yes |\n| Swimmable 3D floor pick (**5328–5344**) | yes |\n| Level 1/2/3 thresholds (**5349–5367**) | yes |\n| `SplashCheck` boom rising edge (**5386–5390**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **5264–5273** | chunk **1113** tail |\n| **5388** | host `P_HitWater` |\n| **5402–5408** | virtual thunk |\n| **5427+** | dive/surface sounds outside hull |\n\n| Managed (`VmPMobjWaterDepth1114Slice.cs`) | Native (`p_mobj.cpp`) |\n|-----------------------------------------|---------------------|\n| Water depth + splash gate | **5277–5426** |\n| Band hull (exclusive slice) | **5277–5426** |\n\n### Chunk **1114** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1113** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjWaterDepth1114Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "UpdateWaterDepth and SplashCheck",
+        "start": 5277,
+        "end": 5426,
+        "tests": [
+          "VmPMobjWaterDepth1114SliceTests.RunUpdateWaterDepth_UsesFullHeightWhenSectorUnderwater",
+          "VmPMobjWaterDepth1114SliceTests.RunUpdateWaterDepth_SkipsSolidRoversAndUsesSwimmableTop",
+          "VmPMobjWaterDepth1114SliceTests.RunSplashCheck_HitsWaterOnRisingLevel"
+        ]
+      }
+    ]
+  }
+]

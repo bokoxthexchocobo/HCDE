@@ -1,0 +1,26 @@
+[
+  {
+    "name": "animtexture-chunk1210",
+    "bucket": "conversion",
+    "note": "Frame size, YUV/RGB/palette copies, and the two-frame swap from animtexture.cpp (1–241).",
+    "auditSeams": "FindGameTexture is the host lookup for AnimTextureFrame1 and AnimTextureFrame2 with ETextureType::Override (10). RGB rereads the first pixel because the source pointer never advances. YUV uses the native float constants and a truncating byte cast. VPX I420/I422/I444/I440 are the vpx format values. GetBgraBitmap ignores remap and trans and returns the live buffer. CleanHardwareData records the full flag, a base clean, and non-null material descriptor deletes.",
+    "auditRationale": "UNCredited animtexture.cpp 1–241 (+241). The file ends at 241. A full tally line scan shows no overlap.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/textures/animtexture.cpp --start 1 --end 241 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| AnimTexture::SetFrameSize (**37–43**) | yes |\n| YUVtoRGB (**46–59**) | yes |\n| AnimTexture::SetFrame (**61–188**) | yes |\n| AnimTexture::GetBgraBitmap (**196–199**) | yes |\n| AnimTextures ctor, dtor, Clean, SetSize, SetFrame (**207–241**) | yes |\n| Band hull (**1–241**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nSetFrameSize stores the format, assigns width and height, and zeroes width*height*4 bytes. A null frame pointer leaves that buffer alone. Packed YUV consumes 4 bytes per pixel and ignores the fourth. VPX I420 samples chroma at (y>>1, x>>1), I444 at (y, x), I422 at (y, x>>1), and I440 at (y>>1, x). Any other VPX format writes nothing. RGB swaps the first three source bytes into every pixel. Paletted indexes RGB triples into BGRA and rejects a null palette. GetBgraBitmap returns pitch width*4 and does not read remap or trans. The pair starts with active 1, toggles before the write, and cleans only the texture it wrote. SetSize sizes both frames, then both game textures, then cleans both. Clean passes full=true and then drops both pointers. The destructor is that clean.\n\n| Managed (`VmAnimTexture1210Slice.cs`) | Native (`animtexture.cpp`) |\n|----------------------------------------|-----------------------------|\n| AnimTexture and AnimTextures | **1–241** |\n| Band hull (exclusive slice) | **1–241** |\n\n### Chunk **1210** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **241** |\n| **Net headline** | **+241** vs post-**1209** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmAnimTexture1210Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/textures/animtexture.cpp",
+        "symbol": "AnimTexture::SetFrame",
+        "start": 1,
+        "end": 241,
+        "tests": [
+          "VmAnimTexture1210SliceTests.SetFrame_CopiesYuvRgbPaletteAndVpxPlanes",
+          "VmAnimTexture1210SliceTests.SetFrame_SwapsTheTwoTexturesAndCleansHardware"
+        ]
+      }
+    ]
+  }
+]

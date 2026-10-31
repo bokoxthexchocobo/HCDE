@@ -1,0 +1,28 @@
+[
+  {
+    "name": "p-destructible-geometry-line-chunk1176",
+    "bucket": "conversion",
+    "note": "Health-group init, geometry line attack, and radius-attack helpers from p_destructible.cpp (239–441).",
+    "auditSeams": "P_CheckLinedefVulnerable and P_CheckSectorVulnerable stay host-supplied. Damage calls the chunk 1175 health routines. P_GeometryRadiusAttack at 442 is chunk 661.",
+    "auditRationale": "UNCredited p_destructible.cpp 239–441 (+203). Chunk 1175 ends at 238. 442–688 is chunk 661. A full tally line scan shows no overlap. 910–917 stays uncredited.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_destructible.cpp --start 239 --end 441 and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "Init warnings, the wall and 3D-floor attack branches, and the closest-point helper are separate walks. Managed LOC is above 150% of 203 because each branch records the host trace beside the damage call.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `P_InitHealthGroups` (**239–294**) | yes |\n| `P_GeometryLineAttack` (**303–376**) | yes |\n| Radius helper struct and closest point (**385–408**) | yes |\n| Explosion block and closer-point insert (**410–438**) | yes |\n| Band hull (**239–441**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1–238** | health-group damage is chunk **1175** |\n| **442–688** | `P_GeometryRadiusAttack` is chunk **661** |\n| **689–909** | projectile hits are chunk **1168** |\n| **910–917** | opening of the later `DamageLinedef` stays uncredited |\n\nInit clears the groups, then builds one from every line and sector plane whose group id is positive. A member whose health differs from the group warns with the group's health before any raise, and a higher value replaces the group health. A sector is stored on its floor group only when that group is not the ceiling group. After the walk, each mismatched id reports the highest health that remains.\n\nA wall hit on a 3D-floor tier damages the model when that model has 3D health. A vulnerable linedef then damages the back sector's floor or ceiling for a lower or upper tier, and damages the linedef when its health is positive. A floor or ceiling hit walks solid 3D floors that are not shoot-through. A plane within one map unit of 1/65536 counts as the hit, damages 3D health when it is positive, and returns before the real sector plane. The closest-point helper clamps to the segment. An explosion probe lifts the check by one map unit, shortens the distance by one half, and blocks with the block-everything flag. A blocked probe is not stored. An equal distance keeps the earlier point.\n\n| Managed (`VmPDestructibleGeometry1176Slice.cs`) | Native (`p_destructible.cpp`) |\n|--------------------------------------------------|--------------------------------|\n| Init, line attack, and radius helpers | **239–441** |\n| Band hull (exclusive slice) | **239–441** |\n\n### Chunk **1176** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **203** |\n| **Net headline** | **+203** vs post-**1175** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPDestructibleGeometry1176Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_destructible.cpp",
+        "symbol": "P_GeometryLineAttack",
+        "start": 239,
+        "end": 441,
+        "tests": [
+          "VmPDestructibleGeometry1176SliceTests.Init_KeepsTheHighestHealthAndSharesOneSector",
+          "VmPDestructibleGeometry1176SliceTests.Attack_DamagesThe3DFloorAndStopsAtThePlane",
+          "VmPDestructibleGeometry1176SliceTests.Helpers_ClampTheSegmentAndKeepTheNearerGroup"
+        ]
+      }
+    ]
+  }
+]

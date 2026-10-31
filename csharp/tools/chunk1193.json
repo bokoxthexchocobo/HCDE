@@ -1,0 +1,26 @@
+[
+  {
+    "name": "command-line-chunk1193",
+    "bucket": "conversion",
+    "note": "Command tokens, cvar substitution, and argument shift from c_commandline.cpp (1–195).",
+    "auditSeams": "FindCVarSub is a host lookup. A null result keeps the original token. Character codes 128–255 compare as signed char values, so outside quotes they are whitespace. Shift before the argument vector exists leaves the line unparsed.",
+    "auditRationale": "UNCredited c_commandline.cpp 1–195 (+195). The file ends at 195. A full tally line scan shows no overlap.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/console/c_commandline.cpp --start 1 --end 195 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| ParseCommandLine (**49–149**) | yes |\n| FCommandLine::FCommandLine (**151–157**) | yes |\n| FCommandLine::~FCommandLine (**159–165**) | yes |\n| FCommandLine::Shift (**167–174**) | yes |\n| FCommandLine::argc (**176–183**) | yes |\n| FCommandLine::operator[] (**185–195**) | yes |\n| Band hull (**1–195**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nQuoted text turns \\\" into a quote, \\\\ into one backslash, and \\c into the text-color escape. With escapes disabled those backslashes stay literal and a quote still ends the string. An unquoted $name is replaced by the cvar string as one argument, including spaces. A missing cvar keeps the typed token. argc caches the count and the buffer size. The indexer fills the vector once. Shift slides the pointers down and leaves the count unchanged, so the last argument is duplicated. Destroying the vector makes the next index parse the original line again.\n\n| Managed (`VmCommandLine1193Slice.cs`) | Native (`c_commandline.cpp`) |\n|----------------------------------------|----------------------------|\n| Command tokens | **1–195** |\n| Band hull (exclusive slice) | **1–195** |\n\n### Chunk **1193** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **195** |\n| **Net headline** | **+195** vs post-**1192** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmCommandLine1193Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/console/c_commandline.cpp",
+        "symbol": "ParseCommandLine",
+        "start": 1,
+        "end": 195,
+        "tests": [
+          "VmCommandLine1193SliceTests.Parse_ExpandsQuotesEscapesAndCvars",
+          "VmCommandLine1193SliceTests.Shift_DuplicatesTheTailUntilTheVectorIsRebuilt"
+        ]
+      }
+    ]
+  }
+]

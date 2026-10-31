@@ -1,0 +1,26 @@
+[
+  {
+    "name": "loadsavemenu-chunk1310",
+    "bucket": "conversion",
+    "note": "Save-list scan, GZDoom 4.14 import, and the save-name comment from loadsavemenu.cpp (1-285).",
+    "auditSeams": "ScanDirectory, resource open, and the serializer are host calls. G_CheckSaveGameWads, G_LoadGame, G_SaveGame, and G_BuildSaveName are callees. InsertSaveNode is the list append in scan order. The sort-order memory is process lifetime. LOAD_GZDOOM_4142_SAVES is on, so a GZDOOM engine uses the 4.14 check instead of the gamesig test.",
+    "auditRationale": "UNCredited loadsavemenu.cpp 1-285 (+285). A full tally line scan shows no overlap. The file ends at line 285.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/menu/loadsavemenu.cpp --start 1 --end 285 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| GZDoom 4.14 save check (**52–125**) | yes |\n| Save string scan (**127–225**) | yes |\n| Load and save dispatch (**233–247**) | yes |\n| Comment and save name (**255–271**) | yes |\n| Manager singleton (**279–284**) | yes |\n| Band hull (**1–285**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Directory scan and resource read | host returns the entries and the info.json bytes |\n| Wad check and game load | callees; this band decides whether to call them |\n\nThe compatibility check requires the software string to start with GZDoom g, a 4.x version, and a minor of 14 or below. Minor 14 allows patch 0, 1, and 2, and rejects a two-digit patch. Any other prefix returns false. The engine argument is not read. ReadSaveStrings clears the list only when the sort cvar changed, and it scans only when the list is empty. The scan looks for *.zds. A missing resource, a missing info.json, or a reader that does not open is skipped. Engine GZDOOM is imported only when the 4.14 check passes, and that path does not also apply the gamesig or newer-than-4560 rejection. Other engines are kept when the name matches HCDE, ignoring case, or the allow list contains HCDE, and the save version is at most 4560. A version below 4556 is listed as old. Otherwise a matching IWAD asks the wad check, and a different IWAD is skipped. Load and save forward the file and the flag or title. The comment is the creation time, a newline when that time is not empty, then the comment. The save name formats the prefix and a two-digit slot, then asks the game for the path. GetManager returns the process manager.\n\n| Managed (`VmLoadSaveMenu1310Slice.cs`) | Native (`loadsavemenu.cpp`) |\n|----------------------------------------|----------------------------|\n| Scan, import, comment, and save name | **1–285** |\n| Band hull (exclusive slice) | **1–285** |\n\n### Chunk **1310** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **285** |\n| **Net headline** | **+285** vs post-**1309** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmLoadSaveMenu1310Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/menu/loadsavemenu.cpp",
+        "symbol": "FSavegameManager::ReadSaveStrings",
+        "start": 1,
+        "end": 285,
+        "tests": [
+          "VmLoadSaveMenu1310SliceTests.Compat_AllowsGzdoom4142AndRejectsTheNeighbors",
+          "VmLoadSaveMenu1310SliceTests.Read_SkipsForeignSavesAndKeepsTheSortCache"
+        ]
+      }
+    ]
+  }
+]

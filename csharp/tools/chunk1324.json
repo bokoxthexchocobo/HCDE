@@ -1,0 +1,26 @@
+[
+  {
+    "name": "voxel-model-chunk1324",
+    "bucket": "conversion",
+    "note": "The voxel palette texture, the slab faces, and the frame draw from models_voxel.cpp (1-398).",
+    "auditSeams": "ColorMatcher.Pick and BestColor live in colormatcher.h and palette.cpp. FlipSquareBlock lives in imagehelpers.h. CopyPixelData lives in bitmap.cpp. The vertex map compare lives in model_kvx.h. This slice includes those callees so the palette indices, the transposed pixels, the BGRA copy, and the welded vertices match.",
+    "auditRationale": "UNCredited models_voxel.cpp 1-398 (+398). A full tally line scan shows no overlap. The file ends at line 398.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/models/models_voxel.cpp --start 1 --end 398 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Palette texture and the 6-bit expand (**45–144**) | yes |\n| Vertex weld and the quad indices (**152–232**) | yes |\n| Slab faces and the mip walk (**240–307**) | yes |\n| Buffer, skins, frame, and the aspect (**315–398**) | yes |\n| Band hull (**1–398**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| The commented no-compress flag | it does not run |\n| KVX load and the mip allocator | they live in voxels.cpp |\n\nThe texture is 16 by 16. A palette byte expands with `(c << 2) | (c >> 4)`. Luminance stores the expanded red. Any other conversion asks the matcher, which returns 1 when no palette is set and otherwise searches indices 1 through 254, or 0 through 254 when an index map is set. Missing palette bytes become the identity 0..255. The square is transposed about the diagonal. CopyPixels writes identity indices through a BGRA palette and forces alpha 255, including the base-color fallback. Faces subtract the mip pivot, swap Y/Z with a sign flip, and pack `(col & 15)` and `col / 16` into U and V. The quad stores the fourth corner before the third and emits indices 0,1,3 then 1,2,3. Equal colors in a slab share one side run. Cull bits 1, 2, 4, 8, 16, and 32 select the six faces. The bottom face uses the last color. Vertices with the same position and U/V are stored once. BuildVertexBuffer fills one buffer per renderer type and then drops the temporary arrays. AddSkins sets the flat bit on the palette texture. Load returns false. FindFrame returns -2 when no default is allowed, otherwise 0. The aspect factor is the stretch. RenderFrame clamps the skin, sets up frame 0, and draws every index.\n\n| Managed (`VmVoxelModel1324Slice.cs`) | Native (`models_voxel.cpp`) |\n|--------------------------------------|-----------------------------|\n| Texture, slabs, buffer, and the frame | **1–398** |\n| Band hull (exclusive slice) | **1–398** |\n\n### Chunk **1324** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **398** |\n| **Net headline** | **+398** vs post-**1323** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmVoxelModel1324Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/models/models_voxel.cpp",
+        "symbol": "FVoxelModel::Initialize",
+        "start": 1,
+        "end": 398,
+        "tests": [
+          "VmVoxelModel1324SliceTests.Palette_ExpandsLuminanceAndCopiesTheBitmap",
+          "VmVoxelModel1324SliceTests.Slab_WeldsTheSharedEdgeAndSplitsTheColorRun"
+        ]
+      }
+    ]
+  }
+]

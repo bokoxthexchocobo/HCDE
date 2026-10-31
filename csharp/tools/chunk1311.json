@@ -1,0 +1,26 @@
+[
+  {
+    "name": "joystickmenu-chunk1311",
+    "bucket": "conversion",
+    "note": "Joystick config actions and the options-menu rebuild from joystickmenu.cpp (1-281).",
+    "auditSeams": "I_GetJoysticks replaces the process device list. CreateOptionMenuItemJoyConfigMenu and the write barrier are host calls. MenuDescriptors is a case-insensitive name map. GetItem matches mAction, not the label. Reset's body is the header inline: default config, enable, background from AllowsEnabledInBackground, then sensitivity 1.",
+    "auditRationale": "UNCredited joystickmenu.cpp 1-281 (+281). A full tally line scan shows no overlap. The file ends at line 281.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/menu/joystickmenu.cpp --start 1 --end 281 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Config actions (**31–205**) | yes |\n| Options rebuild and close (**207–281**) | yes |\n| Band hull (**1–281**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Device enumeration | host returns the joystick objects |\n| Menu item Init | host builds the joy-config row |\n\nA null self aborts with the parameter name before the getter or setter runs. Getters still evaluate when numret is not positive, then return 0. Setters return 0. Float arguments narrow to float; the curve-point value narrows through the float parameter. The curve integer is stored as passed, including -1 and values above the preset count. Reset runs default config first, then enables the device, copies AllowsEnabledInBackground, and sets sensitivity to 1. Update returns when the defaults key is missing, when the options key is missing, when the options descriptor is not an option menu, or when the defaults object is null. A present options key whose descriptor is null is dereferenced. Names compare case-insensitively. The device list is cleared only when the rebuild runs, and an early return keeps the previous list. The initial selection index is the last device because the starting -1 fails the unsigned size test; a size of 0 stores -1. A selected device that is actually in the list replaces that index, and the first match wins. Items are the default rows by pointer, then one new row per device. The matching row stores the list size after that push. A value that is still at least the final size clamps to the last index, so the last device lands on its index and an earlier device keeps the size from its own push. ConfigureMessage is 1 when any device exists. Both connect rows are 1 when use_joystick is false. GetItem sets only the first matching action. An open JoystickConfigMenu closes when its mJoy pointer is non-null and absent from the new list. A null pointer stays open. A missing mJoy field aborts after the rows are built. CalcIndent stays commented out.\n\n| Managed (`VmJoystickMenu1311Slice.cs`) | Native (`joystickmenu.cpp`) |\n|----------------------------------------|-----------------------------|\n| Actions, rebuild, and close | **1–281** |\n| Band hull (exclusive slice) | **1–281** |\n\n### Chunk **1311** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **281** |\n| **Net headline** | **+281** vs post-**1310** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmJoystickMenu1311Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/menu/joystickmenu.cpp",
+        "symbol": "UpdateJoystickMenu",
+        "start": 1,
+        "end": 281,
+        "tests": [
+          "VmJoystickMenu1311SliceTests.Actions_NarrowFloatsAndResetRunsTheHeaderSequence",
+          "VmJoystickMenu1311SliceTests.Update_RebuildsFromDefaultsAndKeepsTheDeviceList"
+        ]
+      }
+    ]
+  }
+]

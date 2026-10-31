@@ -1,0 +1,27 @@
+[
+  {
+    "name": "canvas-texture-chunk1191",
+    "bucket": "conversion",
+    "note": "Camera-to-canvas assignments from r_canvastexture.cpp (1–200).",
+    "auditSeams": "Texture lookup is a host result. A texture id is valid when it is greater than zero. Wall lookup uses texture type Wall and the overridable flag. The archive records the write calls; a missing canvastextures array leaves the list unchanged.",
+    "auditRationale": "UNCredited r_canvastexture.cpp 1–200 (+200). The file ends at 200. A full tally line scan shows no overlap.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/r_data/r_canvastexture.cpp --start 1 --end 200 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| FCanvasTextureInfo::Add (**40–77**) | yes |\n| SetCameraToTexture (**87–99**) | yes |\n| UpdateAll (**109–118**) | yes |\n| EmptyList (**128–131**) | yes |\n| Serialize (**141–184**) | yes |\n| Mark (**194–200**) | yes |\n| Band hull (**1–200**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nAn invalid texture id is ignored. A texture without a canvas is reported and not stored. The same texture object keeps its first picture number. Viewpoint or field-of-view changes mark the texture for a first update. SetCameraToTexture asks for an overridable wall and continues only when that texture is a hardware canvas. Update visits entries that have a viewpoint and still need an update. An empty list writes nothing. A present list writes canvastextures, skipping a null viewpoint or texture. A closed object writes no fields. A missing array on read leaves the list in place. A successful read assigns each record through Add. Mark visits every viewpoint.\n\n| Managed (`VmCanvasTexture1191Slice.cs`) | Native (`r_canvastexture.cpp`) |\n|------------------------------------------|-------------------------------|\n| Canvas texture assignments | **1–200** |\n| Band hull (exclusive slice) | **1–200** |\n\n### Chunk **1191** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **200** |\n| **Net headline** | **+200** vs post-**1190** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmCanvasTexture1191Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/r_data/r_canvastexture.cpp",
+        "symbol": "FCanvasTextureInfo::Add",
+        "start": 1,
+        "end": 200,
+        "tests": [
+          "VmCanvasTexture1191SliceTests.Add_ReplacesTheSameTextureAndRejectsANonCanvas",
+          "VmCanvasTexture1191SliceTests.SetCameraToTexture_RequiresAHardwareCanvas",
+          "VmCanvasTexture1191SliceTests.Serialize_SkipsEmptyAndRestoresThroughAdd"
+        ]
+      }
+    ]
+  }
+]
