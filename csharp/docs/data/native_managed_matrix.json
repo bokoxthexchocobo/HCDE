@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 306753
+    "managedCSharpLoc": 307326
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 132531,
+    "convertedThisRunNative": 132919,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 163949,
+    "convertedThisRunManaged": 164522,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 356341,
+    "remainingNative": 355953,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 151058,
+    "convertedBehaviorNative": 151446,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 151745,
-    "convertedBehaviorManaged": 173620,
+    "combinedBehaviorNative": 152133,
+    "convertedBehaviorManaged": 174193,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -45821,6 +45821,33 @@
         "nativeLoc": 398,
         "managedLoc": 544,
         "conversionManagedCommit": "a75bff3a2e10d9111e87f245291ede1f3644b3b7"
+      },
+      {
+        "name": "zip-file-chunk1325",
+        "bucket": "conversion",
+        "note": "The central directory, the compression methods, and the local header skip from file_zip.cpp (1-388).",
+        "auditSeams": "LittleShort and LittleLong are identity on this little-endian host. NormalizeFileName lowercases and rewrites slashes in resourcefile.cpp. GenerateHash and PostProcessArchive run after a successful open. This slice keeps those calls and the directory walk that feeds them.",
+        "auditRationale": "UNCredited file_zip.cpp 1-388 (+388). A full tally line scan shows no overlap. The file ends at line 388.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/filesystem/source/file_zip.cpp --start 1 --end 388 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| End-of-directory scan (**47\u201391**) | yes |\n| Open, multipart reject, and the directory load (**120\u2013213**) | yes |\n| Names, methods, encryption, and zip64 sizes (**215\u2013305**) | yes |\n| Raw read, local-header skip, and CheckZip (**321\u2013388**) | yes |\n| Band hull (**1\u2013388**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| The unused prefix scan locals | they are written and never read |\n| Hash buckets and lump filter | callees in resourcefile.cpp |\n\nThe scan walks backward from the end in 1024-byte steps, at most 65535 bytes, and the Quake loop visits size minus 4 down through 0. PK 5 6 records the first end record. PK 6 6 wins immediately and marks zip64. A directory at offset 0 is corrupt. Multipart disk numbers fail. Entries that end in `/` with a zero 32-bit size are skipped, as are unknown methods and the encrypted flag. A zip64 extra block of type 1 and at least 24 data bytes replaces the sizes and the local offset. A size above `0x7fffffff` warns, counts a skip, and still keeps the entry, so a later entry can fall off `NumLumps`. Implode flags 0, 2, 4, and 6 become methods 1000, 1002, 1004, and 1006. Names are lowercased, backslashes become slashes, and invalid UTF-8 bytes at or above 0x80 become `@`. GetRawData of an empty or out-of-range entry returns a stored buffer with no bytes. Otherwise it skips the local name and extra, clears the need-start flag, and reads the compressed bytes. CheckZip requires `PK\\x03\\x04` and destroys the archive when open fails.\n\n| Managed (`VmZipFile1325Slice.cs`) | Native (`file_zip.cpp`) |\n|------------------------------------|-------------------------|\n| Directory scan, open, and the raw read | **1\u2013388** |\n| Band hull (exclusive slice) | **1\u2013388** |\n\n### Chunk **1325** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **388** |\n| **Net headline** | **+388** vs post-**1324** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmZipFile1325Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/filesystem/source/file_zip.cpp",
+            "symbol": "FZipFile::Open",
+            "start": 1,
+            "end": 388,
+            "tests": [
+              "VmZipFile1325SliceTests.Directory_SkipsFoldersAndReadsPastTheLocalHeader",
+              "VmZipFile1325SliceTests.Zip64_AppliesSizesAndKeepsAnOversizeSlot"
+            ]
+          }
+        ],
+        "nativeLoc": 388,
+        "managedLoc": 573,
+        "conversionManagedCommit": "6fe5874cea01bf380318c3f03733baf303fad18f"
       }
     ],
     "behaviorNativeChecksum": 508086,
