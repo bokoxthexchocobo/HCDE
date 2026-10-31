@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 304574
+    "managedCSharpLoc": 304869
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 130824,
+    "convertedThisRunNative": 131107,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 161770,
+    "convertedThisRunManaged": 162065,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 358048,
+    "remainingNative": 357765,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 149351,
+    "convertedBehaviorNative": 149634,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 150038,
-    "convertedBehaviorManaged": 171441,
+    "combinedBehaviorNative": 150321,
+    "convertedBehaviorManaged": 171736,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -45685,6 +45685,33 @@
         "nativeLoc": 288,
         "managedLoc": 271,
         "conversionManagedCommit": "23a888cf6d3db83bdd91182ea244ec4b51411a86"
+      },
+      {
+        "name": "slope-plane-chunk1320",
+        "bucket": "conversion",
+        "note": "Slope normal, the fixed-point steps, and the span light from r_slopeplane.cpp (1-283).",
+        "auditSeams": "Closed span rows come from the plane. World-to-view and the screen position are the viewport host. The tilted span drawer records the arguments.",
+        "auditRationale": "UNCredited r_slopeplane.cpp 1-283 (+283). A full tally line scan shows no overlap. The file ends at line 283.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/swrenderer/plane/r_slopeplane.cpp --start 1 --end 283 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Slope normal and the scale table (**64\u2013110**) | yes |\n| Fixed-point origin and the U/V axes (**112\u2013166**) | yes |\n| Mirror, fog, shade, and the 1-wide zero (**168\u2013206**) | yes |\n| Row lights and the tilted span (**208\u2013282**) | yes |\n| Band hull (**1\u2013283**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| The tilted pixel drawer | the host records the draw arguments |\n| The top and bottom closure walk | that walk lives in `r_planerenderer.cpp` |\n\nA non-positive alpha returns before the normal is stored. The view-space normal is the camera transform of the plane normal, and a mirror negates its X. Texture scales divide by the physical scale, then by the inverse power-of-two table. The fixed origin uses the round-half-even shift `32` minus the texture bits. The U and V axes stay in the XZ plane until the slope heights fill Y. Only U and V are multiplied by 2^32. A mirror then negates all three X components. Fog follows a fade target, a colormap fade, or the fade-table flag. A positive plane C negates the light. The drawn style is opaque even when the caller passes additive or masked. Shade is on only when the fixed light is negative and there is no fixed colormap. A texture that is one unit wide or tall zeros that axis after the mirror. An inactive light is skipped. An attenuated light stores a negative radius. The span step is the screen-space delta from the first column to the last.\n\n| Managed (`VmSlopePlane1320Slice.cs`) | Native (`r_slopeplane.cpp`) |\n|--------------------------------------|-----------------------------|\n| Slope normal, fixed steps, and the span light | **1\u2013283** |\n| Band hull (exclusive slice) | **1\u2013283** |\n\n### Chunk **1320** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **283** |\n| **Net headline** | **+283** vs post-**1319** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmSlopePlane1320Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/rendering/swrenderer/plane/r_slopeplane.cpp",
+            "symbol": "RenderSlopePlane::Render",
+            "start": 1,
+            "end": 283,
+            "tests": [
+              "VmSlopePlane1320SliceTests.Render_SkipsZeroAlphaAndFixesTheOpaqueSteps",
+              "VmSlopePlane1320SliceTests.RenderLine_PacksActiveLightsAndSkipsTheRest"
+            ]
+          }
+        ],
+        "nativeLoc": 283,
+        "managedLoc": 295,
+        "conversionManagedCommit": "20b6e0b7ee82d39a37b1b55a0d3b247b8e0b4b38"
       }
     ],
     "behaviorNativeChecksum": 508086,
