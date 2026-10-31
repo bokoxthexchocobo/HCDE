@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 141115,
+  "convertedThisRunNative": 141378,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 177314,
+  "convertedThisRunManaged": 177587,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 347757,
+  "remainingNative": 347494,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 159642,
+  "convertedBehaviorNative": 159905,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 160329,
-  "convertedBehaviorManaged": 186985,
+  "combinedBehaviorNative": 160592,
+  "convertedBehaviorManaged": 187258,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -46516,6 +46516,33 @@
       "nativeLoc": 281,
       "managedLoc": 391,
       "conversionManagedCommit": "7765a56da00afa0a83224905e8d0de71d395ce75"
+    },
+    {
+      "name": "net-echo-chunk1351",
+      "bucket": "conversion",
+      "note": "Local echo dump and the self-test harness from d_net_diag.cpp (813-1075).",
+      "auditSeams": "The module path, process spawn, sleep, and trace-log bytes stay on the host. FName lookup for a sprite state string stays injected. The name table resolves indexes.",
+      "auditRationale": "UNCredited d_net_diag.cpp 813-1075 (+263). A full tally line scan shows no overlap. This is the largest remaining hole of at most 400 lines, ahead of i_specialpaths.cpp 1-262.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/d_net_diag.cpp --start 813 --end 1075 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Local echo dump (**813\u2013866**) | yes |\n| Deterministic self-test inputs (**868\u2013925**) | yes |\n| Windows harness and trace verdict (**927\u20131075**) | yes |\n| Band hull (**813\u20131075**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| CreateProcess and Sleep | the host records the command, the error, and the wait |\n| Trace files | the host supplies the opened lines |\n| FName from a state string | the index for that string is supplied by the caller |\n\nA console slot outside 0 through 63 prints nothing. A null weapon index stays 0, and a valid 0 prints the table entry. WP_NOCHANGE and a name index of -1 both become the all-ones pending index, which prints WP_NOCHANGE. A ready weapon with that index prints None. The weapon sprite walk stops at the first PSP_WEAPON id, including a null state. Tics are stored as int16. State-flag text is not part of this dump. The self-test cvar of 0 leaves the command untouched, and any other value clears it first. Negative tics still take the forward phase because the remainder keeps its sign. The non-Windows branch prints the platform line and returns. A missing module path returns before the log delete. Logs are deleted before the server spawn. A client spawn failure kills only the server. Zero client events suppress the desync verdict. Server lines do not count desyncs. A line can increment both an event and a desync.\n\n| Managed (VmNetDiag1351Slice.cs) | Native (d_net_diag.cpp) |\n|---------------------------------|-------------------------|\n| Echo dump, inputs, and harness | **813\u20131075** |\n| Band hull (exclusive slice) | **813\u20131075** |\n\n### Chunk **1351** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **263** |\n| **Net headline** | **+263** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmNetDiag1351Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_net_diag.cpp",
+          "symbol": "net_echo_dump",
+          "start": 813,
+          "end": 1075,
+          "tests": [
+            "VmNetDiag1351SliceTests.EchoDumpAndPhases",
+            "VmNetDiag1351SliceTests.SelfTestHarness"
+          ]
+        }
+      ],
+      "nativeLoc": 263,
+      "managedLoc": 273,
+      "conversionManagedCommit": "6b2e534dba2dffd2ad5c750b15b82aa5eea62908"
     }
   ],
   "behaviorNativeChecksum": 508086,
