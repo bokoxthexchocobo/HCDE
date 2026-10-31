@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 148576,
+  "convertedThisRunNative": 148778,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 187258,
+  "convertedThisRunManaged": 187555,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 340296,
+  "remainingNative": 340094,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 167103,
+  "convertedBehaviorNative": 167305,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 167790,
-  "convertedBehaviorManaged": 196929,
+  "combinedBehaviorNative": 167992,
+  "convertedBehaviorManaged": 197226,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -47387,6 +47387,33 @@
       "nativeLoc": 203,
       "managedLoc": 113,
       "conversionManagedCommit": "a64ac6f9054ee5ad242ecdefe61fde30f8ed775c"
+    },
+    {
+      "name": "c-cvars-init-chunk1383",
+      "bucket": "conversion",
+      "note": "Handler install, cvar initialization, and the base cvar construct through ForceSet from c_cvars.cpp (91-292).",
+      "auditSeams": "Chunk 145 already owns c_cvars.cpp 65-90, including the C_InstallHandlers signature. SetGenericRep at 293 through line 320 stays chunk 162. Lines 1-64 stay below the 150-line floor. FindCVar, DoSet, and the flag and mask bit scans stay callees. The which argument of C_InitCVars is unused. A flag or mask declaration passes 0 and a null callback into FBaseCVar, and the declaration flags word is the bit value. FName lookup is case-insensitive. An empty name becomes NAME_None for Find and is still inserted.",
+      "auditRationale": "UNCredited c_cvars.cpp 91-292 (+202). After chunk 1382 this is the unique largest hole. ObjectStateNode.cpp 1-196 is 196. Gaps longer than 400 lines stay whole and are not sliced.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/console/c_cvars.cpp --start 91 --end 292 and a full tally line scan, including recognition ranges, show no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `C_InstallHandlers` body (**91\u201392**) | yes |\n| `C_InitCVars` scalar pass and flag pass (**94\u2013160**) | yes |\n| `C_UninitCVars` (**162\u2013172**) | yes |\n| `FBaseCVar` constructor (**174\u2013220**) | yes |\n| `FBaseCVar` destructor (**222\u2013236**) | yes |\n| Callback and extra-data pointers (**238\u2013266**) | yes |\n| `GetHumanString` and `GetHumanStringDefault` (**268\u2013276**) | yes |\n| `ForceSet` (**278\u2013292**) | yes |\n| Band hull (**91\u2013292**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Search helper and handler signature **65\u201390** | chunk 145 |\n| `SetGenericRep` **293\u2013320** | chunk 162 |\n| Derived flag and mask bit scans | callees outside this band |\n| `FindCVar` and `DoSet` | callees |\n\n`which` is stored and does not filter the declaration list. Unknown types and the flag or mask types are skipped on the first pass. The second pass builds only flag and mask cvars. A serverinfo name longer than 63 characters aborts with the native fatal text before the cvar is registered. A name of 63 characters is accepted. A flag whose bit value is the serverinfo bit does not take that length check, because the base constructor flags are 0. A hidden cvar is registered and is omitted from tab completion. A null name pointer skips lookup, tab completion, and the map insert, and still receives `CVAR_ISDEFAULT`. An empty name is inserted and tab-completed, and `Find` misses it. Replacing a cvar copies the old favorite value through `ForceSet` while the new flags are still 0, so userinfo and the archive safe value are not updated, then deletes the old cvar without removing the new map entry or its tab command. `ForceSet` notifies userinfo only when the flag is set, send is allowed, the ignore flag is clear, and the handler pointer is set. An archive cvar copies the string rep into the safe value unless the unsafe-context flag is set. The call then clears `CVAR_ISDEFAULT` and `CVAR_UNSAFECONTEXT`. Scalar callbacks run only while callbacks are enabled and the cvar is not already inside a virtual callback. Flag and mask callbacks do not run. Human strings ignore precision. `C_UninitCVars` nulls each map value before delete, so the destructor does not drop the key or the tab command.\n\n| Managed (`VmCCvars1383Slice.cs`) | Native (`c_cvars.cpp`) |\n|----------------------------------|------------------------|\n| Init, lifetime, and `ForceSet` | **91\u2013292** |\n| Band hull (exclusive slice) | **91\u2013292** |\n\n### Chunk **1383** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **202** |\n| **Net headline** | **+202** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmCCvars1383Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/console/c_cvars.cpp",
+          "symbol": "C_InitCVars",
+          "start": 91,
+          "end": 292,
+          "tests": [
+            "VmCCvars1383SliceTests.InitBuildsScalarsThenFlagAndMask",
+            "VmCCvars1383SliceTests.ReplaceKeepsTheOldValueAndForceSetUpdatesUserInfo"
+          ]
+        }
+      ],
+      "nativeLoc": 202,
+      "managedLoc": 297,
+      "conversionManagedCommit": "4888025a7231e20f377268738a9925cd02074f80"
     }
   ],
   "behaviorNativeChecksum": 508086,
