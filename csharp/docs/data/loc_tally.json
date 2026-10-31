@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 139088,
+  "convertedThisRunNative": 139390,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 174257,
+  "convertedThisRunManaged": 174993,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 349784,
+  "remainingNative": 349482,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 157615,
+  "convertedBehaviorNative": 157917,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 158302,
-  "convertedBehaviorManaged": 183928,
+  "combinedBehaviorNative": 158604,
+  "convertedBehaviorManaged": 184664,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -46324,6 +46324,34 @@
       "nativeLoc": 304,
       "managedLoc": 715,
       "conversionManagedCommit": "a6a60a209ef583bc3acf070714f534141fa2e9c6"
+    },
+    {
+      "name": "codegen-call-chunk1344",
+      "bucket": "conversion",
+      "note": "Member-call resolve tail, VM function-call construction, and the accessibility check from codegen.cpp (9535-9836).",
+      "auditSeams": "A class pointer named GetClass with no arguments returns the resolved class query and leaves this call alive. Any other container pointer falls through to the member lookup. A writable struct becomes a pointer and records whether the address request failed. Scope flags are rewritten before the existing barrier. delete this drops the receiver only when it was not moved into the VM call. The VM destructor body is empty, so that receiver stays. The resolve prefix stops after the accessibility check.",
+      "auditRationale": "UNCredited codegen.cpp 9535-9836 (+302). A full tally line scan shows no overlap. This is the largest remaining hole of at most 400 lines, ahead of codegen.cpp 2386-2684.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/scripting/backend/codegen.cpp --start 9535 --end 9836 and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "Version ordering, the scope-flag rewrite before the existing barrier, and the delete-this ownership transfer are host behavior the 302 lines only invoke. FindClassMemberFunction and CheckFunctionCompatiblity stay injected. FName folding and the VersionInfo operators are what the member name and the accessibility check compare on the next line. That is why the managed file is over 150% of the 302-line source.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Pointer dispatch (**9536\u20139560**) | yes |\n| Struct address (**9561\u20139568**) | yes |\n| Function pointer (**9570\u20139584**) | yes |\n| Invalid left side (**9586\u20139590**) | yes |\n| Find and readonly (**9596\u20139617**) | yes |\n| Scope rewrite (**9622\u20139651**) | yes |\n| Static gate (**9654\u20139673**) | yes |\n| Method context (**9676\u20139701**) | yes |\n| Ownership transfer (**9705\u20139709**) | yes |\n| Constructor (**9719\u20139727**) | yes |\n| Return prototype (**9745\u20139751**) | yes |\n| Accessibility (**9754\u20139783**) | yes |\n| Direct call (**9791\u20139806**) | yes |\n| Resolve prefix (**9814\u20139836**) | yes |\n| Band hull (**9535\u20139836**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| FindClassMemberFunction | callee; injected |\n| CheckFunctionCompatiblity | callee; injected |\n| FScopeBarrier | already chunk 1207; this slice only rewrites the flags it passes in |\n| Lines before 9535 | earlier part of the member-call resolve |\n| Lines after 9836 | the missing-self error and the rest of the VM resolve |\n\nGetClass with arguments deletes this call. A non-container pointer is rejected. An already-readonly struct does not request an address. Call on a non-void function pointer uses the fake function and does not look up a class member. A lookup error deletes this call and adds no second message. Readonly without the readonly flag fails before the barrier. Virtual scope plus virtual on a play class calls a UI function from play; without that class the same flags stay data. A virtual-scope method on a UI class becomes a UI call. A plain struct member takes the barrier side. A UI member does not. Clear scope stays callable from data. A static method on a non-descendant or a struct cannot be called; a descendant is not implemented yet. Novirtual plus virtual skips that gate. A method with no caller function is a constant declaration. Self compatibility failure adds no message. A non-self call without the actor use flag names the symbol. A method moves the receiver; a static call deletes it. A function pointer forces the virtual call and reports a function-pointer self from the type. Accessibility uses ZScript text at 2.3.0 and DECORATE before that. Deprecated use warns, or stays quiet when the function version is still ahead. Direct calls skip accessibility when arguments, virtual, or a function pointer already disqualify them. The first explicit argument is the one past the implicit count, and action counts as three even when the method bit is also set. String arguments use the expression prototype; otherwise the variant prototype is returned. A null self resolve does not mark the caller script. A function pointer marks it before a failing accessibility check. The relaxed named-argument flag follows version 4.13.0. A passing check sets the continued flag and does not invent the following self-pointer error. The VM call does not delete its receiver.\n\n| Managed (`VmCodegen1344Slice.cs`) | Native (`codegen.cpp`) |\n|------------------------------------|------------------------|\n| Dispatch, scope, VM call, accessibility, and the resolve prefix | **9535\u20139836** |\n| Band hull (exclusive slice) | **9535\u20139836** |\n\n### Chunk **1344** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **302** |\n| **Net headline** | **+302** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmCodegen1344Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxVMFunctionCall",
+          "start": 9535,
+          "end": 9836,
+          "tests": [
+            "VmCodegen1344SliceTests.DispatchAndScope",
+            "VmCodegen1344SliceTests.DirectCallsAndAccessibility"
+          ]
+        }
+      ],
+      "nativeLoc": 302,
+      "managedLoc": 736,
+      "conversionManagedCommit": "e24999d5faba9acc8fc76d428d3a2a5c6df9222f"
     }
   ],
   "behaviorNativeChecksum": 508086,
