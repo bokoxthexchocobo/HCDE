@@ -1,0 +1,26 @@
+[
+  {
+    "name": "switch-button-chunk1374",
+    "bucket": "conversion",
+    "note": "Switch texture change, button construct, switch serialization, and the button tick through AdvanceFrame from p_switch.cpp (235-452).",
+    "auditSeams": "P_StartButton stays chunk 804. TexAnim.FindSwitch, S_FindSound, S_Sound, pr_switchanim, and DThinker::Serialize are callees. The FTextureID read writes through the serializer.",
+    "auditRationale": "UNCredited p_switch.cpp 235-452 (+218). A full tally line scan, including recognition ranges, shows this is the unique largest hole of at most 400 lines. CVarScopeStateNode.cpp 1-217 and d_net.cpp 3685-3901 are 217. Chunk 804 already owns 71-88 and 98-234. The file ends at 452. Gaps longer than 400 lines stay whole and are not sliced.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_switch.cpp --start 235 --end 452 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Banner before `P_ChangeSwitchTexture` (**235–242**) | yes |\n| `P_ChangeSwitchTexture` (**243–310**) | yes |\n| Button banner and `IMPLEMENT_CLASS` (**312–319**) | yes |\n| `DActiveButton::Construct` (**320–331**) | yes |\n| `FSwitchDef` serialize specialization (**339–353**) | yes |\n| `DActiveButton::Serialize` (**361–372**) | yes |\n| `DActiveButton::Tick` (**380–419**) | yes |\n| `DActiveButton::AdvanceFrame` (**427–452**) | yes |\n| Band hull (**235–452**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| p_switch.cpp **71–88** and **98–234** | `P_StartButton` and `P_CheckSwitchRange`, chunk 804 |\n| p_switch.cpp **39** | `pr_switchanim` declaration; the call at 448 is injected |\n| anim_switches.cpp | not this hole |\n\n`FindSwitch` tries the top, mid, and bottom textures and stops at the first hit. A miss with a quest pointer stores false. `NO_SOUND` is 0, so a defined sound is kept. Otherwise exit specials 243, 244, 74, and 75 resolve `switches/exitbutn` and every other special resolves `switches/normbutn`. The sound point is `v1 + delta / 2` with z 0. `SetTexture` runs before the button. `useAgain` nonzero or more than one frame calls `P_StartButton` with `!!useAgain`. A false return skips `S_Sound`. The played sound uses channel 2, flag 8, volume 1, and attenuation 3. `IMPLEMENT_CLASS(DActiveButton, false, false)` is a concrete class with no pointer offsets, and the in-place constructor allocates the button. `Construct` stores `int8_t(Where)`, clears returning, sets the frame to -1, and calls `AdvanceFrame`. The switch serializer writes `PreTexture` and, on read, starts from invalid texture -1 before `FindSwitch`. Button keys are `side`, `part`, `switchdef`, `frame`, `timer`, `fippable`, `pos`, and `returning`, after `Super::Serialize`. `Tick` destroys a null definition without changing the timer. The timer is `uint32_t`, so 0 wraps and does not fire. On the last frame a null pair destroys before `AdvanceFrame`. A pair plays its sound, or `switches/normbutn` when that sound is 0, then clears flippable. `AdvanceFrame` sets the timer to `BUTTONTIME` (35) on a flippable last frame. Any other frame stores `TimeMin` and adds `pr_switchanim(TimeRnd)` only when `TimeRnd` is not 0.\n\n| Managed (`VmSwitchBand1374Slice.cs`) | Native (`p_switch.cpp`) |\n|--------------------------------------|-------------------------|\n| Texture change through `AdvanceFrame` | **235–452** |\n| Band hull (exclusive slice) | **235–452** |\n\n### Chunk **1374** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **218** |\n| **Net headline** | **+218** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmSwitchBand1374Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_switch.cpp",
+        "symbol": "ChangeSwitchTexture",
+        "start": 235,
+        "end": 452,
+        "tests": [
+          "VmSwitchBand1374SliceTests.ChangeSwitchTextureSelectsPartSoundAndButton",
+          "VmSwitchBand1374SliceTests.ButtonTickSerializeAndAdvance"
+        ]
+      }
+    ]
+  }
+]
