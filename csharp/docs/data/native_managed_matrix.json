@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 310604
+    "managedCSharpLoc": 311123
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 135495,
+    "convertedThisRunNative": 135841,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 167800,
+    "convertedThisRunManaged": 168319,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 353377,
+    "remainingNative": 353031,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 154022,
+    "convertedBehaviorNative": 154368,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 154709,
-    "convertedBehaviorManaged": 177471,
+    "combinedBehaviorNative": 155055,
+    "convertedBehaviorManaged": 177990,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -46038,6 +46038,33 @@
         "nativeLoc": 356,
         "managedLoc": 642,
         "conversionManagedCommit": "8d0613ca3da19a418852e85a334619846699c39f"
+      },
+      {
+        "name": "dehacked-patch-chunk1333",
+        "bucket": "conversion",
+        "note": "DeHackEd PatchSound, PatchFrame, PatchSprite, PatchAmmo, and the skill and weapon bit tables from d_dehacked.cpp (1907-2252).",
+        "auditSeams": "GetLine, FindState, and FindSprite stay callees. The commented sound-offset body stays compiled out. PatchWeapon, which reads the weapon bit table, stays chunk 514.",
+        "auditRationale": "UNCredited d_dehacked.cpp 1907-2252 (+346). A full tally line scan shows no overlap. This is the largest remaining hole of at most 400 lines, ahead of a_ceiling.cpp 216-551 and g_mapinfo.cpp 1491-1826 (336) and whole-file voxeldef.cpp 1-331. PatchThing through line 1906 stays chunk 521. PatchWeapon at 2253 stays chunk 514.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/gamedata/d_dehacked.cpp --start 1907 --end 2252 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Sound-patch comment and PatchSound (**1907\u20131963**) | yes |\n| Skill bit table (**1965\u20131967**) | yes |\n| PatchFrame (**1970\u20132118**) | yes |\n| PatchSprite (**2120\u20132160**) | yes |\n| PatchAmmo (**2162\u20132242**) | yes |\n| Weapon bit table (**2244\u20132251**) | yes |\n| Band hull (**1907\u20132252**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| GetLine | callee |\n| FindState | callee |\n| FindSprite | callee |\n| Commented sound offset | compiled out |\n| PatchWeapon | chunk 514 from line 2253 |\n\nPatchSound consumes assignment lines and returns the first line that is not an assignment. The offset body in comments does not run. PatchFrame forces tics 5 and 4 for frames 47 and 48, then reads keys whose lengths must match. Duration clamps to -1..32767 after the value is narrowed. Unknown 2 writes immediately. Sprite number is stored for a later remap. Next frame calls FindState and sets the changed-state flag. Sprite subnumber replaces the local frame word, including the fullbright bit. Args1 through Args8 store the full 64-bit value. Args0 and Args9 print the invalid index. MBF21 Bits splits on comma, plus, pipe, and whitespace. A numeric token is a base-10 bit index word. SKILL5FAST sets index bit 0, which becomes STF_FAST. An unknown mnemonic is printed and does not by itself change flags. The debug line prints the flags before the final DeHackEd bit. A live frame then sets STF_DEHACKED, warns when the low 15 bits exceed 63, stores six frame bits, and sets or clears fullbright from bit 0x8000. A missing frame prints the out-of-range line and does not publish those final fields. PatchSprite accepts a sprite index below the original count. Offset is atoi. When the offset is positive and the patch is not DSDehacked, the index becomes (offset - toff[dversion] - 22044) / 8. An in-range index looks up the original name and copies four characters from the mapped original name. PatchAmmo accepts indexes 0..3 that are also within the name list, including one past the end as a miss. Max ammo and Per ammo are atoi. The backpack max is twice the new max and the backpack amount is the new per. Descendants copy the max and scale the amount by the new per over the old per. Weapons scale AmmoGive1 and AmmoGive2 when the ammo type matches. The ammo type itself is not scaled again. NOTHRUST is -1. The other weapon bits are the native weapon-info flags.\n\n| Managed (`VmDehackedPatch1333Slice.cs`) | Native (`d_dehacked.cpp`) |\n|-----------------------------------------|---------------------------|\n| Sound, frame, sprite, ammo, and the bit tables | **1907\u20132252** |\n| Band hull (exclusive slice) | **1907\u20132252** |\n\n### Chunk **1333** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **346** |\n| **Net headline** | **+346** vs post-**1332** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmDehackedPatch1333Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "PatchSound",
+            "start": 1907,
+            "end": 2252,
+            "tests": [
+              "VmDehackedPatch1333SliceTests.Frame_AppliesKeysBitsAndStops",
+              "VmDehackedPatch1333SliceTests.Sprite_Ammo_RemapsAndScales"
+            ]
+          }
+        ],
+        "nativeLoc": 346,
+        "managedLoc": 519,
+        "conversionManagedCommit": "5dcf30632cd7fc8ad7db6f2c54a433c3de280328"
       }
     ],
     "behaviorNativeChecksum": 508086,
