@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 302288
+    "managedCSharpLoc": 302686
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 128933,
+    "convertedThisRunNative": 129218,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 159484,
+    "convertedThisRunManaged": 159882,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 359939,
+    "remainingNative": 359654,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 147460,
+    "convertedBehaviorNative": 147745,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 148147,
-    "convertedBehaviorManaged": 169155,
+    "combinedBehaviorNative": 148432,
+    "convertedBehaviorManaged": 169553,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -45495,6 +45495,33 @@
         "nativeLoc": 311,
         "managedLoc": 324,
         "conversionManagedCommit": "55a6bb5fb65c2293556f2231a64f926921bff382"
+      },
+      {
+        "name": "rthread-chunk1313",
+        "bucket": "conversion",
+        "note": "Drawer threads, the debug-draw cursor, and the memcpy rows from r_thread.cpp (1-285).",
+        "auditSeams": "NUMA node counts and the thread affinity call are host queries. The screen height is a host read. Printf and I_FatalError are host messages. Frame memory allocation is a host buffer. Worker threads are recorded and the test calls WorkerMain.",
+        "auditRationale": "UNCredited r_thread.cpp 1-285 (+285). A full tally line scan shows no overlap. The file ends at line 285.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/r_thread.cpp --start 1 --end 285 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Execute, debug cursor, and the worker wait (**53\u2013158**) | yes |\n| Start, stop, and the NUMA layout (**161\u2013240**) | yes |\n| Allocation, the barrier, and memcpy rows (**244\u2013285**) | yes |\n| Band hull (**1\u2013285**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Real worker threads | the slice records the setup and the test calls WorkerMain |\n| Header push template | not in this cpp span |\n\nAn empty or null command list returns before the threads start. Execute starts the workers, locks the start mutex and then the end mutex, pushes the list, adds the thread count to the remaining tasks, unlocks end and then start, and notifies. The debug cursor compares each worker position plus `r_debug_draw * 120` with the end before it zeroes the position. If any worker is still short of the end, the end becomes 0. Otherwise the end grows by the debug cvar. Wait returns immediately when no tasks remain. A leftover count is fatal unless the workers finish inside the five-second wait, and the fatal path leaves the lists in place. Cleanup zeroes each worker queue, runs the explicit command destructor, clears each list, and then clears the active lists. WorkerMain returns while the shutdown flag is set and does that before taking work. Otherwise it takes the list at its cursor, advances the cursor, and sets the NUMA rows from the screen height with integer division. A nonzero debug cvar increments the cursor for every command and runs the command only while the cursor stays below the end. A zero cvar runs every command. The task count decrements with unsigned wrap, and the end condition notifies only when it hits 0. A zero NUMA total warns once, and only when the multithread cvar is 1, then uses one thread. A cvar of 0 forces one thread. Any other value replaces the NUMA total. An unchanged count does not stop or rebind. A matching NUMA count assigns the core index inside the node. Any other count uses a flat core index, one NUMA node, and affinity 0. Stop joins every worker, clears the list, and clears the shutdown flag. Allocation forwards the size as an int. The barrier increments, notifies, and waits while the count is below the core count. Memcpy uses the header skip and row count. The skip is the clipped first line plus the core remainder, and a negative remainder follows the toward-zero modulo. The copy steps by the core count times the pitch times the pixel size.\n\n| Managed (`VmDrawerThreads1313Slice.cs`) | Native (`r_thread.cpp`) |\n|------------------------------------------|-------------------------|\n| Drawer threads, cursor, and memcpy | **1\u2013285** |\n| Band hull (exclusive slice) | **1\u2013285** |\n\n### Chunk **1313** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **285** |\n| **Net headline** | **+285** vs post-**1312** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmDrawerThreads1313Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/rendering/r_thread.cpp",
+            "symbol": "DrawerThreads::Execute",
+            "start": 1,
+            "end": 285,
+            "tests": [
+              "VmDrawerThreads1313SliceTests.Start_DistributesNumaAndWarnsOnceWhenTheCountIsUnknown",
+              "VmDrawerThreads1313SliceTests.Worker_StepsTheCursorAndCopiesRows"
+            ]
+          }
+        ],
+        "nativeLoc": 285,
+        "managedLoc": 398,
+        "conversionManagedCommit": "8ae609e5ba281ad5900ab7e1d461a1d61af0306b"
       }
     ],
     "behaviorNativeChecksum": 508086,
