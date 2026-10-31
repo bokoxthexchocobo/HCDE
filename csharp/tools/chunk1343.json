@@ -1,0 +1,27 @@
+[
+  {
+    "name": "dynlight-data-chunk1343",
+    "bucket": "conversion",
+    "note": "Actor light definitions, the Dehacked type alias, and state-light binding from a_dynlightdata.cpp (1-304).",
+    "auditSeams": "GetRealType asks for the replacement with a null level and skill lookup off, then keeps that replacement only when it is a different DehackedPickup descendant. GetAttenuate is the attenuate byte, so the default -1 still scales both intensities. ApplyProperties saves the previous light type, points the live light at the definition arguments and flags, and copies the offset last. A pulse reads FCycler::SetParams before that copy. Frame names occupy eight bytes. A frame index is stored when the name length is 5 or byte 5 is 0. AddStateLight stores the TArray push index in a 16-bit field and inserts NAME_None only when the state light is 0.",
+    "auditRationale": "UNCredited a_dynlightdata.cpp 1-304 (+304). A full tally line scan shows no overlap. This whole file is the largest remaining hole of at most 400 lines, ahead of codegen.cpp 9535-9836.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/r_data/a_dynlightdata.cpp --start 1 --end 304 and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "FName folding, the eight-byte frame buffer, TArray push indexes, and FCycler::SetParams are defined outside this file. The managed port keeps them because ApplyProperties reads the cycler on the next line, AddStateLight stores the push index in a 16-bit field, and the association reads frame byte 5 whenever the stored length is not 5. Serializer field order and the empty-array skip are the rest of that host surface. That is why the managed file is over 150% of the 304-line source.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Dehacked alias (**37–45**) | yes |\n| Light-default serialize (**56–77**) | yes |\n| Light-default array serialize (**79–102**) | yes |\n| Apply properties (**111–145**) | yes |\n| Level attenuation (**147–160**) | yes |\n| Add defaults (**171–194**) | yes |\n| Sprite association (**202–233**) | yes |\n| State-light init (**249–285**) | yes |\n| Add state light (**293–304**) | yes |\n| Band hull (**1–304**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| GetReplacement | callee; null level and skill lookup off |\n| IsDescendantOf | callee; DehackedPickup only |\n| FindActor | callee |\n| ClassDataAllocator.Alloc | callee; the association is still constructed when the light is missing |\n| FName and strncpy | host; case fold and the eight-byte frame buffer |\n| FCycler::SetParams | callee; the radius clamp reads GetVal immediately |\n\nA failed array open clears the list and does not end the array. An empty write skips the array. Reading grows with NAME_None definitions and does not delete a slot that shrinks away. Attenuation walks only while the level flag changes, and only definitions whose attenuate field is still -1. Duplicate removal deletes the first same name, then the attenuate byte decides the scale. Sprite match is the first four bytes. NAME_None state slots become null, and an unknown name stays a non-null missing marker. The list ends with a null terminator, then the parsed names are cleared and shrunk.\n\n| Managed (`VmDynLightData1343Slice.cs`) | Native (`a_dynlightdata.cpp`) |\n|----------------------------------------|------------------------------|\n| Alias, serialize, apply, attenuation, associations, and state lights | **1–304** |\n| Band hull (exclusive slice) | **1–304** |\n\n### Chunk **1343** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **304** |\n| **Net headline** | **+304** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmDynLightData1343Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/r_data/a_dynlightdata.cpp",
+        "symbol": "GetRealType",
+        "start": 1,
+        "end": 304,
+        "tests": [
+          "VmDynLightData1343SliceTests.AliasSerializeApplyAndAttenuation",
+          "VmDynLightData1343SliceTests.DefaultsAssociationsAndStateLights"
+        ]
+      }
+    ]
+  }
+]
