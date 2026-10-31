@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 317797
+    "managedCSharpLoc": 318404
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 139390,
+    "convertedThisRunNative": 139689,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 174993,
+    "convertedThisRunManaged": 175600,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 349482,
+    "remainingNative": 349183,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 157917,
+    "convertedBehaviorNative": 158216,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 158604,
-    "convertedBehaviorManaged": 184664,
+    "combinedBehaviorNative": 158903,
+    "convertedBehaviorManaged": 185271,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -46368,6 +46368,34 @@
         "nativeLoc": 302,
         "managedLoc": 736,
         "conversionManagedCommit": "e24999d5faba9acc8fc76d428d3a2a5c6df9222f"
+      },
+      {
+        "name": "codegen-incr-chunk1345",
+        "bucket": "conversion",
+        "note": "Boolean-not compare, sizeof and alignof, and pre/post increment from codegen.cpp (2386-2684).",
+        "auditSeams": "Boolean-not compare forwards the same patch lists and flips invert. sizeof and alignof reject a constant before they ask for an address, then return a resolved integer constant and delete the operand. Pre and post increment require a numeric modifiable value and reject bool. The decrement immediate is the low 8 bits of -1. An ExpEmit assignment is a copy, so freeing it does not mark the original. A memory post-increment still returns the old value when the result is not needed. Assignment stores the modify flag and keeps its address request commented out.",
+        "auditRationale": "UNCredited codegen.cpp 2386-2684 (+299). A full tally line scan shows no overlap. This is the largest remaining hole of at most 400 lines, ahead of the 289-line tie between ValueStateNode.cpp and i_steam.cpp.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/scripting/backend/codegen.cpp --start 2386 --end 2684 and a full tally line scan \u2192 no overlap.",
+        "auditManagedLocJustification": "The register allocator, the integer and float constant pools, and ExpEmit copies live on the builder those emits call. Pre and post increment free different registers depending on Target, and the decrement immediate is the low 8 bits of -1. That is why the managed file is over 150% of the 299-line source.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Compare forward (**2386\u20132397**) | yes |\n| Size and align (**2405\u20132458**) | yes |\n| Pre increment (**2466\u20132552**) | yes |\n| Post increment (**2560\u20132655**) | yes |\n| Assignment shell (**2663\u20132684**) | yes |\n| Band hull (**2386\u20132684**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Unary-not emit body | the XOR and its return sit before 2386 |\n| Assignment resolve | starts at 2685 |\n| Commented address request | the override is inside a comment and stays unimplemented |\n\nBoolean-not compare passes both patch lists through and flips invert. A constant sizeof names size, and a constant alignof names alignment; neither asks for an address. A null writable pointer does not throw. A failed address request names alignment or size to match the operator. Success deletes the operand and returns a resolved constant of Align or Size. Any operator other than alignof uses Size. A null operand resolve deletes this expression and adds no message. A second resolve returns this and does not resolve the operand again. The size emit is a nil register. Pre-increment address request before resolve returns true and writes false. A non-numeric operand is rejected before an address request. Bool uses the quoted token name. An address request that writes true and returns false still errors, and the writable flag stays true. Success stores that flag, and a later address request reports it. A memory pre-increment loads, adds the immediate, and stores. The integer pool holds 0; the added 1 is not a pooled constant. A register pre-increment that was asked for its address frees the copied emit and returns the original pointer. A register float decrement that was not asked returns a copy with Target clear and the original freed, using subtract and the float constant 1. A bad token throws before any constant is pooled. A memory post-increment ignores a false result flag and still returns the loaded value. A memory float decrement subtracts. A register post-increment with a result moves, then adds. A register float post-increment moves float, then adds the pooled 1. A register post-decrement with no result adds the immediate 255 and returns nil. Assignment defaults the bit-write field to -1 and the modify flag to false. Delete drops both sides. Its address request is the base expression: it writes false, returns false, and leaves the requested flag clear. The modify constructor stores true.\n\n| Managed (VmCodegen1345Slice.cs) | Native (codegen.cpp) |\n|----------------------------------|----------------------|\n| Compare, size, increment, and the assignment shell | **2386\u20132684** |\n| Band hull (exclusive slice) | **2386\u20132684** |\n\n### Chunk **1345** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **299** |\n| **Net headline** | **+299** vs the prior chunk |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmCodegen1345Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxPreIncrDecr",
+            "start": 2386,
+            "end": 2684,
+            "tests": [
+              "VmCodegen1345SliceTests.CompareSizeAndPreIncrement",
+              "VmCodegen1345SliceTests.PostIncrementAndAssign"
+            ]
+          }
+        ],
+        "nativeLoc": 299,
+        "managedLoc": 607,
+        "conversionManagedCommit": "61cbe6a4f68d8400b45fd733b6ecc285bf0fc8c9"
       }
     ],
     "behaviorNativeChecksum": 508086,
