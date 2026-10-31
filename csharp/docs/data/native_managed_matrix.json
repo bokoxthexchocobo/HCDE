@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 331383
+    "managedCSharpLoc": 331671
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 149555,
+    "convertedThisRunNative": 149747,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 188579,
+    "convertedThisRunManaged": 188867,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 339317,
+    "remainingNative": 339125,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 168082,
+    "convertedBehaviorNative": 168274,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 168769,
-    "convertedBehaviorManaged": 198250,
+    "combinedBehaviorNative": 168961,
+    "convertedBehaviorManaged": 198538,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -47538,6 +47538,33 @@
         "nativeLoc": 193,
         "managedLoc": 228,
         "conversionManagedCommit": "a7cf163cbc037963a8cd93cc5da2e0b7f648892f"
+      },
+      {
+        "name": "save-side-plane-chunk1388",
+        "bucket": "conversion",
+        "note": "Texture manipulation, side parts, the colormap, and the sector-plane repair from p_saveg.cpp (84-275).",
+        "auditSeams": "The line body above the return stays outside this hole. sector_t::Serialize starts at 276 and stays chunk 10. Primitive field serializers, DVector3, and the JSON writer stay callees. Padding between fields is not compared.",
+        "auditRationale": "UNCredited p_saveg.cpp 84-275 (+192). After chunk 1387 this is the unique largest hole. r_farclip_line.cpp 1-188 is 188. The band is shorter than 400 lines and is not sliced.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/p_saveg.cpp --start 84 --end 275 and a full tally line scan, including recognition ranges, show no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Line return (**84\u201385**) | yes |\n| Texture manipulation (**93\u2013109**) | yes |\n| Side part (**118\u2013142**) | yes |\n| Side (**150\u2013165**) | yes |\n| Linked sector (**173\u2013182**) | yes |\n| Colormap under the portal banner (**184\u2013206**) | yes |\n| Sector plane (**214\u2013241**) | yes |\n| Secplane repair (**249\u2013268**) | yes |\n| Closing banner (**270\u2013275**) | yes |\n| Band hull (**84\u2013275**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Line body **65\u201383** | already credited above this hole |\n| `sector_t::Serialize` **276+** | chunk 10 |\n| Primitive serializers | callees outside this file |\n| Struct padding | byte holes between fields are not stored |\n\nA matching texture manipulation, side part, colormap, sector plane, or secplane returns before `BeginObject` when `canSkip` is true. `canSkip` is writing, inside an object, and not a rollback. Colormap equality includes `BlendFactor`, which the archive does not write. The sector plane compares each transform field and both sky textures. `FTransform` sum equality is a different function. The secplane compare includes `negiC` and the dither flag. A null default throws after the object opens for manipulation, side part, side, and sector plane. Linked sectors and the colormap do not read the default. Side textures use a three-element full compare; a rollback or a reading archive still opens the array. Reading clamps that array to its stored length and never grows past 3. Inside the array, `canSkip` is false, so each part is written, and an equal texture manipulation nested under `texturefx` can still be skipped once the part object is open. The manipulation keys are `addcolor`, `yoffset`, `xscale`, and `yscale` for `AddColor`, `ModulateColor`, `BlendColor`, and `DesaturationFactor`. Interpolation and attached decals pass no default. The normal vector is a three-double array. On a successful read, a non-zero `Z` sets `negiC` to `-1 / Z` after the object closes. A missing object or a zero `Z` leaves `negiC` alone. A write does not change `negiC`.\n\n| Managed (`VmSaveSidePlane1388Slice.cs`) | Native (`p_saveg.cpp`) |\n|-----------------------------------------|------------------------|\n| Side, plane, and colormap serialize | **84\u2013275** |\n| Band hull (exclusive slice) | **84\u2013275** |\n\n### Chunk **1388** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **192** |\n| **Net headline** | **+192** vs the prior chunk |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmSaveSidePlane1388Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/p_saveg.cpp",
+            "symbol": "Serialize",
+            "start": 84,
+            "end": 275,
+            "tests": [
+              "VmSaveSidePlane1388SliceTests.ManipulationPartAndSideKeepMismatchedKeys",
+              "VmSaveSidePlane1388SliceTests.SectorPlaneSkipsOnBytesAndSecplaneRepairsNegiC"
+            ]
+          }
+        ],
+        "nativeLoc": 192,
+        "managedLoc": 288,
+        "conversionManagedCommit": "ee681908e8afa2d0fc583f583ae38a424b2edf63"
       }
     ],
     "behaviorNativeChecksum": 508086,
