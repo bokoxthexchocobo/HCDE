@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 326060
+    "managedCSharpLoc": 326220
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 145358,
+    "convertedThisRunNative": 145590,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 183256,
+    "convertedThisRunManaged": 183416,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 343514,
+    "remainingNative": 343282,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 163885,
+    "convertedBehaviorNative": 164117,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 164572,
-    "convertedBehaviorManaged": 192927,
+    "combinedBehaviorNative": 164804,
+    "convertedBehaviorManaged": 193087,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -46997,6 +46997,33 @@
         "nativeLoc": 233,
         "managedLoc": 254,
         "conversionManagedCommit": "ee8cda67fa18bc4a80052f9aab6f7a93f1e3ac40"
+      },
+      {
+        "name": "png-tail-chunk1368",
+        "bucket": "conversion",
+        "note": "IDAT chunk tail, MakeChunk, StuffPalette, CalcSum, and SelectFilter from m_png.cpp (655-886).",
+        "auditSeams": "Read, inflateEnd, UnpackPixels, and CalcCRC32 stay injected. The inflate loop through line 654 stays on the earlier PNG chunks. M_SaveBitmap at line 887 stays chunk 1247.",
+        "auditRationale": "UNCredited m_png.cpp 655-886 (+232). A full tally line scan, including recognition ranges, shows no overlap. This is the largest remaining hole of at most 400 lines. It is not a tie. findfile.cpp 165-391 is 227. Gaps longer than 400 lines stay whole and are not sliced. USE_FILTER_HEURISTIC is 0, and the function form also returns 0 before the sums, so SelectFilter does not run the heuristic.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/textures/m_png.cpp --start 655 --end 886 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Next-chunk read (**655\u2013672**) | yes |\n| `inflateEnd` and the low-bit unpack (**673\u2013688**) | yes |\n| `MakeChunk` banner and body (**690\u2013709**) | yes |\n| `StuffPalette` (**711\u2013729**) | yes |\n| `CalcSum` (**731\u2013747**) | yes |\n| `SelectFilter` and the compiled-out macro (**749\u2013885**) | yes |\n| Blank line before `M_SaveBitmap` (**886**) | yes |\n| Band hull (**655\u2013886**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| m_png.cpp **470\u2013654** | `M_ReadIDAT` inflate loop, earlier PNG chunks |\n| m_png.cpp **887\u20131104** | `M_SaveBitmap` and `WriteIDAT`, chunk 1247 |\n| `UnpackPixels` and `CalcCRC32` | helpers outside this band stay injected |\n\nA zero `chunklen` with `lastIDAT` still false reads 12 bytes. Any count other than 12 sets `lastIDAT` and leaves `chunklen` at 0. A type other than `IDAT` does the same. A matching type stores `BigLong` of the length word and leaves `lastIDAT` false. `x[0]` is not used. A nonzero `chunklen` or `lastIDAT` does not read.\n\n`inflateEnd` runs before the unpack. Bit depth 8 and above skips `UnpackPixels` and still returns true. Below 8, the step is `pitch << interlace` and the first offset is `pitch * interlace`. The walk continues while the offset is less than or equal to `prev`, and both pointers passed to `UnpackPixels` are that same offset. The gray flag is `colortype == 0`. A zero step that would not advance throws `passpitch`.\n\n`MakeChunk` writes the big-endian length eight bytes before the payload and the type word, unswapped, four bytes before it. The CRC covers that type word plus the payload. The CRC word is stored big-endian at the end of the payload. A throw from `CalcCRC32` leaves the length and type already written.\n\n`StuffPalette` copies 256 red, green, and blue bytes and skips each alpha byte. `CalcSum` adds each byte as a signed char into a 32-bit sum. A zero length adds nothing. `SelectFilter` returns 0. `USE_FILTER_HEURISTIC` is 0, and the function form returns 0 before the row sums, so those sums do not run and the row is left unchanged.\n\n| Managed (`VmPngTail1368Slice.cs`) | Native (`m_png.cpp`) |\n|-----------------------------------|----------------------|\n| IDAT tail, chunk, palette, sum, and filter | **655\u2013886** |\n| Band hull (exclusive slice) | **655\u2013886** |\n\n### Chunk **1368** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **232** |\n| **Net headline** | **+232** vs the prior chunk |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPngTail1368Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/textures/m_png.cpp",
+            "symbol": "PngTail",
+            "start": 655,
+            "end": 886,
+            "tests": [
+              "VmPngTail1368SliceTests.IdatTailAndUnpack",
+              "VmPngTail1368SliceTests.ChunkPaletteSumAndFilter"
+            ]
+          }
+        ],
+        "nativeLoc": 232,
+        "managedLoc": 160,
+        "conversionManagedCommit": "1cd7fb2c7b457932e47291d66f0d8c081ba12d4c"
       }
     ],
     "behaviorNativeChecksum": 508086,
