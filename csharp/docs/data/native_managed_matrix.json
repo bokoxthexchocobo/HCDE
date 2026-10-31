@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 313390
+    "managedCSharpLoc": 313718
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 136848,
+    "convertedThisRunNative": 137179,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 170586,
+    "convertedThisRunManaged": 170914,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 352024,
+    "remainingNative": 351693,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 155375,
+    "convertedBehaviorNative": 155706,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 156062,
-    "convertedBehaviorManaged": 180257,
+    "combinedBehaviorNative": 156393,
+    "convertedBehaviorManaged": 180585,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -46148,6 +46148,33 @@
         "nativeLoc": 335,
         "managedLoc": 300,
         "conversionManagedCommit": "45f1de7630c034ea3c05ce85ee70e0884d27b16b"
+      },
+      {
+        "name": "eternity-sound-facade-chunk1337",
+        "bucket": "conversion",
+        "note": "The Eternity spatial audio facade from s_sound_eternity.cpp (1-331): renderer registration, spatial parameter recording, and the probe and status commands.",
+        "auditSeams": "snd_backend is passed into the status command. Printf lines are collected on the host. Linux and Win32 audio devices stay outside this file. The mixer is still the silent placeholder: start and stream calls return null.",
+        "auditRationale": "UNCredited s_sound_eternity.cpp 1-331 (+331). A full tally line scan shows no overlap. Whole-file voxeldef.cpp 1-331 is the same length. Path order takes this audio facade. Both are the largest remaining holes of at most 400 lines.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/audio/sound/s_sound_eternity.cpp --start 1 --end 331 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Facade notes and includes (**1\u201345**) | yes |\n| Spatial submit and renderer (**47\u2013269**) | yes |\n| Create and stub (**275\u2013286**) | yes |\n| Diagnostic probe (**288\u2013302**) | yes |\n| Status command (**304\u2013331**) | yes |\n| Band hull (**1\u2013331**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Platform audio devices | not in this file |\n| Vendored Eternity mixer | the facade stays silent and returns null |\n\n`UpdateMusicParams`, `UnloadSound`, `StopChannel`, and `MarkStartTime` are empty in the native renderer, so the managed methods are empty too. IsNull stays false. LoadSound and LoadSoundRaw count a load and return a null handle. GetMSLength returns 250. GetSampleLength and GetPosition return 0. GetAudibility returns 0. GetOutputRate returns 44100. CreateStream counts a request and returns null. StartSound records the 2D volume, pitch, and channel flags. StartSound3D records the 3D volume, pitch, distance scale, position, velocity, channel, flags, and priority, casting the vectors to float. Channel volume and pitch replace only those fields. UpdateSoundParams3D records the area flag and the new vectors. UpdateListener and UpdateSounds count. Sync, pause, and inactive store the flag. SetSfxVolume and SetMusicVolume store the levels. IsValid stays true. PrintStatus, PrintDriversList, and GatherStats use the native format strings. Create sets the registration flag, constructs the renderer, and prints the selection line. The stub calls create. The probe increments the diagnostic count and, when a renderer exists, starts a 2D sound at volume 1, pitch 1, and flags 0. Status compares the backend to eternity without case, prints empty as <empty>, and prints the renderer block only when one exists. A second create replaces the current renderer and leaves the constructed flag set.\n\n| Managed (`VmEternitySound1337Slice.cs`) | Native (`s_sound_eternity.cpp`) |\n|------------------------------------------|----------------------------------|\n| Create, the renderer, the probe, and status | **1\u2013331** |\n| Band hull (exclusive slice) | **1\u2013331** |\n\n### Chunk **1337** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **331** |\n| **Net headline** | **+331** vs post-**1336** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmEternitySound1337Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/audio/sound/s_sound_eternity.cpp",
+            "symbol": "EternitySoundRenderer",
+            "start": 1,
+            "end": 331,
+            "tests": [
+              "VmEternitySound1337SliceTests.RendererRecordsSpatialAndStaysSilent",
+              "VmEternitySound1337SliceTests.ProbeStatusAndStubReplaceTheRenderer"
+            ]
+          }
+        ],
+        "nativeLoc": 331,
+        "managedLoc": 328,
+        "conversionManagedCommit": "77a6201f539c372d570d3b35b0d9edbb5a2f1c88"
       }
     ],
     "behaviorNativeChecksum": 508086,
