@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 144890,
+  "convertedThisRunNative": 145125,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 182763,
+  "convertedThisRunManaged": 183002,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 343982,
+  "remainingNative": 343747,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 163417,
+  "convertedBehaviorNative": 163652,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 164104,
-  "convertedBehaviorManaged": 192434,
+  "combinedBehaviorNative": 164339,
+  "convertedBehaviorManaged": 192673,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -46927,6 +46927,33 @@
       "nativeLoc": 238,
       "managedLoc": 308,
       "conversionManagedCommit": "5bf29f08e18cc2050ff011666fdd1953cc4d054e"
+    },
+    {
+      "name": "file-7z-chunk1366",
+      "bucket": "conversion",
+      "note": "The 7z stream, archive object, and F7ZFile::Open through the file count from file_7z.cpp (1-235).",
+      "auditSeams": "CrcGenerateTable, LookToRead2_CreateVTable, SzArEx_Open, SzArEx_Extract, and the alloc hooks stay injected. Recognition chunk 108 owns the directory loop at 236-280. Check7Z stays later in the file.",
+      "auditRationale": "UNCredited file_7z.cpp 1-235 (+235). A full tally line scan, including recognition ranges, shows no overlap. Recognition chunk 108 owns 236-280, so the open prefix is 1-235 rather than a longer run. This is the largest remaining hole of at most 400 lines. It is not a tie. cmdlib.cpp 738-970 is 233. Gaps longer than 400 lines stay whole and are not sliced.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/filesystem/source/file_7z.cpp --start 1 --end 235 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Banner, includes, and the stream (**1\u201396**) | yes |\n| Archive construct, destroy, open, and extract (**98\u2013153**) | yes |\n| `F7ZFile` construct and `Open` through the file count (**155\u2013235**) | yes |\n| Band hull (**1\u2013235**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| file_7z.cpp **236\u2013280** | recognition chunk 108, the directory loop and the first-file extract probe |\n| file_7z.cpp **282\u2013365** | hash, `Read`, `GetEntryReader`, and `Check7Z` |\n| `SzArEx_*` and `CrcGenerateTable` | library bodies stay injected |\n\n`Read` stores a negative count as size 0 and returns `SZ_ERROR_READ` (8). A zero count is success and still stores 0. A positive count, including one larger than the request, is stored and returns `SZ_OK`. An unknown seek origin returns 1 and does not seek or tell, so the position stays put. That 1 is the same number as `SZ_ERROR_DATA`, and the source returns the literal. Set, cur, and end are 0, 1, and 2. After a real seek, `Tell` replaces the position even when the seek result is an error. The returned code is the seek result truncated to 32 bits.\n\nThe archive constructor calls `CrcGenerateTable` only while `g_CrcTable[1]` is 0. A hook that leaves the cell at 0 runs again on the next archive. A nonzero cell skips the call. Then it seeks to 0 with `SeekSet`, builds the look vtable with lookahead 0, attaches the real stream, and sets look position and size to 0. The look buffer is the 16384-byte stream buffer. `BlockIndex` starts at `0xFFFFFFFF` and the out buffer is null.\n\n`Extract` copies only when the result is `SZ_OK`. The copy is `OutBuffer` at the returned offset for the returned size. A null out buffer on that path throws `OutBuffer` and does not write the destination. Any other result leaves the destination unchanged.\n\nDestroy frees a non-null out buffer and then the database. A throw from the out-buffer free does not free the database. A null out buffer skips that free.\n\n`F7ZFile::Open` builds the archive, sets `skipped` to 0, then opens the database. Failure destroys the archive, clears it, and prints at error level 1. Unsupported uses the file name and `Decoder does not support this archive`. Memory and CRC use their fixed sentences and do not print the name. Every other code, including 1 and a negative value, prints `error #N`. A null name on the unsupported path throws after the archive is destroyed. Success allocates `NumFiles`, stores that count in `NumLumps`, and sets `j` to 0. It does not walk directories. A second open that fails does not destroy the archive the first call left behind.\n\n| Managed (`VmFile7z1366Slice.cs`) | Native (`file_7z.cpp`) |\n|----------------------------------|------------------------|\n| Stream, archive, and open through the file count | **1\u2013235** |\n| Band hull (exclusive slice) | **1\u2013235** |\n\n### Chunk **1366** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **235** |\n| **Net headline** | **+235** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmFile7z1366Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/filesystem/source/file_7z.cpp",
+          "symbol": "File7z",
+          "start": 1,
+          "end": 235,
+          "tests": [
+            "VmFile7z1366SliceTests.StreamReadSeekAndArchive",
+            "VmFile7z1366SliceTests.OpenThroughFileCount"
+          ]
+        }
+      ],
+      "nativeLoc": 235,
+      "managedLoc": 239,
+      "conversionManagedCommit": "019e3b45002995f978ce07ab3fcb6db3e67d60c0"
     }
   ],
   "behaviorNativeChecksum": 508086,
