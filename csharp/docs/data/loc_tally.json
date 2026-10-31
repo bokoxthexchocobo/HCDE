@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 129846,
+  "convertedThisRunNative": 130238,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 160542,
+  "convertedThisRunManaged": 161063,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 359026,
+  "remainingNative": 358634,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 148373,
+  "convertedBehaviorNative": 148765,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 149060,
-  "convertedBehaviorManaged": 170213,
+  "combinedBehaviorNative": 149452,
+  "convertedBehaviorManaged": 170734,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -45587,6 +45587,33 @@
       "nativeLoc": 201,
       "managedLoc": 235,
       "conversionManagedCommit": "370c6fa94ca2b96348446ae261508cd2167e83e4"
+    },
+    {
+      "name": "visplanes-chunk1317",
+      "bucket": "conversion",
+      "note": "Visplane hash, the fake-plane keep, and the height redraw from r_visibleplanelist.cpp (1-392).",
+      "auditSeams": "Plane draw, skybox membership, and the viewpoint are host state. The hash lives in the list header and is what FindPlane calls.",
+      "auditRationale": "UNCredited r_visibleplanelist.cpp 1-392 (+392). A full tally line scan shows no overlap. The file ends at line 392.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/swrenderer/plane/r_visibleplanelist.cpp --start 1 --end 392 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Add, clear, and the fake-plane walk (**54\u201397**) | yes |\n| FindPlane hash and the skybox match (**99\u2013228**) | yes |\n| Range split and portal pop (**230\u2013328**) | yes |\n| Render and the height redraw (**330\u2013391**) | yes |\n| Band hull (**1\u2013392**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| The plane pixel drawer | the host records the draw arguments |\n\nSky flats force light to zero, a unit transform, and a flat plane whose C is the input C. The hash still uses the original plane distance. A portal that is not the current skybox occupies slot 128. Fake floors store the alpha in the sign bit of sky and opaque alpha, then clear the portal pointer. A non-sky match compares the camera position with the stacked view position stored on the plane. An empty column span unions the range. A touched span copies the plane, including the light pointer, and leaves the old edges. Clear keeps a negative sky and does not walk slot 128. Render draws only a non-negative sky in the matching portal and skybox. RenderHeight draws a negative sky whose origin height matches, replaces the portal mirror flags, and restores the camera position and yaw only.\n\n| Managed (`VmVisiblePlanes1317Slice.cs`) | Native (`r_visibleplanelist.cpp`) |\n|------------------------------------------|-------------------------------------|\n| Visplane hash and the height redraw | **1\u2013392** |\n| Band hull (exclusive slice) | **1\u2013392** |\n\n### Chunk **1317** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **392** |\n| **Net headline** | **+392** vs post-**1316** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmVisiblePlanes1317Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/rendering/swrenderer/plane/r_visibleplanelist.cpp",
+          "symbol": "VisiblePlaneList::FindPlane",
+          "start": 1,
+          "end": 392,
+          "tests": [
+            "VmVisiblePlanes1317SliceTests.Find_HashesTheOriginalDistanceAndRewritesSkyFlats",
+            "VmVisiblePlanes1317SliceTests.Range_KeepsFakesAndRestoresTheCameraAfterHeightRedraw"
+          ]
+        }
+      ],
+      "nativeLoc": 392,
+      "managedLoc": 521,
+      "conversionManagedCommit": "6f103e3fa8a68dc51726b18889131e239eed3af3"
     }
   ],
   "behaviorNativeChecksum": 508086,
