@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 133671,
+  "convertedThisRunNative": 134044,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 165614,
+  "convertedThisRunManaged": 165987,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 355201,
+  "remainingNative": 354828,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 152198,
+  "convertedBehaviorNative": 152571,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 152885,
-  "convertedBehaviorManaged": 175285,
+  "combinedBehaviorNative": 153258,
+  "convertedBehaviorManaged": 175658,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -45886,6 +45886,33 @@
       "nativeLoc": 375,
       "managedLoc": 543,
       "conversionManagedCommit": "2756a73880857263925c1c8f6413729c333bbacd"
+    },
+    {
+      "name": "thinker-run-chunk1328",
+      "bucket": "conversion",
+      "note": "Thinker link, the tick loop, client lights, destruction, and OnLoad from dthinker.cpp (1-373).",
+      "auditSeams": "TickThinkers, ProfileThinkers, AddTail, DoDestroyThinkers, DestroyThinkersInList, RemoveTravellers, and the list OnLoad stay outside this band. WorldPaused, SetDynamicLights, ShouldRenderLocally, P_RunEffect, isFrozen, the actor iterators, light Tick, FullGC, ClearGlobalVMStack, I_Error, and I_FatalError stay callees. The profile block inside the client light walk is compiled out.",
+      "auditRationale": "UNCredited dthinker.cpp 1-373 (+373). A full tally line scan shows no overlap. SerializeThinkers at line 374 is already credited, so this band is not the end of the file.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/dthinker.cpp --start 1 --end 373 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Profile statics and the just-spawned link (**42\u201384**) | yes |\n| Server tick loop and the profile sort (**92\u2013200**) | yes |\n| Dynamic-light recreate and the client tick (**210\u2013307**) | yes |\n| Destroy, traveller cleanup, and OnLoad (**315\u2013366**) | yes |\n| Band hull (**1\u2013373**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| TickThinkers and ProfileThinkers bodies | lines 707\u2013795, outside this band |\n| DoDestroyThinkers body | line 581, outside this band |\n| Commented client light profile | compiled out |\n\nA just-spawned thinker at stat 32 or above is linked fresh and keeps the flag. Every other stat is linked on the main list, and the flag is cleared except for the travelling stat. The server loop resets the think counters, ticks stats 32 through 127, then repeats the fresh lists until they add nothing. A nonzero profile mode clears the map, sorts by name, call count, average, or total time, prints the yellow header with the Averg spelling, and then clears the mode. A zero profile limit prints every row. The client path clears the light-created flag, advances the local timer, and advances the world timer only when WorldPaused returns 0. Lights are enabled for hardware mode 4 with gl_lights, or any other mode with r_dynlights. Paused play skips thinker ticks and light ticks, and still recreates lights. The recreate flag is cleared before SetDynamicLights, and an effect runs when effects or fountain color is set, the actor renders locally, and the level is not frozen. Destroy skips travelling and static on both arrays, then destroys the extra main list. FullGC runs before a failure is reported. Full GC uses I_Error; a partial destroy uses I_FatalError. Traveller cleanup destroys stat 4, then removes travellers from fresh and main lists through stat 127. OnLoad walks every fresh list, then every main list including the extra slot.\n\n| Managed (`VmThinkerRun1328Slice.cs`) | Native (`dthinker.cpp`) |\n|--------------------------------------|-------------------------|\n| Link, tick, client lights, destroy, and OnLoad | **1\u2013373** |\n| Band hull (exclusive slice) | **1\u2013373** |\n\n### Chunk **1328** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **373** |\n| **Net headline** | **+373** vs post-**1327** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmThinkerRun1328Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/dthinker.cpp",
+          "symbol": "FThinkerCollection::RunThinkers",
+          "start": 1,
+          "end": 373,
+          "tests": [
+            "VmThinkerRun1328SliceTests.Link_TicksFreshListsAndReportsDestroy",
+            "VmThinkerRun1328SliceTests.Profile_SortsRowsAndRecreatesClientLights"
+          ]
+        }
+      ],
+      "nativeLoc": 373,
+      "managedLoc": 373,
+      "conversionManagedCommit": "f5c839a0341faea6d9d60ec5152af7e564b236dc"
     }
   ],
   "behaviorNativeChecksum": 508086,
