@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 131107,
+  "convertedThisRunNative": 131392,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 162065,
+  "convertedThisRunManaged": 162270,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 357765,
+  "remainingNative": 357480,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 149634,
+  "convertedBehaviorNative": 149919,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 150321,
-  "convertedBehaviorManaged": 171736,
+  "combinedBehaviorNative": 150606,
+  "convertedBehaviorManaged": 171941,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -45696,6 +45696,33 @@
       "nativeLoc": 283,
       "managedLoc": 295,
       "conversionManagedCommit": "20b6e0b7ee82d39a37b1b55a0d3b247b8e0b4b38"
+    },
+    {
+      "name": "draw-tables-chunk1321",
+      "bucket": "conversion",
+      "note": "Shade maps, the fuzz table, particle textures, and the wall-column lights from r_draw.cpp (1-285).",
+      "auditSeams": "The dynamic-light cvar sync is a host callback. The column drawer records the lights. Shade and particle tables are the data this file builds.",
+      "auditRationale": "UNCredited r_draw.cpp 1-285 (+285). A full tally line scan shows no overlap. The file ends at line 285.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/swrenderer/drawers/r_draw.cpp --start 1 --end 285 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Dynamic-light cvar and the shade maps (**49\u2013123**) | yes |\n| Fuzz offset table (**125\u2013168**) | yes |\n| Particle textures (**170\u2013190**) | yes |\n| Fuzz cursor (**192\u2013215**) | yes |\n| Wall-column lights (**219\u2013283**) | yes |\n| Band hull (**1\u2013285**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| The column pixel drawer | the host records the light list |\n\nEach of the 16 shade sets fills 32 maps. A byte is `((k + 2) * alpha + 256) >> 14`, capped at 64. The identity map stores its own index. The fuzz count walks the signed init table, then each offset is the clamped shade product. Changing the dynamic-light cvar records the value and notifies the host. A fuzz-scale frame adds the random-table step and wraps the cursor at 100. Without fuzz scale, a column advances by its visible height and a frame start does not. A mirrored column measures from the right edge. A light outside its radius, a negative normal constant, or an inactive light is skipped. The list stops at 16 lights.\n\n| Managed (`VmDrawTables1321Slice.cs`) | Native (`r_draw.cpp`) |\n|--------------------------------------|------------------------|\n| Shade, fuzz, particles, and column lights | **1\u2013285** |\n| Band hull (exclusive slice) | **1\u2013285** |\n\n### Chunk **1321** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **285** |\n| **Net headline** | **+285** vs post-**1320** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmDrawTables1321Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/rendering/swrenderer/drawers/r_draw.cpp",
+          "symbol": "R_InitShadeMaps",
+          "start": 1,
+          "end": 285,
+          "tests": [
+            "VmDrawTables1321SliceTests.Init_BuildsShadeFuzzAndParticleTables",
+            "VmDrawTables1321SliceTests.Fuzz_AdvancesAndSetLightsKeepsTheNearColumn"
+          ]
+        }
+      ],
+      "nativeLoc": 285,
+      "managedLoc": 205,
+      "conversionManagedCommit": "036a3ab0f1a2348f609e89e5c7409178a2d7f204"
     }
   ],
   "behaviorNativeChecksum": 508086,
