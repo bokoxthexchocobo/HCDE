@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 141378,
+  "convertedThisRunNative": 141640,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 177587,
+  "convertedThisRunManaged": 177774,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 347494,
+  "remainingNative": 347232,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 159905,
+  "convertedBehaviorNative": 160167,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 160592,
-  "convertedBehaviorManaged": 187258,
+  "combinedBehaviorNative": 160854,
+  "convertedBehaviorManaged": 187445,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -46543,6 +46543,33 @@
       "nativeLoc": 263,
       "managedLoc": 273,
       "conversionManagedCommit": "6b2e534dba2dffd2ad5c750b15b82aa5eea62908"
+    },
+    {
+      "name": "unix-paths-chunk1352",
+      "bucket": "conversion",
+      "note": "Unix config, cache, documents, and save paths from i_specialpaths.cpp (1-262), through end of file.",
+      "auditSeams": "NicePath, stat, mkdir, CreatePath, getenv, and realpath stay injected. The game names are hcde and HCDE.",
+      "auditRationale": "UNCredited i_specialpaths.cpp 1-262 (+262). A full tally line scan shows no overlap. This is the largest remaining hole of at most 400 lines, ahead of p_lnspec.cpp 2869-3129.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/platform/posix/unix/i_specialpaths.cpp --start 1 --end 262 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| XDG path macros (**36\u201367**) | yes |\n| User file and the config directory (**69\u2013128**) | yes |\n| Cache, autoexec, config, and documents (**130\u2013194**) | yes |\n| Screenshots, savegames, demos, and realpath (**196\u2013262**) | yes |\n| Band hull (**1\u2013262**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| NicePath | the string rewrite stays outside this file |\n| CreatePath | the recursive directory create stays outside this file |\n| realpath | the absolute path stays outside this file |\n\nApple returns the fallback and does not read the environment. Other platforms cache the first getenv result, and an empty variable is kept. A missing game directory creates the config directory at mode 0700 and then the game directory. A failed create reports the raw config path or the niced game path plus the error text. An existing non-directory is rejected before any later create. The config-file reader flag is ignored. App data and the cache path call CreatePath only when asked. Haiku documents are the config folder plus the game name, and screenshots hang off that. Other platforms hang documents off app data and screenshots off the pictures folder plus HCDE. The screenshots string is niced again on later calls. Savegames append netgame only while that flag is set. realpath failure returns null.\n\n| Managed (VmUnixPaths1352Slice.cs) | Native (i_specialpaths.cpp) |\n|-----------------------------------|-----------------------------|\n| XDG folders, user file, and saves | **1\u2013262** |\n| Band hull (exclusive slice) | **1\u2013262** |\n\n### Chunk **1352** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **262** |\n| **Net headline** | **+262** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmUnixPaths1352Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/platform/posix/unix/i_specialpaths.cpp",
+          "symbol": "M_GetAppDataPath",
+          "start": 1,
+          "end": 262,
+          "tests": [
+            "VmUnixPaths1352SliceTests.EnvCacheAndDocuments",
+            "VmUnixPaths1352SliceTests.UserFileMkdirAndConfig"
+          ]
+        }
+      ],
+      "nativeLoc": 262,
+      "managedLoc": 187,
+      "conversionManagedCommit": "4f8971b50ebd1962f78f33bc0ccf41dce2e79b8d"
     }
   ],
   "behaviorNativeChecksum": 508086,
