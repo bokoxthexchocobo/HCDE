@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 148778,
+  "convertedThisRunNative": 148974,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 187555,
+  "convertedThisRunManaged": 187826,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 340094,
+  "remainingNative": 339898,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 167305,
+  "convertedBehaviorNative": 167501,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 167992,
-  "convertedBehaviorManaged": 197226,
+  "combinedBehaviorNative": 168188,
+  "convertedBehaviorManaged": 197497,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -47414,6 +47414,33 @@
       "nativeLoc": 202,
       "managedLoc": 297,
       "conversionManagedCommit": "4888025a7231e20f377268738a9925cd02074f80"
+    },
+    {
+      "name": "object-state-node-chunk1384",
+      "bucket": "conversion",
+      "note": "Debugger object state node from ObjectStateNode.cpp (1-196), through end of file.",
+      "auditSeams": "IsVirtualStructure is inline in the header and is not part of this cpp. SetVariableName, IsVMValValidDObject, GetVMValueVar, CreateNodeForVariable, and LogError stay callees. The inner null-object field branch is unreachable after the earlier null return. A recoverable field read clears the name cache and rescans the object's class. The break skips the failing field's extra name append. Reset clears children only.",
+      "auditRationale": "UNCredited ObjectStateNode.cpp 1-196 (+196). After chunk 1383 this is the unique largest hole. DebugServer.cpp 1-194 is 194. Gaps longer than 400 lines stay whole and are not sliced.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/scripting/dap/Nodes/ObjectStateNode.cpp --start 1 --end 196 and a full tally line scan, including recognition ranges, show no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Preamble and includes (**1\u201331**) | yes |\n| Constructor (**33\u201336**) | yes |\n| `SerializeToProtocol` (**38\u201377**) | yes |\n| `GetChildNames` (**79\u2013168**) | yes |\n| `GetChildNode` (**170\u2013183**) | yes |\n| `Reset` (**185**) | yes |\n| `GetVirtualContainerChildren` (**187\u2013195**) | yes |\n| Namespace close (**196**) | yes |\n| Band hull (**1\u2013196**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Header `IsVirtualStructure` | inline, not this cpp |\n| `SetVariableName` and validity helpers | callees |\n| Inner null field branch | unreachable after the earlier null return |\n\nA null address formats as the declared type plus ` <NULL>` and does not log. A valid object whose VM class is the declared class prints that name and the `0x` pointer. A descendant prints the VM class and the pointer. A class that is not a descendant prints the VM class, the pointer, and ` as ` the declared type. A subview pointer keeps the declared type. A non-pointer subview leaves the value unset. Human lookup is case-insensitive. `GetChildNames` returns the cache without reading fields again. A recoverable read removes the parent from the name list, keeps it in the virtual map, and keeps the actual class field names once. The break skips a second append of the failing field. `Reset` clears the child map and leaves the cache, so the next lookup misses. `GetVirtualContainerChildren` returns a copy. An invalid object keeps a zero reference and still prints the raw pointer. A non-class type logs the failure and `SerializeToProtocol` still returns true.\n\n| Managed (`VmObjectStateNode1384Slice.cs`) | Native (`ObjectStateNode.cpp`) |\n|------------------------------------------------|--------------------------------|\n| Object node protocol text and children | **1\u2013196** |\n| Band hull (exclusive slice) | **1\u2013196** |\n\n### Chunk **1384** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **196** |\n| **Net headline** | **+196** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmObjectStateNode1384Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/dap/Nodes/ObjectStateNode.cpp",
+          "symbol": "ObjectStateNode::SerializeToProtocol",
+          "start": 1,
+          "end": 196,
+          "tests": [
+            "VmObjectStateNode1384SliceTests.SerializeFormatsNullSubclassUnrelatedAndSubview",
+            "VmObjectStateNode1384SliceTests.RetryDropsTheParentNameAndResetKeepsTheCache"
+          ]
+        }
+      ],
+      "nativeLoc": 196,
+      "managedLoc": 271,
+      "conversionManagedCommit": "363e72f4c5bb4f472c2cc79c3aab61caccf8ee55"
     }
   ],
   "behaviorNativeChecksum": 508086,
