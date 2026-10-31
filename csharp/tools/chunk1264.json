@@ -1,0 +1,26 @@
+[
+  {
+    "name": "vrmodes-chunk1264",
+    "bucket": "conversion",
+    "note": "Stereo mode table, viewport scale, HUD ortho, and the eye frustum from hw_vrmodes.cpp (1-202).",
+    "auditSeams": "The screen width, height, near plane, and far plane are the framebuffer values this file reads. The interpupillary distance, screen distance, units per meter, eye swap, and mode cvar are host inputs. A null filter callback is not called. Ortho, perspective, and frustum are the matrix writes this file performs on a fresh identity matrix.",
+    "auditRationale": "UNCredited hw_vrmodes.cpp 1-202 (+202). A full tally line scan shows no overlap. The file ends at line 202.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/hwrenderer/data/hw_vrmodes.cpp --start 1 --end 202 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Mode records (**47–56**) | yes |\n| Degree helpers (**58–66**) | yes |\n| GetVRMode (**68–105**) | yes |\n| AdjustViewport (**107–118**) | yes |\n| GetHUDSpriteProjection (**120–129**) | yes |\n| getShift (**131–135**) | yes |\n| GetProjection (**137–184**) | yes |\n| GetViewShift (**189–202**) | yes |\n| Band hull (**1–202**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Mode and eye cvars | host inputs |\n| Screen size and clip planes | framebuffer inputs |\n\nA request that is not going to the screen, or a filter callback that returns true, selects mono. A null callback leaves the cvar in force. Unknown mode numbers use the mono record. Green-magenta, red-cyan, quad, amber-blue, and side-by-side letterbox share the stereo record. Squished side-by-side and column interleave share the half-width record. Full side-by-side halves the width and doubles the weapon scale. Top-bottom and row interleave halve the height. The checker scales are the literal constant in this file. Viewport scaling truncates each edge toward zero, including a negative top. The weapon matrix is an ortho whose bottom is the screen height and whose top is zero. Swapping eyes negates the shift. A zero shift factor returns the origin and a symmetric perspective matrix. Any other shift builds an asymmetric frustum from the near plane times that shift over the screen distance. Isometric ortho uses a near plane of negative three over the fov ratio and the far plane from the screen.\n\n| Managed (`VmVrMode1264Slice.cs`) | Native (`hw_vrmodes.cpp`) |\n|----------------------------------|--------------------------|\n| Mode table, viewport, and eye frustum | **1–202** |\n| Band hull (exclusive slice) | **1–202** |\n\n### Chunk **1264** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **202** |\n| **Net headline** | **+202** vs post-**1263** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmVrMode1264Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/rendering/hwrenderer/data/hw_vrmodes.cpp",
+        "symbol": "VRMode",
+        "start": 1,
+        "end": 202,
+        "tests": [
+          "VmVrMode1264SliceTests.Modes_ForceMonoAndScaleTheFullFrame",
+          "VmVrMode1264SliceTests.Eyes_ShiftTheFrustumAndLeaveMonoAtTheOrigin"
+        ]
+      }
+    ]
+  }
+]

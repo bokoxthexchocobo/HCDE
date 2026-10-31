@@ -1,0 +1,29 @@
+[
+  {
+    "name": "am-map-color-parse-chunk1126",
+    "bucket": "conversion",
+    "note": "Raven initColors arm, ParseAMColors, thin-triangle glyph, arrow lump scale, and AM_StaticInit clears from `am_map.cpp` (**751–900**); follows **1125**.",
+    "auditSeams": "Scanner and `V_GetColorFromString` stay host-injected. Lump opens that miss return an empty arrow.",
+    "auditRationale": "UNCredited **`am_map.cpp`** **751–900** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 751 --end 900` and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "Base/showlocks/color-key parse, arrow scale `int((8*16)/7)==18`, and the four static clears match native; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Raven `initFromColors(..., true)` (**752–755**) | yes |\n| `ParseAMColors` base, showlocks, and color keys (**767–838**) | yes |\n| Thin-triangle glyph (**853–857**) | yes |\n| `AM_ParseArrow` radius and vertex pairs (**865–895**) | yes |\n| `AM_StaticInit` four clears (**897–900**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **756–766**, **840–852**, **859–864** | braces and section comments |\n| **901+** | arrow lump selection and fatal error outside hull |\n\n`FScanner::Compare` is case-insensitive. Arrow radius truncates to **18** before scaling.\n\n| Managed (`VmAmMapColorParse1126Slice.cs`) | Native (`am_map.cpp`) |\n|-------------------------------------------|---------------------|\n| Color parser, glyph, arrow scale | **751–900** |\n| Band hull (exclusive slice) | **751–900** |\n\n### Chunk **1126** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1125** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmAmMapColorParse1126Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "Automap color parser and arrow glyph",
+        "start": 751,
+        "end": 900,
+        "tests": [
+          "VmAmMapColorParse1126SliceTests.RavenArm_ShowsLocksAndBaseDoomClearsThem",
+          "VmAmMapColorParse1126SliceTests.ParseAmColors_RejectsBaseAfterAColorAndUnknownKeys",
+          "VmAmMapColorParse1126SliceTests.ParseAmColors_WritesOpaqueWallFromResolver",
+          "VmAmMapColorParse1126SliceTests.ArrowLump_ScalesByPlayerRadiusAndStaticInitClears"
+        ]
+      }
+    ]
+  }
+]

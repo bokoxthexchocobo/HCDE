@@ -1,0 +1,29 @@
+[
+  {
+    "name": "pmobj-spawn-missile-chunk1118",
+    "bucket": "conversion",
+    "note": "`GetDefaultSpeed`, `P_SpawnMissileXYZ` aim policy, `P_SpawnMissile`, and `P_SpawnMissileZ` from `p_mobj.cpp` (**7901–8050**). Skips recognition **7880–7900** (`PlaySpawnSound`, chunk **19**).",
+    "auditSeams": "`Spawn`, `Vec3To`, shadow handling, and `P_OldSpawnMissile` body past the null check remain host-injected.",
+    "auditRationale": "UNCredited conversion band **7901–8050** (+150) after **1117**. **7877–7900** overlaps recognition **19**.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 7901 --end 8050` and `--chunk 1118 --band` → UNCredited, exit 0.",
+    "auditManagedLocJustification": "Spawn-sound site selection and hugger/overhead velocity adjustments match native branches; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `GetDefaultSpeed` fast override (**7912–7921**) | yes |\n| Missing source/dest abort (**7935–7945**) | yes |\n| Floorclip unless sentinel Z (**7947–7950**) | yes |\n| Owner default + hugger/overhead Z (**7955–7978**) | yes |\n| Spectral friend + spawn check (**7985–7991**) | yes |\n| `P_SpawnMissile` launch Z (**8015**) | yes |\n| `P_SpawnMissileZ` source gate (**8029–8033**) | yes |\n| `P_OldSpawnMissile` null gate (**8047–8049**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **7880–7900** | recognition chunk **19** |\n| **7902–7907**, **7996–8006**, **8018–8024**, **8036–8042** | VM thunks |\n| **7952**, **7968**, **7981**, **7992** | host spawn/resize/net |\n| **8051+** | old missile body outside hull |\n\n| Managed (`VmPMobjSpawnMissile1118Slice.cs`) | Native (`p_mobj.cpp`) |\n|--------------------------------------------|---------------------|\n| Speed + missile aim/Z | **7901–8050** |\n| Band hull (exclusive slice) | **7901–8050** |\n\n### Chunk **1118** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1117** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjSpawnMissile1118Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "PlaySpawnSound and SpawnMissileXYZ",
+        "start": 7901,
+        "end": 8050,
+        "tests": [
+          "VmPMobjSpawnMissile1118SliceTests.ResolveSpawnSound_UsesPositionWhenSpawnerMissingAndSectorAudible",
+          "VmPMobjSpawnMissile1118SliceTests.GetDefaultSpeed_PrefersFastSpeedWhenSkillIsFast",
+          "VmPMobjSpawnMissile1118SliceTests.RunSpawnMissileXyz_ZerosHuggerVelocityAndAbortsFailedCheck",
+          "VmPMobjSpawnMissile1118SliceTests.TrySpawnMissileZ_RejectsMissingSource"
+        ]
+      }
+    ]
+  }
+]

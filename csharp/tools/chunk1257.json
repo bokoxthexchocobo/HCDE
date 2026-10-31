@@ -1,0 +1,26 @@
+[
+  {
+    "name": "fogboundary-chunk1257",
+    "bucket": "conversion",
+    "note": "Fog-boundary span walk and the colormap split from r_fogboundary.cpp (1-157).",
+    "auditSeams": "The wall shade is a host step. Drawing a fog row and storing the drawer light are host steps. The colormap index is the call-site clamp: visibility is capped at 24, converted with half-even, subtracted from the shade, shifted 16 bits, and clamped to 0..31.",
+    "auditRationale": "UNCredited r_fogboundary.cpp 1-157 (+157). A full tally line scan shows no overlap. The file ends at line 157.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/swrenderer/line/r_fogboundary.cpp --start 1 --end 157 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Render (**54–148**) | yes |\n| RenderSection (**150–156**) | yes |\n| Band hull (**1–157**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Light level to shade | host step |\n| Drawer light and the fog row | host steps |\n\nThe walk starts at the right column. A taller span is filled with that column. Each step left subtracts the light step and recomputes the colormap. Column 0 is the identity map, so a change away from it does not draw. A change away from any other column draws the open rows, then grows the span and fills it. While the colormap stays off the identity map, a row that just closed is drawn from the stored right edge, and a row that just opened is marked. While it stays on the identity map, the open span shrinks and nothing is drawn. The rows still open at the left edge are drawn only when that last colormap is not the identity map.\n\n| Managed (`VmFogBoundary1257Slice.cs`) | Native (`r_fogboundary.cpp`) |\n|----------------------------------------|------------------------------|\n| Span walk and the section draw | **1–157** |\n| Band hull (exclusive slice) | **1–157** |\n\n### Chunk **1257** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **157** |\n| **Net headline** | **+157** vs post-**1256** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmFogBoundary1257Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/rendering/swrenderer/line/r_fogboundary.cpp",
+        "symbol": "Render",
+        "start": 1,
+        "end": 157,
+        "tests": [
+          "VmFogBoundary1257SliceTests.Split_SkipsTheIdentityMapAndDrawsOnAColormapChange",
+          "VmFogBoundary1257SliceTests.Span_DrawsAClosedRowAndClampsTheLookup"
+        ]
+      }
+    ]
+  }
+]

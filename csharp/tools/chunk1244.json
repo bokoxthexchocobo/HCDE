@@ -1,0 +1,27 @@
+[
+  {
+    "name": "png-rgb-chunk1244",
+    "bucket": "conversion",
+    "note": "RGB and gray-alpha palettize, CopyPixels, and the savegame file texture from pngtexture.cpp (466-786). The gray and palette IDAT read stays chunk 106. M_ReadIDAT is not reimplemented; the slice consumes the expanded bytes.",
+    "auditSeams": "M_ReadIDAT stays the chunk 106 decode. This slice copies the caller-supplied expanded bytes and logs a short buffer. RGBToPalette indexes the 64-cube through a callback because RGB256k is not in this file. A null cube writes 0. Bitmap expansion uses the chunk 1241 copier. A type-2 transparency key above 255 cannot be a byte key, so the copy uses CF_RGB and logs trns wide. Type 4 with a null palette map calls the chunk 1243 SetupPalette on the source lump. The memory-file reader rejects a seek that would leave the buffer. A tRNS longer than 256 entries stores 256 and still consumes the chunk. GetBgraBitmap starts the palette at 0 and writes only the PLTE entries it reads. Remap and the translucent pointer on GetBgraBitmap are unused parameters.",
+    "auditRationale": "UNCredited pngtexture.cpp 466-786 (+321). Chunk 106 already owns 74-117, 164-176, and the gray and palette IDAT read. Chunk 1243 owns 177-423. A full tally line scan shows no overlap with 466-786.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/textures/formats/pngtexture.cpp --start 466 --end 786 and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "CreatePalettedPixels calls M_ReadIDAT and RGBToPalette. CopyPixels and GetBgraBitmap call M_ReadIDAT and the bitmap copier. None of those functions are source lines in this band. The managed port keeps the column walk, the chunk walk, and the format switch, and it carries a memory-file reader because the chunk 1243 reader is private. The 64-cube callback and the already-landed bitmap copier are the seams for RGB256k and CopyPixelData. That host surface is why the managed file is over 150% of the 321-line source.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| RGB and gray-alpha palettize (**467–536**) | yes |\n| CopyPixels (**544–654**) | yes |\n| Savegame texture type (**669–680**) | yes |\n| PNGTexture_CreateFromFile (**689–709**) | yes |\n| FPNGFileTexture constructor (**717–725**) | yes |\n| GetBgraBitmap (**733–786**) | yes |\n| Band hull (**466–786**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Gray and palette IDAT decode | already chunk 106 |\n| Pre-IDAT constructor walk | already chunk 1243 |\n\nColumn-major RGB writes 0 when the pixel matches the transparency key and otherwise indexes the 64-cube, or luminance times alpha over 255. Gray plus alpha calls palette setup when the map is missing, then writes luminance times alpha or a one-bit alpha cut at 128. CopyPixels walks PLTE and paletted tRNS, clears one gray index when that sample is below 256, and chooses paletted, keyed RGB, gray-alpha, or RGBA. The savegame loader accepts only 8-bit paletted or 24-bit RGB with no filter, compression, or interlace, then expands through the same bitmap copier.\n\n| Managed (`VmPngTexture1244Slice.cs`) | Native (`pngtexture.cpp`) |\n|--------------------------------------|---------------------------|\n| RGB palettize, CopyPixels, savegame file texture | **466–786** |\n| Band hull (exclusive slice) | **466–786** |\n\n### Chunk **1244** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **321** |\n| **Net headline** | **+321** vs post-**1243** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPngTexture1244Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/textures/formats/pngtexture.cpp",
+        "symbol": "FPNGTexture::CreatePalettedPixels",
+        "start": 466,
+        "end": 786,
+        "tests": [
+          "VmPngTexture1244SliceTests.Palettize_WalksColumnsAndGrayAlpha",
+          "VmPngTexture1244SliceTests.Copy_BuildsBitmapAndSavegameTexture"
+        ]
+      }
+    ]
+  }
+]

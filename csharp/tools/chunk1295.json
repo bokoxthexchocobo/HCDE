@@ -1,0 +1,26 @@
+[
+  {
+    "name": "vk-texture-chunk1295",
+    "bucket": "conversion",
+    "note": "Null texture, shadowmap size, and the lightmap alpha from vk_texture.cpp (1-253).",
+    "auditSeams": "Pipeline images and scene images are host slots. The shadow quality is the host cvar.",
+    "auditRationale": "UNCredited vk_texture.cpp 1-253 (+253). A full tally line scan shows no overlap. The file ends at line 253.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/vulkan/textures/vk_texture.cpp --start 1 --end 253 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Construct and frame (**30–60**) | yes |\n| Texture lists (**62–84**) | yes |\n| Texture lookup (**86–142**) | yes |\n| Null and shadow (**144–180**) | yes |\n| Lightmap (**182–253**) | yes |\n| Band hull (**1–253**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Pipeline images | host slots |\n| Scene images | host slots |\n| Shadow quality | host cvar |\n\nThe null image is 1 by 1. The shadow map is as wide as the quality value and 1024 tall, and the frame recreates it when that width changes. The next pipeline image wraps at two. Swap chain has no image. An unknown type is fatal. Destroy and deinit remove hardware textures from the back, then post textures from the back. The lightmap reads three channels per pixel and writes a fixed alpha. The initial pixel therefore leaves its fourth source value unread.\n\n| Managed (`VmVkTexture1295Slice.cs`) | Native (`vk_texture.cpp`) |\n|-------------------------------------|---------------------------|\n| Images, lookup, and lightmap | **1–253** |\n| Band hull (exclusive slice) | **1–253** |\n\n### Chunk **1295** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **253** |\n| **Net headline** | **+253** vs post-**1294** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmVkTexture1295Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/rendering/vulkan/textures/vk_texture.cpp",
+        "symbol": "VkTextureManager::SetLightmap",
+        "start": 1,
+        "end": 253,
+        "tests": [
+          "VmVkTexture1295SliceTests.Lightmap_ForcesAlphaAndShadowRecreatesOnWidth",
+          "VmVkTexture1295SliceTests.Lookup_WrapsThePipelineAndDrainsFromTheBack"
+        ]
+      }
+    ]
+  }
+]

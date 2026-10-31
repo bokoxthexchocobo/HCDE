@@ -1,0 +1,26 @@
+[
+  {
+    "name": "wallsprite-chunk1274",
+    "bucket": "conversion",
+    "note": "Wall-sprite projection and the portal column clip from r_wallsprite.cpp (1-196).",
+    "auditSeams": "Wall projection and the drawer are host inputs. The slice keeps the 90-degree edge turn, the window clamp, the fullbright formula, and the portal floor swap.",
+    "auditRationale": "UNCredited r_wallsprite.cpp 1-196 (+196). A full tally line scan shows no overlap. The file ends at line 196.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/swrenderer/things/r_wallsprite.cpp --start 1 --end 196 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Project (**72–160**) | yes |\n| Render (**162–195**) | yes |\n| Band hull (**1–196**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Wall projection | host wall setup |\n| Drawer pixels | host picture |\n\nA missing picture faults before the view is read. A missing thread faults when the edges are placed. The yaw is increased by 90 degrees, then the scaled left offset and width are laid along that direction. A rejected projection returns. A span that starts at or past the right window, or ends at or before the left window, returns. The depth is the view-space dot of the position. The top and bottom use the scaled offsets, then both are stored as floats. The screen span is pulled in to the window, and a right edge that lands on the window is included. A bright actor sets the fullbright bit on the sprite copy and leaves the caller's flags alone. Fullbright is off when the view is foggy. A bright actor stays bright even when the texture disables it. A fullbright flag does not, once the texture disables it. A null texture neither disables nor forces it. The override cvar and a fullbright texture force it only together. An additive style with a nonzero fade swaps in a black-fade colormap. Overlay and source invert cancel. Fade-to-black is its own bit. The mirror assignment stays unused, and the fake-flat side stays centered with no fake planes. Render intersects the clamped span with the projected span and returns before the style when that is empty. A hidden style is asked and then returns before the column loop. A portal column copies the ceiling into the floor sample. The draw uses the stored top and the stored float scale, not a later position change.\n\n| Managed (`VmWallSprite1274Slice.cs`) | Native (`r_wallsprite.cpp`) |\n|--------------------------------------|-----------------------------|\n| Projection, light, and column clip | **1–196** |\n| Band hull (exclusive slice) | **1–196** |\n\n### Chunk **1274** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **196** |\n| **Net headline** | **+196** vs post-**1273** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmWallSprite1274Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/rendering/swrenderer/things/r_wallsprite.cpp",
+        "symbol": "RenderWallSprite",
+        "start": 1,
+        "end": 196,
+        "tests": [
+          "VmWallSprite1274SliceTests.Project_TurnsTheYawAndClampsTheWindow",
+          "VmWallSprite1274SliceTests.Columns_SkipAHiddenStyleAndCopyPortalCeilings"
+        ]
+      }
+    ]
+  }
+]

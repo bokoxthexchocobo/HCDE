@@ -1,0 +1,27 @@
+[
+  {
+    "name": "cvar-convert-chunk1332",
+    "bucket": "conversion",
+    "note": "CVar bool, int, float, and string conversion, the static format buffer, hex-byte decode, cvar_set, cvar_forceset, and the callback gate from c_cvars.cpp (321-676).",
+    "auditSeams": "FindCVar, SetGenericRep, and ForceSet stay callees. cvar_set records the string passed to SetGenericRep. cvar_forceset records the string passed to ForceSet. EnableCallbacks calls the virtual Callback. InitZSCallbacks calls InstantiateZSCVar and registers MarkZSCallbacks.",
+    "auditRationale": "UNCredited c_cvars.cpp 321-676 (+356). A full tally line scan shows no overlap. This is the largest remaining hole of at most 400 lines, ahead of d_dehacked.cpp 1907-2252 (346) and whole-file s_sound_eternity.cpp 1-331. Line 321 is the closing brace of SetGenericRep, already credited through 320. FBoolCVar at 677 stays chunk 162.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/console/c_cvars.cpp --start 321 --end 676 and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "ToBool, ToInt, and FromString call strtoll and stricmp. ToFloat and FromString call strtod. ToString, FromInt, and FromFloat call mysnprintf. None of those functions are source lines in this band. The managed port keeps the type switch, the static buffer, and the callback walk, and it carries the base-0 integer parser, the decimal and hex float parser, and the %g formatter because those calls produce the converted values. FindCVar, SetGenericRep, and ForceSet stay callees. That host surface is why the managed file is over 150% of the 356-line source.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Closing brace of SetGenericRep (**321–321**) | yes |\n| ToBool (**322–347**) | yes |\n| ToInt (**349–379**) | yes |\n| ToFloat (**381–401**) | yes |\n| Static buffer and ToString (**403–434**) | yes |\n| FromBool (**436–464**) | yes |\n| FromInt (**466–495**) | yes |\n| FromFloat (**497–528**) | yes |\n| HexToByte (**530–550**) | yes |\n| FromString (**552–590**) | yes |\n| cvar_set and cvar_forceset (**592–618**) | yes |\n| EnableNoSet through DisableCallbacks (**620–671**) | yes |\n| Boolean-cvar comment (**672–676**) | yes |\n| Band hull (**321–676**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| SetGenericRep body | chunk 162 through line 320; cvar_set only records the call |\n| ForceSet | callee of cvar_forceset |\n| FindCVar | callee; empty and null names miss, other names match ignoring case |\n| FBoolCVar | line 677, chunk 162 |\n\nToBool and ToInt treat color like int. A string compares true and false without case, then uses base-0 strtoll. Leading spaces do not match the words, so \"  true\" is false. Octal 010 is 8. 0xFFFFFFFF narrows to -1. An overflowing magnitude clamps, then narrows: the positive clamp becomes -1 and the negative clamp becomes 0. ToFloat does not special-case the words, so \"true\" is 0. strtod accepts decimal, hex floats, inf, and nan. FromBool, FromInt, FromFloat, and FromString do not have a color case, so color becomes int 0. ToString of bool returns the static true or false and leaves the buffer alone. String returns the pointer and leaves the buffer alone. Int, color, and float write the 39-character buffer. %g is six significant digits, with nan, inf, and signed zero spelled the C way. The same buffer is what FromInt and FromFloat return. HexToByte shifts two digits. A letter adds its offset from A or a and does not add 10, so A0 is 0 and ff is 85. cvar_set and cvar_forceset return null when the name is missing and otherwise record one callee write. EnableNoSet latches the static gate on. EnableCallbacks turns the callback gate on and walks registration order, skipping CVAR_NOINITCALL. A var with a user callback counts one fire. InitZSCallbacks instantiates CVAR_ZS_CUSTOM entries and registers MarkZSCallbacks every call. MarkZSCallbacks marks only those custom entries. DisableCallbacks turns the gate off and leaves the no-set latch set.\n\n| Managed (`VmCVarConvert1332Slice.cs`) | Native (`c_cvars.cpp`) |\n|---------------------------------------|------------------------|\n| Value conversion, string parse, and the callback gate | **321–676** |\n| Band hull (exclusive slice) | **321–676** |\n\n### Chunk **1332** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **356** |\n| **Net headline** | **+356** vs post-**1331** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmCVarConvert1332Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/console/c_cvars.cpp",
+        "symbol": "FBaseCVar::ToBool",
+        "start": 321,
+        "end": 676,
+        "tests": [
+          "VmCVarConvert1332SliceTests.Convert_ParsesBoolIntFloatAndString",
+          "VmCVarConvert1332SliceTests.Gate_SetsNamedCvarsAndWalksCallbacks"
+        ]
+      }
+    ]
+  }
+]

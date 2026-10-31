@@ -1,0 +1,29 @@
+[
+  {
+    "name": "am-map-zoom-follow-chunk1131",
+    "bucket": "conversion",
+    "note": "Responder tail, changeWindowScale, doFollowPlayer, Ticker, and clearFB background policy from `am_map.cpp` (**1501–1650**); follows **1130**.",
+    "auditSeams": "`C_DoKey` and texture draw calls stay host-injected. `clearFB` continues after the blit loops at **1651**.",
+    "auditRationale": "UNCredited **`am_map.cpp`** **1501–1650** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 1501 --end 1650` and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "Key-release rule, legacy zoom, follow scroll, clock, and Raven background gate match native; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Key-up release handoff and `return res` (**1503–1513**) | yes |\n| `changeWindowScale` (**1523–1558**) | yes |\n| `doFollowPlayer` (**1566–1594**) | yes |\n| `Ticker` clock (**1603–1608**) | yes |\n| `clearFB` background gate and tile origins (**1618–1650**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1492–1500** | follow `+am_pan` gate already credited by **1130** |\n| **1572** | unused view-height delta |\n| **1651+** | remainder of `clearFB` |\n\n`M_OLDZOOMIN` is **1.02** and `M_OLDZOOMOUT` is **1/1.02**. `am_zoomdir` is cleared after the step. `am_drawmapback == 2` still draws Raven (`colorset` 3, or -1 with `GAME_Raven` **6**) when the mod set is undefined. A non-positive patch size is not tiled.\n\n| Managed (`VmAmMapZoomFollow1131Slice.cs`) | Native (`am_map.cpp`) |\n|-------------------------------------------|---------------------|\n| Zoom, follow, ticker, background | **1501–1650** |\n| Band hull (exclusive slice) | **1501–1650** |\n\n### Chunk **1131** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1130** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmAmMapZoomFollow1131Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "Automap zoom follow and background",
+        "start": 1501,
+        "end": 1650,
+        "tests": [
+          "VmAmMapZoomFollow1131SliceTests.ResponderResult_ReleasesBareKeysAndKeepsPlusBinds",
+          "VmAmMapZoomFollow1131SliceTests.ApplyZoom_UsesLegacyDirectionThenClearsIt",
+          "VmAmMapZoomFollow1131SliceTests.FollowPlayer_ScrollsWhenTheCameraMoves",
+          "VmAmMapZoomFollow1131SliceTests.ShouldDrawMapBackground_RavenModeTwoStillBlits"
+        ]
+      }
+    ]
+  }
+]

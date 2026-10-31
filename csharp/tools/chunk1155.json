@@ -1,0 +1,28 @@
+[
+  {
+    "name": "p-teleport-group-chunk1155",
+    "bucket": "conversion",
+    "note": "Tid, group, and sector teleports from `p_teleport.cpp` (**644–806**).",
+    "auditSeams": "Actor iterators, the inner `P_Teleport` / `EV_Teleport` calls, and the TeleportDest class check stay host-supplied.",
+    "auditRationale": "UNCredited **`p_teleport.cpp`** **644–806** (+163), the tail of the 806-line file, with no conversion or recognition overlap.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_teleport.cpp --start 644 --end 806` and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "Tid gates, the yaw rotation, floor-z sentinel, and sector touch filter match native; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `EV_TeleportOther` (**651–667**) | yes |\n| `DoGroupForOne` (**676–692**) | yes |\n| `EV_TeleportGroup` (**701–751**) | yes |\n| `EV_TeleportSector` (**761–806**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **471–643** | silent line teleport already credited |\n| **681** | `offAngle` is computed and never read |\n\n`TELF_DESTFOG` is **1**, `TELF_SOURCEFOG` is **2**, and `TELF_KEEPORIENTATION` is **4**. `ONFLOORZ` is signed **0x80000000**. `nullAngle` is **0** degrees. `EV_TeleportOther` does nothing unless both tids are non-zero. Fog uses dest and source fog without keep-orientation; otherwise the call keeps orientation. Each victim's host result is OR-ed. `DoGroupForOne` rotates the victim's XY offset by `dest.yaw - source.yaw` with degree cosine and sine, then adds the destination XY. Floor placement stores `ONFLOORZ`; otherwise Z is `dest.Z + victim.Z - source.Z`. Fog adds both fog bits and keep-orientation. The teleport angle is `nullAngle`, and the victim yaw is then `(dest.yaw + victim.yaw - source.yaw)` normalized to **360** degrees even when the teleport fails. A missing source origin makes `EV_TeleportGroup` call `EV_TeleportOther` with the group tid. A missing TeleportDest origin returns false. `TeleportDest2` keeps the relative Z; any other dest uses the floor. Group tid **0** with a victim moves that one actor; otherwise every iterator actor is moved. The source itself moves only after some victim succeeded, and only when `moveSource` is set. That source teleport keeps orientation with no fog bits, uses the dest XY, and copies the dest yaw without a second normalize. `EV_TeleportSector` returns false without a source or a TeleportDest. It walks each tagged sector's touching list, remembering the next node first, skips null actors, and skips a tid that does not match a non-zero group.\n\n| Managed (`VmPTeleportGroup1155Slice.cs`) | Native (`p_teleport.cpp`) |\n|------------------------------------------|----------------------------|\n| Other, group, sector | **644–806** |\n| Band hull (exclusive slice) | **644–806** |\n\n### Chunk **1155** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **163** |\n| **Net headline** | **+163** vs post-**1154** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPTeleportGroup1155Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_teleport.cpp",
+        "symbol": "Group and sector teleport",
+        "start": 644,
+        "end": 806,
+        "tests": [
+          "VmPTeleportGroup1155SliceTests.Other_RequiresBothTidsAndDropsKeepOrientationWhenFogging",
+          "VmPTeleportGroup1155SliceTests.MoveOne_RotatesAroundTheSourceAndNormalizesYaw",
+          "VmPTeleportGroup1155SliceTests.GroupAndSector_FallBackAndFilterTouches"
+        ]
+      }
+    ]
+  }
+]

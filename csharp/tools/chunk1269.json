@@ -1,0 +1,26 @@
+[
+  {
+    "name": "floors3d-chunk1269",
+    "bucket": "conversion",
+    "note": "Sorted 3D-floor heights, skybox save, and the clip-stack reset from r_3dfloors.cpp (1-199).",
+    "auditSeams": "The plane height and the clip-buffer bytes are host inputs. The slice keeps the sorted insert, the skybox save, the spare leave, and the cleanup free order.",
+    "auditRationale": "UNCredited r_3dfloors.cpp 1-199 (+199). A full tally line scan shows no overlap. The file ends at line 199.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/swrenderer/scene/r_3dfloors.cpp --start 1 --end 199 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Clip3DFloors (**39–42**) | yes |\n| SetFakeFloor (**44–52**) | yes |\n| Cleanup (**54–66**) | yes |\n| DeleteHeights (**68–79**) | yes |\n| AddHeight (**81–125**) | yes |\n| NewClip (**127–149**) | yes |\n| ResetClip (**151–164**) | yes |\n| EnterSkybox (**166–181**) | yes |\n| LeaveSkybox (**183–198**) | yes |\n| Band hull (**1–199**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Plane sample | host sector |\n| Clip bytes | host viewport |\n\nA height at or outside the sector floor or ceiling is ignored and does not mark the floor active. A repeated height marks the floor active and does not insert or advance the count. New heights are inserted in ascending order, including in front of the head, and the tail stays put unless the height is appended. Entering a skybox saves the list and starts empty without freeing the saved nodes. Leaving restores that list. A leave with nothing saved replaces the live list with an empty one and does not free the dropped nodes, and the skybox count goes negative. Cleanup frees the current list before each restore, then resets the clip stack and frees the restored list. Clip copies are independent of the source buffers. A second request for the same floor reuses the record. A clip with no floor faults.\n\n| Managed (`VmFloors1269Slice.cs`) | Native (`r_3dfloors.cpp`) |\n|-----------------------------------|---------------------------|\n| Heights, skybox, and clips | **1–199** |\n| Band hull (exclusive slice) | **1–199** |\n\n### Chunk **1269** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **199** |\n| **Net headline** | **+199** vs post-**1268** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmFloors1269Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/rendering/swrenderer/scene/r_3dfloors.cpp",
+        "symbol": "Clip3DFloors",
+        "start": 1,
+        "end": 199,
+        "tests": [
+          "VmFloors1269SliceTests.Heights_InsertInOrderAndASpareLeaveDropsTheList",
+          "VmFloors1269SliceTests.Clips_CopyTheBuffersAndCleanupFreesBothLists"
+        ]
+      }
+    ]
+  }
+]

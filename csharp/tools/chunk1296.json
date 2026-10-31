@@ -1,0 +1,26 @@
+[
+  {
+    "name": "gl-buffers-chunk1296",
+    "bucket": "conversion",
+    "note": "Buffer data, map, and resize from gl_buffers.cpp (1-266).",
+    "auditSeams": "Buffer ids, map tokens, and the persistent-buffer flag are host services. The render-state reset is a counter.",
+    "auditRationale": "UNCredited gl_buffers.cpp 1-266 (+266). A full tally line scan shows no overlap. The file ends at line 266.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/gl/gl_buffers.cpp --start 1 --end 266 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Construct, bind, and destroy (**45–65**) | yes |\n| SetData and subdata (**68–107**) | yes |\n| Map, lock, and resize (**109–169**) | yes |\n| Sync (**171–193**) | yes |\n| Vertex format and bind (**201–249**) | yes |\n| Data bind and constructors (**251–264**) | yes |\n| Band hull (**1–266**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Buffer ids | host names |\n| Persistent flag | host screen query |\n| Render-state reset | host counter |\n\nStatic and stream uploads copy the caller bytes. Persistent and mappable uploads ignore the pointer. Persistent storage maps with the write, persistent, and coherent bits when the host says buffers stay mapped, and otherwise falls back to a stream upload and a null map. Either persistent path clears the no-map block. A later mappable upload clears the map member and leaves the persistent flag set, so Map and Unmap stay no-ops. Resize runs only while no-map is clear and the request is larger. It unmaps, allocates a new id, calls SetData as persistent, then copies the size that call just stored, which is the new size. Lock uploads mappable and maps with the invalidate bit, but it does not store that pointer in the map member. Unlock unmaps without clearing the lock token. DropSync replaces a fence. WaitSync waits 50000000 ns, records a failure unless the status is already signaled or satisfied, and still deletes the fence. SetFormat writes the seven-entry table and skips locations outside 0 through 9. Bind walks all ten slots, disables a zero size, and adds stride times the binding offset when an offset array is present. Vertex, index, and data constructors select the array, element, and storage or uniform targets. Destroy binds, unmaps, binds zero, and deletes once.\n\n| Managed (`VmGlBuffer1296Slice.cs`) | Native (`gl_buffers.cpp`) |\n|------------------------------------|---------------------------|\n| Upload, resize, format, and sync | **1–266** |\n| Band hull (exclusive slice) | **1–266** |\n\n### Chunk **1296** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **266** |\n| **Net headline** | **+266** vs post-**1295** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmGlBuffer1296Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/rendering/gl/gl_buffers.cpp",
+        "symbol": "GLBuffer::SetData",
+        "start": 1,
+        "end": 266,
+        "tests": [
+          "VmGlBuffer1296SliceTests.Resize_CopiesTheNewSizeAndLeavesPersistentSticky",
+          "VmGlBuffer1296SliceTests.Format_WalksEverySlotAndLockLeavesTheMapMember"
+        ]
+      }
+    ]
+  }
+]

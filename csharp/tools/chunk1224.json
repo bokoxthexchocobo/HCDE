@@ -1,0 +1,26 @@
+[
+  {
+    "name": "stats-chunk1224",
+    "bucket": "conversion",
+    "note": "Stat registration, prefix lookup, and the bottom-up print from stats.cpp (1-150).",
+    "auditSeams": "Exact lookup uses strcasecmp. A prefix match uses strncmp, so the prefix is case-sensitive. A second prefix clears the partial and the lookup returns null when nothing matched exactly. An empty query matches every name as a prefix. The destructor steps to the next node's next link, so only even positions from the head are unlinked. Deleting the middle node of a three-node list follows a null next pointer. Print subtracts the font height plus one, ignores a newline that is the last character, and skips an empty string after GetStats. The virtual size uses the 2D drawer, and the vertical start uses the passed drawer. x is 5 divided by the console scale. The stat command treats argc 2 as the only toggle form.",
+    "auditRationale": "UNCredited stats.cpp 1-150 (+150). The file ends at 150. A full tally line scan shows no overlap.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/engine/stats.cpp --start 1 --end 150 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Constructor (**34–40**) | yes |\n| Destructor (**42–51**) | yes |\n| FindStat (**53–70**) | yes |\n| ToggleStat name (**72–79**) | yes |\n| EnableStat (**81–88**) | yes |\n| ToggleStat (**90–93**) | yes |\n| PrintStat (**95–125**) | yes |\n| DumpRegisteredStats (**127–137**) | yes |\n| stat command (**139–150**) | yes |\n| Band hull (**1–150**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nTwo case-sensitive prefixes cancel. A steady exact match still wins over a prefix. The middle node of a three-node list is not removed.\n\n| Managed (`VmStats1224Slice.cs`) | Native (`stats.cpp`) |\n|---------------------------------|---------------------|\n| Stat list, lookup, and print | **1–150** |\n| Band hull (exclusive slice) | **1–150** |\n\n### Chunk **1224** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1223** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmStats1224Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/engine/stats.cpp",
+        "symbol": "FStat::FindStat",
+        "start": 1,
+        "end": 150,
+        "tests": [
+          "VmStats1224SliceTests.Find_PrefersCaseInsensitiveExactAndRejectsTwoPrefixes",
+          "VmStats1224SliceTests.Destroy_UnlinksEvenSlotsAndAMiddleOfThreeThrows"
+        ]
+      }
+    ]
+  }
+]

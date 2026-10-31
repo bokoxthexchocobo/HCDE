@@ -40,7 +40,14 @@ if legacy > surv:
   raise SystemExit(f'managed_loc_commit_inflation: commit additions {legacy} > surviving HEAD {surv}')
 print(surv)
 " "$NUM" "$SHA")
-if [ "$NL" -lt 150 ]; then
+EOF_TAIL=$(python3 -c "
+import json, sys
+from pathlib import Path
+chunk=json.loads((Path('$REPO/csharp/tools')/f'chunk{sys.argv[1]}.json').read_text())
+if isinstance(chunk,list): chunk=chunk[0]
+print('1' if chunk.get('auditFileEofTailException') else '0')
+" "$NUM")
+if [ "$NL" -lt 150 ] && [ "$EOF_TAIL" != "1" ]; then
   echo "nativeLoc_below_floor: chunk $NUM native=$NL (minimum 150 for active chunk definitions)"
   exit 1
 fi

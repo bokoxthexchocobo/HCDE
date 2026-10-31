@@ -1,0 +1,29 @@
+[
+  {
+    "name": "am-map-colorset-tables-chunk1124",
+    "bucket": "conversion",
+    "note": "initFromColors, white set, linedef color indexes, standard/overlay CVAR tables, and am_restorecolors from `am_map.cpp` (**451–600**); follows **1123**.",
+    "auditSeams": "`ResetToDefault` stays a host callback. Doom palette bytes after the background triplet begin at **601**.",
+    "auditRationale": "UNCredited **`am_map.cpp`** **451–600** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 451 --end 600` and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "Triplet decode, white set, line-style indexes, CVAR name tables, and the restore command match native; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `initFromColors` unused marker and zero fill (**453–470**) | yes |\n| `setWhite` / index validity (**472–489**) | yes |\n| `AUTOMAP_LINE_COLORS` (**498–514**) | yes |\n| `cv_standard` / `cv_overlay` (**522–576**) | yes |\n| `am_restorecolors` (**578–593**) | yes |\n| Doom background triplet (**599–600**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **451** | closing brace of `initFromCVars` |\n| **492–497**, **516–521**, **594–598** | section comments and `NOT_USED` macro site covered by the unused-triplet test |\n| **601+** | remaining Doom/Strife palettes outside hull |\n\n| Managed (`VmAmMapColorsetTables1124Slice.cs`) | Native (`am_map.cpp`) |\n|------------------------------------------------|---------------------|\n| Triplets, line colors, CVAR restore | **451–600** |\n| Band hull (exclusive slice) | **451–600** |\n\n### Chunk **1124** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1123** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmAmMapColorsetTables1124Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "Automap colorset tables and restore",
+        "start": 451,
+        "end": 600,
+        "tests": [
+          "VmAmMapColorsetTables1124SliceTests.InitFromColorTriplets_MarksUnusedAndClearsFillAlpha",
+          "VmAmMapColorsetTables1124SliceTests.SetWhite_BlacksBackgroundAndWhitesTheRest",
+          "VmAmMapColorsetTables1124SliceTests.LineStyleColorIndex_MapsPortalAndDefault",
+          "VmAmMapColorsetTables1124SliceTests.RestoreColorDefaults_ResetsBothTablesAndBothAlphas"
+        ]
+      }
+    ]
+  }
+]

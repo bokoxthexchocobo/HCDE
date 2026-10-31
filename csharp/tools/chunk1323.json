@@ -1,0 +1,27 @@
+[
+  {
+    "name": "error-window-chunk1323",
+    "bucket": "conversion",
+    "note": "The fatal-error window, the clipboard text, and the log viewer from errorwindow.cpp (1-359).",
+    "auditSeams": "GetCharFromString and MakeUTF8 live in utf8.cpp. V_ParseFontColor and the flat log colors live in v_font.cpp and textcolors.txt. The zip writer is miniz. This slice includes those callees so the clipboard, the colored lines, and the crash zip match.",
+    "auditRationale": "UNCredited errorwindow.cpp 1-359 (+359). A full tally line scan shows no overlap. The file ends at line 359.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/widgets/errorwindow.cpp --start 1 --end 359 and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "SetText calls GetCharFromString and MakeUTF8. CreateLineLayout calls those plus V_ParseFontColor and V_LogColorFromColorRange. None of those functions are source lines in this file. The managed port keeps the window layout, the clipboard suffix, and the log walk, and it carries the Windows-1252 map, the UTF-8 codec, and the stock flat colors because those calls produce the clipboard bytes and the span colors. The zip entries are the minidump and the log. That host surface is why the managed file is over 150% of the 359-line source.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Modal frame and the button row (**32–81**) | yes |\n| Clipboard text and the bar remap (**83–149**) | yes |\n| Close and the button geometry (**151–181**) | yes |\n| Log lines, the abort line, and the scrollbar (**185–263**) | yes |\n| Paint, wheel, keys, and the scroll clamp (**265–359**) | yes |\n| Band hull (**1–359**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| The commented icon and border fills | they do not run |\n| UTF-8 and the font-color table | callees, not lines of this file |\n\nThe window is 1200 by 700 and centered on the screen. An empty minidump builds the restart button. A minidump builds the save button. The clipboard drops the color escape, keeps the color letter, and turns 0x1D through 0x1F into U+2550. The suffix is the execution line, the message, and a newline. A log line splits on newlines, then an empty line, the abort line, and the message. The scrollbar max is the line count and the position is the last line. Buttons pack from the right with a 10-pixel gap and a 20-pixel inset. Paint fills 38,38,38 and walks upward from the rounded position. Home goes to 0. End goes to the max and clamps to the last line. The report zip stores minidump.dmp and log.txt.\n\n| Managed (`VmErrorWindow1323Slice.cs`) | Native (`errorwindow.cpp`) |\n|----------------------------------------|---------------------------|\n| Modal, clipboard, layout, log, and the report | **1–359** |\n| Band hull (exclusive slice) | **1–359** |\n\n### Chunk **1323** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **359** |\n| **Net headline** | **+359** vs post-**1322** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmErrorWindow1323Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/widgets/errorwindow.cpp",
+        "symbol": "ErrorWindow::ExecModal",
+        "start": 1,
+        "end": 359,
+        "tests": [
+          "VmErrorWindow1323SliceTests.Modal_CentersAndStripsTheClipboard",
+          "VmErrorWindow1323SliceTests.Layout_ScrollsAndSavesTheReport"
+        ]
+      }
+    ]
+  }
+]

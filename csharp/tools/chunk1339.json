@@ -1,0 +1,27 @@
+[
+  {
+    "name": "ue1-model-chunk1339",
+    "bucket": "conversion",
+    "note": "FUE1Model load, geometry, and frame draw from models_ue1.cpp (1-324).",
+    "auditSeams": "GetFileFullName, CheckNumForFullName, and ReadFile stay injected. GetGameTexture stays injected. Renderer SetInterpolation, SetMaterial, SetupFrame, DrawArrays, and CreateVertexBuffer stay injected. A zero numverts header throws instead of dividing.",
+    "auditRationale": "UNCredited models_ue1.cpp 1-324 (+324). A full tally line scan shows no overlap. This whole file was tied with RuntimeState.cpp 1-324. Path order takes the model loader.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/models/models_ue1.cpp --start 1 --end 324 and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "IndexOf, Substitute, strtol, and FVector3::Unit are not source lines in this file. The managed port keeps the data and aniv suffix swap, the Deus Ex and packed vertex convert, the group retry, the weapon-triangle skip, and the curvy facet normal, and it carries the LP64 length compare, the base-0 frame parser, the 48-byte and 16-byte layouts, and the unit cross product because those calls produce the lump ids, the frame index, and the vertex normals. Filesystem, texture, and renderer entry points stay injected. That host surface is why the managed file is over 150% of the 324-line source.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Packed vertex unpack (**31–44**) | yes |\n| Data and aniv lump swap (**46–66**) | yes |\n| Geometry, normals, and groups (**68–210**) | yes |\n| Unload of verts and poly lists (**212–223**) | yes |\n| Frame index (**225–231**) | yes |\n| Frame draw (**233–269**) | yes |\n| Vertex buffer (**271–309**) | yes |\n| Skin hit list (**311–319**) | yes |\n| Destructor (**321–324**) | yes |\n| Band hull (**1–324**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| IndexOf and Substitute bodies | string callees |\n| strtol | frame names are numbers |\n| Unit and the cross product | vector callees |\n| ReadFile and GetGameTexture | filesystem and texture callees |\n\nThe first `_d.3d` selects the data lump only when its index equals the length minus 5, using a size_t compare, so a 4-byte name with no match also selects data. Substitute rewrites every match. Deus Ex stores X, Z, and negated Y. Packed coordinates sign-extend after the shift. UVs divide by 255. A zero-length normal stays zero. Groups key on the raw type byte and the texture number, and a mismatch retries the same poly. Weapon triangles advance the vertex cursor and are stored in the buffer, but they are not drawn. Curvy groups store the facet normal. A buffer that already exists for the renderer type skips geometry. FindFrame is base 0 and returns -1 past the frame list. AddSkins ors HIT_Flat through the texture index. Unload clears vertex refs, polys, and group poly lists, and the destructor clears the groups themselves.\n\n| Managed (`VmUe1Model1339Slice.cs`) | Native (`models_ue1.cpp`) |\n|------------------------------------|---------------------------|\n| Load, geometry, skins, and the frame draw | **1–324** |\n| Band hull (exclusive slice) | **1–324** |\n\n### Chunk **1339** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **324** |\n| **Net headline** | **+324** vs post-**1338** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmUe1Model1339Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/models/models_ue1.cpp",
+        "symbol": "LoadGeometry",
+        "start": 1,
+        "end": 324,
+        "tests": [
+          "VmUe1Model1339SliceTests.NamesUnpackAndPackedFrame",
+          "VmUe1Model1339SliceTests.DeusExGroupsNormalsAndDraw"
+        ]
+      }
+    ]
+  }
+]

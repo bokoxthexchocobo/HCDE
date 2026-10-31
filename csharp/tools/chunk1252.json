@@ -1,0 +1,26 @@
+[
+  {
+    "name": "dynlight-chunk1252",
+    "bucket": "conversion",
+    "note": "Plane rejection and the 16-float dynamic light record from hw_dynlightdata.cpp (1-152), through end of file.",
+    "auditSeams": "Portal-relative position is a host offset added when the group is not zero. Degree sine and cosine are the CRT functions. The sprite and particle light switches are stored and are not read by these two functions.",
+    "auditRationale": "UNCredited hw_dynlightdata.cpp 1-152 (+152). A full tally line scan shows no overlap. The file ends at line 152.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/hwrenderer/hw_dynlightdata.cpp --start 1 --end 152 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Light cvars (**35–36**) | yes |\n| GetLight (**45–60**) | yes |\n| AddLightToList (**67–152**) | yes |\n| Band hull (**1–152**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Light class methods | other files |\n| Shadow map object | host enabled flag |\n\nA radius of zero or less is rejected. A distance greater than the radius is rejected. The side test uses the signed distance and runs only when requested. World Y and Z are swapped into the plane. Additive lights use scale 0.2 and list 2. Subtractive lights replace that list with 1 and fold each channel around the color length. A target with the alpha-multiply flag scales the color. The shadow index is one past the light index when the shadow map is on, otherwise 1025, and attenuation stores it as a negative value. A spot writes the cosines of the inner and outer angles and a direction from yaw and negated pitch. The record is 16 floats, with world X, Z, Y, then radius.\n\n| Managed (`VmDynLight1252Slice.cs`) | Native (`hw_dynlightdata.cpp`) |\n|------------------------------------|--------------------------------|\n| Rejection and the light record | **1–152** |\n| Band hull (exclusive slice) | **1–152** |\n\n### Chunk **1252** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **152** |\n| **Net headline** | **+152** vs post-**1251** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmDynLight1252Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/rendering/hwrenderer/hw_dynlightdata.cpp",
+        "symbol": "GetLight",
+        "start": 1,
+        "end": 152,
+        "tests": [
+          "VmDynLight1252SliceTests.Get_RejectsADarkSideAndKeepsALightOnThePlane",
+          "VmDynLight1252SliceTests.Add_FoldsSubtractiveColorAndASpotDirection"
+        ]
+      }
+    ]
+  }
+]

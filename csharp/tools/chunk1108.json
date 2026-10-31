@@ -1,0 +1,29 @@
+[
+  {
+    "name": "pmobj-visibility-chunk1108",
+    "bucket": "conversion",
+    "note": "`DisableLocalRendering`, `ShouldRenderLocally`, `IsInsideVisibleAngles`, and `IsVisibleToPlayer` from `p_mobj.cpp` (**1351–1500**); pivot after `s_sound.cpp` seam (**1107**).",
+    "auditSeams": "VM `DEFINE_ACTION_FUNCTION` thunks, portal displacement, and `Level->GetConsolePlayer` remain host-injected; **1501+** continues `ConversationAnimation`.",
+    "auditRationale": "UNCredited **`p_mobj.cpp`** **1351–1500** (+150); `s_sound.cpp` EOF **1801–1874** sub-150; `v_font`/**sbarinfo** post-defer bands are past physical EOF.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 1351 --end 1500` and `--chunk 1108 --band` → UNCredited, exit 0.",
+    "auditManagedLocJustification": "Visibility predicates encode native angle swap, mask flags, team/class gates; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `DisableLocalRendering` console gate (**1353–1354**) | yes |\n| `ShouldRenderLocally` (**1374**) | yes |\n| `IsInsideVisibleAngles` swap + cone test (**1400–1449**) | yes |\n| `IsVisibleToPlayer` team/class scan (**1469–1494**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1334–1348**, **1362–1387** | VM native thunks |\n| **1432–1433** | portal displacement host |\n| **1501+** | conversation anim outside hull |\n\n| Managed (`VmPMobjVisibility1108Slice.cs`) | Native (`p_mobj.cpp`) |\n|----------------------------------------|---------------------|\n| Local render + visibility predicates | **1351–1500** |\n| Band hull (exclusive slice) | **1351–1500** |\n\n### Chunk **1108** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1107** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjVisibility1108Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor visibility and local render",
+        "start": 1351,
+        "end": 1500,
+        "tests": [
+          "VmPMobjVisibility1108SliceTests.RunDisableLocalRendering_OnlyAffectsConsolePlayer",
+          "VmPMobjVisibility1108SliceTests.IsInsideVisibleAngles_SkipsWhenMaskDisabled",
+          "VmPMobjVisibility1108SliceTests.IsVisibleToPlayer_RequiresTeamMatchInTeamplay",
+          "VmPMobjVisibility1108SliceTests.IsVisibleToPlayer_AllowsWhenClassListMatches"
+        ]
+      }
+    ]
+  }
+]

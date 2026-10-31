@@ -1,0 +1,29 @@
+[
+  {
+    "name": "pmobj-spawn-player-tail-chunk1117",
+    "bucket": "conversion",
+    "note": "`P_SpawnPlayer` counter reset, inventory/respawn branches, ceiling drop, script dispatch, and `SpawnMapThing` editor-number reject from `p_mobj.cpp` (**6427–6576**); follows **1116**.",
+    "auditSeams": "VM inventory hooks, `P_SetupPsprites`, teleport fog, and thinker iteration remain host-injected; unknown-thing warnings continue at **6584**.",
+    "auditRationale": "UNCredited **`p_mobj.cpp`** **6427–6576** (+150). Skips **5577–5726** (chunk **481**) and earlier credited movement/tick bands.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 6427 --end 6576` and `--chunk 1117 --band` → UNCredited, exit 0.",
+    "auditManagedLocJustification": "Respawn versus enter script selection and ceiling clamp follow native branches; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Live counter reset (**6427–6448**) | yes |\n| Camera retarget + demo chase (**6458–6468**) | yes |\n| Psprite / deathmatch / coop inventory gates (**6471–6491**) | yes |\n| Old inventory destroy + respawn hook (**6493–6507**) | yes |\n| Status bar, fog, ceiling drop (**6510–6525**) | yes |\n| Enter vs respawn scripts and sound-target clear (**6528–6558**) | yes |\n| `SpawnMapThing` ednum reject + multi flags (**6575–6576**) | yes (head) |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **6450–6456**, **6478–6506** | VM calls |\n| **6517**, **6532**, **6544–6554** | host fog / thinker scan / substitution |\n| **6584+** | unknown-thing warning outside hull |\n\n| Managed (`VmPMobjSpawnPlayerTail1117Slice.cs`) | Native (`p_mobj.cpp`) |\n|-----------------------------------------------|---------------------|\n| Spawn-player tail + ednum reject | **6427–6576** |\n| Band hull (exclusive slice) | **6427–6576** |\n\n### Chunk **1117** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1116** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjSpawnPlayerTail1117Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "P_SpawnPlayer tail and SpawnMapThing head",
+        "start": 6427,
+        "end": 6576,
+        "tests": [
+          "VmPMobjSpawnPlayerTail1117SliceTests.RunSpawnPlayerTail_RespawnClearsSoundTargetsAndDropsCeiling",
+          "VmPMobjSpawnPlayerTail1117SliceTests.RunSpawnPlayerTail_SkipsScriptsForTemporaryPlayer",
+          "VmPMobjSpawnPlayerTail1117SliceTests.RejectMapThingEditorNumber_RejectsZeroAndMinusOne",
+          "VmPMobjSpawnPlayerTail1117SliceTests.ApplyDemoChaseCam_SetsCheatWhenWatching"
+        ]
+      }
+    ]
+  }
+]

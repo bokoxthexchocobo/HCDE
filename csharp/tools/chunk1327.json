@@ -1,0 +1,26 @@
+[
+  {
+    "name": "predict-debug-chunk1327",
+    "bucket": "conversion",
+    "note": "The prediction debug tick, the metrics row, and the soft warning from d_net_predict_impl.cpp (1-375).",
+    "auditSeams": "HCDELiveReportIntervalElapsed treats a zero stamp as elapsed and then stores the clock. Net_InvasionStateName, Net_LagStateName, and DebugTrace::SaveToFile stay callees. The metrics path is the app-data directory plus the file name.",
+    "auditRationale": "UNCredited d_net_predict_impl.cpp 1-375 (+375). A full tally line scan shows no overlap. The file ends at line 375.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/d_net_predict_impl.cpp --start 1 --end 375 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Level, net, and authority gates (**26–35**) | yes |\n| Ping sample and extrema (**43–76**) | yes |\n| Mirror walk and the one-second desync (**78–134**) | yes |\n| Sample interval, CSV header, and the metrics row (**136–262**) | yes |\n| Soft warning, trace dump, and the window roll (**264–375**) | yes |\n| Band hull (**1–375**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Invasion and lag name strings | callees outside this file |\n| Trace file body | DebugTrace::SaveToFile |\n\nLevel 0, a non-level game, demo playback, and the local authority return before the ping log. The ping log waits 1000 ms, then the console lead is `(ClientTic-gametic)/TicDup` and every other client lead is `sequence - gametic/TicDup`. Extrema update on every accepted frame. A mismatch stamp of 0 is treated as unset, so a clock of 0 never arms it. The sample returns before the CSV when `gametic - last < max(interval, 1)`, and that return does not roll the window. The CSV prints the window extrema, then the window resets to this frame. Soft warnings require level 2 and `EnterTic >= grace`. Ack lag, low available tic with backlog pressure, mirror drift, a stale attack, a passive storm, and two hard repairs share one bracketed trigger list. Only mirror, stale, passive, and hard repairs dump a trace, and only at level 3, at most once per 5000 ms. The soft-warn line itself is limited to once per 250 ms. A zero report stamp does not rate-limit.\n\n| Managed (`VmPredictDebug1327Slice.cs`) | Native (`d_net_predict_impl.cpp`) |\n|----------------------------------------|------------------------------|\n| Debug tick, CSV, and soft warning | **1–375** |\n| Band hull (exclusive slice) | **1–375** |\n\n### Chunk **1327** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **375** |\n| **Net headline** | **+375** vs post-**1326** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPredictDebug1327Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/d_net_predict_impl.cpp",
+        "symbol": "Net_PredictionDebugTick",
+        "start": 1,
+        "end": 375,
+        "tests": [
+          "VmPredictDebug1327SliceTests.Gates_LogPingAndHoldTheWindow",
+          "VmPredictDebug1327SliceTests.Sample_WritesTheCsvAndRatesTheSoftWarn"
+        ]
+      }
+    ]
+  }
+]

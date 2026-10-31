@@ -1,0 +1,30 @@
+[
+  {
+    "name": "am-map-clip-line-chunk1132",
+    "bucket": "conversion",
+    "note": "Cohen-Sutherland clipMline and the first drawMline screen endpoint from `am_map.cpp` (**1651–1800**); follows **1131**.",
+    "auditSeams": "The second endpoint and thickness selection begin at **1801**. Host line drawing stays outside this slice.",
+    "auditRationale": "UNCredited **`am_map.cpp`** **1651–1800** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 1651 --end 1800` and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "Map reject, framebuffer outcodes, integer Scale, and the clip loop match native; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Outcode bits and map-space reject (**1668–1717**) | yes |\n| `CXMTOF` / `CYMTOF` into the clip box (**1719–1729**) | yes |\n| Edge clip with `Scale` (**1731–1784**) | yes |\n| `drawMline` origin of endpoint A (**1799–1800**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1651–1664** | closing braces and the clip comment |\n| **1801+** | endpoint B, thickness, and antialiasing |\n\n`Scale` is the widening `int32` divide from `cmdlib.h`. Map Y uses assignment (`TOP` if `y > m_y2`, `BOTTOM` if `y < m_y`); X is then OR-ed. A shared outcode bit rejects the segment.\n\n| Managed (`VmAmMapClipLine1132Slice.cs`) | Native (`am_map.cpp`) |\n|------------------------------------------|---------------------|\n| clipMline and screen start | **1651–1800** |\n| Band hull (exclusive slice) | **1651–1800** |\n\n### Chunk **1132** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1131** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmAmMapClipLine1132Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "Automap Cohen-Sutherland clip",
+        "start": 1651,
+        "end": 1800,
+        "tests": [
+          "VmAmMapClipLine1132SliceTests.Scale_UsesWideningIntegerDivision",
+          "VmAmMapClipLine1132SliceTests.TryClip_RejectsASegmentThatIsEntirelyAboveTheMapWindow",
+          "VmAmMapClipLine1132SliceTests.TryClip_CutsAVerticalSegmentToTheTopEdge",
+          "VmAmMapClipLine1132SliceTests.TryClip_CutsAHorizontalSegmentToTheLeftEdge",
+          "VmAmMapClipLine1132SliceTests.FrameOutcode_MarksTheCornerOutside"
+        ]
+      }
+    ]
+  }
+]

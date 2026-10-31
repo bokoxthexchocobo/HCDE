@@ -1,0 +1,26 @@
+[
+  {
+    "name": "flat-plane-chunk1319",
+    "bucket": "conversion",
+    "note": "Flat plane steps, the span light, and the colored plane from r_flatplane.cpp (1-288).",
+    "auditSeams": "Closed span rows come from the plane. Plane depth, the screen-to-view Y, and the flat visibility are the viewport and light host. The span drawer records the arguments.",
+    "auditRationale": "UNCredited r_flatplane.cpp 1-288 (+288). A full tally line scan shows no overlap. The file ends at line 288.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/swrenderer/plane/r_flatplane.cpp --start 1 --end 288 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Flat setup, the yaw step, and the mirror flip (**60–147**) | yes |\n| Span U/V, the LOD, and the distance light (**149–187**) | yes |\n| Row lights and the span destination (**189–270**) | yes |\n| Colored plane (**274–287**) | yes |\n| Band hull (**1–288**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| The span pixel drawer | the host records the draw arguments |\n| The top and bottom closure walk | that walk lives in `r_planerenderer.cpp` |\n\nA non-positive alpha returns before the steps are stored. A zero plane angle keeps the view offset unrotated and does not add the base Y offset. A live angle rotates the view by the plane sine and cosine, then the scales apply. The yaw minus 90 degrees feeds the steps, a mirror negates both steps, and another quarter turn feeds the edge fractions. Equal left and right edges store a zero step scale. Fog follows a fade target, a colormap fade, or the fade-table flag. Shade is on only when the fixed light is negative and there is no fixed colormap. A BGRA target stores the LOD from the larger step magnitude. An inactive light is skipped. A point light whose normal constant is negative is skipped. A light inside its radius stores 256 divided by that radius and the packed color. The colored plane records one colored span per closed row.\n\n| Managed (`VmFlatPlane1319Slice.cs`) | Native (`r_flatplane.cpp`) |\n|--------------------------------------|----------------------------|\n| Flat steps, span light, and the colored plane | **1–288** |\n| Band hull (exclusive slice) | **1–288** |\n\n### Chunk **1319** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **288** |\n| **Net headline** | **+288** vs post-**1318** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmFlatPlane1319Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/rendering/swrenderer/plane/r_flatplane.cpp",
+        "symbol": "RenderFlatPlane::Render",
+        "start": 1,
+        "end": 288,
+        "tests": [
+          "VmFlatPlane1319SliceTests.Render_SkipsZeroAlphaAndBuildsTheSteps",
+          "VmFlatPlane1319SliceTests.RenderLine_LightsTheSpanAndRejectsABadRange"
+        ]
+      }
+    ]
+  }
+]

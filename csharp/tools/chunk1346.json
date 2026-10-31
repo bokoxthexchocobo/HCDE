@@ -1,0 +1,27 @@
+[
+  {
+    "name": "value-state-node-chunk1346",
+    "bucket": "conversion",
+    "note": "Debugger value formatting from ValueStateNode.cpp (1-289), through end of file.",
+    "auditSeams": "The basic-type table names the value before the string, pointer, integer, float, and int-not-int branches replace it. A value is valid only when the pointer bits and the low 32 bits are both non-zero. Strings quote their characters or print empty. Class pointers print the pointed descriptive name. Function pointers append the owner or the implementation and a glibc pointer. Scalar pointers recurse. State labels use a positive name index, or a negative index that the owner still owns. Assignment of the protocol name happens only when the eval name differs. The enum branch always finishes as Enum and a decimal.",
+    "auditRationale": "UNCredited ValueStateNode.cpp 1-289 (+289). A full tally line scan shows no overlap. This is the largest remaining hole of at most 400 lines, tied with i_steam.cpp 1-289. Path order takes the value node.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/scripting/dap/Nodes/ValueStateNode.cpp --start 1 --end 289 and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "The basic-type name table, the glibc printf shapes, and the state-label owner walk are host behavior the 289 lines only invoke. Texture, sound, function, and state lookup stay injected. That is why the managed file is over 150% of the 289-line source.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Type name table (**36–63**) | yes |\n| Constructor (**65–68**) | yes |\n| String and pointer (**77–140**) | yes |\n| Integer and float (**142–154**) | yes |\n| Bool through color (**162–216**) | yes |\n| State label (**217–256**) | yes |\n| Enum and error (**257–279**) | yes |\n| Serialize (**283–288**) | yes |\n| Band hull (**1–289**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| GetBasicType | callee; the table in this file is what the index selects |\n| TexMan and soundEngine | callees; injected |\n| GetStateFromIdx | callee; injected |\n| Lines after 289 | the header-only declaration stays with the class |\n\nA zero integer still prints. Unsigned 32-bit minus one prints the full unsigned width. A 16-bit and an 8-bit value keep only the low bits, and a signed 8-bit value sign-extends. Float prints six digits after the float cast. Negative zero stays negative. A missing string is empty and does not read characters. A null character pointer prints two quotes. A class pointer ignores the address. An invalid function pointer prints NULL. A function with an owning class prints that class even when a variant exists. A function with only an implementation prints that name. A function with neither leaves the value empty. A pointer whose low 32 bits are zero is null and does not dereference. A scalar pointer prints the address and the inner value. A non-scalar pointer prints only the address. Any other type prints its descriptive name and the error token. Bool uses the word true for every non-zero integer. Name, sprite, texture, translation, and sound use their labels. A missing texture or a sound index outside the open range is invalid. Color prints eight uppercase hex digits and the four channels. A positive state index uses the name and the owner, or unknownOwner when the lookup has none. A negative index uses the owned label. A negative index the owner does not own stays unknown. An enum-shaped type and any other int-not-int type both finish as Enum plus the decimal. Serialize copies the formatted type and value, always returns true, and writes the eval name only when it differs from the name.\n\n| Managed (VmValueState1346Slice.cs) | Native (ValueStateNode.cpp) |\n|-------------------------------------|------------------------------|\n| Value formatting and serialize | **1–289** |\n| Band hull (exclusive slice) | **1–289** |\n\n### Chunk **1346** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **289** |\n| **Net headline** | **+289** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmValueState1346Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/dap/Nodes/ValueStateNode.cpp",
+        "symbol": "ValueStateNode",
+        "start": 1,
+        "end": 289,
+        "tests": [
+          "VmValueState1346SliceTests.ScalarsPointersAndFloats",
+          "VmValueState1346SliceTests.NamesColorsAndStates"
+        ]
+      }
+    ]
+  }
+]

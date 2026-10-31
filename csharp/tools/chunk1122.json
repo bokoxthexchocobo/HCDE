@@ -1,0 +1,30 @@
+[
+  {
+    "name": "am-map-display-chunk1122",
+    "bucket": "conversion",
+    "note": "Automap display CVARs, empty-space margin clamp, follow/grid/mark commands, and default colors from `am_map.cpp` (**151–300**); follows **1121**.",
+    "auditSeams": "`StatusBar`, `Printf`, and `AM_ToggleMap` remain host-injected; overlay colors continue at **301**.",
+    "auditRationale": "UNCredited **`am_map.cpp`** **151–300** (+150), inside the 3594-line file, with no conversion or recognition overlap.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/am_map.cpp --start 151 --end 300` and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "Margin clamp, command gates, and the color table match native defaults; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Display CVAR defaults (**153–166**, **191–198**) | yes |\n| Empty-space margin clamp (**170–177**) | yes |\n| Follow/grid/texture toggles (**201–217**) | yes |\n| Set/clear marks, gobig, togglemap, zoom (**221–259**) | yes |\n| Map and overlay colors through other-walls (**269–300**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **179–181**, **204**, **227**, **243** | host automap/printf |\n| **301+** | remaining overlay colors outside hull |\n\n| Managed (`VmAmMapDisplay1122Slice.cs`) | Native (`am_map.cpp`) |\n|----------------------------------------|---------------------|\n| Display defaults, commands, colors | **151–300** |\n| Band hull (exclusive slice) | **151–300** |\n\n### Chunk **1122** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1121** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmAmMapDisplay1122Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "Automap display commands and colors",
+        "start": 151,
+        "end": 300,
+        "tests": [
+          "VmAmMapDisplay1122SliceTests.ClampEmptySpaceMargin_LimitsToZeroThroughNinety",
+          "VmAmMapDisplay1122SliceTests.ToggleFollow_FlipsAndTryAddMark_RejectsNegative",
+          "VmAmMapDisplay1122SliceTests.ShouldToggleMap_OnlyWhenGameActionIsIdle",
+          "VmAmMapDisplay1122SliceTests.TrySetZoomDirection_ParsesSecondArgument",
+          "VmAmMapDisplay1122SliceTests.DefaultColors_IncludeWallAndOverlayWall"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "name": "cvar-scope-node-chunk1375",
+    "bucket": "conversion",
+    "note": "Debugger cvar variable text and the cvar scope child list from CVarScopeStateNode.cpp (1-217).",
+    "auditSeams": "GetFavoriteRep, GetHumanString, GetRealType, GetDescription, GetName, GStrings.localize, FindCVar, and the cvar map live outside this file and are injected. CVarNameComparer is declared in the header and applied by the sorts in this band.",
+    "auditRationale": "UNCredited CVarScopeStateNode.cpp 1-217 (+217). A full tally line scan, including recognition ranges, ties this hole with d_net.cpp 3685-3901. Both are 217 lines. Path order takes the scripting file. The file ends at 217. Gaps longer than 400 lines stay whole and are not sliced.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/scripting/dap/Nodes/CVarScopeStateNode.cpp --start 1 --end 217 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| File header and includes (**1–30**) | yes |\n| `CVarStateNode` constructor and `ToVariable` (**31–145**) | yes |\n| `SerializeToProtocol` for the variable and the scope (**147–169**) | yes |\n| `GetChildNames` (**171–190**) | yes |\n| `GetChildNode` (**192–216**) | yes |\n| Band hull (**1–217**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| `CVarScopeStateNode.h` | comparer and field declarations; not this cpp hole |\n| `c_cvars.cpp` / `stringtable.h` | cvar reads and `localize`; callees |\n\nA null cvar becomes name and value `<INVALID>`. `GetRealType` selects `CVar<Bool>` through `CVar<Dummy>`, and any other type is `<UNKNOWN>`. A float human string gains `.0` only when it has neither `.` nor a lowercase `e`. A string cvar is wrapped in quotes only when the favorite type is also string. A non-empty description is localized. The parenthetical is used when that text is non-empty and its tail after the first character differs from the description. The variable name is stored last. The scope is named `CVars`, expensive, hint `cvars`, with `variablesReference` from `GetId`, indexed variables 0, and named variables equal to the cached name count. An empty cache walks the cvar map, stores a child per cvar, and sorts names so a leading lowercase character comes before a leading uppercase character. Otherwise the order is ordinal. A later lookup that misses the caseless child map calls `FindCVar`, inserts `GetName()`, and sorts again.\n\n| Managed (`VmCVarScope1375Slice.cs`) | Native (`CVarScopeStateNode.cpp`) |\n|-------------------------------------|------------------------------------|\n| Cvar text and scope children | **1–217** |\n| Band hull (exclusive slice) | **1–217** |\n\n### Chunk **1375** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **217** |\n| **Net headline** | **+217** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Scripting/VmCVarScope1375Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/dap/Nodes/CVarScopeStateNode.cpp",
+        "symbol": "CVarScopeStateNode",
+        "start": 1,
+        "end": 217,
+        "tests": [
+          "VmCVarScope1375SliceTests.ToVariableFormatsTypeValueAndDescription",
+          "VmCVarScope1375SliceTests.ScopeListsChildrenAndFindsLateCvars"
+        ]
+      }
+    ]
+  }
+]

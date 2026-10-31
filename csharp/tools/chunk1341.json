@@ -1,0 +1,26 @@
+[
+  {
+    "name": "jit-store-chunk1341",
+    "bucket": "conversion",
+    "note": "JIT byte, word, float, string, object, vector, and bit stores from jit_store.cpp (1-314).",
+    "auditSeams": "EmitNullPointerThrow records the line and aborts when regA[A] is zero, before the displacement is added. CallAssignString copies the FString. GC::WriteBarrier is called only by the object stores, including a null object. Its white and propagate test stays in the collector. Displacements are signed 32-bit. Pointer stores are 8 bytes on this x64 emitter.",
+    "auditRationale": "UNCredited jit_store.cpp 1-314 (+314). A full tally line scan shows no overlap. This whole file is the largest remaining hole of at most 400 lines, ahead of jit_move.cpp 1-312.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/scripting/jit/jit_store.cpp --start 1 --end 314 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Byte and word stores (**26–48**) | yes |\n| Dword stores (**50–60**) | yes |\n| Single-float stores (**62–78**) | yes |\n| Double stores (**80–90**) | yes |\n| String stores (**92–110**) | yes |\n| Object and raw pointer stores (**112–142**) | yes |\n| Double vector stores (**144–208**) | yes |\n| Float vector stores (**210–300**) | yes |\n| Bit set and clear (**302–314**) | yes |\n| Band hull (**1–314**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| EmitNullPointerThrow | callee; the line note and the nil test |\n| CallAssignString | callee; copies the string |\n| GC::WriteBarrier | callee; color test stays in the collector |\n| asmjit address modes | callee; little-endian width is the store |\n\nA nil base throws X_WRITE_NIL and does not add the displacement. Byte, word, and dword stores write the low 8, 16, or 32 bits. Single stores convert the double with round-to-nearest and write 4 bytes; the cleared temporary lanes are not stored. Double stores write 8 bytes. String stores copy the register string, and a null source pointer faults. Object stores write the pointer and then call the barrier, including when the pointer is zero. Raw pointer stores skip the barrier. Double vectors are 8 bytes apart. Float vectors convert each lane and are 4 bytes apart. The bit store uses offset zero. A zero D register clears the mask in C, and any other 32-bit value sets it. The mask is the instruction C byte, not a constant-pool displacement.\n\n| Managed (`VmJitStore1341Slice.cs`) | Native (`jit_store.cpp`) |\n|------------------------------------|--------------------------|\n| Byte through bit stores | **1–314** |\n| Band hull (exclusive slice) | **1–314** |\n\n### Chunk **1341** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **314** |\n| **Net headline** | **+314** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmJitStore1341Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/jit/jit_store.cpp",
+        "symbol": "EmitSB",
+        "start": 1,
+        "end": 314,
+        "tests": [
+          "VmJitStore1341SliceTests.ScalarStoresNullAndStrings",
+          "VmJitStore1341SliceTests.ObjectsVectorsAndBits"
+        ]
+      }
+    ]
+  }
+]

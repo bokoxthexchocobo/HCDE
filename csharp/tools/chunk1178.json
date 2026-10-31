@@ -1,0 +1,27 @@
+[
+  {
+    "name": "po-man-move-poly-chunk1178",
+    "bucket": "conversion",
+    "note": "DMovePoly and DMovePolyTo ticks plus EV_MovePoly and EV_MovePolyTo from po_man.cpp (369–526).",
+    "auditSeams": "MovePolyobj and the mirror walk are host callbacks. Thinker types and interpolation live on chunk 1177. DPolyDoor::Tick at 527 is chunk 671.",
+    "auditRationale": "UNCredited po_man.cpp 369–526 (+158). Chunk 1177 ends at 368. A full tally line scan shows no overlap. The door tick at 527 stays chunk 671.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/po_man.cpp --start 369 --end 526 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| DMovePoly::Tick (**376–397**) | yes |\n| EV_MovePoly (**405–445**) | yes |\n| DMovePolyTo::Tick (**453–474**) | yes |\n| EV_MovePolyTo (**482–519**) | yes |\n| Band hull (**369–526**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **1–368** | registration and EV_RotatePoly are chunk **1177** |\n| **527–625** | DPolyDoor::Tick is chunk **671** |\n\nA missing poly on either tick does nothing. A failed move leaves distance, speed, and the velocity alone and does not update links. A successful move subtracts the absolute speed. Distance at or below zero stops the sequence, destroys the thinker, and still updates links. A shorter remaining distance keeps the sign of the speed and, for a plain move, rebuilds the velocity from the angle. A move-to replaces the velocity with the target minus the poly start spot, which is the full remaining delta.\n\nEV_MovePoly prints the invalid-poly message and returns false when the id is missing. A busy or blocked mirror stops the walk unless override is set. Each started poly stores the distance, speed, current angle, and that angle's vector, then starts the door sequence at mode 0. The original distance divided by the original speed stops interpolation when the ratio is less than or equal to 2, including a negative speed. The angle then advances 180 degrees. The unused local angle copy is not reintroduced.\n\nEV_MovePolyTo measures the unit from the original poly's start spot to the target and keeps that length for every mirror. Each target is that poly's start plus the unit times the length. Velocity is the unit times the speed. After a start, the unit reverses and the length stays. The same ratio stops interpolation. A zero-length target stays on the start spot and stops interpolation.\n\n| Managed (`VmPoManMove1178Slice.cs`) | Native (`po_man.cpp`) |\n|--------------------------------------|------------------------|\n| Move and move-to ticks and events | **369–526** |\n| Band hull (exclusive slice) | **369–526** |\n\n### Chunk **1178** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **158** |\n| **Net headline** | **+158** vs post-**1177** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPoManMove1178Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "EV_MovePoly",
+        "start": 369,
+        "end": 526,
+        "tests": [
+          "VmPoManMove1178SliceTests.MoveTick_StopsAtTheEndAndRescalesTheLastStep",
+          "VmPoManMove1178SliceTests.MovePoly_FlipsAngleAndStopsFastInterpolation",
+          "VmPoManMove1178SliceTests.MoveTo_AimsAtTheStartSpotAndReversesMirrors"
+        ]
+      }
+    ]
+  }
+]

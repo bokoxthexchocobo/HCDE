@@ -1,0 +1,26 @@
+[
+  {
+    "name": "xlat-chunk1217",
+    "bucket": "conversion",
+    "note": "XLAT keyword search and translator load from parse_xlat.cpp (1-167).",
+    "auditSeams": "stricmp is ASCII case-fold. lineid stores the tag code 21. A null lump name is NAME_None and shares the translator for the string None. The empty string is a different key. ParseLump receives the original lump name. A throw before loaded is set skips the free and retries.",
+    "auditRationale": "UNCredited parse_xlat.cpp 1-167 (+167). The file ends at 167. A full tally line scan shows no overlap.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/gamedata/xlat/parse_xlat.cpp --start 1 --end 167 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| FindToken (**99–135**) | yes |\n| P_LoadTranslator (**150–167**) | yes |\n| Parser data and context (**45–139**) | yes |\n| Band hull (**1–167**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| xlat_parser.c include (**141**) | lemon grammar lives outside this band |\n\nKeyword compare is ASCII case-insensitive. The token lineid stores tag code 21, the same code as tag. A null name and the name None share one translator. The empty string does not. The first load allocates, parses the original name, parses a zero token, then frees. A throw leaves the translator unloaded so the next call retries.\n\n| Managed (`VmXlat1217Slice.cs`) | Native (`parse_xlat.cpp`) |\n|---------------------------------|---------------------------|\n| Keyword table and load | **1–167** |\n| Band hull (exclusive slice) | **1–167** |\n\n### Chunk **1217** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **167** |\n| **Net headline** | **+167** vs post-**1216** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmXlat1217Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/xlat/parse_xlat.cpp",
+        "symbol": "XlatParseContext::FindToken",
+        "start": 1,
+        "end": 167,
+        "tests": [
+          "VmXlat1217SliceTests.FindToken_MatchesTheSortedKeywordsAndLeavesAMissUntouched",
+          "VmXlat1217SliceTests.Load_ParsesOncePerNameAndKeepsNoneApartFromEmpty"
+        ]
+      }
+    ]
+  }
+]

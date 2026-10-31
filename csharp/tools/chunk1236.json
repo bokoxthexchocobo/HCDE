@@ -1,0 +1,26 @@
+[
+  {
+    "name": "event-ring-chunk1236",
+    "bucket": "conversion",
+    "note": "Event ring, alt-enter fullscreen, delayed key-up, and the UI event view from d_event.cpp (1-273).",
+    "auditSeams": "The ring is 128 slots. D_PostEvent drops a device change only when events[eventhead] is already a device change, before the dispatch callback. Dispatch returning true stores nothing. PostMouseMove scales by the sensitivity cvars, negates Y, then applies invertmousex and invertmouse, and posts only when a component is non-zero. Process on this Linux build toggles fullscreen for alt+Enter and for a GUI key-down of GK_RETURN with alt, then continues. WantEscape is called only for a key-down of KEY_ESCAPE, and a true result skips the console and the menu. GS_INTRO also skips those two. The game responder still runs, and a true result on a key-down marks that key. A later key-up of a marked key in the same pass is posted again after the pass. D_RemoveNextCharEvent requires a GUI key-down at the tail. It blanks GUI key-downs and the following GUI character, and it stops on any other GUI subtype. FInputEvent copies the low 8 bits of data1 into a one-character string, empty when that byte is 0. FUiEvent char events cast data1 to uint16 and encode it with the BMP UTF-8 rules. Mouse view coordinates truncate toward zero. The DEFINE_FIELD exports are the UiEvent and InputEvent names at the end of the file.",
+    "auditRationale": "UNCredited d_event.cpp 1-273 (+273). The file ends at 273. A full tally line scan shows no overlap.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/engine/d_event.cpp --start 1 --end 273 and a full tally line scan \u2192 no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Process ring, alt-enter, and delayed key-up (**61\u2013113**) | yes |\n| Remove the next GUI character (**129\u2013148**) | yes |\n| Post, including the head-slot device drop (**159\u2013171**) | yes |\n| Mouse sensitivity and invert (**174\u2013189**) | yes |\n| Input event view (**192\u2013217**) | yes |\n| UI event view (**219\u2013257**) | yes |\n| VM field exports (**259\u2013273**) | yes |\n| Band hull (**1\u2013273**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nA second device change is stored when the head slot is still empty. The drop looks at the slot about to be written. Alt+Enter flips fullscreen and skips the responders. Escape reaches the game responder only, and only when WantEscape returns true. A key-up is delayed only when that key was eaten earlier in the same pass. GS_INTRO skips the console and the menu. A failed GUI-keydown precondition is logged and does not walk the ring. Mouse coordinates truncate toward zero. A GUI character encodes its uint16 value as UTF-8.\n\n| Managed (`VmEvent1236Slice.cs`) | Native (`d_event.cpp`) |\n|----------------------------------|------------------------|\n| Ring, mouse, and the two event views | **1\u2013273** |\n| Band hull (exclusive slice) | **1\u2013273** |\n\n### Chunk **1236** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **273** |\n| **Net headline** | **+273** vs post-**1235** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmEvent1236Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/engine/d_event.cpp",
+        "symbol": "D_ProcessEvents",
+        "start": 1,
+        "end": 273,
+        "tests": [
+          "VmEvent1236SliceTests.Process_DelaysTheEatenKeyUpAndTogglesFullscreen",
+          "VmEvent1236SliceTests.Remove_BlanksGuiCharsAndViewsTheEvent"
+        ]
+      }
+    ]
+  }
+]

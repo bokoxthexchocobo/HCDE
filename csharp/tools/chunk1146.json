@@ -1,0 +1,28 @@
+[
+  {
+    "name": "p-enemy-missile-chunk1146",
+    "bucket": "conversion",
+    "note": "Missile range, friend blocking, lift, and crush direction from `p_enemy.cpp` (**301–450**); follows **1145**.",
+    "auditSeams": "Sight, the defect and missile-range rolls, aim-line friends, and floor thinkers stay host-supplied. Sector damage under the actor begins at **451**.",
+    "auditRationale": "UNCredited **`p_enemy.cpp`** **301–450** (+150), inside the 3488-line file, with no conversion or recognition overlap.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_enemy.cpp --start 301 --end 450` and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "Just-hit order, chance truncation, and crush-direction OR match native; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `P_CheckMissileRange` (**307–365**) | yes |\n| `P_HitFriend` (**384–399**) | yes |\n| `P_IsOnLift` (**412–426**) | yes |\n| Crushing-ceiling direction (**438–450**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **151–300** | sound lines and melee range already credited by **1145** |\n| **367–371** | VM thunk forwarded to the host |\n| **451–481** | sector-damage return and `P_Move` head; 31 lines, under the floor |\n\n`SECF_NOATTACK` is **2048**. Sight uses `SF_SEEPASTBLOCKEVERYTHING` (**4**). `MF_JUSTHIT` is **0x40** and is cleared before the friend checks. An unfriendly monster always fights back. A friendly monster skips a dead target, then rolls `pr_defect() > 128` for a player friend and also requires the target not to be just-hit otherwise. Reaction time, friendship, and `P_HitFriend` apply only when the monster was not just hit. Distance starts at `Distance2D - 64`, then subtracts **128** when there is no melee state. `maxtargetrange` rejects a larger distance, and `meleethreshold` rejects a closer one when a melee state exists. The roll is `pr_checkmissilerange() >= min((int)dist, (int)(MinMissileChance * aggressiveness))`, truncating toward zero. `SKILLP_Aggressiveness` is enum index **5**; the multiplier itself is host-supplied. A different aimed friend blocks only a friendly monster that still has a target. An active `DPlat` is a lift, otherwise `SECMF_LIFT` (**2048**). Crush direction is **1** up, **0** waiting, **-1** down, and only a ceiling with `getCrush() > 0` is OR-ed in.\n\n| Managed (`VmPEnemyMissile1146Slice.cs`) | Native (`p_enemy.cpp`) |\n|-------------------------------------------|----------------------|\n| Missile range, friend, lift, crush | **301–450** |\n| Band hull (exclusive slice) | **301–450** |\n\n### Chunk **1146** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1145** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPEnemyMissile1146Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "Enemy missile range and lift",
+        "start": 301,
+        "end": 450,
+        "tests": [
+          "VmPEnemyMissile1146SliceTests.CheckMissileRange_FightsBackOnceThenUsesChance",
+          "VmPEnemyMissile1146SliceTests.HitFriend_StopsOnlyOnADifferentFriend",
+          "VmPEnemyMissile1146SliceTests.LiftAndCrush_UsePlatAndCeilingDirection"
+        ]
+      }
+    ]
+  }
+]

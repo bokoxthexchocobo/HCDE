@@ -1,0 +1,26 @@
+[
+  {
+    "name": "key-bind-names-chunk1391",
+    "bucket": "conversion",
+    "note": "The key-name table, the double-click threshold, and the queued-press clear and binding execute from c_bind.cpp (1-182).",
+    "auditSeams": "C_TickQueuedInputs starts at line 183 and stays outside this band. AddCommandString is a callee. The queued tick that calls ExecBinding stays later.",
+    "auditRationale": "UNCredited c_bind.cpp 1-182 (+182). After chunk 1390 this is the unique largest hole. s_doomsound.cpp 1-180 is 180. The band is shorter than 400 lines and is not sliced.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/console/c_bind.cpp --start 1 --end 182 and a full tally line scan, including recognition ranges, show no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Key name table (**43–137**) | yes |\n| Double-click cvar and binding globals (**139–156**) | yes |\n| Queued-press clear and binding execute (**158–181**) | yes |\n| Band hull (**1–182**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| C_TickQueuedInputs | starts at line 183, outside this hole |\n| AddCommandString | callee; the slice records the command and key it would receive |\n\nThe name table has 459 entries, NUM_KEYS. Null slots stay null. The non-Apple row stores LWin and RWin. The Apple row stores Command and a null in those two slots. An empty binding returns false and does not issue a command. A key-up of a binding that does not start with + returns false. A key-up of a + command rewrites the first character to - and leaves the caller's string unchanged. A key-down issues the original text, including text that does not start with +. A double click ors KEY_DBLCLICKED (0x8000) into the key. Clear drops the queued press, the queued release, the binding pointer, and the double-click deadline. It leaves the double-clicked bit and the delayed-release bit. The synthetic release delay is 1000 / TICRATE, and TICRATE is 35, so the delay is 28. The double-click threshold defaults to 250 with the archive and global-config bits.\n\n| Managed (`VmKeyBind1391Slice.cs`) | Native (`c_bind.cpp`) |\n|------------------------------------|------------------------|\n| Key names, threshold, clear, and execute | **1–182** |\n| Band hull (exclusive slice) | **1–182** |\n\n### Chunk **1391** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **182** |\n| **Net headline** | **+182** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmKeyBind1391Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/console/c_bind.cpp",
+        "symbol": "KeyNames",
+        "start": 1,
+        "end": 182,
+        "tests": [
+          "VmKeyBind1391SliceTests.NamesMatchScanCodesAndTheAppleRow",
+          "VmKeyBind1391SliceTests.ExecFlipsPlusCommandsAndClearDropsTheQueuedPress"
+        ]
+      }
+    ]
+  }
+]

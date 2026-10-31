@@ -1,0 +1,26 @@
+[
+  {
+    "name": "nodeclassify-chunk1215",
+    "bucket": "conversion",
+    "note": "Splitter side classification from nodebuild_classify_nosse2.cpp (1-159).",
+    "auditSeams": "fixed_t coordinates widen to double. FAR_ENOUGH is the float 17179869184, which is exact. SIDE_EPSILON is 6.5536. A zero-length splitter produces an infinite scale and the sign test treats NaN as back.",
+    "auditRationale": "UNCredited nodebuild_classify_nosse2.cpp 1-159 (+159). The file ends at 159. A full tally line scan shows no overlap.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/utility/nodebuilder/nodebuild_classify_nosse2.cpp --start 1 --end 159 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| ClassifyLine (**29-159**) | yes |\n| Band hull (**1-159**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| none | the band is the whole file |\n\nBoth endpoints far on one side return that side. Opposite far endpoints split. A near endpoint is on the line when its squared distance is below SIDE_EPSILON squared. Both endpoints on the line follow the splitter direction, and equal coordinates go to the back. One on-line end plus a back end is back. A zero-length splitter is back.\n\n| Managed (`VmNodeClassify1215Slice.cs`) | Native (`nodebuild_classify_nosse2.cpp`) |\n|------------------------------------------|-------------------------------------------|\n| ClassifyLine | **1-159** |\n| Band hull (exclusive slice) | **1-159** |\n\n### Chunk **1215** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **159** |\n| **Net headline** | **+159** vs post-**1214** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmNodeClassify1215Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/utility/nodebuilder/nodebuild_classify_nosse2.cpp",
+        "symbol": "FNodeBuilder::ClassifyLine",
+        "start": 1,
+        "end": 159,
+        "tests": [
+          "VmNodeClassify1215SliceTests.Classify_SortsFarSidesAndTheFarBoundary",
+          "VmNodeClassify1215SliceTests.Classify_UsesEpsilonAndSplitterDirectionWhenBothEndsAreOnTheLine"
+        ]
+      }
+    ]
+  }
+]

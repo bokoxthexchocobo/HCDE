@@ -1,0 +1,28 @@
+[
+  {
+    "name": "g-doomedmap-spawn-chunk1189",
+    "bucket": "conversion",
+    "note": "DoomEd numbers, spawn types, and spawn-map parsing from g_doomedmap.cpp (250–457).",
+    "auditSeams": "Actor classes and the name table are host data. FName folds None, in any case, to index 0, and an empty class name is that same index. The scanner is the classic or C-mode token reader this band calls.",
+    "auditRationale": "UNCredited g_doomedmap.cpp 250–457 (+208). The file ends at 457. Chunk 210 already credits through line 249. A full tally line scan shows no overlap.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/gamedata/g_doomedmap.cpp --start 250 --end 457 and a full tally line scan → no overlap.",
+    "auditManagedLocJustification": "The managed file includes the classic and C-mode scanner ParseSpawnMap calls. That scanner, its base-0 numbers, and the five-int editor-arg copy live outside this 208-line band, in sc_man.cpp. Sorting the dump and recording each printf add more lines. That is why this file is over 150% of the native band.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| InitActorNumsFromMapinfo (**251–284**) | yes |\n| P_GetSpawnableType (**286–305**) | yes |\n| Spawn item, sort, dump, and clear (**307–358**) | yes |\n| ParseSpawnMap (**361–400**) | yes |\n| ParseSpawnNums and ParseConversationIDs (**407–417**) | yes |\n| InitClassMap (**420–451**) | yes |\n| InitSpawnablesFromMapinfo (**453–457**) | yes |\n| Band hull (**250–457**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| error summary (**401–404**) | `}` returns, so this ScriptError never runs |\n\nDoomEdMap is cleared first. Every editor number is inserted, including an unknown class and NAME_None. Special is a short and ArgsDefined is a signed char. The five args are copied. Unknown classes are printed, then I_Error runs before the source list is cleared. A negative spawn number is a name index when that index is in range, and it does not consult the numbered map. A numbered hit returns the stored class, which may be null. Dump lines are sorted by key and printed as `%d %s`. ClearStrifeTypes clears only StrifeTypes. An unknown brace format becomes new when the next token is `{`, and that sets C mode. Old format does not consume a brace. New format requires `{`. ParseSpawnMap warns on a duplicate or a negative number, then still inserts the class. The closing brace returns, so there is no error summary. InitClassMap clears the destination, inserts a null class for an unknown name, removes NAME_None, and I_Error leaves the source list in place. InitSpawnablesFromMapinfo resolves spawn numbers first. A failure there does not resolve conversation ids.\n\n| Managed (`VmGDoomedMap1189Slice.cs`) | Native (`g_doomedmap.cpp`) |\n|--------------------------------------|----------------------------|\n| Spawnable mapinfo init | **250–457** |\n| Band hull (exclusive slice) | **250–457** |\n\n### Chunk **1189** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **208** |\n| **Net headline** | **+208** vs post-**1188** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmGDoomedMap1189Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_doomedmap.cpp",
+        "symbol": "InitSpawnablesFromMapinfo",
+        "start": 250,
+        "end": 457,
+        "tests": [
+          "VmGDoomedMap1189SliceTests.InitActorNums_CopiesArgsAndAbortsWithoutClearingTheSource",
+          "VmGDoomedMap1189SliceTests.GetSpawnableType_UsesNameIndexesAndSpawnNumbers",
+          "VmGDoomedMap1189SliceTests.ParseSpawnMap_WarnsAndStillInsertsUntilTheBrace"
+        ]
+      }
+    ]
+  }
+]

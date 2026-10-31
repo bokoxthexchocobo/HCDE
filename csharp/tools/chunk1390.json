@@ -1,0 +1,26 @@
+[
+  {
+    "name": "dds-texture-decl-chunk1390",
+    "bucket": "conversion",
+    "note": "The DDS fourcc and flag constants and the texture class declaration from ddstexture.cpp (1-186).",
+    "auditSeams": "CheckDDS starts at line 187 and stays outside this band. The constructor body, bit-shift helper, and pixel reads stay after the class declaration.",
+    "auditRationale": "UNCredited ddstexture.cpp 1-186 (+186). After chunk 1389 this is the unique largest hole. c_bind.cpp 1-182 is 182. The band is shorter than 400 lines and is not sliced.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/textures/formats/ddstexture.cpp --start 1 --end 186 and a full tally line scan, including recognition ranges, show no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Fourcc ids and flag bits (**51–89**) | yes |\n| Pixel format, caps, surface, and file header (**97–136**) | yes |\n| Texture class declaration (**145–178**) | yes |\n| Band hull (**1–186**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| CheckDDS | starts at line 187, outside this hole |\n| Constructor and pixel reads | method bodies after the class declaration |\n\nLittle-endian MAKE_ID packs DDS and DXT1 through DXT5. The cubemap negative-Z flag keeps the native spelling NEGATIZEZ. DDSD_PIXELFORMAT, DDSCAPS_TEXTURE, and DDSCAPS2_CUBEMAP_POSITIVEY share the value 0x1000 because they live in different flag words. The surface descriptor is 124 bytes, the pixel format is 32, the caps block is 16, and the file header is 128. Pitch and LinearSize share one 32-bit slot. Reserved1 has 11 words. A surface Size field may hold the DDS fourcc; this band does not force it to 124. The class extends FImageSource, friends FTexture, and declares pixel modes 0, 1, and 2. CreatePalettedPixels and CopyPixels default frame to 0. DecompressDXT3 and DecompressDXT5 take premultiplied. DecompressDXT1 and ReadRGB do not. CalcBitShift is a protected static declaration. CheckDDS is not a declared method.\n\n| Managed (`VmDdsTexture1390Slice.cs`) | Native (`ddstexture.cpp`) |\n|--------------------------------------|---------------------------|\n| Fourcc, flags, header layout, and the class declaration | **1–186** |\n| Band hull (exclusive slice) | **1–186** |\n\n### Chunk **1390** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **186** |\n| **Net headline** | **+186** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmDdsTexture1390Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/textures/formats/ddstexture.cpp",
+        "symbol": "FDDSTexture",
+        "start": 1,
+        "end": 186,
+        "tests": [
+          "VmDdsTexture1390SliceTests.FourCcFlagsAndHeaderLayout",
+          "VmDdsTexture1390SliceTests.ClassDeclaresModesFieldsAndMethods"
+        ]
+      }
+    ]
+  }
+]

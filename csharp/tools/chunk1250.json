@@ -1,0 +1,26 @@
+[
+  {
+    "name": "texture-anim-chunk1250",
+    "bucket": "conversion",
+    "note": "DeleteAll, simple and complex anim records, and the ANIMATED lump walk from animations.cpp (1-294). InitAnimDefs at line 295 stays later.",
+    "auditSeams": "Texture lookup, file ranges, lump bytes, and hardware cleanup are host tables. CheckForTexture uses TEXMAN_Overridable only. A '-' name is texture 0. An index left behind by DeleteAll is replaced when it still falls inside the cleared array and is refused when it does not.",
+    "auditRationale": "UNCredited animations.cpp 1-294 (+294). A full tally line scan shows no overlap. InitAnimDefs begins at line 295.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/gamedata/textures/animations.cpp --start 1 --end 294 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| DeleteAll (**52–71**) | yes |\n| AddAnim (**82–98**) | yes |\n| AddSimpleAnim (**109–127**) | yes |\n| AddComplexAnim (**137–149**) | yes |\n| debuganimated and InitAnimated (**189–285**) | yes |\n| Band hull (**1–294**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| InitAnimDefs body | later function |\n| ANIMDEFS parser | later functions |\n\nDeleteAll frees switch definitions and clears animations, fire textures, switches, and doors, and leaves the base-pic index map in place. AddAnim replaces a recorded base when that slot still exists. AddSimpleAnim keeps one speed frame and a frame count of the whole range, and only when the endpoints share a use type and a file span. A texture id of 0 or less does not advance, so the compatibility check compares it with itself. AddComplexAnim copies the frame list and marks the animation discrete.\n\nInitAnimated reads 23-byte ANIMATED records until a 0xFF flag. Byte 0 bit 0 selects a wall. Bit 1 allows decals. Bytes 10 through 18 are the start name and bytes 1 through 9 are the end name. A missing start skips the end lookup. A speed above 65535 sets warp style 2 when the start texture is not already warped. Otherwise a one-frame range is skipped, a descending range is swapped to backward, and the tic count is scaled by 1000/35. The backward flag stays set for later records in the same walk. A record that does not fit, or a flag byte past the lump, reports the past-end error and stops.\n\n| Managed (`VmTextureAnim1250Slice.cs`) | Native (`animations.cpp`) |\n|----------------------------------------|---------------------------|\n| Setup, records, and the ANIMATED walk | **1–294** |\n| Band hull (exclusive slice) | **1–294** |\n\n### Chunk **1250** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **294** |\n| **Net headline** | **+294** vs post-**1249** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmTextureAnim1250Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/textures/animations.cpp",
+        "symbol": "DeleteAll",
+        "start": 1,
+        "end": 294,
+        "tests": [
+          "VmTextureAnim1250SliceTests.Init_ReplacesOnTheSameBaseAndWarpsAbove16Bits",
+          "VmTextureAnim1250SliceTests.Init_SkipsAShortLumpAndReusesAStaleIndex"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "name": "ai-director-chunk1348",
+    "bucket": "conversion",
+    "note": "Monster director sweep, regroup hints, and ai_status from d_net_aidirector.cpp (1-284), through end of file.",
+    "auditSeams": "The level supplies the thinker list and the tic. The authority predicate and the millisecond clock are inputs. Clustering uses the actor position, monster bit, dormant bit, corpse bit, and health.",
+    "auditRationale": "UNCredited d_net_aidirector.cpp 1-284 (+284). A full tally line scan shows no overlap. This is the largest remaining hole of at most 400 lines, ahead of RegistersScopeStateNode.cpp 1-283.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/d_net_aidirector.cpp --start 1 --end 284 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Cvars, state, and authority (**64–91**) | yes |\n| Regroup hint read and consume (**93–132**) | yes |\n| Monster sweep and clusters (**134–225**) | yes |\n| Tick cadence and the named RNG touch (**227–252**) | yes |\n| ai_status text (**254–284**) | yes |\n| Band hull (**1–284**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Actor mutation and replication | this file never writes actor state |\n| pr_aidirector draws | the tick names the stream and does not draw |\n\nA disabled director returns before the authority check and leaves the tick counter alone. The sweep cvar clamps to 1 through 70. Tick 1 always sweeps, and later sweeps follow the modulo of the clamped period. A null level still counts the sweep and clears the stores, and it does not refresh the wallclock. Living monsters join the first cluster whose center is within 512, inclusive, and the new center is the reciprocal-weighted average. Corpses and non-positive health are counted and not clustered. A dormant living monster is counted as both dormant and alive and is clustered. Regroup hints are stored only for clusters of at least 3, and only while the hint cvar is on. Reading a hint does not remove it. Consuming a hint increments the total and also leaves it stored. The target consume reads the current cluster center, skips a null out pointer, and does not increment when the group is negative or out of range. A null actor misses before a null hint entry. The status text is the ai_status printf, including the phase line. Wallclock values are diagnostic and do not choose a cluster.\n\n| Managed (VmAiDirector1348Slice.cs) | Native (d_net_aidirector.cpp) |\n|------------------------------------|-------------------------------|\n| Sweep, hints, tick, and status | **1–284** |\n| Band hull (exclusive slice) | **1–284** |\n\n### Chunk **1348** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **284** |\n| **Net headline** | **+284** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmAiDirector1348Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/d_net_aidirector.cpp",
+        "symbol": "HCDEAIDirectorTick",
+        "start": 1,
+        "end": 284,
+        "tests": [
+          "VmAiDirector1348SliceTests.DriveSweepAndClusters",
+          "VmAiDirector1348SliceTests.HintsStatusAndConsume"
+        ]
+      }
+    ]
+  }
+]

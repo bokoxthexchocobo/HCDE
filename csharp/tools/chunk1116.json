@@ -1,0 +1,29 @@
+[
+  {
+    "name": "pmobj-activate-destroy-chunk1116",
+    "bucket": "conversion",
+    "note": "`PostBeginPlay`, `isFast`, `Activate`/`Deactivate`, and `OnDestroy` premorph cleanup from `p_mobj.cpp` (**5827–5976**). Skips **5577–5726** overlap with chunk **481**.",
+    "auditSeams": "VM thunks, `SetState`, `WorldThingDestroyed`, and inventory destruction remain host-injected.",
+    "auditRationale": "First ≥150 UNCredited window after **1115** is **5827–5976**; **5577–5726** overlaps **481**.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_mobj.cpp --start 5827 --end 5976` and `--chunk 1116 --band` → UNCredited, exit 0.",
+    "auditManagedLocJustification": "Activate/deactivate dormant gates and premorph destroy policy match native branches; managed LOC exceeds 50%.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `PostBeginPlay` no-delay + lights (**5828–5833**) | yes |\n| `isFast` always/never/skill (**5844–5846**) | yes |\n| `Activate` dormant wake (**5862–5876**) | yes |\n| `Deactivate` dormant sleep (**5907–5921**) | yes |\n| `OnDestroy` alternative + world hook (**5954–5972**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| **5836–5840**, **5880–5896**, **5925–5941** | VM / event thunks |\n| **5974+** | attached-light host cleanup outside hull |\n| **5577–5726** | overlaps chunk **481** |\n\n| Managed (`VmPMobjActivateDestroy1116Slice.cs`) | Native (`p_mobj.cpp`) |\n|-----------------------------------------------|---------------------|\n| Begin/activate/destroy policy | **5827–5976** |\n| Band hull (exclusive slice) | **5827–5976** |\n\n### Chunk **1116** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| **Net headline** | **+150** vs post-**1115** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjActivateDestroy1116Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "PostBeginPlay Activate Deactivate OnDestroy",
+        "start": 5827,
+        "end": 5976,
+        "tests": [
+          "VmPMobjActivateDestroy1116SliceTests.IsFast_NeverFastOverridesSkill",
+          "VmPMobjActivateDestroy1116SliceTests.RunActivate_WakesDormantMonster",
+          "VmPMobjActivateDestroy1116SliceTests.RunDeactivate_SetsDormantWithoutInactiveState",
+          "VmPMobjActivateDestroy1116SliceTests.RunOnDestroyPremorph_ClearsLivingAlternative"
+        ]
+      }
+    ]
+  }
+]
