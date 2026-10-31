@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 132919,
+  "convertedThisRunNative": 133296,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 164522,
+  "convertedThisRunManaged": 165071,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 355953,
+  "remainingNative": 355576,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 151446,
+  "convertedBehaviorNative": 151823,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 152133,
-  "convertedBehaviorManaged": 174193,
+  "combinedBehaviorNative": 152510,
+  "convertedBehaviorManaged": 174742,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -45832,6 +45832,33 @@
       "nativeLoc": 388,
       "managedLoc": 573,
       "conversionManagedCommit": "6fe5874cea01bf380318c3f03733baf303fad18f"
+    },
+    {
+      "name": "md3-model-chunk1326",
+      "bucket": "conversion",
+      "note": "MD3 load, surface geometry, and the interpolated frame from models_md3.cpp (1-377).",
+      "auditSeams": "LittleShort and LittleLong are identity on this little-endian host. FixPathSeperator rewrites backslashes before LoadSkin. LoadSkin is the model.cpp callee: the empty path is tried first, then the model path when that id is invalid. FindFrame ignores nodefault and returns -1. A shader name with no NUL inside its 64-byte field stops at the field.",
+      "auditRationale": "UNCredited models_md3.cpp 1-377 (+377). A full tally line scan shows no overlap. The file ends at line 377.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/models/models_md3.cpp --start 1 --end 377 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Lat/lng unpack (**37\u201347**) | yes |\n| Header, frame names, and skin fallback (**126\u2013177**) | yes |\n| Triangle, texcoord, and vertex load (**185\u2013230**) | yes |\n| Vertex buffer, Y/Z swap, and raw indices (**238\u2013293**) | yes |\n| Skin hit list, frame lookup, and interpolated draw (**302\u2013377**) | yes |\n| Band hull (**1\u2013377**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| MD3 tag payload | the header stores the count and does not read the tag bytes |\n| LoadSkin file search | callee in model.cpp |\n\nFrame names copy at most 15 bytes into a zeroed 16-byte field. Two or more surfaces set the multi-surface flag. Backslashes in a shader name become slashes. An invalid empty-path skin is loaded again with the model path. Vertices are signed shorts divided by 64, and the packed normal is an unsigned lat/lng. The buffer stores X, Z, Y and the normal NX, NZ, NY. Triangle indices are not biased by the surface vertex cursor. A second build for the same renderer type does not read the lump again. FindFrame is case-insensitive and ignores the default flag. A frame number outside the frame list, including a negative value under the unsigned compare, returns before interpolation. An explicit skin is clamped false. Otherwise a valid surface skin id is used, then the first surface skin, and a missing texture skips that surface. The draw offset is the index cursor times 4. Interpolation is cleared to 0 after the surfaces.\n\n| Managed (`VmMd3Model1326Slice.cs`) | Native (`models_md3.cpp`) |\n|------------------------------------|---------------------------|\n| Load, geometry, skins, and the frame draw | **1\u2013377** |\n| Band hull (exclusive slice) | **1\u2013377** |\n\n### Chunk **1326** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **377** |\n| **Net headline** | **+377** vs post-**1325** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmMd3Model1326Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/models/models_md3.cpp",
+          "symbol": "FMD3Model::Load",
+          "start": 1,
+          "end": 377,
+          "tests": [
+            "VmMd3Model1326SliceTests.Load_CopiesFramesAndFallsBackTheSkin",
+            "VmMd3Model1326SliceTests.Geometry_SwapsAxesAndInterpolatesTheFrame"
+          ]
+        }
+      ],
+      "nativeLoc": 377,
+      "managedLoc": 549,
+      "conversionManagedCommit": "68c3533d465d676ea1fd02776a784711562beb0b"
     }
   ],
   "behaviorNativeChecksum": 508086,
