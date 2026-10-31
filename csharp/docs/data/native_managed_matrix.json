@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 330921
+    "managedCSharpLoc": 331155
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 149168,
+    "convertedThisRunNative": 149362,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 188117,
+    "convertedThisRunManaged": 188351,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 339704,
+    "remainingNative": 339510,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 167695,
+    "convertedBehaviorNative": 167889,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 168382,
-    "convertedBehaviorManaged": 197788,
+    "combinedBehaviorNative": 168576,
+    "convertedBehaviorManaged": 198022,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -47484,6 +47484,33 @@
         "nativeLoc": 194,
         "managedLoc": 291,
         "conversionManagedCommit": "4e789e9a8254f1b72d3e6927085647eedcaf1371"
+      },
+      {
+        "name": "d-net-buffer-reset-chunk1386",
+        "bucket": "conversion",
+        "note": "Mirror-perf tail, buffer clear, and cutscene and tic-gate checks from d_net.cpp (4300-4493).",
+        "auditSeams": "Lines 4304-4305 include other files and those files stay outside this band. CloseNetwork, prediction clear, baseline sync, the view smoother, invasion reset, and level-start status stay callees. The forward declaration of the authority watchdog has no body in this band. Net_SetLateJoinSyncPending opens at the end of the band and its body stays on the later chunk. SetData(nullptr, 0) clears the tic length and leaves the command bytes. Net consistency and the last packet time are not cleared. EnterTic is copied into the last-enter fields and is not itself cleared. Pending health keeps every field except Valid.",
+        "auditRationale": "UNCredited d_net.cpp 4300-4493 (+194). After chunk 1385 this is the unique largest hole. codegen.cpp 6316-6508 is 193. The band is shorter than 400 lines and is not sliced.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/d_net.cpp --start 4300 --end 4493 and a full tally line scan, including recognition ranges, show no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Case label and splices (**4300\u20134305**) | yes |\n| Mirror perf tail (**4306\u20134326**) | yes |\n| `Net_TickInvasionMirrorState` (**4328\u20134335**) | yes |\n| `Net_ClearBuffers` (**4337\u20134454**) | yes |\n| Forward declarations (**4456\u20134457**) | yes |\n| `Net_IsCutsceneReadyParticipant` (**4459\u20134465**) | yes |\n| `Net_IsTicGateClient` (**4467\u20134484**) | yes |\n| `Net_IsLateJoinSyncPending` (**4486\u20134490**) | yes |\n| Late-join entry (**4492\u20134493**) | yes |\n| Band hull (**4300\u20134493**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Included snapshot and invasion fragments | other files |\n| `CloseNetwork` and prediction clear | callees |\n| Baseline sync, smoother, invasion reset, level-start status | callees |\n| Watchdog body | outside this band |\n| Late-join body | outside this band |\n\nThe mirror line prints only when the HUD debug cvar is set and the pass count is a multiple of 35, including zero. A zero pass count still prints average 0.00. Average is total microseconds over passes over 1000, and max is the max microseconds over 1000, both with two digits. Backlog is client tic minus gametic. Lag names are none, predicting, waiting, skipping, and unknown. Invasion tics decrement only when this peer is not the authority, the state is not disabled, and the tic count is positive. Clear buffers closes the network, zeroes every slot, then the report clocks, and clears only the pending-health valid bit. Slot 0 is marked in game only when it is not the reserved server slot. Network client 0 is inserted either way. A cutscene participant must be in game, not reserved, and not late-join pending. A tic-gate client must be in the network list, not reserved, and not late-join pending.\n\n| Managed (`VmDNetBufferReset1386Slice.cs`) | Native (`d_net.cpp`) |\n|------------------------------------------------|--------------------------------|\n| Mirror tail, clear buffers, and gate checks | **4300\u20134493** |\n| Band hull (exclusive slice) | **4300\u20134493** |\n\n### Chunk **1386** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **194** |\n| **Net headline** | **+194** vs the prior chunk |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Net.Core/VmDNetBufferReset1386Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "Net_ClearBuffers",
+            "start": 4300,
+            "end": 4493,
+            "tests": [
+              "VmDNetBufferReset1386SliceTests.MirrorPerfPrintsOnPassMultiplesAndMirrorTicDecrements",
+              "VmDNetBufferReset1386SliceTests.ClearBuffersResetsPlayersAndGatesSkipReservedOrPending"
+            ]
+          }
+        ],
+        "nativeLoc": 194,
+        "managedLoc": 234,
+        "conversionManagedCommit": "44241b41345699f4f68083b18827b4a738d6924c"
       }
     ],
     "behaviorNativeChecksum": 508086,
