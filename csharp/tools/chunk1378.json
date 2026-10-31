@@ -1,0 +1,26 @@
+[
+  {
+    "name": "win32-base-video-chunk1378",
+    "bucket": "conversion",
+    "note": "Win32 base video construct, display-device name, and adapter dump from win32basevideo.cpp (1-204).",
+    "auditSeams": "ShowGameView, MonitorFromPoint, GetMonitorInfo, GetMonitorInfoA, and EnumDisplayMonitors are Win32 callees. vid_adapter is CVAR_Int default 0 with CVAR_ARCHIVE | CVAR_GLOBALCONFIG. MONITOR_DEFAULTTOPRIMARY is 1. MONITORINFOF_PRIMARY is 1. CCHDEVICENAME is 32. TEXTCOLOR_BOLD is U+001C plus. The header is not credited.",
+    "auditRationale": "UNCredited win32basevideo.cpp 1-204 (+204). After chunk 1377 this ties codegen.cpp 9936-10139 and d_net.cpp 4992-5195. Path order takes this file. Gaps longer than 400 lines stay whole and are not sliced.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/platform/win32/win32basevideo.cpp --start 1 --end 204 and a full tally line scan, including recognition ranges, show no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Preamble and includes (**1–41**) | yes |\n| `vid_adapter` cvar (**42–42**) | yes |\n| `Win32BaseVideo` construct (**50–55**) | yes |\n| `GetPrimaryMonitorHandle` (**63–67**) | yes |\n| Enum state and device callback (**69–96**) | yes |\n| `GetDisplayDeviceName` (**104–139**) | yes |\n| Dump state and callback (**147–188**) | yes |\n| `DumpAdapters` (**196–204**) | yes |\n| Band hull (**1–204**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| `win32basevideo.h` | declaration only |\n| `ShowGameView` and the monitor APIs | callees |\n\n`vid_adapter` is an int cvar named `vid_adapter`, default 0, flags `CVAR_ARCHIVE` (1) and `CVAR_GLOBALCONFIG` (1<<10). The construct shows the game view, then resolves the display device. Adapter 0 calls `MonitorFromPoint` at (0, 0) with `MONITOR_DEFAULTTOPRIMARY` and does not enumerate. Any other adapter starts the index at 1, calls `GetMonitorInfo` and ignores the result, keeps the first monitor because the found handle starts null, overwrites that handle when the index equals `vid_adapter`, and always returns TRUE so the walk continues. The cvar is read on each callback. A null found handle leaves the name null and the monitor 0. `GetMonitorInfoA` failure does the same, discarding the handle. Success copies `szDevice` through the first NUL into a 32-byte buffer and publishes that buffer. A device of 32 or more characters fails the copy. Dump captures the name pointer before enumeration. A failed query stays bold with an empty detail. A null name bolds only the primary monitor. A non-null name bolds only an ordinal device match, including the empty string. The detail is ` [%ldx%ld @ (%ld,%ld)]` plus ` (Primary)` when `MONITORINFOF_PRIMARY` is set, truncated to 63 characters. `TEXTCOLOR_BOLD` is U+001C `+`.\n\n| Managed (`VmWin32BaseVideo1378Slice.cs`) | Native (`win32basevideo.cpp`) |\n|------------------------------------------|------------------------------|\n| Construct, device name, and adapter dump | **1–204** |\n| Band hull (exclusive slice) | **1–204** |\n\n### Chunk **1378** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **204** |\n| **Net headline** | **+204** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmWin32BaseVideo1378Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/platform/win32/win32basevideo.cpp",
+        "symbol": "Win32BaseVideo::Win32BaseVideo",
+        "start": 1,
+        "end": 204,
+        "tests": [
+          "VmWin32BaseVideo1378SliceTests.ConstructSelectsPrimaryOrEnumeratedAdapter",
+          "VmWin32BaseVideo1378SliceTests.DumpAdaptersMarksTheSelectedMonitor"
+        ]
+      }
+    ]
+  }
+]
