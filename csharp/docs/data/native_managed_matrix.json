@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 309638
+    "managedCSharpLoc": 309962
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 134777,
+    "convertedThisRunNative": 135139,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 166834,
+    "convertedThisRunManaged": 167158,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 354095,
+    "remainingNative": 353733,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 153304,
+    "convertedBehaviorNative": 153666,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 153991,
-    "convertedBehaviorManaged": 176505,
+    "combinedBehaviorNative": 154353,
+    "convertedBehaviorManaged": 176829,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -45983,6 +45983,33 @@
         "nativeLoc": 365,
         "managedLoc": 434,
         "conversionManagedCommit": "12b93a6c2cdf956e8e28cbdee33b2b076538506e"
+      },
+      {
+        "name": "jit-flow-chunk1331",
+        "bucket": "conversion",
+        "note": "JIT test, jump, indexed jump, scope check, return, immediate return, throw, and bounds checks from jit_flow.cpp (1-362), through end of file.",
+        "auditSeams": "EmitPopFrame, FScopeBarrier::ValidateCall, and PCToLine stay callees. The assembler cursor places the throw and the bounds call on the forward label, then emits the compare in front of that label.",
+        "auditRationale": "UNCredited jit_flow.cpp 1-362 (+362), through end of file. A full tally line scan shows no overlap. This is the largest remaining hole of at most 400 lines, ahead of c_cvars.cpp 321-676.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/scripting/jit/jit_flow.cpp --start 1 --end 362 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| TEST, TESTN, JMP, and IJMP (**26\u201368**) | yes |\n| Scope check and string return helper (**71\u201394**) | yes |\n| RET and RETI (**96\u2013288**) | yes |\n| THROW and the three bounds checks (**290\u2013361**) | yes |\n| Band hull (**1\u2013362**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| EmitPopFrame | callee |\n| FScopeBarrier::ValidateCall | callee, called with b - 1 |\n| PCToLine | callee |\n\nTEST compares register D with the unsigned BC immediate and jumps to pc + 2 when they differ. TESTN negates that unsigned immediate before the same jump. JMP adds the signed 24-bit offset and one. IJMP copies D, compares it with each following slot whose opcode is JMP (92), and skips slots that are not jumps. The compile cursor then advances by the signed BC count, including zero, and the miss path throws X_OTHER. SCOPE records the nil-read throw on a forward label, tests register A, and calls validation with the B immediate. The callee subtracts one. RET of NIL pops the frame and returns zero. Any other RET compares the slot with numret, stores the value on the in-range path, and a final bit pops and returns either the next slot or numret. Integer stores are dwords. Float constants move one to four qword bit patterns, with four checked before three and two. Float registers use movsd. Strings add retnum times the host return-slot size and call SetString. Pointer width follows the code generator: qword when 64-bit, dword otherwise. The slot address uses 16 bytes on a 64-bit host and 8 bytes on a 32-bit host. RETI stores the signed 16-bit immediate. THROW passes BC. Each bounds check records the source line, compares, and jumps jae to ThrowArrayOutOfBounds. The message uses a signed compare: index >= size prints the size line, and every smaller index prints the negative-index line.\n\n| Managed (`VmJitFlow1331Slice.cs`) | Native (`jit_flow.cpp`) |\n|-----------------------------------|-------------------------|\n| Test, jump, return, and bounds | **1\u2013362** |\n| Band hull (exclusive slice) | **1\u2013362** |\n\n### Chunk **1331** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **362** |\n| **Net headline** | **+362** vs post-**1330** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmJitFlow1331Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/scripting/jit/jit_flow.cpp",
+            "symbol": "JitCompiler::EmitTEST",
+            "start": 1,
+            "end": 362,
+            "tests": [
+              "VmJitFlow1331SliceTests.Flow_BranchesScopeAndIndexedJump",
+              "VmJitFlow1331SliceTests.Return_StoresValuesAndBounds"
+            ]
+          }
+        ],
+        "nativeLoc": 362,
+        "managedLoc": 324,
+        "conversionManagedCommit": "75ab76c22eb1aeebf071b5819b041e1fa9226386"
       }
     ],
     "behaviorNativeChecksum": 508086,
