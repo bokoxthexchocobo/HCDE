@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 146263,
+  "convertedThisRunNative": 146483,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 184303,
+  "convertedThisRunManaged": 184880,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 342609,
+  "remainingNative": 342389,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 164790,
+  "convertedBehaviorNative": 165010,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 165477,
-  "convertedBehaviorManaged": 193974,
+  "combinedBehaviorNative": 165697,
+  "convertedBehaviorManaged": 194551,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -47089,6 +47089,34 @@
       "nativeLoc": 222,
       "managedLoc": 325,
       "conversionManagedCommit": "4c96f5d97a7cfe4493307d6334e0c333f8febe63"
+    },
+    {
+      "name": "edf-reverb-thing-chunk1372",
+      "bucket": "conversion",
+      "note": "Thing-header dehacked tail, reverb properties and header, and the thing-block scan through the nested opener from hcde_edf.cpp (757-976).",
+      "auditSeams": "TokenizeSimple, TrimCopy, LowerCopy, ParseIntStrict, and std::stof stay outside this band and are invoked from it. The thing-header prefix at 729-756 and the property call at 977-980 stay chunk 18.",
+      "auditRationale": "UNCredited hcde_edf.cpp 757-976 (+220). A full tally line scan, including recognition ranges, shows no overlap. This is the largest remaining hole of at most 400 lines after decallib.cpp 1-222. It is not a tie. hcde_servermode.cpp 1-218 and p_switch.cpp 235-452 are 218. Gaps longer than 400 lines stay whole and are not sliced. The band sits between chunk 18 ranges 729-756 and 977-980.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/gamedata/hcde_edf.cpp --start 757 --end 976 and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "hcde_edf.cpp 757-976 is the dehacked-number loops, the whole reverb property line, the reverb header, and the thing-block prefix through the nested-brace cut. Every one of those calls TokenizeSimple, and the numbers go through ParseIntStrict or std::stof. Those callees live at lines 149-384, outside this hole, so the slice carries their quote, escape, delimiter, base-0 integer, and prefix-float rules instead of claiming those lines. The header call at line 933 also runs the chunk 18 prefix that stores the name, base, and doomednum before the dehacked loops; that prefix is not in this native range. The managed file is 577 lines, 2.62 times the 220 native lines, because of those callee bodies.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Dehacked loops and the header return (**757\u2013773**) | yes |\n| Closing braces of `ParseThingHeader` (**774\u2013775**) | yes |\n| `ParseReverbPropertyLine` (**776\u2013883**) | yes |\n| `ParseReverbHeader` (**885\u2013925**) | yes |\n| `ParseThingBlock` through the stat counters (**927\u2013949**) | yes |\n| Heredoc exit and the nested-brace cut (**951\u2013976**) | yes |\n| Band hull (**757\u2013976**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| hcde_edf.cpp **729\u2013756** | header name, base, and doomednum, chunk 18 |\n| hcde_edf.cpp **977\u2013980** | `ParseThingPropertyLine` call, chunk 18 |\n| hcde_edf.cpp **149\u2013384** | trim, lower, tokenize, and strict int; callees, not this hole |\n| hcde_edf.cpp **981\u20131001** | heredoc enter, brace depth, and the definition push; the next gap |\n\n`ParseIntStrict` is `strtol` base 0. The whole token must be consumed. `0x2A` is 42 and `010` is 8. A trailing character or a value outside `int` is rejected. After the doomednum is stored, the next strict integer in the header is `DehackedNum`. The search then returns, so a later colon is not read. One integer leaves `DehackedNum` at -1.\n\nReverb keys are compared after ASCII lower. `roomsize`, `damping`, `wetscale`, `dryscale`, `width`, and the five `eq.*` keys store `std::stof` of the next token, which accepts a numeric prefix and throws when no conversion is possible. `predelay` stores the next strict integer. `+equalized` sets `DecayHFLimit` to 1 and `-equalized` sets it to 0. Any other key increments the unsupported count and records `property 'key' is not supported`. Empty text does not increment the property count. The issue list stops at 20. A negative lump is source `<unknown>`. A non-negative lump asks `GetFileFullName`.\n\nThe reverb header stores `tokens[1]` as the name, then the first two strict integers after the colon as `Id1` and `Id2`. Both start at -1. A thing block with an empty name records `missing thing name` under `thingdelta` or `thingtype` and does not count a type. Otherwise it counts a delta or a type. The scan trims with the C space set, skips a blank line, and while a heredoc is open skips until `\"@`. Other lines cut at the first `{` and keep the untrimmed prefix. `nestedDepth` is set to 0 here; the property call that reads it is chunk 18.\n\n| Managed (`VmEdfBand1372Slice.cs`) | Native (`hcde_edf.cpp`) |\n|-----------------------------------|------------------------|\n| Dehacked tail, reverb, thing-block scan | **757\u2013976** |\n| Band hull (exclusive slice) | **757\u2013976** |\n\n### Chunk **1372** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **220** |\n| **Net headline** | **+220** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Gamedata/VmEdfBand1372Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/hcde_edf.cpp",
+          "symbol": "EdfReverbThing",
+          "start": 757,
+          "end": 976,
+          "tests": [
+            "VmEdfBand1372SliceTests.HeaderDehackedAndThingScan",
+            "VmEdfBand1372SliceTests.ReverbHeaderAndProperties"
+          ]
+        }
+      ],
+      "nativeLoc": 220,
+      "managedLoc": 577,
+      "conversionManagedCommit": "337ee6811fb82382c8cb5d30f353722fe1f348b4"
     }
   ],
   "behaviorNativeChecksum": 508086,
