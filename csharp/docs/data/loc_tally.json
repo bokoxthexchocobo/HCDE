@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 138472,
+  "convertedThisRunNative": 138784,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 173092,
+  "convertedThisRunManaged": 173542,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 350400,
+  "remainingNative": 350088,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 156999,
+  "convertedBehaviorNative": 157311,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 157686,
-  "convertedBehaviorManaged": 182763,
+  "combinedBehaviorNative": 157998,
+  "convertedBehaviorManaged": 183213,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -46269,6 +46269,33 @@
       "nativeLoc": 314,
       "managedLoc": 296,
       "conversionManagedCommit": "a966e650bffcc000c5b742ce18e7a35e2b2c2b9e"
+    },
+    {
+      "name": "jit-move-chunk1342",
+      "bucket": "conversion",
+      "note": "JIT register moves, numeric and string casts, and dynamic class casts from jit_move.cpp (1-312).",
+      "auditSeams": "Moves copy registers in ascending order, so an overlapping vector move reads a lane that an earlier lane already replaced. Cast formatting is stb_sprintf. Integer parse is strtoll base 0 and the result is narrowed to 32 bits. Float parse is strtod, including a hex float. FName, V_GetColor, sound, sprite, and texture lookups stay callees. A null object skips IsKindOf and IsDescendantOf.",
+      "auditRationale": "UNCredited jit_move.cpp 1-312 (+312). A full tally line scan shows no overlap. This whole file is the largest remaining hole of at most 400 lines, ahead of a_dynlightdata.cpp 1-304.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/scripting/jit/jit_move.cpp --start 1 --end 312 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Integer, float, string, and pointer moves (**30\u201349**) | yes |\n| Vector moves (**51\u201370**) | yes |\n| Cast helpers (**72\u201388**) | yes |\n| Cast dispatch (**90\u2013218**) | yes |\n| Bool cast (**221\u2013256**) | yes |\n| Dynamic object and class casts (**258\u2013312**) | yes |\n| Band hull (**1\u2013312**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| stb_sprintf | callee; five-digit floats, Inf, and NaN |\n| strtoll and strtod | callees; base 0 and hex floats |\n| FName, V_GetColor, sound, sprite, and texture | callees invoked by the cast |\n| IsKindOf and IsDescendantOf | callees; a null receiver skips them |\n\nUnsigned float conversion zero-extends the 32-bit register. Signed truncating conversion uses the x64 indefinite result when the value does not fit in 32 bits. Unsigned truncating conversion uses a 64-bit truncate and keeps the low 32 bits. A null pointer formats as the word null, and any other pointer is 16 lowercase hex digits. An empty string name is NAME_None and does not look the name up. An out-of-range name index formats as empty. A missing texture formats as (null). The default sprite cast prints the 32-bit pattern with %d. Bool casts of NaN are true, and negative zero is false. Unknown cast types raise the unknown-type error.\n\n| Managed (`VmJitMove1342Slice.cs`) | Native (`jit_move.cpp`) |\n|-----------------------------------|-------------------------|\n| Moves, casts, and dynamic casts | **1\u2013312** |\n| Band hull (exclusive slice) | **1\u2013312** |\n\n### Chunk **1342** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **312** |\n| **Net headline** | **+312** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmJitMove1342Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/jit/jit_move.cpp",
+          "symbol": "EmitMOVE",
+          "start": 1,
+          "end": 312,
+          "tests": [
+            "VmJitMove1342SliceTests.MovesAndNumericCasts",
+            "VmJitMove1342SliceTests.NamesColorsAndDynamicCasts"
+          ]
+        }
+      ],
+      "nativeLoc": 312,
+      "managedLoc": 450,
+      "conversionManagedCommit": "b04e83c386f0f6b237c3c6e94772c2542a72a004"
     }
   ],
   "behaviorNativeChecksum": 508086,
