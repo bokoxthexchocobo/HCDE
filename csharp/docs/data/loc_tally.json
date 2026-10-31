@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 137834,
+  "convertedThisRunNative": 138158,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 172088,
+  "convertedThisRunManaged": 172796,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 351038,
+  "remainingNative": 350714,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 156361,
+  "convertedBehaviorNative": 156685,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 157048,
-  "convertedBehaviorManaged": 181759,
+  "combinedBehaviorNative": 157372,
+  "convertedBehaviorManaged": 182467,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -46214,6 +46214,34 @@
       "nativeLoc": 324,
       "managedLoc": 748,
       "conversionManagedCommit": "39c0695281dffc38abf0953ca528fafd277f0f4e"
+    },
+    {
+      "name": "runtime-state-chunk1340",
+      "bucket": "conversion",
+      "note": "RuntimeState path resolve, variable nodes, and the VM frame walk from RuntimeState.cpp (1-324).",
+      "auditSeams": "State-node child lists stay on the structured node. IdProvider starts at 1000. ParseInt is std::stoi, and its catch of void* does not catch invalid_argument or out_of_range, so a bad stack id throws. GetStack ignores the stack id and returns the one global frame stack.",
+      "auditRationale": "UNCredited RuntimeState.cpp 1-324 (+324). A full tally line scan shows no overlap. This whole file was tied with models_ue1.cpp 1-324. Path order credited the model loader as chunk 1339, so this is the other half of that tie.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/scripting/dap/RuntimeState.cpp --start 1 --end 324 and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "ToLower, Split, Join, std::stoi, and the type predicates in GameInterfaces.h are not source lines in this file. The managed port keeps the path walk, the child window, the variable factory order, and the frame walk, and it carries the base-10 stack parser, the ASCII lower, and the id map because those calls produce the path ids and the node kind. State-node bodies stay outside this file. That host surface is why the managed file is over 150% of the 324-line source.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Construction and reset (**40\u201344**, **318\u2013323**) | yes |\n| Resolve by path (**46\u2013166**) | yes |\n| Path by id and resolve by id (**168\u2013191**) | yes |\n| Children by path and id (**193\u2013238**) | yes |\n| Variable node factory (**240\u2013270**) | yes |\n| Stack and frame walk (**272\u2013317**) | yes |\n| Band hull (**1\u2013324**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| ToLower, Split, and Join | string callees |\n| std::stoi | stack ids are numbers |\n| Array, value, state, object, and struct node bodies | callees constructed here |\n| IdProvider::GetNext | callee; the first id is 1000 |\n\nThe path is lowercased before it is split. A stack id of 1 reuses the root. Any other parsed id, including a leading sign or trailing junk, builds a new stack node. Child names are registered in lowercase before the lookup. An evaluate walk inserts a virtual container when the direct child is missing, and a null container is skipped. The final id is the stack id when the path has one element, otherwise the id of the lowercase path. Id 1 reports the path \"1\" without consulting the map, and resolve-by-id does not use that shortcut. A child count of 0 or the default maximum walks the remaining names, and a failed child extends the window by one. Arrays are chosen before values, so an array pointer is not a value node. A pointer to a non-struct container is a value node. Reset clears the path map and replaces the root, and it leaves the global frame stack in place. Frames are walked from the top parent pointer. An empty stack still returns true.\n\n| Managed (`VmRuntimeState1340Slice.cs`) | Native (`RuntimeState.cpp`) |\n|----------------------------------------|-----------------------------|\n| Path resolve, variable nodes, and the frame walk | **1\u2013324** |\n| Band hull (exclusive slice) | **1\u2013324** |\n\n### Chunk **1340** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **324** |\n| **Net headline** | **+324** vs post-**1339** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmRuntimeState1340Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/dap/RuntimeState.cpp",
+          "symbol": "ResolveStateByPath",
+          "start": 1,
+          "end": 324,
+          "tests": [
+            "VmRuntimeState1340SliceTests.PathsIdsAndChildWindow",
+            "VmRuntimeState1340SliceTests.VariableNodesAndFrameWalk"
+          ]
+        }
+      ],
+      "nativeLoc": 324,
+      "managedLoc": 708,
+      "conversionManagedCommit": "121204d5e0d0364330ed778d31ce76ff033b61af"
     }
   ],
   "behaviorNativeChecksum": 508086,
