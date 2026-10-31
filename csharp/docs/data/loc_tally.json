@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 149747,
+  "convertedThisRunNative": 149935,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 188867,
+  "convertedThisRunManaged": 189014,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 339125,
+  "remainingNative": 338937,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 168274,
+  "convertedBehaviorNative": 168462,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 168961,
-  "convertedBehaviorManaged": 198538,
+  "combinedBehaviorNative": 169149,
+  "convertedBehaviorManaged": 198685,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -47549,6 +47549,33 @@
       "nativeLoc": 192,
       "managedLoc": 288,
       "conversionManagedCommit": "ee681908e8afa2d0fc583f583ae38a424b2edf63"
+    },
+    {
+      "name": "far-clip-line-chunk1389",
+      "bucket": "conversion",
+      "note": "The far-clip construct, the facing and portal rejects, and the ceiling and floor plane marks from r_farclip_line.cpp (1-188).",
+      "auditSeams": "Wall coordinate init, portal clipping, floor projection, and visible-plane range lookup stay callees. The ceiling projection in this file is commented out and is not called.",
+      "auditRationale": "UNCredited r_farclip_line.cpp 1-188 (+188). After chunk 1388 this is the unique largest hole. ddstexture.cpp 1-186 is 186. The band is shorter than 400 lines and is not sliced.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/swrenderer/line/r_farclip_line.cpp --start 1 --end 188 and a full tally line scan, including recognition ranges, show no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Construct and render rejects (**59\u2013103**) | yes |\n| Wall segment and the floor-projection copy (**105\u2013121**) | yes |\n| Top and bottom clip (**123\u2013140**) | yes |\n| Ceiling plane mark (**142\u2013163**) | yes |\n| Floor plane mark (**165\u2013187**) | yes |\n| Band hull (**1\u2013188**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| `FWallCoords::Init` | callee; a true result rejects the line |\n| `P_ClipLineToPortal` | callee |\n| `ProjectedWallLine::Project` | callee; the ceiling project in this file is commented out |\n| `VisiblePlaneList::GetRange` | callee; its return replaces the plane |\n| Includes **1\u201357** | headers around the class |\n\nA non-negative facing cross product returns before wall init. Init, the window, a missing linedef, and a portal clip are checked in that order. A skybox portal does not clip. The four sector heights are read only after those rejects, and the solid clip is then requested. The first wall segment projects the floor, copies that screen row onto the top, and does not project the ceiling. Later segments keep the prepared row. Each column raises the top to the ceiling clip and lowers the bottom to the floor clip before either plane is marked. A fake ceiling uses the fake ceiling clip. A fake floor uses the fake floor clip. The floor mark aborts when asserts are on and the bottom is past the view height, and it leaves the plane unchanged. With asserts off it still writes that bottom.\n\n| Managed (`VmFarClipLine1389Slice.cs`) | Native (`r_farclip_line.cpp`) |\n|---------------------------------------|------------------------------|\n| Far-clip render and plane marks | **1\u2013188** |\n| Band hull (exclusive slice) | **1\u2013188** |\n\n### Chunk **1389** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **188** |\n| **Net headline** | **+188** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmFarClipLine1389Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/rendering/swrenderer/line/r_farclip_line.cpp",
+          "symbol": "FarClipLine::Render",
+          "start": 1,
+          "end": 188,
+          "tests": [
+            "VmFarClipLine1389SliceTests.RenderRejectsBackfacesWindowsAndPortals",
+            "VmFarClipLine1389SliceTests.SegmentCopiesFloorYAndMarksFakePlanes"
+          ]
+        }
+      ],
+      "nativeLoc": 188,
+      "managedLoc": 147,
+      "conversionManagedCommit": "f367e4bffeaf38dc390732124be5e1caf57e01ef"
     }
   ],
   "behaviorNativeChecksum": 508086,
