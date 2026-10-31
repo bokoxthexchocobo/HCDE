@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 322662
+    "managedCSharpLoc": 323325
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 142934,
+    "convertedThisRunNative": 143186,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 179858,
+    "convertedThisRunManaged": 180521,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 345938,
+    "remainingNative": 345686,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 161461,
+    "convertedBehaviorNative": 161713,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 162148,
-    "convertedBehaviorManaged": 189529,
+    "combinedBehaviorNative": 162400,
+    "convertedBehaviorManaged": 190192,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -46723,6 +46723,34 @@
         "nativeLoc": 257,
         "managedLoc": 455,
         "conversionManagedCommit": "c2d7a7a11424643afa4933cd774fad28f67f3a04"
+      },
+      {
+        "name": "net-do-command-chunk1358",
+        "bucket": "conversion",
+        "note": "Crouch through RunScript net commands from d_net.cpp (9009-9260).",
+        "auditSeams": "cht_Morph, FindActor, Massacre, GetReplacement, RemoveClass, P_ConversationCommand, Net_ReadWeapon, P_IsPlayerTotallyFrozen, HCDEPredator_HandleNetEvent, and NetworkClients.InGame stay injected. The byte readers are the stream this tail consumes.",
+        "auditRationale": "UNCredited d_net.cpp 9009-9260 (+252). A full tally line scan shows no overlap. This is the largest remaining hole of at most 400 lines. It is not a tie.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/d_net.cpp --start 9009 --end 9260 and a full tally line scan \u2192 no overlap.",
+        "auditManagedLocJustification": "The checked readers this tail calls live in i_protocol.cpp, and Playsim does not reference the net-core stream type. The managed file keeps the big-endian reads, the C-string bytes, and the int16 value widened to a full unsigned size beside the commands, because those widths are what the next byte means. Each opcode reaches a different global: the player array, the weapon slots, the primary level, the console player, and the predator hook. Those objects sit next to the branch that uses them so the short-circuit, the read-before-index order, and the ignored net-event count stay visible. cht_Morph, FindActor, Massacre, GetReplacement, RemoveClass, P_ConversationCommand, Net_ReadWeapon, P_IsPlayerTotallyFrozen, HCDEPredator_HandleNetEvent, and NetworkClients.InGame stay injected. That host surface is why the managed file is over 150% of the 252-line source.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Crouch (**9010\u20139017**) | yes |\n| Morph (**9019\u20139026**) | yes |\n| Controllers (**9028\u20139048**) | yes |\n| Kill and remove (**9050\u20139091**) | yes |\n| Conversation (**9093\u20139097**) | yes |\n| Weapon slots (**9099\u20139133**) | yes |\n| Pitch, camera, finish (**9135\u20139147**) | yes |\n| Net event (**9149\u20139169**) | yes |\n| Screen, ready, zscript, skill (**9171\u20139199**) | yes |\n| Kick, weapon, flechette, default (**9201\u20139229**) | yes |\n| RunScript (**9232\u20139248**) | yes |\n| Skip-contract comment (**9250\u20139260**) | yes |\n| Band hull (**9009\u20139260**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Net_DoCommand head | opcodes above DEM_CROUCH stay in the earlier cases |\n| Net_TrySkipCommand | the skip parser starts at 9261 |\n| cht_Morph | the morph cheat lives outside this file |\n| Net_ReadWeapon | the weapon index lives outside this file |\n| a_weapons slot printf | Could not add is printed by AddSlot, not this tail |\n\nCrouch runs only in GS_LEVEL. A bad player index is not touched when the game state is something else. A null body, a state other than PST_LIVE, or BT_JUMP in oldbuttons skips the freeze check. The freeze hook can change crouchdir before the assignment. A true result leaves crouching alone. A false result stores 1 when crouchdir is negative and -1 otherwise.\n\nMorph reads the C string first. A missing NUL throws before FindActor. FindActor runs before the player index is checked, and cht_Morph receives that class, including null, with quickundo false. An out-of-range player throws after the lookup. The console prints the message plus a newline. An empty message or a message whose first character is NUL prints Morph failed. Any other player still morphs and prints nothing.\n\nAdd and delete controller consume one player byte, then store the flag, then print. The local console player gets the you-can / you-can-no-longer line and does not ask the authority. Anyone else asks the authority, and a true result prints the name as it stands after that call. A false result keeps the flag and prints nothing. A bad index throws after the byte is consumed.\n\nKill and remove do not index the sender. An unknown name, or a remove class that is not an actor, prints the not-an-actor line and does not touch the level. A real class massacres or removes the class type name, then the replacement when the pointer differs, then prints the original string. A null replacement throws after the first call. A null primary level throws after the lookup.\n\nThe three conversation opcodes forward the opcode, the sender, and the stream. Weapon slot commands read the optional target, the slot, and the count before they index the player. Clear runs only when the slot is below 10. Each count calls Net_ReadWeapon once, and that hook may consume a continuation byte. AddSlot stores a non-null weapon in range and faults on a non-null weapon out of range. A null weapon does not index. AddSlotDefault applies that fault only for a weapon descendant. Feedback is the target compared with the console player. The could-not-add printf stays in a_weapons.cpp.\n\nPitch reads the up byte and stores its negation before it reads the down byte. A short stream keeps the new minimum. A bad player index throws after the up byte. Revert camera assigns the body, including null. Finish calls ChangeLevel with a null name and two zeros and does not read the stream. A bad sender still finishes. A null primary throws.\n\nNet event reads the name, one ignored count, three ints, and a nonzero manual byte. The count is not how many ints are read. Predator runs before the level is touched. A true result skips the console. A false result with a null level throws after predator. A short stream throws before predator. ZScript reads a C string and an int16 stored in a full unsigned width. A negative int16 becomes a wide size and the first missing payload byte throws before NetCommand. Size 0 still submits an empty buffer. A null level is touched only after the bytes are in hand.\n\nEnd screen, readied, weapon select, and flechette record the sender. Weapon select reads one slot byte first. Skill stores one big-endian int and leaves the previous skill when the read throws. Kick reads the target, errors when that target is the console, and does not ask InGame. Otherwise it asks InGame, and a true result prints the name, warns with gametic, client tic, and room, then disconnects. A false result stops. An in-game index that is not a player throws before the warning. Unknown opcodes, including ones handled above this band, throw Unknown net command and do not read.\n\nRunScript returns on a null pawn without reading. Otherwise it reads every arg and keeps four. The script count is the minimum of 4 and the requested count, which stays negative when the request is negative. Flags are ACS_NET combined with the always bits. The map name is read after the args. A null primary throws after those reads.\n\n| Managed (VmNetDoCommand1358Slice.cs) | Native (d_net.cpp) |\n|--------------------------------------|--------------------|\n| Crouch through RunScript | **9009\u20139260** |\n| Band hull (exclusive slice) | **9009\u20139260** |\n\n### Chunk **1358** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **252** |\n| **Net headline** | **+252** vs the prior chunk |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmNetDoCommand1358Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "NetDoCommand",
+            "start": 9009,
+            "end": 9260,
+            "tests": [
+              "VmNetDoCommand1358SliceTests.CrouchThroughCheats",
+              "VmNetDoCommand1358SliceTests.SlotsEventsAndRunScript"
+            ]
+          }
+        ],
+        "nativeLoc": 252,
+        "managedLoc": 663,
+        "conversionManagedCommit": "8f026735b8aa79af87ba73d352a2bbcd8958dbd8"
       }
     ],
     "behaviorNativeChecksum": 508086,
