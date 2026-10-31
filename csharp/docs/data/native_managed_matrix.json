@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 321313
+    "managedCSharpLoc": 321695
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 142161,
+    "convertedThisRunNative": 142420,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 178509,
+    "convertedThisRunManaged": 178891,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 346711,
+    "remainingNative": 346452,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 160688,
+    "convertedBehaviorNative": 160947,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 161375,
-    "convertedBehaviorManaged": 188180,
+    "combinedBehaviorNative": 161634,
+    "convertedBehaviorManaged": 188562,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -46640,6 +46640,33 @@
         "nativeLoc": 260,
         "managedLoc": 379,
         "conversionManagedCommit": "02feedfdf05e0c76af1863843066a327e01a3c08"
+      },
+      {
+        "name": "array-state-node-chunk1355",
+        "bucket": "conversion",
+        "note": "Debugger array state node from ArrayStateNode.cpp (1-259), through end of file.",
+        "auditSeams": "NewPointer, GetVMValue, and CreateNodeForVariable stay injected. CacheChildren is declared on the header and has no body in this file. The commented pointer dereference stays unused, so the array address is the original VM word.",
+        "auditRationale": "UNCredited ArrayStateNode.cpp 1-259 (+259). A full tally line scan shows no overlap. This is the largest remaining hole of at most 400 lines, ahead of the 257-line tie between i_interface.cpp 1-257 and p_saveg.cpp 336-592.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/scripting/dap/Nodes/ArrayStateNode.cpp --start 1 --end 259 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Element type and element count (**33\u201387**) | yes |\n| Constructor, protocol value, and child names (**89\u2013146**) | yes |\n| Child lookup, element reads, and the fixed-array address (**148\u2013257**) | yes |\n| Band hull (**1\u2013259**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| NewPointer | the pointer wrapper for an element larger than 8 bytes is supplied by the caller |\n| GetVMValue | the fixed-array load is supplied by the caller |\n| CreateNodeForVariable | the child node is supplied by the caller |\n| CacheChildren | the header declares it and this file does not define it |\n\nA pointer type unwraps before the array or dynamic-array test and does not dereference the array address. Element type is set for an array, including a static array that is also an array, and for a dynamic array. A static array that is not an array leaves the element type unset. Dynamic and static counts read the header count when the word is valid: count 4294967295 returns -1, and an invalid word returns 0. A fixed array returns its element count with no validity test, and that same 4294967295 returns -1. Anything else returns 0. Validity is a non-null word whose address is non-zero and whose low 32 bits are non-zero. Serialize always stores GetId, then the clamped index count, then the name. A matching evaluate name is left alone. A null element type throws after that name write. An invalid word or a negative count formats as element[<NONE>]. Otherwise the value is the element name, the clamped count, and, for a pointer type, glibc %p of the address. Child names are appended and are not cleared. An invalid word returns before the count loop. A negative count does not iterate. Child lookup returns false for an invalid word, a non-positive count, or an index outside 0..count-1, and leaves the output node unchanged. ParseInt is std::stoi: C whitespace, an optional sign, digits, and trailing junk. No digits throws FormatException. A value outside int throws OverflowException. The cache key is the canonical decimal, so 12abc and 0012 share one node. A dynamic or static element larger than 8 bytes uses the injected pointer type. Float size 8 stores a double, size 4 stores the double of that float, and any other float size stores a zero word. Object pointers and pointers read 8-byte elements even when the type size is 4. The string type stores the address of the element. Sizes 8, 4, 2, and 1 store the little-endian bits. Any other size stores the data address plus index times size. A fixed array calls GetVMValue at the original address plus element size times index and creates the node with the element type. A missing delegate throws InvalidOperationException.\n\n| Managed (VmArrayStateNode1355Slice.cs) | Native (ArrayStateNode.cpp) |\n|----------------------------------------|--------------------------------|\n| Array state node, counts, and children | **1\u2013259** |\n| Band hull (exclusive slice) | **1\u2013259** |\n\n### Chunk **1355** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **259** |\n| **Net headline** | **+259** vs the prior chunk |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmArrayStateNode1355Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/scripting/dap/Nodes/ArrayStateNode.cpp",
+            "symbol": "ArrayStateNode",
+            "start": 1,
+            "end": 259,
+            "tests": [
+              "VmArrayStateNode1355SliceTests.ProtocolCountsAndNames",
+              "VmArrayStateNode1355SliceTests.ChildrenElementsAndParse"
+            ]
+          }
+        ],
+        "nativeLoc": 259,
+        "managedLoc": 382,
+        "conversionManagedCommit": "1560ba2e7d074bc57492790b82af3d8ae7315d6a"
       }
     ],
     "behaviorNativeChecksum": 508086,
