@@ -1,0 +1,26 @@
+[
+  {
+    "name": "debug-server-chunk1385",
+    "bucket": "conversion",
+    "note": "DAP debug server from DebugServer.cpp (1-194), through end of file.",
+    "auditSeams": "The header only declares the server. ZScriptDebugger session calls, socket start and stop, and RuntimeEvents subscribe and unsubscribe stay callees. The restart routine parks while terminate is clear, and Stop joins that routine. Quitting throws ExitEvent reason 0 from the restart routine, before the stopped trace. Re-listen stores the new port and then Stop, which leaves stopped set, so the next terminate ends the session and does not build a server. A null server-error argument is formatted as (null). The warning uses unknown. An error raised while a restart is already pending logs the restart-failed line and does not schedule another restart.",
+    "auditRationale": "UNCredited DebugServer.cpp 1-194 (+194). After chunk 1384 the top hole is a tie at 194 with d_net.cpp 4300-4493. Path order selects DebugServer.cpp. codegen.cpp 6316-6508 is 193. The file is shorter than 400 lines and is not sliced.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/scripting/dap/DebugServer.cpp --start 1 --end 194 and a full tally line scan, including recognition ranges, show no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Preamble and includes (**1–31**) | yes |\n| Namespace open (**32**) | yes |\n| Constructor (**34–41**) | yes |\n| `RunRestartThread` (**43–73**) | yes |\n| `Listen` (**75–98**) | yes |\n| `onClientConnected` (**100–139**) | yes |\n| `onError` (**141–157**) | yes |\n| `StartServer` (**159–171**) | yes |\n| `Stop` (**173–191**) | yes |\n| Destructor (**193**) | yes |\n| Namespace close (**194**) | yes |\n| Band hull (**1–194**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Header fields | declarations, not this cpp |\n| `EndSession`, `StartSession`, `IsEndingSession` | debugger callees |\n| Socket `start` and `stop` | server callees |\n| Debugger-enabled subscribe and unsubscribe | runtime-event callees |\n\nPort 0 logs the skip warning and returns before a socket or a restart routine exists. Any other port stores the port, creates the socket when missing, and otherwise stops the live socket first. That stop sets `stopped`, and the following listen does not clear it. The restart routine then ends the session and returns without building a socket. A closed connection with the gate free, `terminate` clear, and no session ending sets `closed` and `terminate`. A held gate or an ending session only logs the close. Disconnect sets `terminate` and leaves `closed` unchanged. The restart routine calls `EndSession` with the current `closed` flag, clears `terminate`, and throws `ExitEvent` reason 0 when the debugger is quitting. That throw happens before the stopped trace. A server error while no restart is pending sets `terminate`, `closed`, and the restart flag. The routine stops the socket, replaces it, and starts it. A start that reports an error while the restart flag is still set logs the restart-failed line and leaves the flag set. A failed start unsubscribes, sets `stopped`, and logs the restart failure. A null error string is `(null)` in the red log and `unknown` in the warning.\n\n| Managed (`VmDebugServer1385Slice.cs`) | Native (`DebugServer.cpp`) |\n|------------------------------------------------|--------------------------------|\n| Debug server listen, restart, and stop | **1–194** |\n| Band hull (exclusive slice) | **1–194** |\n\n### Chunk **1385** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **194** |\n| **Net headline** | **+194** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmDebugServer1385Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/dap/DebugServer.cpp",
+        "symbol": "DebugServer::Listen",
+        "start": 1,
+        "end": 194,
+        "tests": [
+          "VmDebugServer1385SliceTests.ListenSkipsPortZeroAndCloseOrDisconnectWakesTheRestartThread",
+          "VmDebugServer1385SliceTests.ErrorRestartsUntilStartFailsAndRelistenLeavesStopped"
+        ]
+      }
+    ]
+  }
+]
