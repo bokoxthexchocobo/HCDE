@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 321695
+    "managedCSharpLoc": 322207
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 142420,
+    "convertedThisRunNative": 142677,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 178891,
+    "convertedThisRunManaged": 179403,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 346452,
+    "remainingNative": 346195,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 160947,
+    "convertedBehaviorNative": 161204,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 161634,
-    "convertedBehaviorManaged": 188562,
+    "combinedBehaviorNative": 161891,
+    "convertedBehaviorManaged": 189074,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -46667,6 +46667,34 @@
         "nativeLoc": 259,
         "managedLoc": 382,
         "conversionManagedCommit": "1560ba2e7d074bc57492790b82af3d8ae7315d6a"
+      },
+      {
+        "name": "engine-interface-chunk1356",
+        "bucket": "conversion",
+        "note": "Engine interface and startup selection from i_interface.cpp (1-257), through end of file.",
+        "auditSeams": "UpdateLanguage, UpdateGenericUI, and HCDE_MigrateRendererCvars stay injected. GenRand32 and GenRand32BoundExclusive stay injected and are drawn in g++ right-to-left order. CheckParm and AppendRawArgsString stay injected.",
+        "auditRationale": "UNCredited i_interface.cpp 1-257 (+257). A full tally line scan shows no overlap. This is tied for the largest remaining hole of at most 400 lines with p_saveg.cpp 336-592. Path order takes the engine interface.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/engine/i_interface.cpp --start 1 --end 257 and a full tally line scan \u2192 no overlap.",
+        "auditManagedLocJustification": "FString Split, StripLeftRight, and Substitute, the FStartupSelectionInfo defaults, FStartupInfo, and the CVAR registration macros live outside this file. The managed port keeps the 25 cvar rows, the selection fields the constructor copies, the -file quoting, and the g++ UUID argument order because SaveInfo and GenerateUUID read those values on the next line. UpdateLanguage, UpdateGenericUI, and HCDE_MigrateRendererCvars stay injected. That host surface is why the managed file is over 150% of the 257-line source.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Pointer width, globals, and cvar rows (**29\u201387**) | yes |\n| Pride switch, quoting, and startup file arguments (**89\u2013115**) | yes |\n| Selection constructor and SaveInfo (**118\u2013246**) | yes |\n| UUID format (**249\u2013257**) | yes |\n| Band hull (**1\u2013257**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| UpdateLanguage | the string table lives outside this file |\n| UpdateGenericUI | the UI refresh lives outside this file |\n| HCDE_MigrateRendererCvars | the renderer migration lives outside this file |\n| GenRand32 | the PCG lives outside this file |\n\nThe pointer-width check accepts 8 and rejects every other size. Twenty-five cvars are registered here. vid_fps has flags 0. language uses archive, no-init-call, and global-config, and its callback runs UpdateLanguage, then UpdateGenericUI on ui_generic, then LanguageChanged when that hook is set. The previous value is unused. A missing injected hook throws InvalidOperationException. Float 0.35 is stored as float of the double. Extern cvars are read and not registered. Pride is the switch -pride. Quote replaces every quote, then wraps the result. BuildStartupFileArgs splits on |, drops empty tokens, strips C whitespace while keeping bytes at or above 128, and emits -file plus the quoted path. A cvar string is open when its first byte is not NUL. Wad compare is stricmp and stops at the first NUL. The first match wins. The constructor calls the renderer migration before it copies the backend and fullscreen. A null wad list throws when a scan runs. A null args pointer throws after the copies. CheckParm of any non-zero index selects list; zero keeps ui_colors. SaveInfo strips the text fields, writes query, language, and fullscreen, and writes the backend only when it differs. The net path returns the net wad index and still appends the stripped net arguments when the save flag is clear. The local path clears the addon cvars when saveargs is clear and still appends -file arguments built from the member. String cvars assigned from GetChars stop at the first NUL. AppendRawArgsString receives the full string. GenerateUUID does not store into GameUUID. The six draws are the last short bound, the second word, the variant bound, the version bound, the first short bound, then the first word. The format is 8 hex, 4 hex, a literal 4, 3 hex, a literal 9, 3 hex, 8 hex, and 4 hex, with minimum widths.\n\n| Managed (VmEngineInterface1356Slice.cs) | Native (i_interface.cpp) |\n|----------------------------------------|--------------------------------|\n| Engine interface, cvars, and startup selection | **1\u2013257** |\n| Band hull (exclusive slice) | **1\u2013257** |\n\n### Chunk **1356** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **257** |\n| **Net headline** | **+257** vs the prior chunk |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmEngineInterface1356Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/engine/i_interface.cpp",
+            "symbol": "EngineInterface",
+            "start": 1,
+            "end": 257,
+            "tests": [
+              "VmEngineInterface1356SliceTests.DefaultsFlagsAndLanguage",
+              "VmEngineInterface1356SliceTests.SelectionSaveAndUuid"
+            ]
+          }
+        ],
+        "nativeLoc": 257,
+        "managedLoc": 512,
+        "conversionManagedCommit": "8721f80e1d06d000109407e167d4d8a819c9bdb3"
       }
     ],
     "behaviorNativeChecksum": 508086,
