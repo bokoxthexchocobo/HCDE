@@ -1,0 +1,26 @@
+[
+  {
+    "name": "decallib-group-chunk1371",
+    "bucket": "conversion",
+    "note": "FDecalGroup, the keyword table, animator declarations, base getters, and the FDecalLib constructor from decallib.cpp (1-222).",
+    "auditSeams": "FDecalLib::Clear at 223 stays chunk 197 and is injected. FDecalGroup::GetDecal's body at 1053 stays outside this band. weightedlist.h is the AddDecal callee and is not a native range.",
+    "auditRationale": "UNCredited decallib.cpp 1-222 (+222). A full tally line scan, including recognition ranges, shows no overlap. This is the largest remaining hole of at most 400 lines after codegen.cpp 2017-2240. It is not a tie. hcde_edf.cpp 757-976 is 220. Gaps longer than 400 lines stay whole and are not sliced. Clear starts at 223 and is already chunk 197.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/gamedata/decallib.cpp --start 1 --end 222 and a full tally line scan → no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Banner and includes (**1–40**) | yes |\n| `DecalLibrary` and the `ReadScale` declaration (**41–44**) | yes |\n| `pr_decalchoice` and `pr_decal` (**52–53**) | yes |\n| `FDecalGroup` construct, replace, add, and assign (**55–75**) | yes |\n| `FTranslation` fields (**77–85**) | yes |\n| Animator declarations and derived constructors (**87–144**) | yes |\n| `Animators` and `AnimatorList` (**146–147**) | yes |\n| `DecalKeywords` including the null sentinel (**149–170**) | yes |\n| `DECAL_*` enumerators (**172–192**) | yes |\n| `FDecalBase::GetDecal` and `GetDecalName` (**194–202**) | yes |\n| `FDecalTemplate::ReplaceDecalRef` (**204–210**) | yes |\n| `FDecalLib` construct and destroy (**212–221**) | yes |\n| Blank line before `Clear` (**222**) | yes |\n| Band hull (**1–222**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| decallib.cpp **223–247** | `Clear` and `DelTree`, chunk 197 |\n| decallib.cpp **956–963** | `FDecalBase` construct and destroy |\n| decallib.cpp **995–1078** | translation construct, group `GetDecal` body, animator construct and destroy |\n| decallib.cpp **1173** | `ReadScale` body; line 43 is only the declaration |\n| `weightedlist.h` | callee of `AddDecal`; not a line of this file |\n\n`FName(NULL)` is name index 0, `None`. Any other spelling is stored on first use and later lookups are case-insensitive. An empty string is its own name.\n\n`FDecalGroup` binds `pr_decalchoice` (`DecalChoice`, a client rng). `pr_decal` is the separate client rng named `Decal`. Assignment returns this and does not copy the choice list. `AddDecal` skips weight 0. A positive weight inserts before the first entry whose weight is not strictly less, so an equal weight lands in front of the existing equals, then the random values are rebuilt. The last entry is 255. Each earlier entry stores `(uint8_t)(accumulated * 255.0)`. `ReplaceDecalRef` replaces every reference-equal value and does not rebuild those values. A null decal pointer is a legal entry.\n\n`FDecalBase::GetDecal` returns null. `GetDecalName` returns `Name`, which the base constructor sets to `None`. The group override of `GetDecal` is only declared here; calling it is rejected because the body at 1053 is outside this band.\n\n`FDecalTemplate::ReplaceDecalRef` uses pointer equality, so a null lower decal matches a null `from`. The library constructor sets `Root` and `Translations` to null. The destructor calls `Clear` and does not itself clear those fields. A missing `Clear` hook throws. `DecalTranslations` starts empty. `Animators` and `FDecalCombinerAnim::AnimatorList` are distinct empty lists. The slider has `DistY` only. Derived animator constructors pass the name through `FDecalAnimator`.\n\nThe keyword table is 18 names and a null sentinel, in enumerator order. `DECAL_OPAQUEBLOOD` is 16 and `DECAL_TRANSLATABLE` is 17. The `opaqueblood` comment is `Deprecated - use translatable instead!`.\n\n| Managed (`VmDecalLib1371Slice.cs`) | Native (`decallib.cpp`) |\n|------------------------------------|------------------------|\n| Group, keywords, animators, getters, library constructor | **1–222** |\n| Band hull (exclusive slice) | **1–222** |\n\n### Chunk **1371** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **222** |\n| **Net headline** | **+222** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmDecalLib1371Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/decallib.cpp",
+        "symbol": "DecalLibHead",
+        "start": 1,
+        "end": 222,
+        "tests": [
+          "VmDecalLib1371SliceTests.GroupKeywordsAndReplace",
+          "VmDecalLib1371SliceTests.LibraryAnimatorsAndNames"
+        ]
+      }
+    ]
+  }
+]
