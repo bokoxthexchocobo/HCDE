@@ -1,0 +1,27 @@
+[
+  {
+    "name": "spec-activate-chunk1363",
+    "bucket": "conversion",
+    "note": "Exit check, P_ActivateLine, and the P_TestActivateLine prefix through the walking floor and UseThrough condition in p_spec.cpp (1-242).",
+    "auditSeams": "The UseThrough body and the rest of P_TestActivateLine stay on chunk 884. P_ExecuteSpecial, P_CheckKeys, the world-line events, and P_ChangeSwitchTexture are called, not reimplemented.",
+    "auditManagedLocJustification": "p_spec.cpp 1-242 is the exit gate, the whole P_ActivateLine sequence, the two action wrappers, and the P_TestActivateLine prefix through the SPAC_UseThrough condition. The UseThrough body at line 243 stays on chunk 884. Each out-of-file call is a null check plus the recorded arguments: cluster lookup, preactivation, keys, execute, world activation, the switch texture, line id, sector tag, and the two continuations. The captured special is the low 8 bits, the repeat flag is passed through as the raw bit, and GetLevel is counted at the test, after the test, and again as the execute argument. That call-site record is why the managed file is 380 physical lines, 1.57 times the 242 native lines. The bodies of those calls are not copied.",
+    "auditRationale": "UNCredited p_spec.cpp 1-242 (+242). A full tally line scan, including recognition ranges, shows no overlap. This is the largest remaining hole of at most 400 lines. It is not a tie. glnodes.cpp 1-240 is 240. Gaps longer than 400 lines stay whole and are not sliced. Chunk 884 already owns 243-356 and 364-399. Chunk 437 is retired and has no ranges.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_spec.cpp --start 1 --end 242 and a full tally line scan \u2192 no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Banner, includes, and the rng declaration (**1\u201367**) | yes |\n| Extern cvar declarations (**69\u201371**) | yes |\n| CheckIfExitIsGood (**74\u2013107**) | yes |\n| Utility comment (**109\u2013117**) | yes |\n| P_ActivateLine (**119\u2013195**) | yes |\n| _Line.Activate (**197\u2013204**) | yes |\n| _Line.RemoteActivate (**206\u2013217**) | yes |\n| P_TestActivateLine prefix (**225\u2013242**) | yes |\n| Band hull (**1\u2013242**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| p_spec.cpp **243\u2013356** | chunk 884, including the UseThrough body that ors SPAC_Use |\n| p_spec.cpp **364\u2013399** | chunk 884 P_PredictLine |\n| VmPSpecTestActivateLine.cs | already credited on 884; not edited |\n| chunk 437 | retired, nativeRanges empty |\n\nA null actor can always exit. Kill-monsters is tested before no-exit, and unequal counts return false with no damage. No-exit damages with 1000000 and the name Exit when deathmatch or alwaysapplydmflags is set, then returns false. A dead single-player actor in the same hub cluster returns false when FindClusterInfo returns a hub. Deathmatch prints the exit line only when gameaction is not 12. A null player on that print throws GetName.\n\nP_ActivateLine returns false from the test, from a cancelled preactivation, or from a failed key check. Every other path returns true. The stored false before P_ExecuteSpecial is dead and is not kept. The special captured for the switch, the spammy print, and the diag is the low 8 bits after execute. A non-repeat success clears the full special before the switch and the rumble. Rumble reads the special after that clear. Use, Impact, and Push change the switch. Use, Push, UseThrough, and UseBack rumble when the actor is the console actor or its camera and the virtual exists. A null activator matches a null console camera and then throws GetClass. Impact with the dummy-switch flag, a non-repeat line, a non-generic special, a line id, a non-zero arg, and no tagged sector changes the switch and clears the special. Execute still returns true when the special fails. The diag's last argument is false.\n\nP_TestActivateLine reads the level and then rejects the back of a first-side-only line or a zero special. A cross or monster-cross on a walking line rejects an actor above the floor that is not standing on another actor. A null actor on that floor check throws mo. The UseThrough condition selects the continuation. The or of SPAC_Use is not applied here. A missing continuation throws P_TestActivateLine. RemoteActivate builds the optional position. Activate passes null.\n\n| Managed (VmSpecActivate1363Slice.cs) | Native (p_spec.cpp) |\n|--------------------------------------|---------------------|\n| Exit, activate, and the test prefix | **1\u2013242** |\n| Band hull (exclusive slice) | **1\u2013242** |\n\n### Chunk **1363** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **242** |\n| **Net headline** | **+242** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmSpecActivate1363Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_spec.cpp",
+        "symbol": "SpecActivate",
+        "start": 1,
+        "end": 242,
+        "tests": [
+          "VmSpecActivate1363SliceTests.ExitChecksAndPrefix",
+          "VmSpecActivate1363SliceTests.ActivateLineBody"
+        ]
+      }
+    ]
+  }
+]
