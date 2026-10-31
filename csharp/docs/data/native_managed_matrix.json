@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 320934
+    "managedCSharpLoc": 321313
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 141901,
+    "convertedThisRunNative": 142161,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 178130,
+    "convertedThisRunManaged": 178509,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 346971,
+    "remainingNative": 346711,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 160428,
+    "convertedBehaviorNative": 160688,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 161115,
-    "convertedBehaviorManaged": 187801,
+    "combinedBehaviorNative": 161375,
+    "convertedBehaviorManaged": 188180,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -46613,6 +46613,33 @@
         "nativeLoc": 261,
         "managedLoc": 356,
         "conversionManagedCommit": "d1f18a538e39cf47c40fa310e347db5103b17e60"
+      },
+      {
+        "name": "gameinfo-keys-chunk1354",
+        "bucket": "conversion",
+        "note": "Game names, screen borders, VM field names, and the GAMEINFO key macros from gi.cpp (1-260).",
+        "auditSeams": "V_GetColorStringByName, V_GetColorFromString, S_FindSound, and GetFileContainer stay injected. ParseGameInfo stays in chunk 206.",
+        "auditRationale": "UNCredited gi.cpp 1-260 (+260). A full tally line scan shows no overlap. This is the largest remaining hole of at most 400 lines, ahead of ArrayStateNode.cpp 1-259.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/gamedata/gi.cpp --start 1 --end 260 and a full tally line scan \u2192 no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Game names and borders (**73\u2013111**) | yes |\n| VM field registrations (**39\u201371**) | yes |\n| String and array key macros (**114\u2013169**) | yes |\n| Number, color, bool, font, and music macros (**171\u2013258**) | yes |\n| Band hull (**1\u2013260**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| V_GetColorStringByName | color names stay outside this file |\n| V_GetColorFromString | the color parse stays outside this file |\n| S_FindSound | sound lookup stays outside this file |\n| GetFileContainer | the lump container stays outside this file |\n| ParseGameInfo | the key chain from **261** stays in chunk 206 |\n\nGameNames has 17 slots. Doom, Heretic, Hexen, Strife, and Chex sit at 1, 2, 4, 8, and 16. Doom and Strife borders use offset 8 and size 8 with the brdr patches. Heretic uses offset 4 and size 16 with the bord patches. The border name list ends with a null slot. Field registrations use the script class AGameInfoStruct. The global name is gameinfo and the turbo cvar is declared here. Each key macro matches the lookup name without case. A fixed string longer than its limit reports the field name and does not store the value. A string array clears only when that flag is set, and a limit of 0 skips the length check. Sound entries store the lookup result. A stamped string also stores the container of the current lump. Float keys narrow to float. Double keys keep the wider value. Two doubles require a comma between the numbers. A known color name replaces the text before the color parse. An empty name leaves the text. False stores false. Any other token must be true. A font with no comma stores the color None. A patch stores the color Null. Music text after a colon is an atoi order, and the stored song stops at the colon.\n\n| Managed (VmGameInfoKeys1354Slice.cs) | Native (gi.cpp) |\n|--------------------------------------|-----------------|\n| Names, borders, fields, and key macros | **1\u2013260** |\n| Band hull (exclusive slice) | **1\u2013260** |\n\n### Chunk **1354** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **260** |\n| **Net headline** | **+260** vs the prior chunk |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Gamedata/VmGameInfoKeys1354Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/gi.cpp",
+            "symbol": "GameNames",
+            "start": 1,
+            "end": 260,
+            "tests": [
+              "VmGameInfoKeys1354SliceTests.NamesBordersAndFields",
+              "VmGameInfoKeys1354SliceTests.KeyMacros"
+            ]
+          }
+        ],
+        "nativeLoc": 260,
+        "managedLoc": 379,
+        "conversionManagedCommit": "02feedfdf05e0c76af1863843066a327e01a3c08"
       }
     ],
     "behaviorNativeChecksum": 508086,
