@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 144412,
+  "convertedThisRunNative": 144652,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 182214,
+  "convertedThisRunManaged": 182455,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 344460,
+  "remainingNative": 344220,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 162939,
+  "convertedBehaviorNative": 163179,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 163626,
-  "convertedBehaviorManaged": 191885,
+  "combinedBehaviorNative": 163866,
+  "convertedBehaviorManaged": 192126,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -46873,6 +46873,33 @@
       "nativeLoc": 242,
       "managedLoc": 380,
       "conversionManagedCommit": "8073d4a226cbbd536f15f208768241bcd2b884d3"
+    },
+    {
+      "name": "gl-nodes-chunk1364",
+      "bucket": "conversion",
+      "note": "Missing segs, the GL-node probe, and LoadGLVertexes from glnodes.cpp (1-240).",
+      "auditSeams": "checkGLVertex and the later GL node loaders stay on chunks 888-890. gl_cachenodes and gl_cachetime are declarations. Callers of CheckForGLNodes are not in this band.",
+      "auditRationale": "UNCredited glnodes.cpp 1-240 (+240). A full tally line scan, including recognition ranges, shows no overlap. This is the largest remaining hole of at most 400 lines. It is not a tie. i_main.cpp 1-238 is 238. Gaps longer than 400 lines stay whole and are not sliced. The later glnodes.cpp hole at 644-1195 is 552 lines. Chunk 888 already owns checkGLVertex at 241.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/maploader/glnodes.cpp --start 1 --end 240 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Banner (**1\u201323**) | yes |\n| Includes (**24\u201347**) | yes |\n| `gl_cachenodes` and `gl_cachetime` declarations (**49\u201350**) | yes |\n| GL lump structs (**52\u201390**) | yes |\n| `CheckForMissingSegs` (**101\u2013126**) | yes |\n| `CheckForGLNodes` (**134\u2013168**) | yes |\n| Magic macros (**179\u2013183**) | yes |\n| `LoadGLVertexes` (**185\u2013233**) | yes |\n| Utility comment and the blank line before `checkGLVertex` (**235\u2013240**) | yes |\n| Band hull (**1\u2013240**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| glnodes.cpp **241\u2013246** | chunk 888 `checkGLVertex` |\n| glnodes.cpp **248\u2013415** | chunk 888, vertex widening and `LoadGLSegs` |\n| glnodes.cpp **424\u2013643** | chunk 889 |\n| glnodes.cpp **644\u20131195** | 552 lines, above the 400-line ceiling, not sliced |\n| glnodes.cpp **1196\u20131396** | chunk 890, with the small gaps between its functions left in place |\n| `VmMapLoaderLoadGlSegs.cs` | already credited; not edited |\n\n`CheckForMissingSegs` sums each seg's vertex length onto `Index(sidedef)`. A null sidedef is skipped, including when its vertices are null. A sidedef that is not in the side array throws `sides`. A null vertex on a hosted seg throws `v1` or `v2`. Each side then compares that sum with `linedef->Delta().Length() - 1`. The compare is strict, so a sum equal to the delta length minus one is not missing. `Delta()` is the stored delta, not the distance between the line's vertices. A null linedef throws `linedef`. The function does not print.\n\n`CheckForGLNodes` rejects `numlines < 1` with `numlines` before it reads a seg. A window that starts before the seg array or runs past it throws `segs`. Closure is pointer identity of `firstseg->v1` and `lastseg->v2`. Two vertices with the same coordinates are open. Two nulls are closed. An open subsector returns false immediately, so a miniseg later in that window is not consulted. A closed subsector scans `Level->segs[j]` for `j` in `0 .. numlines-1`, not the subsector's own seg window. A null linedef there returns true immediately. When every subsector is closed and that prefix has no miniseg, the missing-seg count decides. A positive count prints `N missing segs counted` and `The BSP needs to be rebuilt.` and returns false. Zero returns true and prints nothing. An empty subsector list falls through to that count.\n\n`LoadGLVertexes` stores `firstglvertex` before it looks at the lump. It seeks to `SeekSet`, reads, then asks for the length, including when the length is below 4. A length below 4 returns false and leaves `format5` unchanged. A length of at least 4 whose buffer is shorter than 4 bytes throws `gldata` before `format5` changes. The magic is the first four file bytes as a little-endian int, matching `MAKE_ID` for `gNd2`, `gNd4`, and `gNd5`. `gNd5` sets `format5`. `gNd2` clears it. `gNd4` prints version 4. Every other magic prints version 1. The text is `GL nodes vN found. This format is not supported by HCDE`. Neither failure resizes the vertex array.\n\nThe vertex count is `firstglvertex + (length - 4) / 8`, integer division. Bytes past that multiple are ignored. A count that does not fit in a 32-bit list index throws `numvertexes` after `format5` is stored and before the array grows. An empty vertex array with any line throws `vertexes` at the old base pointer, before the resize, so a valid vertex payload is not appended. Otherwise the array grows first. Each line's vertices are then retargeted by their old index. A null endpoint throws `v1` or `v2`. An endpoint that was not in the old array throws `vertexes`. Those throws happen after the growth, and coordinates for the new slots are still unset. Each new vertex is `LittleLong(x) / 65536.0` and `LittleLong(y) / 65536.0`, read little-endian, so a big-endian 65536 lands as 256/65536. A buffer that runs out mid-vertex throws `gldata` after the resize and after the vertices that did fit. `format5` is not consulted again on this path. `gNd5` and `gNd2` write the same coordinates.\n\n| Managed (`VmGlNodes1364Slice.cs`) | Native (`glnodes.cpp`) |\n|-----------------------------------|------------------------|\n| Missing segs, the GL-node probe, and GL vertex load | **1\u2013240** |\n| Band hull (exclusive slice) | **1\u2013240** |\n\n### Chunk **1364** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **240** |\n| **Net headline** | **+240** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.MapLoader/VmGlNodes1364Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/maploader/glnodes.cpp",
+          "symbol": "GlNodes",
+          "start": 1,
+          "end": 240,
+          "tests": [
+            "VmGlNodes1364SliceTests.MissingSegsAndClosedSubsectors",
+            "VmGlNodes1364SliceTests.LoadGlVertexes"
+          ]
+        }
+      ],
+      "nativeLoc": 240,
+      "managedLoc": 241,
+      "conversionManagedCommit": "fb553f48b3d5f67c91f510b55ea12b3db7ff691f"
     }
   ],
   "behaviorNativeChecksum": 508086,
