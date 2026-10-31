@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 140834,
+  "convertedThisRunNative": 141115,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 176923,
+  "convertedThisRunManaged": 177314,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 348038,
+  "remainingNative": 347757,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 159361,
+  "convertedBehaviorNative": 159642,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 160048,
-  "convertedBehaviorManaged": 186594,
+  "combinedBehaviorNative": 160329,
+  "convertedBehaviorManaged": 186985,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -46489,6 +46489,33 @@
       "nativeLoc": 283,
       "managedLoc": 364,
       "conversionManagedCommit": "f9979165454274d9e64314145a260690d8c957db"
+    },
+    {
+      "name": "state-pointer-chunk1350",
+      "bucket": "conversion",
+      "note": "Debugger state pointer from StatePointerNode.cpp (1-281), through end of file.",
+      "auditSeams": "StaticFindStateOwner and StaticGetStateName stay injected. Value and dummy children record the constructor arguments; their protocol serializers live outside this file. The header child map is never read here.",
+      "auditRationale": "UNCredited StatePointerNode.cpp 1-281 (+281). A full tally line scan shows no overlap. This is the largest remaining hole of at most 400 lines, ahead of d_net_diag.cpp 813-1075.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/scripting/dap/Nodes/StatePointerNode.cpp --start 1 --end 281 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| State pointer constructor and label dump (**35\u201360**) | yes |\n| Protocol value, owner label, and child names (**62\u2013120**) | yes |\n| Next, sprite, timing, light, and state-flag text (**122\u2013197**) | yes |\n| Frame, use flags, define flags, and the remaining fields (**198\u2013281**) | yes |\n| Band hull (**1\u2013281**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| StaticFindStateOwner | the actor class that owns a state is supplied by the caller |\n| StaticGetStateName | the fallback state text is supplied by the caller |\n| ValueStateNode serializer | this file only chooses the name, the bits, and the type token |\n| Header child map | the map is never read or written by this file |\n\nA null address or a pointer whose low 32 bits are 0 serializes as <NULL> with variables reference 0. A valid pointer uses GetId, type StatePointer, and twelve appended child names. Indexed variables and a matching evaluate name stay as they were. The first label whose state pointer matches wins. A missing owner, a miss, or the name None uses the injected state text. Otherwise the value is type name, a dot, and the label. An unknown child name returns true and leaves the output node unchanged. Each lookup builds a new node and stores the canonical spelling. NextState carries the same owning type. UseFlags stores DefineFlags as uint8; the native use-flag join is discarded. State-flag text is the unsigned count plus the known STF bits joined by a bar, and an empty join leaves empty parentheses. DefineFlags is the number, a space, and one SDF name, or <INVALID>. Dump prints DehExtra when the owner is missing and the dehacked index is non-negative, invalid when that index is negative, and the injected name when an owner exists. A null state still walks children. The child prefix is the parent prefix, a dot, and the label text.\n\n| Managed (VmStatePointer1350Slice.cs) | Native (StatePointerNode.cpp) |\n|--------------------------------------|--------------------------------|\n| State pointer, label dump, and children | **1\u2013281** |\n| Band hull (exclusive slice) | **1\u2013281** |\n\n### Chunk **1350** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **281** |\n| **Net headline** | **+281** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmStatePointer1350Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/dap/Nodes/StatePointerNode.cpp",
+          "symbol": "StatePointerNode",
+          "start": 1,
+          "end": 281,
+          "tests": [
+            "VmStatePointer1350SliceTests.ProtocolAndLookup",
+            "VmStatePointer1350SliceTests.ChildrenDumpAndFlags"
+          ]
+        }
+      ],
+      "nativeLoc": 281,
+      "managedLoc": 391,
+      "conversionManagedCommit": "7765a56da00afa0a83224905e8d0de71d395ce75"
     }
   ],
   "behaviorNativeChecksum": 508086,
