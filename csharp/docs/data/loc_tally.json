@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 130238,
+  "convertedThisRunNative": 130536,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 161063,
+  "convertedThisRunManaged": 161499,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 358634,
+  "remainingNative": 358336,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 148765,
+  "convertedBehaviorNative": 149063,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 149452,
-  "convertedBehaviorManaged": 170734,
+  "combinedBehaviorNative": 149750,
+  "convertedBehaviorManaged": 171170,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -45614,6 +45614,34 @@
       "nativeLoc": 392,
       "managedLoc": 521,
       "conversionManagedCommit": "6f103e3fa8a68dc51726b18889131e239eed3af3"
+    },
+    {
+      "name": "sprite-project-chunk1318",
+      "bucket": "conversion",
+      "note": "Sprite billboard, the water clip, and the portal column clip from r_sprite.cpp (1-298).",
+      "auditSeams": "Wall coordinates, the height-sector sample, and the dynamic-light list are host inputs. Project stores the vissprite and Render records the masked draw.",
+      "auditRationale": "UNCredited r_sprite.cpp 1-298 (+298). A full tally line scan shows no overlap. The file ends at line 298.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/rendering/swrenderer/things/r_sprite.cpp --start 1 --end 298 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Billboard endpoints and the wall reject (**81\u201393**) | yes |\n| Water and fake-floor clip (**95\u2013126**) | yes |\n| Mirror, sprite flip, and the HQ scale (**128\u2013164**) | yes |\n| Vanilla trans, invert, fullbright, and the shadow alpha (**166\u2013208**) | yes |\n| Dynamic light accumulation (**210\u2013268**) | yes |\n| Colormap arguments and the sprite push (**270\u2013272**) | yes |\n| Masked render and the portal column clip (**275\u2013297**) | yes |\n| Band hull (**1\u2013298**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| The masked pixel drawer | the host records the draw arguments |\n\nThe billboard walks the sprite offset along the view right, then the wall clip. A mirror swaps the rotated edges and xors the x-flip bit. Sprite flip xors that bit after the endpoints are built. HQ resize divides the vertical scale only when the mode is live, the multiple is at least one, and sprite targets are set. Vanilla trans forces the normal style when the actor is marked and the class is listed. Invert source flips the overlay invert before the shadow replacement. An additive style with a nonzero fade copies the colormap and clears the fade. Fullbright is off in fog. A bright actor still sets the stored fullbright bit. A texture that disables fullbright blocks the render flag and a forced texture, and a bright actor still passes. The shadow style is the translucent stencil, the fill is zero, and the alpha uses the clamp that takes zero as its value. A light inside its radius adds attenuated color. A null node, a light that declines the actor, and a light outside the radius add nothing. Render copies the ceiling clip on a portal column and the floor clip otherwise, then draws at the top minus the floor clip.\n\n| Managed (`VmSpriteProject1318Slice.cs`) | Native (`r_sprite.cpp`) |\n|------------------------------------------|--------------------------|\n| Billboard, water clip, lights, and the column clip | **1\u2013298** |\n| Band hull (exclusive slice) | **1\u2013298** |\n\n### Chunk **1318** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **298** |\n| **Net headline** | **+298** vs post-**1317** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmSpriteProject1318Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/rendering/swrenderer/things/r_sprite.cpp",
+          "symbol": "RenderSprite::Project",
+          "start": 1,
+          "end": 298,
+          "tests": [
+            "VmSpriteProject1318SliceTests.Project_PlacesTheBillboardAndRejectsWater",
+            "VmSpriteProject1318SliceTests.Project_FlipsScalesStylesAndFadesTheShadow",
+            "VmSpriteProject1318SliceTests.Project_AccumulatesLightsAndRenderClipsColumns"
+          ]
+        }
+      ],
+      "nativeLoc": 298,
+      "managedLoc": 436,
+      "conversionManagedCommit": "9c82598d87a8d5c98000ca852cd2438d1c3d59af"
     }
   ],
   "behaviorNativeChecksum": 508086,
