@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 147136,
+  "convertedThisRunNative": 147353,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 185669,
+  "convertedThisRunManaged": 185981,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 341736,
+  "remainingNative": 341519,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 165663,
+  "convertedBehaviorNative": 165880,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 166350,
-  "convertedBehaviorManaged": 195340,
+  "combinedBehaviorNative": 166567,
+  "convertedBehaviorManaged": 195652,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -47198,6 +47198,33 @@
       "nativeLoc": 217,
       "managedLoc": 186,
       "conversionManagedCommit": "ea16c75ec4fea1f4af59c829e67960bef1157f40"
+    },
+    {
+      "name": "canonical-event-payload-chunk1376",
+      "bucket": "conversion",
+      "note": "Canonical cvar change, run arguments, and event payload from d_net.cpp (3685-3901).",
+      "auditSeams": "Append and read primitives, the canonical string, the null string, and the weapon index are callees just outside this hole. Their byte results are reproduced so the in-band calls keep native partial writes. EDemoCommand values are the compiler sequence; DEM_TAUNT shifts every later opcode by one from the header comments.",
+      "auditRationale": "UNCredited d_net.cpp 3685-3901 (+217). After chunk 1375 the planner's largest 150-400 hole is this band, ahead of a_doors.cpp 343-547 (205). Gaps longer than 400 lines stay whole and are not sliced. A retired payload chunk no longer credits these lines.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/d_net.cpp --start 3685 --end 3901 and a full tally line scan, including recognition ranges, show no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Blank line before the cvar change (**3685**) | yes |\n| `HCDEAppendCanonicalCVarChange` (**3686\u20133719**) | yes |\n| `HCDEAppendCanonicalRunArgs` (**3721\u20133745**) | yes |\n| `HCDEAppendCanonicalEventPayload` (**3747\u20133900**) | yes |\n| Blank line after the payload (**3901**) | yes |\n| Band hull (**3685\u20133901**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| `HCDEAppendCanonicalString` / null string / weapon index **3642\u20133684** | callees; already outside this hole |\n| `HCDEAppendByte` / `BE16` / field bytes | earlier buffer primitives |\n| `HCDEDemCommandName` **3902+** | next function, not this hole |\n\nA cvar descriptor's high two bits are the type and the low six are the name length. A zero name, a type above string, or a short name fails after the descriptor byte is consumed. The type byte is written before the length-prefixed name. A failed name write can leave the big-endian length in place and does not consume the name. `DEM_SINFCHANGEDXOR` then copies one raw byte. Bool copies one byte, int and float copy four raw bytes, and string copies a null-terminated value. Named run arguments write the raw count byte, then mask that count with 127 before copying `count * 4` bytes. Unnamed arguments copy a two-byte script id and do not mask the count. A zero-length field copy still fails when the input cursor is already at the end of the buffer. Empty opcodes copy nothing. Say and taunt both take one byte plus a string. Slot writes read the slot and count before storing either byte. A weapon index keeps seven bits and, when the high bit is set, folds the next byte in at bit 7, then stores a big-endian ushort. `DEM_TAUNT` is 13, so later opcodes are one above the header comments (`DEM_SETSLOT` is 58, `DEM_USEFLECHETTE` is 80).\n\n| Managed (`VmCanonicalEvent1376Slice.cs`) | Native (`d_net.cpp`) |\n|------------------------------------------|---------------------|\n| Cvar change, run arguments, and event payload | **3685\u20133901** |\n| Band hull (exclusive slice) | **3685\u20133901** |\n\n### Chunk **1376** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **217** |\n| **Net headline** | **+217** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmCanonicalEvent1376Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "HCDEAppendCanonicalEventPayload",
+          "start": 3685,
+          "end": 3901,
+          "tests": [
+            "VmCanonicalEvent1376SliceTests.CVarChangeAndRunArgs",
+            "VmCanonicalEvent1376SliceTests.EventPayloadFamilies"
+          ]
+        }
+      ],
+      "nativeLoc": 217,
+      "managedLoc": 312,
+      "conversionManagedCommit": "1e6e891afc2e8c068ed9a0a4927a063cd9e14d0b"
     }
   ],
   "behaviorNativeChecksum": 508086,
