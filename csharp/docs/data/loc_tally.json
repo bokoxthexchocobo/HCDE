@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 146483,
+  "convertedThisRunNative": 146701,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 184880,
+  "convertedThisRunManaged": 185158,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 342389,
+  "remainingNative": 342171,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 165010,
+  "convertedBehaviorNative": 165228,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 165697,
-  "convertedBehaviorManaged": 194551,
+  "combinedBehaviorNative": 165915,
+  "convertedBehaviorManaged": 194829,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -47117,6 +47117,33 @@
       "nativeLoc": 220,
       "managedLoc": 577,
       "conversionManagedCommit": "337ee6811fb82382c8cb5d30f353722fe1f348b4"
+    },
+    {
+      "name": "servermode-init-chunk1373",
+      "bucket": "conversion",
+      "note": "Dedicated-server runtime fields, argument parsing, and init through SetAuthorityState from hcde_servermode.cpp (1-218).",
+      "auditSeams": "CheckParm, CheckValue, and strtol base 10 are the m_argv and libc callees. DebugTrace and I_FatalError are recorded on the slice. Chunk 640 already owns hcde_servermode.cpp 219-395, including SetAuthoritySettingsController.",
+      "auditRationale": "UNCredited hcde_servermode.cpp 1-218 (+218). A full tally line scan, including recognition ranges, ties this hole with p_switch.cpp 235-452. Both are 218 lines. Path order takes the engine file. The next accessor at line 219 stays chunk 640. Gaps longer than 400 lines stay whole and are not sliced.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/engine/hcde_servermode.cpp --start 1 --end 218 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| File header, includes, and `FArg` declarations (**1\u201332**) | yes |\n| `FHCDEServerRuntime` defaults and the `Runtime` instance (**33\u201365**) | yes |\n| `IsValueArg` through `YesNo` (**67\u2013128**) | yes |\n| `HCDE_ServerMode_InitFromArgs` (**131\u2013172**) | yes |\n| `SetSelectedIWAD` through `SetAuthorityState` (**174\u2013217**) | yes |\n| Blank line closing the band (**218**) | yes |\n| Band hull (**1\u2013218**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| hcde_servermode.cpp **219\u2013395** | accessors, guards, and diagnostics, chunk 640 |\n| m_argv.cpp `CheckParm` / `CheckValue` | callee, not this hole |\n\n`HCDE_DEDICATED_SERVER` is the compile flag stored on the slice. It is applied only when init runs, and it stays false until then. A null `Args` pointer sets that flag and returns without `Initialized`, so a later call can still parse. `CheckParm` starts at argument 1 and compares names without case. `IsValueArg` rejects a null pointer and a leading `-` or `+`. An empty string is a value argument. `CheckValue` still returns null for an empty string. `ReadIntValue` is `strtol` base 10: the whole token must be consumed, `010` is 10, and a value outside `int` or an out-of-range `long` is 0. A missing flag still returns 0 from `CheckParm`, and that integer read then inspects argument 1. `+map` wins over `-warp`. Warp keeps a second value argument and separates the two with one space. Join text is `-join`, then `-joindedicated`, then `-dedicatedjoin`. The init log is `Infof` category `serv` with the source format, and `TextOr` substitutes `default` for an empty map. The dedicated executable fatals with the source sentence only when arguments exist and `-server` is absent. `YesNo` is declared in this band; its call sites are the later diagnostics. `SetNetworkDetails` logs `?` for an empty flow. `SetMasterState` logs `%zu`. `SetAuthorityState` logs `Markf` and substitutes `unknown` for an empty name. The function ends at line 217. Line 218 is the blank line in the band.\n\n| Managed (`VmServerMode1373Slice.cs`) | Native (`hcde_servermode.cpp`) |\n|--------------------------------------|--------------------------------|\n| Runtime init through `SetAuthorityState` | **1\u2013218** |\n| Band hull (exclusive slice) | **1\u2013218** |\n\n### Chunk **1373** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **218** |\n| **Net headline** | **+218** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmServerMode1373Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/hcde_servermode.cpp",
+          "symbol": "HcdeServerModeInit",
+          "start": 1,
+          "end": 218,
+          "tests": [
+            "VmServerMode1373SliceTests.InitFromArgsParsesStrictValuesAndFatals",
+            "VmServerMode1373SliceTests.SettersRecordNetworkMasterAndAuthority"
+          ]
+        }
+      ],
+      "nativeLoc": 218,
+      "managedLoc": 278,
+      "conversionManagedCommit": "56d841b035b4c88a2cb8b7c9dcf7a07f96526571"
     }
   ],
   "behaviorNativeChecksum": 508086,
