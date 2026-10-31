@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 134412,
+  "convertedThisRunNative": 134777,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 166400,
+  "convertedThisRunManaged": 166834,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 354460,
+  "remainingNative": 354095,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 152939,
+  "convertedBehaviorNative": 153304,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 153626,
-  "convertedBehaviorManaged": 176071,
+  "combinedBehaviorNative": 153991,
+  "convertedBehaviorManaged": 176505,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -45940,6 +45940,33 @@
       "nativeLoc": 368,
       "managedLoc": 413,
       "conversionManagedCommit": "99f5ee9ddc6ab5f3adb4cc8cd29748815bb33ba3"
+    },
+    {
+      "name": "thinker-list-chunk1330",
+      "bucket": "conversion",
+      "note": "Thinker list link, destroy, save, traveller removal, OnLoad, tick, profile, and the empty-link destructor from dthinker.cpp (444-808).",
+      "auditSeams": "Remove, CallTick, CallPostBeginPlay, Serialize, and the GC stay callees. SerializeThinkers ends at line 443. OnDestroy at line 809 stays on the serialize-instance chunk.",
+      "auditRationale": "UNCredited dthinker.cpp 444-808 (+365). A full tally line scan shows no overlap. The save-archive chunk ends at line 443 and OnDestroy starts at line 809. This is the largest remaining hole of at most 400 lines, ahead of whole-file jit_flow.cpp 1-362.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/dthinker.cpp --start 444 --end 808 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| AddTail ring insert (**452\u2013474**) | yes |\n| First thinker and root marks (**483\u2013516**) | yes |\n| Head, tail, and empty (**525\u2013558**) | yes |\n| Destroy copy, sentinel, and both catches (**567\u2013628**) | yes |\n| Save, travellers, and OnLoad (**637\u2013698**) | yes |\n| Tick and profile (**707\u2013794**) | yes |\n| Empty-link destructor (**804\u2013807**) | yes |\n| Band hull (**444\u2013808**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| SerializeThinkers | ends at line 443, already credited |\n| OnDestroy | starts at line 809, already credited |\n| Remove, CallTick, and CallPostBeginPlay | callees |\n\nAddTail rejects a linked thinker and a thinker scheduled for destruction before it creates the sentinel. A missing sentinel is a self-ring, then the thinker is inserted ahead of that sentinel. One-argument and two-argument write barriers follow the native order. FirstThinker clamps with an unsigned compare, prefers the live head, and then reads the fresh head. MarkRoots marks live and fresh sentinels through 127 and the extra live slot 128. GetHead treats a self-ring as no head and requires the head to point back at the sentinel. GetTail returns the previous thinker unless that previous thinker is the sentinel. IsEmpty is true only when the sentinel is missing or its next link is null, so a self-ring is not empty. Destroy copies the ring, clears every link, destroys the sentinel, then destroys the copies. A VM abort prints the header, the red message when the message pointer is set, and the stack trace, then forces deletion and continues. A recoverable error prints one bold line, forces deletion, and continues. Any other exception escapes before the rest of the copies are destroyed. DestroyThinkers reports `DestroyThinkers failed` only when the copy pass returns an error. Save walks until the sentinel flag and refuses a null or euthanize next link. RemoveTravellers saves the next thinker first, clears the travelling bit when saving, and destroys the thinker otherwise. Euthanize travellers stay. OnLoad saves the next thinker and calls the override only when the thinker is not scheduled for destruction. Tick and profile count every node. A just-spawned thinker can move to the destination before post-begin. A destination plus a thinker that has already ticked raises `There is a thinker in the fresh list that has already ticked.` A destroyed thinker is not ticked, and its just-spawned bit stays. Profile counts the call, clocks, ticks, then unclocks, and a tick exception skips the unclock and leaves the just-spawned bit. The destructor requires both links to be null.\n\n| Managed (`VmThinkerList1330Slice.cs`) | Native (`dthinker.cpp`) |\n|---------------------------------------|-------------------------|\n| List link, destroy, tick, and profile | **444\u2013808** |\n| Band hull (exclusive slice) | **444\u2013808** |\n\n### Chunk **1330** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **365** |\n| **Net headline** | **+365** vs post-**1329** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmThinkerList1330Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/dthinker.cpp",
+          "symbol": "FThinkerList::AddTail",
+          "start": 444,
+          "end": 808,
+          "tests": [
+            "VmThinkerList1330SliceTests.Link_BuildsTheRingAndDestroysIt",
+            "VmThinkerList1330SliceTests.Tick_SavesTravellersAndProfiles"
+          ]
+        }
+      ],
+      "nativeLoc": 365,
+      "managedLoc": 434,
+      "conversionManagedCommit": "12b93a6c2cdf956e8e28cbdee33b2b076538506e"
     }
   ],
   "behaviorNativeChecksum": 508086,
