@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 142677,
+  "convertedThisRunNative": 142934,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 179403,
+  "convertedThisRunManaged": 179858,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 346195,
+  "remainingNative": 345938,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 161204,
+  "convertedBehaviorNative": 161461,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 161891,
-  "convertedBehaviorManaged": 189074,
+  "combinedBehaviorNative": 162148,
+  "convertedBehaviorManaged": 189529,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -46679,6 +46679,34 @@
       "nativeLoc": 257,
       "managedLoc": 512,
       "conversionManagedCommit": "8721f80e1d06d000109407e167d4d8a819c9bdb3"
+    },
+    {
+      "name": "level-serialize-chunk1357",
+      "bucket": "conversion",
+      "note": "Drawn subsectors, portal and poly serialize, reverb, and level sounds from p_saveg.cpp (336-592).",
+      "auditSeams": "S_FindEnvironment, S_SerializeSounds, S_GetMusic, S_ChangeMusic, SetMusic, SetMusicVolume, RotatePolyobj, and MovePolyobj stay injected. The int serializer is the archive. isPrimaryLevel is the level flag.",
+      "auditRationale": "UNCredited p_saveg.cpp 336-592 (+257). A full tally line scan shows no overlap. This is the largest remaining hole of at most 400 lines. It is not a tie.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/p_saveg.cpp --start 336 --end 592 and a full tally line scan \u2192 no overlap.",
+      "auditManagedLocJustification": "FSerializer's typed writers, the six-bit glyph table, and the portal field list live outside the control flow that this file actually branches on. The managed port keeps that call surface beside the pack, the copied poly delta, and the music call order because those are what the next line reads. S_FindEnvironment, S_SerializeSounds, S_GetMusic, S_ChangeMusic, SetMusic, SetMusicVolume, RotatePolyobj, and MovePolyobj stay injected. That host surface is why the managed file is over 150% of the 257-line source.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Drawn subsectors (**346\u2013451**) | yes |\n| Line and sector portals (**459\u2013497**) | yes |\n| Poly, reverb, zone, and sounds (**505\u2013585**) | yes |\n| Band hull (**336\u2013592**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| SerializePlayers | the player archive starts at the next function |\n| S_FindEnvironment | the reverb table lives outside this file |\n| RotatePolyobj | the poly move lives outside this file |\n| S_SerializeSounds | the channel archive lives outside this file |\n\nRecalculate ORs the drawn bit when a seg's linedef is non-null and the mapped bit is set. It does not clear a flag that is already set. A null line list throws NullReferenceException. Six subsectors share one byte. Values below 10 are digits, below 36 are uppercase, below 62 are lowercase, 62 is a dash, and 63 is a plus. The write records the vertex count taken after the array opens, the subsector count taken at entry, and the string with no trailing NUL. A closed array records nothing else. A read succeeds only when both counts match. A bad character keeps earlier groups and then recalculates. A NUL ends the string before later characters. A null string throws after the array ends and does not recalculate. A closed read does not recalculate. A clear bit does not erase a flag that is already set.\n\nLine and sector portals write their fields only when the object opens. The default pointer is unused. Byte fields truncate on read. The poly angle and start are copied before any field is written. Later fields read the live poly, so a callback during the angle field can change them, and the recorded start stays the copy. On a read with original points, rotate runs with the archived angle and true, then the delta loses the start after that rotate, then move runs with true even when rotate returns false. The poly's own angle is not replaced by the archive. An empty original list or a closed object skips both calls. A missing hook throws InvalidOperationException.\n\nReverb stores 0 when reading or when the container is null, otherwise the id. The int serializer runs first. Find runs only on a read and may return null. The zone forwards its environment and passes a null default into that overload. Sounds run only when the level is primary. The order is the sound archive, then the music-volume snapshot, then the music query on a write. The order byte truncates the returned int. The music name stops at the first NUL on write. A read calls the music change with the archived name and order. A false result calls the map-music reset. The volume call always receives the archived volume. A missing hook throws before the later call.\n\n| Managed (VmLevelSerialize1357Slice.cs) | Native (p_saveg.cpp) |\n|----------------------------------------|----------------------|\n| Drawn subsectors, portals, poly, reverb, and sounds | **336\u2013592** |\n| Band hull (exclusive slice) | **336\u2013592** |\n\n### Chunk **1357** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **257** |\n| **Net headline** | **+257** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmLevelSerialize1357Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/p_saveg.cpp",
+          "symbol": "LevelSerialize",
+          "start": 336,
+          "end": 592,
+          "tests": [
+            "VmLevelSerialize1357SliceTests.DrawnSubsectors",
+            "VmLevelSerialize1357SliceTests.PortalsPolyReverbAndSounds"
+          ]
+        }
+      ],
+      "nativeLoc": 257,
+      "managedLoc": 455,
+      "conversionManagedCommit": "c2d7a7a11424643afa4933cd774fad28f67f3a04"
     }
   ],
   "behaviorNativeChecksum": 508086,
