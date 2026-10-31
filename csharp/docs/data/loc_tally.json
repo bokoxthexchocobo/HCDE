@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 147966,
+  "convertedThisRunNative": 148170,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 186692,
+  "convertedThisRunManaged": 186987,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 340906,
+  "remainingNative": 340702,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 166493,
+  "convertedBehaviorNative": 166697,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 167180,
-  "convertedBehaviorManaged": 196363,
+  "combinedBehaviorNative": 167384,
+  "convertedBehaviorManaged": 196658,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -47306,6 +47306,33 @@
       "nativeLoc": 204,
       "managedLoc": 290,
       "conversionManagedCommit": "8a3dd3d1ed500871127d282a6c491f685413bfed"
+    },
+    {
+      "name": "net-packet-path-chunk1380",
+      "bucket": "conversion",
+      "note": "Level-start wait, net-buffer sizing, and the send/get packet path from d_net.cpp (4992-5195).",
+      "auditSeams": "The reset that ends at 4991 stays outside this band. ClientConnecting at 5202 stays outside. Net_HasPlayableNetworkClients, Net_ResetAuthorityWaitWatchdog, Net_SetLevelStartStatus, I_IsLocalHCDEServiceAuthority, Net_PlayableNetworkClientCount, I_IsHCDEServiceAuthoritySlot, HCDELiveLooksLikePacket, Net_TrySkipUserCmdMessageWithBoundary, Net_TraceOutgoingPacket, and I_NetCmd are callees. NCMD_EXIT is 0x80, NCMD_SETUP is 0x20, NCMD_LEVELREADY is 0x10, NCMD_QUITTERS is 0x08, NCMD_LATENCYACK is 0x02, and NCMD_LATENCY is 0x01. LST_WAITING is 2. CMD_SEND is 1 and CMD_GET is 2.",
+      "auditRationale": "UNCredited d_net.cpp 4992-5195 (+204). After chunk 1379 this is the unique largest hole. teaminfo.cpp 232-434 and compatibility.cpp 1-203 are 203. Gaps longer than 400 lines stay whole and are not sliced.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/d_net.cpp --start 4992 --end 5195 and a full tally line scan, including recognition ranges, show no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Band open (**4992\u20134993**) | yes |\n| `Net_SetWaiting` (**4994\u20135006**) | yes |\n| Size preamble and exit/setup (**5008\u20135025**) | yes |\n| Latency, live, and level-ready (**5026\u20135041**) | yes |\n| Fixed header and quitters (**5043\u20135054**) | yes |\n| Player, tic, and ran counts (**5056\u20135078**) | yes |\n| Stability and per-player padding (**5079\u20135091**) | yes |\n| Player skip and command offsets (**5093\u20135136**) | yes |\n| Size return (**5139**) | yes |\n| `HSendPacket` (**5142\u20135167**) | yes |\n| `HGetPacket` (**5169\u20135200**) | yes |\n| Band close (**5201**) | yes |\n| Band hull (**4992\u20135195**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Command reset through **4991** | above this band |\n| `ClientConnecting` **5202** onward | below this band |\n| Watchdog, status, skip, trace, and `I_NetCmd` | callees |\n\n`Net_SetWaiting` returns immediately unless `netgame` is set, demo playback is clear, and a playable client exists. It then zeros the level-start ack, delay, debug counter, and full latency cycle, resets the authority wait watchdog with `level-wait`, sets status `LST_WAITING` (2) with reason `map-load-wait`, and marks `net.levelstart` with the room, map or `<none>`, authority bit, transport-client count, and playable-client count. `GetNetBufferSize` returns 0 for an empty buffer. `NCMD_EXIT` (0x80) returns 1 plus 1 when the remote slot is the authority. `NCMD_SETUP` (0x20) returns 2 when fewer than 2 bytes are present and otherwise the buffer length. `NCMD_LATENCY` (0x01) or `NCMD_LATENCYACK` (0x02) returns 2 before the live-packet check. A live packet returns the buffer length. `NCMD_LEVELREADY` (0x10) returns 2, plus 6 when the remote slot is the authority. The ordinary header is 10 bytes. `NCMD_QUITTERS` (0x08) adds one plus the count byte at that index and returns the grown total when the buffer is short. The player count, tic count, and ran-tic count are each one byte. A positive tic count or ran-tic count adds 4 bytes. The stability byte always follows. Each player then needs 1 byte, plus 2 when the remote slot is the authority. The skip walk consumes the player byte, those 2 authority bytes, 3 bytes per ran tic, and one command-offset byte per tic. An offset at or past `numTics` or at or past 64, or a repeated offset in the 64-bit mask, fails as length plus 1. The skip callee that returns false, or a payload longer than the remainder, fails the same way. The success return is the cursor after the last consumed byte. `HSendPacket` returns immediately during demo playback. A netgame send with a positive size traces the header before the remote slot and length are stored. A send to the console player copies into the local buffer and returns. An offline send to any other client errors with `Tried to send a packet to a client while offline`. Otherwise the send command is 1. `HGetPacket` returns false during demo playback without consuming the local buffer. A pending local buffer is copied back, the remote slot becomes the console player, the local size is cleared, and the call returns true even while offline. An offline get with no local buffer returns false. Otherwise command 2 runs, a remote slot of -1 returns false, and a length that disagrees with `GetNetBufferSize` prints `Incorrect packet size` and returns false.\n\n| Managed (`VmNetPacket1380Slice.cs`) | Native (`d_net.cpp`) |\n|-------------------------------------|---------------------|\n| Wait, buffer size, send, and get | **4992\u20135195** |\n| Band hull (exclusive slice) | **4992\u20135195** |\n\n### Chunk **1380** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **204** |\n| **Net headline** | **+204** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmNetPacket1380Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_SetWaiting",
+          "start": 4992,
+          "end": 5195,
+          "tests": [
+            "VmNetPacket1380SliceTests.WaitingAndHeaderSizes",
+            "VmNetPacket1380SliceTests.SendGetAndTicSkip"
+          ]
+        }
+      ],
+      "nativeLoc": 204,
+      "managedLoc": 295,
+      "conversionManagedCommit": "5e7780db1e1721f58b01b8bb9b7171e27dfd4bfc"
     }
   ],
   "behaviorNativeChecksum": 508086,
