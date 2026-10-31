@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 129218,
+  "convertedThisRunNative": 129427,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 159882,
+  "convertedThisRunManaged": 160042,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 359654,
+  "remainingNative": 359445,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 147745,
+  "convertedBehaviorNative": 147954,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 148432,
-  "convertedBehaviorManaged": 169553,
+  "combinedBehaviorNative": 148641,
+  "convertedBehaviorManaged": 169713,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -45506,6 +45506,33 @@
       "nativeLoc": 285,
       "managedLoc": 398,
       "conversionManagedCommit": "8ae609e5ba281ad5900ab7e1d461a1d61af0306b"
+    },
+    {
+      "name": "stbincludes-chunk1314",
+      "bucket": "conversion",
+      "note": "Include-line splice, the line directives, and the missing-file error from stb_include.cpp (1-209).",
+      "auditSeams": "FindFile and GetStringFromLump are the host file load. The slice receives the file text or a miss.",
+      "auditRationale": "UNCredited stb_include.cpp 1-209 (+209). A full tally line scan shows no overlap. The file ends at line 209.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/rendering/stb_include.cpp --start 1 --end 209 and a full tally line scan \u2192 no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Whitespace, quotes, and include scan (**63\u2013164**) | yes |\n| String splice and file load (**166\u2013209**) | yes |\n| Band hull (**1\u2013209**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Virtual filesystem | the host returns the lump text |\n\nThe scan starts each line at the first character. Spaces and tabs before the hash are skipped for the keyword and removed with the include line. `#include` needs a space, tab, or newline after the word, then a double quote. An unterminated quote, an angle-bracket name, and a quote glued to the word stay in the text. The recorded span runs from the start of the line through the character before the newline, so the include newline stays for the following text. The resume line number is one past the include line. A file pushes its name and uses the new count as the line-directive index. The directive is a leading newline, `#line`, the numbers, and the name. A nested load failure appends `Error: couldn't load '...'` and the caller returns an empty string. Opening a file for splicing clears the error first. A missing file does not push its name.\n\n| Managed (`VmStbInclude1314Slice.cs`) | Native (`stb_include.cpp`) |\n|---------------------------------------|----------------------------|\n| Include splice and the load error | **1\u2013209** |\n| Band hull (exclusive slice) | **1\u2013209** |\n\n### Chunk **1314** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **209** |\n| **Net headline** | **+209** vs post-**1313** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmStbInclude1314Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/rendering/stb_include.cpp",
+          "symbol": "stb_include_string",
+          "start": 1,
+          "end": 209,
+          "tests": [
+            "VmStbInclude1314SliceTests.Expand_SplicesTheIncludeAndResumesTheParentLine",
+            "VmStbInclude1314SliceTests.Load_ClearsOnEntryAndAppendsTheMissingName"
+          ]
+        }
+      ],
+      "nativeLoc": 209,
+      "managedLoc": 160,
+      "conversionManagedCommit": "edf2ddc25682859b47d02f2829d0d8923f394855"
     }
   ],
   "behaviorNativeChecksum": 508086,
