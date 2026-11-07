@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 155257,
+  "convertedThisRunNative": 155539,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 195304,
+  "convertedThisRunManaged": 195572,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 333615,
+  "remainingNative": 333333,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 173784,
+  "convertedBehaviorNative": 174066,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 174471,
-  "convertedBehaviorManaged": 204975,
+  "combinedBehaviorNative": 174753,
+  "convertedBehaviorManaged": 205243,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -48306,6 +48306,33 @@
       "nativeLoc": 313,
       "managedLoc": 418,
       "conversionManagedCommit": "e7aa7515f57ccbb84cd23f4dd5f09e0b078568fb"
+    },
+    {
+      "name": "d-main-status-sprites-chunk1417",
+      "bucket": "conversion",
+      "note": "Startup status, episode and skill selection, and IWAD sprite renames in d_main.cpp (2802-3083).",
+      "auditSeams": "Startup show, clear, progress, the episode list, the skill cvar, the fatal error, file-name checks, and namespaces stay callees. RenameNerve starts at line 3096.",
+      "auditRationale": "UNCredited d_main.cpp 2802-3083 (+282). StartupStatusLine through RenameSprites are whole functions. The comment banners between them sit inside the span. The functions before RenameSprites are under 150 lines together, so they share this band. RenameNerve starts at line 3096. hq4x and hq4x_asm stay later because they are generated tables. The band is not sliced further.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/d_main.cpp --start 2802 --end 3083 and a full tally line scan, including recognition ranges, show no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| StartupStatusLine (**2802\u20132812**) | yes |\n| StartupPreVideoStatus (**2814\u20132821**) | yes |\n| StartupClearPreVideoStatus (**2823\u20132826**) | yes |\n| D_StartupProgress (**2828\u20132842**) | yes |\n| CheckEpisodeCmd (**2846\u20132891**) | yes |\n| CheckDefaultSkill (**2893\u20132908**) | yes |\n| NewFailure (**2910\u20132913**) | yes |\n| RenameSprites (**2926\u20133083**) | yes |\n| Band hull (**2802\u20133083**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| CheckCmdLine | ends at line 2800 |\n| RenameNerve | starts at line 3096 |\n| Startup show, clear, progress, episode list, skill cvar, fatal error, file names, and namespaces | callees |\n\nStartupStatusLine prints the text unless the run is a batch, then tells the start screen the loading phase. The color and centering arguments are unused. Pre-video status is shown only when the run is not a batch and not a dedicated server, and the trace is recorded either way, with a null string becoming empty. Clearing the pre-video status always runs. Progress does nothing for a non-positive advance and otherwise advances the window and the screen independently. CheckEpisodeCmd reads -episode. A value whose episode index is outside the list prints the invalid line and leaves the selection unset. A selected episode replaces the map and sets autostart even when a map was already chosen. Without a selection, an existing map is kept, except a launcher-default map is replaced by the first episode map when that map is non-empty and differs. An unset map with no selection uses the first episode map and does not set autostart. CheckDefaultSkill records a non-negative default and then applies a non-negative -skill value. NewFailure reports the system-heap allocation failure. RenameSprites keeps Doom sprite names. Heretic, Hexen, and Strife each have their own four-character rename list, applied to IWAD sprites or to every sprite when -oldsprites or nospriterename is set. Hexen also rewrites an ARTIINVU name in that same case. A missing MNTRZ sprite shifts MNTR frames F through K at the two frame slots for every sprite. Blood is renamed to BLUD unless the game has the Doom or Chex bit. Global lumps in the IWAD container range that are listed for deletion are blanked, and that blanking wins over the big-font rename. Otherwise the game's big font is renamed to BIGFONT: Strife, Raven games, or the Doom name.\n\n| Managed (`VmDMain1417Slice.cs`) | Native (`d_main.cpp`) |\n|----------------------------------|----------------------|\n| Startup status, episode, skill, and sprite renames | **2802\u20133083** |\n| Band hull (exclusive slice) | **2802\u20133083** |\n\n### Chunk **1417** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **282** |\n| **Net headline** | **+282** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmDMain1417Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "StartupStatusLine",
+          "start": 2802,
+          "end": 3083,
+          "tests": [
+            "VmDMain1417SliceTests.StatusEpisodeAndSkill",
+            "VmDMain1417SliceTests.SpriteAndFontRenames"
+          ]
+        }
+      ],
+      "nativeLoc": 282,
+      "managedLoc": 268,
+      "conversionManagedCommit": "3ab940a954386ff0cf11ac5f40f1f6faac3c37a9"
     }
   ],
   "behaviorNativeChecksum": 508086,
