@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 163642,
+  "convertedThisRunNative": 163822,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 205087,
+  "convertedThisRunManaged": 205307,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 325230,
+  "remainingNative": 325050,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 182169,
+  "convertedBehaviorNative": 182349,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 182856,
-  "convertedBehaviorManaged": 214758,
+  "combinedBehaviorNative": 183036,
+  "convertedBehaviorManaged": 214978,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -49209,6 +49209,33 @@
       "nativeLoc": 209,
       "managedLoc": 293,
       "conversionManagedCommit": "58b0dcb132fbe2377fcfa1095cf5d5101d6c74ec"
+    },
+    {
+      "name": "d-net-envelope-prefix-chunk1449",
+      "bucket": "conversion",
+      "note": "Live wrap helpers and gameplay envelope prefix in d_net.cpp (2628-2807).",
+      "auditSeams": "ShouldWrapHCDEClientCommandPacket through the version check in UnwrapHCDEGameplayEnvelope. RequestHCDELiveReplay ends at 2626. The room-staleness gate at 2809-2813 is already credited.",
+      "auditRationale": "UNCredited d_net.cpp 2628-2807 (+180). One contiguous span of the wrap predicates, authority settings, and the envelope prefix. The span stops on the closing brace before the credited room check and does not cross credited code.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 1449 --band shows no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Wrap and envelope prefix (**2628\u20132807**) | yes |\n| Band hull (**2628\u20132807**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Live replay | lines 2418-2626 are already credited |\n| Room staleness gate | lines 2809-2813 are already credited |\n\nDedicated input is authorized only when the packet names a single player and that player is the sender. A non-player authority keeps the player settings bit clear. The envelope writer clears the outgoing flag byte after copying it. A version, kind, or flag mismatch returns before the room check, and a matching prefix does not reject a different room.\n\n| Managed (`VmNet1449Slice.cs`) | Native (`d_net.cpp`) |\n|-------------------------------|----------------------|\n| WrapClient through UnwrapPrefix | **2628\u20132807** |\n| Band hull (exclusive slice) | **2628\u20132807** |\n\n### Chunk **1449** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **180** |\n| **Net headline** | **+180** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmNet1449Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "ShouldWrapHCDEClientCommandPacket",
+          "start": 2628,
+          "end": 2807,
+          "tests": [
+            "VmNet1449SliceTests.WrapAuthorityAndSettings",
+            "VmNet1449SliceTests.EnvelopePrefixStopsBeforeRoom"
+          ]
+        }
+      ],
+      "nativeLoc": 180,
+      "managedLoc": 220,
+      "conversionManagedCommit": "7eea57122d25c8826de38fac8aa34bc5de5a07ed"
     }
   ],
   "behaviorNativeChecksum": 508086,
