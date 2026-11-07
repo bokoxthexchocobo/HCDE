@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 332947
+    "managedCSharpLoc": 333137
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 151679,
+    "convertedThisRunNative": 151842,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 191127,
+    "convertedThisRunManaged": 191317,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 337193,
+    "remainingNative": 337030,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 170206,
+    "convertedBehaviorNative": 170369,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 170893,
-    "convertedBehaviorManaged": 200798,
+    "combinedBehaviorNative": 171056,
+    "convertedBehaviorManaged": 200988,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -47863,6 +47863,33 @@
         "nativeLoc": 167,
         "managedLoc": 198,
         "conversionManagedCommit": "0a6e48e69920157003e123586237d19c40e55558"
+      },
+      {
+        "name": "global-scope-node-chunk1400",
+        "bucket": "conversion",
+        "note": "Global names, protocol scope, and the child cache from GlobalScopeStateNode.cpp (1-163).",
+        "auditSeams": "The file is the whole translation unit. GetVMValue and CreateNodeForVariable are callees. The file ends at line 163.",
+        "auditRationale": "UNCredited GlobalScopeStateNode.cpp 1-163 (+163). After chunk 1399 this is the unique largest hole. system_theme.cpp 1-162 is 162. The band is shorter than 400 lines and is not sliced. It runs through end of file.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/scripting/dap/Nodes/GlobalScopeStateNode.cpp --start 1 --end 163 and a full tally line scan, including recognition ranges, show no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| GlobalNames (**30\u201392**) | yes |\n| SerializeToProtocol (**96\u2013110**) | yes |\n| GetChildNames (**112\u2013119**) | yes |\n| GetChildNode (**121\u2013161**) | yes |\n| Band hull (**1\u2013163**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| GetVMValue | callee in GameInterfaces.h |\n| CreateNodeForVariable | callee |\n| GetId | the scope id is supplied |\n\nGetChildNames appends the static global list and does not include the commented level spelling. The child set matches those names without case. A symbol whose name is NAME_None is skipped, and a symbol that is not a field is skipped, before the type is read. A field reads its type, then GetVMValue at the field offset, and stores the node under a case-insensitive key. A later key that folds to the same name replaces the node and keeps the first stored spelling. The cache is built only while it is empty, so a scan that stores nothing runs again. A missing name leaves the caller's node unchanged.\n\n| Managed (`VmGlobalScope1400Slice.cs`) | Native (`GlobalScopeStateNode.cpp`) |\n|---------------------------------------|--------------------------------------|\n| Global names, serialize, and child cache | **1\u2013163** |\n| Band hull (exclusive slice) | **1\u2013163** |\n\n### Chunk **1400** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **163** |\n| **Net headline** | **+163** vs the prior chunk |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmGlobalScope1400Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/scripting/dap/Nodes/GlobalScopeStateNode.cpp",
+            "symbol": "GlobalScopeStateNode",
+            "start": 1,
+            "end": 163,
+            "tests": [
+              "VmGlobalScope1400SliceTests.SerializeAppendsTheStaticGlobalsAndOmitsTheCommentedLevel",
+              "VmGlobalScope1400SliceTests.ChildCacheFoldsLevelSkipsNonFieldsAndKeepsTheFirstKey"
+            ]
+          }
+        ],
+        "nativeLoc": 163,
+        "managedLoc": 190,
+        "conversionManagedCommit": "bd8a0ccb9abd467e1efef5f4bf5d3951e129deaf"
       }
     ],
     "behaviorNativeChecksum": 508086,
