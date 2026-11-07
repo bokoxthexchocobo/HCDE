@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 342465
+    "managedCSharpLoc": 342765
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 159438,
+    "convertedThisRunNative": 159801,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 200153,
+    "convertedThisRunManaged": 200453,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 329434,
+    "remainingNative": 329071,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 177965,
+    "convertedBehaviorNative": 178328,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 178652,
-    "convertedBehaviorManaged": 209824,
+    "combinedBehaviorNative": 179015,
+    "convertedBehaviorManaged": 210124,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -48754,6 +48754,33 @@
         "nativeLoc": 251,
         "managedLoc": 233,
         "conversionManagedCommit": "02c3f8b98137b4ddc10388b41e0930398772f6d6"
+      },
+      {
+        "name": "m-misc-screenshot-chunk1433",
+        "bucket": "conversion",
+        "note": "putc through openwads in m_misc.cpp (440-802).",
+        "auditSeams": "The PCX struct above this band stays uncredited. G_ScreenShot, PNG helpers, and the shell folder are callees.",
+        "auditRationale": "UNCredited m_misc.cpp 440-802 (+363). This is the screenshot writer, free-name search, and folder commands. The band is shorter than 400 lines and is not sliced.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/m_misc.cpp --start 440 --end 802 and a full tally line scan, including recognition ranges, show no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| PCX writer (**440\u2013615**) | yes |\n| Free names and screenshot (**617\u2013740**) | yes |\n| Folders and config action (**742\u2013802**) | yes |\n| Band hull (**440\u2013802**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| PCX struct | lines 414-437 stay uncredited |\n| G_ScreenShot | callee in g_game.cpp |\n| PNG helpers and shell folder | callees |\n\nA PCX file starts with a 128-byte header: manufacturer 10, version 5, encoding 1, 8 bits, origin 0, size minus one, 75 dpi, one plane for a palette image and three otherwise, and a padded stride. Palette and RGB rows are packed with runs. A run longer than 63 splits. A lone byte below 192 is raw. An odd width writes a zero pad. An unknown color type returns after the header. A palette image then writes marker 12 and 256 colors. A null palette crashes there. PNG text is HCDE plus the version, capped at 99 characters. Any failed PNG step prints the screenshot error, and later steps are skipped. A free name tries i from 0 through 9999. With no clock the index is four digits. With a clock the first name uses the timestamp and later names add a two-digit index. An explicit file gains .pcx or .png only when the file part has no dot. A missing buffer prints that the screenshot could not be created unless quiet. A failed open names the path. A captured line prints the suffix after the last colon or slash unless long names are on. The screenshot command passes null when it has one argument and otherwise the next argument. Opening screenshots or wads resolves the directory, adds a trailing slash, and opens that folder. Both config actions save with a null filename.\n\n| Managed (`VmMisc1433Slice.cs`) | Native (`m_misc.cpp`) |\n|---------------------------------|----------------------|\n| Screenshot writer and folders | **440\u2013802** |\n| Band hull (exclusive slice) | **440\u2013802** |\n\n### Chunk **1433** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **363** |\n| **Net headline** | **+363** vs the prior chunk |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmMisc1433Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/m_misc.cpp",
+            "symbol": "putc",
+            "start": 440,
+            "end": 802,
+            "tests": [
+              "VmMisc1433SliceTests.PcxRowsAndPngText",
+              "VmMisc1433SliceTests.ShotNamesFoldersAndConfig"
+            ]
+          }
+        ],
+        "nativeLoc": 363,
+        "managedLoc": 300,
+        "conversionManagedCommit": "558a357c1f9ff57e871bd0ef68c380566d157e34"
       }
     ],
     "behaviorNativeChecksum": 508086,
