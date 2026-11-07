@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 342765
+    "managedCSharpLoc": 343020
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 159801,
+    "convertedThisRunNative": 159987,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 200453,
+    "convertedThisRunManaged": 200708,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 329071,
+    "remainingNative": 328885,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 178328,
+    "convertedBehaviorNative": 178514,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 179015,
-    "convertedBehaviorManaged": 210124,
+    "combinedBehaviorNative": 179201,
+    "convertedBehaviorManaged": 210379,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -48781,6 +48781,33 @@
         "nativeLoc": 363,
         "managedLoc": 300,
         "conversionManagedCommit": "558a357c1f9ff57e871bd0ef68c380566d157e34"
+      },
+      {
+        "name": "sc-man-values-chunk1434",
+        "bucket": "conversion",
+        "note": "ScanValue through ScriptMessage in sc_man.cpp (933-1118).",
+        "auditSeams": "GetToken, UnGet, and CheckToken are callees below this band. The comment banner at 925-932 stays uncredited.",
+        "auditRationale": "UNCredited sc_man.cpp 933-1118 (+186). This is numeric token scanning, token names, and script errors. The band is shorter than 400 lines and is not sliced.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/engine/sc_man.cpp --start 933 --end 1118 and a full tally line scan, including recognition ranges, show no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Numeric values (**933\u20131004**) | yes |\n| Token names and errors (**1014\u20131118**) | yes |\n| Band hull (**933\u20131118**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Comment banner | lines 925-932 stay uncredited |\n| GetToken and CheckToken | callees below this band |\n| Brace helpers | start at line 1126 |\n\nA value is an optional sign and then an integer, a float, or a named constant. A float is rejected when floats are not allowed, before the sign is applied. A constant that is not a whole number is rejected the same way, and its value is not stored. A minus sign negates the number, including a float token's stale integer fields. CheckValue restores the script position when the scan fails and leaves those number fields in place. A closed script errors before the scan. True sets the number and float to 1. False sets them to 0. Anything else is put back. Token names for bytes 33 through 255 are quoted characters. Named tokens from 256 through 412 use the token table. Identifier through float constant append the token text. Anything else is Unknown. A null message is Bad syntax. Script errors use the already-got line when a token was put back. Fatal errors omit the color codes. Nonfatal errors and script messages print the red error line and keep going.\n\n| Managed (`VmScMan1434Slice.cs`) | Native (`sc_man.cpp`) |\n|---------------------------------|----------------------|\n| Values, names, and script errors | **933\u20131118** |\n| Band hull (exclusive slice) | **933\u20131118** |\n\n### Chunk **1434** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **186** |\n| **Net headline** | **+186** vs the prior chunk |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmScMan1434Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/engine/sc_man.cpp",
+            "symbol": "ScanValue",
+            "start": 933,
+            "end": 1118,
+            "tests": [
+              "VmScMan1434SliceTests.ValuesSignsConstantsAndBools",
+              "VmScMan1434SliceTests.TokenNamesAndScriptErrors"
+            ]
+          }
+        ],
+        "nativeLoc": 186,
+        "managedLoc": 255,
+        "conversionManagedCommit": "44c0f4f7b40f1bf8f31f46dc763487d7ea13236b"
       }
     ],
     "behaviorNativeChecksum": 508086,
