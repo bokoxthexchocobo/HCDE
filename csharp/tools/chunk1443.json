@@ -1,0 +1,26 @@
+[
+  {
+    "name": "d-net-heartbeat-chunk1443",
+    "bucket": "conversion",
+    "note": "Heartbeat, dead clients, and desync diagnostics in d_net.cpp (6228-6517).",
+    "auditSeams": "SendHeartbeat through Net_DumpSyncDiagnostics. MakeConsistencies starts at line 6518.",
+    "auditRationale": "UNCredited d_net.cpp 6228-6517 (+290). One contiguous run of whole functions. Interior comments and the forward declaration are non-behavior. The span does not cross credited code.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 1443 --band shows no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Heartbeat through desync dump (**6228\u20136517**) | yes |\n| Band hull (**6228\u20136517**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| GetPackets | lines 5848-6227 are already credited |\n| Consistency marker | line 6518 starts the next function |\n\nThe heartbeat averages only completed probes and clamps a sample at 5000 ms. A client still in setup, and the console player, are not probed. A silent peer is disconnected once the dead-client timeout elapses, after the scan, and a zero last-packet stamp is primed instead of reaped. The legacy consistency word folds pose and health and never returns zero. The desync report is written only when the debug switch is on.\n\n| Managed (`VmNet1443Slice.cs`) | Native (`d_net.cpp`) |\n|-------------------------------|----------------------|\n| Heartbeat through Dump | **6228\u20136517** |\n| Band hull (exclusive slice) | **6228\u20136517** |\n\n### Chunk **1443** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **290** |\n| **Net headline** | **+290** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmNet1443Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "SendHeartbeat",
+        "start": 6228,
+        "end": 6517,
+        "tests": [
+          "VmNet1443SliceTests.HeartbeatAndDeadClients",
+          "VmNet1443SliceTests.SeedsConsistencyAndDump"
+        ]
+      }
+    ]
+  }
+]
