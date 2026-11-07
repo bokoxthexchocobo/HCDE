@@ -1,0 +1,26 @@
+[
+  {
+    "name": "d-net-invasion-announce-chunk1456",
+    "bucket": "conversion",
+    "note": "Invasion announcements and level-start status in d_net.cpp (1506-1738).",
+    "auditSeams": "Net_IsInvasionRoundActiveState through Net_SetInvasionState. The CVAR block ends before this span. D_ProcessEvents is declared at 1740.",
+    "auditRationale": "UNCredited d_net.cpp 1506-1738 (+233). One contiguous span of the announcement ticker, level-start transition, lag HUD snapshot, and invasion state change. The span does not cross credited code.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 1456 --band shows no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Announcements and invasion state (**1506\u20131738**) | yes |\n| Band hull (**1506\u20131738**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| CVAR block | stays above this span |\n| Prototype declarations | start at line 1740 |\n\nA wave completion is announced only when combat gives way to intermission or victory. Countdown seconds are suppressed when they repeat. Leaving an active round clears the wipe grace. A level-start change to waiting resets the local baseline only for a non-authority net client.\n\n| Managed (`VmNet1456Slice.cs`) | Native (`d_net.cpp`) |\n|-------------------------------|----------------------|\n| RoundActive through SetInvasionState | **1506\u20131738** |\n| Band hull (exclusive slice) | **1506\u20131738** |\n\n### Chunk **1456** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **233** |\n| **Net headline** | **+233** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmNet1456Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_IsInvasionRoundActiveState",
+        "start": 1506,
+        "end": 1738,
+        "tests": [
+          "VmNet1456SliceTests.AnnouncementsAndOrdinals",
+          "VmNet1456SliceTests.LevelStartHudAndState"
+        ]
+      }
+    ]
+  }
+]
