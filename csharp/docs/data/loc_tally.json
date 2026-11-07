@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 152325,
+  "convertedThisRunNative": 152476,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 191814,
+  "convertedThisRunManaged": 191943,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 336547,
+  "remainingNative": 336396,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 170852,
+  "convertedBehaviorNative": 171003,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 171539,
-  "convertedBehaviorManaged": 201485,
+  "combinedBehaviorNative": 171690,
+  "convertedBehaviorManaged": 201614,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -47955,6 +47955,33 @@
       "nativeLoc": 160,
       "managedLoc": 135,
       "conversionManagedCommit": "4a1b2f6e89157ad229ffcc995652ac61381efd4d"
+    },
+    {
+      "name": "doom-menu-commands-chunk1404",
+      "bucket": "conversion",
+      "note": "Default menu colors and the menu console commands from doommenu.cpp (1636-1786).",
+      "auditSeams": "Font-color lookup, class lookup, and menu creation stay callees. The file ends at line 1786.",
+      "auditRationale": "UNCredited doommenu.cpp 1636-1786 (+151). After chunk 1403 the larger codegen.cpp 3778-3933 gap is the tail of FxMulDiv::Emit and the head of FxCompareRel::Resolve, both already credited on either side, so the whole functions left there are under 150 lines and stay uncredited. This band is the next whole-function hole. It is shorter than 400 lines and is not sliced. It runs through end of file.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/menu/doommenu.cpp --start 1636 --end 1786 and a full tally line scan, including recognition ranges, show no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| SetDefaultMenuColors (**1637\u20131659**) | yes |\n| menu_main through menu_video (**1661\u20131786**) | yes |\n| Band hull (**1636\u20131786**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| V_FindFontColor | callee |\n| PClass::FindClass and CreateNew | callees |\n| M_StartControlPanel and M_SetMenu | callees; the arguments are the result |\n| cl_gfxlocalization and OkForLocalization | already outside this band |\n\nSetDefaultMenuColors copies the seven gameinfo color names before it looks up a class. A missing or non-menu help class stops before the delegate lookup. A missing delegate or a class that is not a MenuDelegateBase stops before CreateNew. menu_main changes full-console state to the menu screen and then opens MainMenu. Every other command leaves the state alone. Each command starts the control panel with true and opens its named menu at -1.\n\n| Managed (`VmDoomMenu1404Slice.cs`) | Native (`doommenu.cpp`) |\n|-------------------------------------|-------------------------|\n| Menu colors and the console commands | **1636\u20131786** |\n| Band hull (exclusive slice) | **1636\u20131786** |\n\n### Chunk **1404** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **151** |\n| **Net headline** | **+151** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmDoomMenu1404Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/menu/doommenu.cpp",
+          "symbol": "SetDefaultMenuColors",
+          "start": 1636,
+          "end": 1786,
+          "tests": [
+            "VmDoomMenu1404SliceTests.DefaultColorsStopBeforeTheDelegateWhenTheHelpClassFails",
+            "VmDoomMenu1404SliceTests.MenuCommandsOpenNamedMenusAndMainLeavesTheFullConsole"
+          ]
+        }
+      ],
+      "nativeLoc": 151,
+      "managedLoc": 129,
+      "conversionManagedCommit": "6c498491d3851cde8c94e85547ed85d302a70bc9"
     }
   ],
   "behaviorNativeChecksum": 508086,
