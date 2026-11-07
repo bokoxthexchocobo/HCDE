@@ -1,0 +1,26 @@
+[
+  {
+    "name": "map-sector-special-tail-chunk1461",
+    "bucket": "conversion",
+    "note": "InitSectorSpecial damage, scroll, and door tail in specials.cpp (459-614).",
+    "auditSeams": "The closing brace of the credited kill-monsters check through the end of MapLoader::InitSectorSpecial. Lines 456-458 are already credited. SpawnSpecials starts at 624.",
+    "auditRationale": "UNCredited specials.cpp 459-614 (+156). One contiguous tail of InitSectorSpecial. The span does not cross credited code.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 1461 --band shows no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Sector special tail (**459\u2013614**) | yes |\n| Band hull (**459\u2013614**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Kill-monsters flag | lines 456-458 are already credited |\n| SpawnSpecials | starts at line 624 |\n\nWithout MBF21 the death bit still uses the Boom damage rows. With MBF21, damage 0x200 and 0x300 become exit flags. A matching Doom special clears the low byte unless the case keeps it. The default keeps the low byte and adds a Hexen or Heretic floor scroller when the value is in those ranges.\n\n| Managed (`VmSpecials1461Slice.cs`) | Native (`specials.cpp`) |\n|-------------------------------------|------------------------|\n| InitTail | **459\u2013614** |\n| Band hull (exclusive slice) | **459\u2013614** |\n\n### Chunk **1461** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **156** |\n| **Net headline** | **+156** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmSpecials1461Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/maploader/specials.cpp",
+        "symbol": "MapLoader::InitSectorSpecial",
+        "start": 459,
+        "end": 614,
+        "tests": [
+          "VmSpecials1461SliceTests.BoomDamageAndDoomSpecials",
+          "VmSpecials1461SliceTests.HexenScrollHereticCarryAndSkyKeepOrClear"
+        ]
+      }
+    ]
+  }
+]
