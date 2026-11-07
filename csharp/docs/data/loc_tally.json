@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 157513,
+  "convertedThisRunNative": 157676,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 198048,
+  "convertedThisRunManaged": 198277,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 331359,
+  "remainingNative": 331196,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 176040,
+  "convertedBehaviorNative": 176203,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 176727,
-  "convertedBehaviorManaged": 207719,
+  "combinedBehaviorNative": 176890,
+  "convertedBehaviorManaged": 207948,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -48549,6 +48549,33 @@
       "nativeLoc": 277,
       "managedLoc": 288,
       "conversionManagedCommit": "0ca351b15a7cf541fbd1de51ac86cbd14af07caa"
+    },
+    {
+      "name": "s-doomsound-listener-chunk1426",
+      "bucket": "conversion",
+      "note": "S_SetListener through S_SerializeSounds in s_doomsound.cpp (852-1014).",
+      "auditSeams": "Zone, sequence, device, and channel allocation calls stay callees. Playing queries end at line 851. Sector sound origins start at line 1016.",
+      "auditRationale": "UNCredited s_doomsound.cpp 852-1014 (+163). This continues the sound engine after the playing queries and stops before CalcSectorSoundOrg. The band is shorter than 400 lines and is not sliced.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/sound/s_doomsound.cpp --start 852 --end 1014 and a full tally line scan, including recognition ranges, show no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| S_SetListener (**858\u2013887**) | yes |\n| S_UpdateSounds (**896\u2013909**) | yes |\n| Channel serialize (**918\u2013952**) | yes |\n| S_SerializeSounds (**960\u20131014**) | yes |\n| Band hull (**852\u20131014**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Playing queries | end at line 851 |\n| Sector sound origins | start at line 1016 |\n| Zone, sequence, device, and channel bodies | callees |\n\nA listener actor stores yaw radians as a float, the sound position, and underwater only when the water level is exactly 3. Velocity is cleared. A null sector or a null zone list crashes. A zone number outside the list crashes. The environment comes from that zone and the listener is valid. A null actor stores angle 0, a zero position, no environment, and an invalid listener. A null sound engine crashes when the listener is installed. Update installs the listener first. Positive tic counts update every level once per tic. Zero and negative counts skip the level list, so a null list is safe. The world timer is read after that loop, and a null level crashes there. A closed serializer object leaves the channel alone. An open object records the channel fields in native order. A save older than 4560 divides pitch by 128 after the pitch field is visited. Actor, sector, and poly sources record their labels and can replace the source pointer. An unattached source records three point values and crashes when the point is missing. Any other source type stops with the unknown-source message before the object closes. Saving syncs the device on, writes active channels from last to first with each start time replaced by the device position and then restored, and syncs the device off. An empty list does not open the array. A refused array does not close it. A null device crashes before the first sync. A null engine crashes after that sync. Loading stops every channel, restores one channel per archive entry, marks each evicted and absolute-time, and sets the restart two tics ahead. A refused array still sets that restart. A null level crashes after the restored channels and before the restart. A null allocated channel crashes before its flags change.\n\n| Managed (`VmDoomSound1426Slice.cs`) | Native (`s_doomsound.cpp`) |\n|-------------------------------------|---------------------------|\n| Listener, update, and save | **852\u20131014** |\n| Band hull (exclusive slice) | **852\u20131014** |\n\n### Chunk **1426** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **163** |\n| **Net headline** | **+163** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmDoomSound1426Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/sound/s_doomsound.cpp",
+          "symbol": "S_SetListener",
+          "start": 852,
+          "end": 1014,
+          "tests": [
+            "VmDoomSound1426SliceTests.ListenerAndUpdate",
+            "VmDoomSound1426SliceTests.SerializeAndSave"
+          ]
+        }
+      ],
+      "nativeLoc": 163,
+      "managedLoc": 229,
+      "conversionManagedCommit": "a596b10eebc73bfec6fe52057f81b56a62c6058f"
     }
   ],
   "behaviorNativeChecksum": 508086,
