@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 335229
+    "managedCSharpLoc": 335522
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 153879,
+    "convertedThisRunNative": 154098,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 193409,
+    "convertedThisRunManaged": 193702,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 334993,
+    "remainingNative": 334774,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 172406,
+    "convertedBehaviorNative": 172625,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 173093,
-    "convertedBehaviorManaged": 203080,
+    "combinedBehaviorNative": 173312,
+    "convertedBehaviorManaged": 203373,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -48187,6 +48187,33 @@
         "nativeLoc": 200,
         "managedLoc": 267,
         "conversionManagedCommit": "a36f3a2533ee48f152cc7ed4275ce99d284cc89d"
+      },
+      {
+        "name": "d-main-display-present-chunk1412",
+        "bucket": "conversion",
+        "note": "The rest of D_Display, from the frame time through the cycle unclock, in d_main.cpp (1392-1610).",
+        "auditSeams": "Frame time, animation, the sky, the render wrapper, status-bar draws, menus, and the wipe stay callees. D_ErrorCleanup starts at line 1619.",
+        "auditRationale": "UNCredited d_main.cpp 1392-1610 (+219). This is the remainder of D_Display after the wipe-start choice at line 1391. The function closes at line 1610. hq4x and hq4x_asm stay later because they are generated tables. The band is not sliced further.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/d_main.cpp --start 1392 --end 1610 and a full tally line scan, including recognition ranges, show no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Frame preamble (**1393\u20131397**) | yes |\n| World render (**1398\u20131428**) | yes |\n| World HUD (**1430\u20131473**) | yes |\n| Console, demo, and cutscene switch (**1475\u20131498**) | yes |\n| Chat, pause, icon, and sound debug (**1500\u20131581**) | yes |\n| Direct update, wipe, and the cycle unclock (**1583\u20131610**) | yes |\n| Band hull (**1392\u20131610**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| D_Display wipe-start choice | ends at line 1391 |\n| D_ErrorCleanup | starts at line 1619 |\n| The commented E_RenderFrame call | stays compiled out |\n| I_msTimeFS, texture animation, sky, D_Render, RenderView, status-bar draws, page, console, menu, break-lines, PerformWipe, DrawOverlays, End2DAndUpdate | callees |\n\nThe frame stores the millisecond time, advances texture animation with that time, updates the sky with the time fraction, begins the frame, and clears the 2D clip. A level or title level with a non-zero tic renders through D_Render with interpolation on, then begins 2D. The world and post-view traces use the existing startup window and the current frame, and only when that frame is a multiple of 10. A toggled HUD skips the blend, the automap, and the status bar, but the render still runs. The automap bottom is the view height when the alt HUD is on and the view is full-screen, and the status-bar top otherwise. The border refreshes when the automap is off or the view is active. The alt HUD is chosen before the fullscreen HUD, and only when the view is full-screen and the screen blocks are above 10. The fullscreen path uses the fullscreen state when the full HUD is on and the none state otherwise. Every other combination uses the status bar. The alt HUD draws its own layer when the full HUD is on or the automap is up, and the crosshair only when the camera actor has a player and the automap is off. The fullscreen console draws the page, the console, and the menu, ends 2D, and returns before the chat, the icon, the wipe, and the cycle unclock. The demo screen draws the page and continues. A cutscene or intro draws the screen job and continues. Every other state falls through. Chat, the pause pic, the icon, and the sound debug run only while the HUD is visible. The pause pic requires a pause or the extended pause, a closed menu, and a status bar. The paused virtual receives paused minus one, and a non-zero result skips the picture. The string path starts at y 4 and advances by the big-font height times the clean factor. The sign path uses the screen width. The by-line is drawn only when paused is non-zero and the game is multiplayer, with the new small font when the generic UI is on. An icon clears its name before the texture check, draws a valid patch at the 320 by 200 center, and sets the wipe block to 10 even when the patch is missing. A direct present releases a captured wipe image, draws the overlays, and ends 2D. The wipe type is read only when a wipe image exists and the wipe block is not negative. Otherwise PerformWipe runs with sound left on, and the overlays are the wipe drawer. The cycle counter is unclocked only when the function does not return from the fullscreen console.\n\n| Managed (`VmDMain1412Slice.cs`) | Native (`d_main.cpp`) |\n|----------------------------------|----------------------|\n| Display present, pause, and wipe | **1392\u20131610** |\n| Band hull (exclusive slice) | **1392\u20131610** |\n\n### Chunk **1412** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **219** |\n| **Net headline** | **+219** vs the prior chunk |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmDMain1412Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "D_Display",
+            "start": 1392,
+            "end": 1610,
+            "tests": [
+              "VmDMain1412SliceTests.WorldBranchChoosesTheHudAndSkipsAZeroTic",
+              "VmDMain1412SliceTests.ScreensPauseIconAndWipe"
+            ]
+          }
+        ],
+        "nativeLoc": 219,
+        "managedLoc": 293,
+        "conversionManagedCommit": "024ff8447b7a527f10ade4c86209339f331b210e"
       }
     ],
     "behaviorNativeChecksum": 508086,
