@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 155725,
+  "convertedThisRunNative": 156047,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 195821,
+  "convertedThisRunManaged": 196285,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 333147,
+  "remainingNative": 332825,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 174252,
+  "convertedBehaviorNative": 174574,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 174939,
-  "convertedBehaviorManaged": 205492,
+  "combinedBehaviorNative": 175261,
+  "convertedBehaviorManaged": 205956,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -48360,6 +48360,33 @@
       "nativeLoc": 186,
       "managedLoc": 249,
       "conversionManagedCommit": "88efe3a80bccb5a3312e33057c3ba3894be171fa"
+    },
+    {
+      "name": "d-main-capture-crash-chunk1419",
+      "bucket": "conversion",
+      "note": "Capture clamp, mouse dispatch, viewport math, and crash text in d_main.cpp (3321-3642).",
+      "auditSeams": "UI processor, native-mouse, sound, texture, automap, player-name, and debug-trace calls stay callees. DoomButtons ends at line 3316. System_M_Dim is declared at line 3644.",
+      "auditRationale": "UNCredited d_main.cpp 3321-3642 (+322). The span runs from the mouse_capturemode handler through System_CrashInfo. The vm_debug_port declaration and the crash-info banner sit inside the span. DoomButtons at 3283-3316 is a 34-line name table and stays uncredited. PatchTextures starts at line 3646. hq4x and hq4x_asm stay later because they are generated tables. The band is not sliced further.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/d_main.cpp --start 3321 --end 3642 and a full tally line scan, including recognition ranges, show no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| mouse_capturemode handler (**3321\u20133331**) | yes |\n| vm_debug handler (**3333\u20133347**) | yes |\n| vm_debug_port declaration (**3349**) | yes |\n| Mlook_ReleaseHandler (**3351\u20133357**) | yes |\n| StrTable_ValidFilter (**3359\u20133363**) | yes |\n| System_WantGuiCapture (**3365\u20133383**) | yes |\n| System_WantLeftButton (**3385\u20133388**) | yes |\n| System_DispatchEvent (**3390\u20133430**) | yes |\n| System_NetGame through System_PlayStartupSound (**3432\u20133460**) | yes |\n| System_IsSpecialUI through System_OnScreenSizeChanged (**3462\u20133488**) | yes |\n| System_GetSceneRect (**3490\u20133511**) | yes |\n| System_GetLocationDescription through System_LanguageChanged (**3513\u20133541**) | yes |\n| AppendCrashText and System_CrashInfo (**3551\u20133642**) | yes |\n| Band hull (**3321\u20133642**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| DoomButtons | ends at line 3316 |\n| lookspring and language declarations | lines 3318 and 3319 |\n| System_M_Dim | declared at line 3644 |\n| UI, sound, texture, automap, and debug-trace bodies | callees |\n\nmouse_capturemode clamps a value below 0 to 0 and a value above 2 to 2. vm_debug, when cleared, stops a live debug server and drops it. When set, it prints the HCDE restart line and the JIT line. The debug port default is 19021. Mlook release writes center-view command 36 only when lookspring is set. A string filter matches strifeteaser for shareware Strife before it accepts game type 0 or a case-insensitive game name. A null name or a null string is a null dereference. GUI capture is true for a down or falling console or for chat while the menu is off, and for the on and no-pause menus otherwise. A waiting menu stays false unless a UI processor claims it. A missing level crashes that processor call. The left button is wanted on the demo screen and the title level. Mouse dispatch always records the event. The look and turn block runs only for a mouse event while the menu is off, the console is not down or falling, the responder did not take it, and the game is not paused. Look uses the raw axes, truncates y times pitch times 16 toward zero, and traces only in a net game with a positive movement debug value and a non-zero look. Turn does the same for x unless strafe or lookstrafe is set. Both axes landing on zero returns true. Net game and the native-mouse flag are returned directly. A missing level crashes the native-mouse query. In-game capture is false during demo playback or pause. Mode 0 and every other mode except 1 and 2 require the level. Mode 1 also accepts a cutscene. Mode 2 is always on. Startup sound uses body channel 4, the UI flag, and either rumble or no-rumble, at full volume with no attenuation. Special UI is generic UI, a log or dialog font, a console that is not up, multiplayer, or an open non-conversation menu. Texture filtering is disabled when the renderer is not hardware. Anisotropic filtering follows the Intel mipmap flag. A screen-size change notifies the status bar, reloads the crosshair, and refreshes the automap when a level has one. The scene rect uses the full screen at 10 or more blocks. Below that, height is the block count times the screen height over 10 with the low 3 bits cleared, and the unused block width is the same ratio of the screen width. The returned width is the view width. A missing view level yields an empty location. Otherwise the location uses the map, the level name, four-decimal coordinates, and the fps. Player name is the indexed name. Console toggle counts only a falling console while the hud toggle is set. Language change copies a level lookup when one exists and always updates the window title. Crash text refuses a null buffer or a zero length, clears the first byte, and returns when fewer than 3 bytes are available. The end pointer reserves two bytes. Append writes the formatted text, treats a null format as empty, and on a short buffer keeps the end pointer and a terminator. A negative format result clears the cursor and does not advance. The report is the HCDE version line, the command line, each wad, then either not-in-a-level or the current map, the inactive view, or the four view numbers. A missing map uses the unknown label. The debug-trace callee then runs, and a final line feed is appended.\n\n| Managed (`VmDMain1419Slice.cs`) | Native (`d_main.cpp`) |\n|----------------------------------|----------------------|\n| Capture, mouse, viewport, and crash text | **3321\u20133642** |\n| Band hull (exclusive slice) | **3321\u20133642** |\n\n### Chunk **1419** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **322** |\n| **Net headline** | **+322** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmDMain1419Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "mouse_capturemode",
+          "start": 3321,
+          "end": 3642,
+          "tests": [
+            "VmDMain1419SliceTests.InputAndUi",
+            "VmDMain1419SliceTests.CrashSceneAndText"
+          ]
+        }
+      ],
+      "nativeLoc": 322,
+      "managedLoc": 464,
+      "conversionManagedCommit": "5119623ab334ffa54bad48c28f1305c1090389d8"
     }
   ],
   "behaviorNativeChecksum": 508086,
