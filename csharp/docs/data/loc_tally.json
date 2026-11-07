@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 166313,
+  "convertedThisRunNative": 166542,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 207730,
+  "convertedThisRunManaged": 208041,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 322559,
+  "remainingNative": 322330,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 184840,
+  "convertedBehaviorNative": 185069,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 185527,
-  "convertedBehaviorManaged": 217401,
+  "combinedBehaviorNative": 185756,
+  "convertedBehaviorManaged": 217712,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -49533,6 +49533,33 @@
       "nativeLoc": 156,
       "managedLoc": 124,
       "conversionManagedCommit": "a7eb69edddef4d29bbd457127f049129e9f7b8cd"
+    },
+    {
+      "name": "map-spawn-specials-chunk1462",
+      "bucket": "conversion",
+      "note": "MapLoader::SpawnSpecials sector scan and line specials in specials.cpp (624-852).",
+      "auditSeams": "MapLoader::SpawnSpecials from its opening brace through the SCRIPT_Open call. The banner at 615-623 stays uncredited. SpawnFriction starts at 860.",
+      "auditRationale": "UNCredited specials.cpp 624-852 (+229). One contiguous function. The span does not cross credited or recognition lines.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 1462 --band shows no overlap. A separate scan of recognition chunks also shows no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| SpawnSpecials (**624\u2013852**) | yes |\n| Band hull (**624\u2013852**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Banner | lines 615-623 stay uncredited |\n| SpawnFriction | starts at line 860 |\n\nSectors with a special are handed to InitSectorSpecial. Transfer_Heights copies the control sector onto each tagged sector and sets HasHeightSecs when the ignore bit is clear. A non-repeatable Generic_Lift whose target is not 1 leaves the line. Static_Init gravity, damage, links, and sky transfer run here. Open scripts start after the line scan.\n\n| Managed (`VmSpecials1462Slice.cs`) | Native (`specials.cpp`) |\n|-------------------------------------|------------------------|\n| Spawn | **624\u2013852** |\n| Band hull (exclusive slice) | **624\u2013852** |\n\n### Chunk **1462** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **229** |\n| **Net headline** | **+229** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmSpecials1462Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/maploader/specials.cpp",
+          "symbol": "MapLoader::SpawnSpecials",
+          "start": 624,
+          "end": 852,
+          "tests": [
+            "VmSpecials1462SliceTests.SetupOrderSkipsPlainSectorsAndOpensScripts",
+            "VmSpecials1462SliceTests.HeightsPortalsLiftsAndStaticInit"
+          ]
+        }
+      ],
+      "nativeLoc": 229,
+      "managedLoc": 311,
+      "conversionManagedCommit": "7ef38951cf91fac1f89ebc6dbcb755f2232b83ec"
     }
   ],
   "behaviorNativeChecksum": 508086,
