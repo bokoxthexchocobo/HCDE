@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 164078,
+  "convertedThisRunNative": 164357,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 205551,
+  "convertedThisRunManaged": 205922,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 324794,
+  "remainingNative": 324515,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 182605,
+  "convertedBehaviorNative": 182884,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 183292,
-  "convertedBehaviorManaged": 215222,
+  "combinedBehaviorNative": 183571,
+  "convertedBehaviorManaged": 215593,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -49263,6 +49263,33 @@
       "nativeLoc": 256,
       "managedLoc": 244,
       "conversionManagedCommit": "faadaf9ac26252c6e003d710fc40f637ed843b04"
+    },
+    {
+      "name": "d-net-delta-invasion-chunk1451",
+      "bucket": "conversion",
+      "note": "Actor-delta codecs and invasion snapshot header in d_net.cpp (3071-3349).",
+      "auditSeams": "HCDEQuantizeActorDeltaPos through HCDEAppendInvasionSnapshot. HCDEReadFloatField ends at 3069. HCDEApplyInvasionSnapshot starts at 3351.",
+      "auditRationale": "UNCredited d_net.cpp 3071-3349 (+279). One contiguous span of the delta codecs, the view-error decay, and the invasion snapshot header. The included snapshot fragment is stepped over. The span does not cross credited code.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 1451 --band shows no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Deltas and invasion header (**3071\u20133349**) | yes |\n| Band hull (**3071\u20133349**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Field codecs | lines 2814-3069 are already credited |\n| Snapshot include body | the reads after roll live in the included fragment |\n| Apply invasion snapshot | starts at line 3351 |\n\nPosition quantizing rounds half away from zero and clamps to 32 bits. A still pawn drops look-only view error. The invasion header is 52 bytes, and a lane-budget cap clamps the following event and actor-delta sections.\n\n| Managed (`VmNet1451Slice.cs`) | Native (`d_net.cpp`) |\n|-------------------------------|----------------------|\n| QuantizePos through AppendInvasion | **3071\u20133349** |\n| Band hull (exclusive slice) | **3071\u20133349** |\n\n### Chunk **1451** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **279** |\n| **Net headline** | **+279** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmNet1451Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "HCDEQuantizeActorDeltaPos",
+          "start": 3071,
+          "end": 3349,
+          "tests": [
+            "VmNet1451SliceTests.QuantizeBasisViewAndCommand",
+            "VmNet1451SliceTests.InvasionHeaderAndLaneBudget"
+          ]
+        }
+      ],
+      "nativeLoc": 279,
+      "managedLoc": 371,
+      "conversionManagedCommit": "bdb29a050c9e22267970461532ae99fc6099ccd8"
     }
   ],
   "behaviorNativeChecksum": 508086,
