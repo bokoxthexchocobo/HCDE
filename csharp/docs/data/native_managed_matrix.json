@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 341872
+    "managedCSharpLoc": 342232
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 158885,
+    "convertedThisRunNative": 159187,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 199560,
+    "convertedThisRunManaged": 199920,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 329987,
+    "remainingNative": 329685,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 177412,
+    "convertedBehaviorNative": 177714,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 178099,
-    "convertedBehaviorManaged": 209231,
+    "combinedBehaviorNative": 178401,
+    "convertedBehaviorManaged": 209591,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -48700,6 +48700,33 @@
         "nativeLoc": 306,
         "managedLoc": 284,
         "conversionManagedCommit": "74d7dfd70352b6f8ef2057557539a0bc802ce393"
+      },
+      {
+        "name": "s-advsound-ambient-chunk1431",
+        "bucket": "conversion",
+        "note": "soundlinks through MarkSound in s_advsound.cpp (1761-2062).",
+        "auditSeams": "Actor tick, activation, length, and lump tokenization stay callees. Player lookup ends at line 1759.",
+        "auditRationale": "UNCredited s_advsound.cpp 1761-2062 (+302). This is the command printout, ambient actor, and MUSINFO tail. The band is shorter than 400 lines and is not sliced. The following remainder of the file is under 150 lines.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/sound/s_advsound.cpp --start 1761 --end 2062 and a full tally line scan, including recognition ranges, show no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| soundlinks and playersounds (**1767\u20131824**) | yes |\n| Ambient ticker and tick (**1850\u20131943**) | yes |\n| Activate and deactivate (**1953\u20132013**) | yes |\n| MUSINFO and mark sound (**2022\u20132062**) | yes |\n| Band hull (**1761\u20132062**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Player lookup | ends at line 1759 |\n| Scanner and actor virtuals | callees |\n\nsoundlinks prints a plain alias, and skips a random header or a player reserve. playersounds records the first reserved names by link index, then prints each defined gender with a 16-wide label. A missing label crashes. A continuous ticker returns 1. A random ticker truncates rand over RAND_MAX times the span, then adds the minimum. Any other type returns the minimum. Tick always runs the actor tick. A positive countdown returns while the value stays positive. A clear special2 or a missing ambient returns. Volume scale is 1 when argument 1 is 0, otherwise that argument over 100, and the product is clamped to 0 through 1. A zero distance pair, or a minimum above the maximum, uses the standard sound. Otherwise the distances are scaled when argument 4 is positive. A loop stores the maximum int. A one-shot adds the ticker. The empty sound destroys the actor. Activate always calls the actor, destroys a missing ambient, and on the first arming fills a zero period from the length when the low type bits are clear. An invalid sound then destroys the actor. Random, periodic, and continuous add one ticker to a cleared countdown and set special2. Deactivate clears special2 and stops a continuous body channel. MUSINFO reads every lump. A full token is a number, including octal, hex, and MAXINT. Anything else starts a map. Unknown names use the default level, which is initialized once, and still consume music. Index 0 and negative indexes consume the music name and do not store it. A missing music string is fatal. Marking an ambient or a sound id returns 0.\n\n| Managed (`VmAdvSound1431Slice.cs`) | Native (`s_advsound.cpp`) |\n|------------------------------------|--------------------------|\n| Ambient commands and MUSINFO | **1761\u20132062** |\n| Band hull (exclusive slice) | **1761\u20132062** |\n\n### Chunk **1431** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **302** |\n| **Net headline** | **+302** vs the prior chunk |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmAdvSound1431Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/sound/s_advsound.cpp",
+            "symbol": "soundlinks",
+            "start": 1761,
+            "end": 2062,
+            "tests": [
+              "VmAdvSound1431SliceTests.LinksTickerAndPlayers",
+              "VmAdvSound1431SliceTests.AmbientLifecycleAndMusic"
+            ]
+          }
+        ],
+        "nativeLoc": 302,
+        "managedLoc": 360,
+        "conversionManagedCommit": "a016cd991e46de61aa9e3900cbf4f9f4b4e6bacd"
       }
     ],
     "behaviorNativeChecksum": 508086,
