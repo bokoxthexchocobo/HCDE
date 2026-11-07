@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 162562,
+  "convertedThisRunNative": 162771,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 203756,
+  "convertedThisRunManaged": 203985,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 326310,
+  "remainingNative": 326101,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 181089,
+  "convertedBehaviorNative": 181298,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 181776,
-  "convertedBehaviorManaged": 213427,
+  "combinedBehaviorNative": 181985,
+  "convertedBehaviorManaged": 213656,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -49074,6 +49074,33 @@
       "nativeLoc": 290,
       "managedLoc": 329,
       "conversionManagedCommit": "a8b5cc315ba7ee0539d352ece399ff1a99272c1d"
+    },
+    {
+      "name": "d-net-status-chunk1444",
+      "bucket": "conversion",
+      "note": "Consistency markers and the net status gate in d_net.cpp (6518-6726).",
+      "auditSeams": "MakeConsistencies and Net_UpdateStatus. NetUpdate starts at line 6727.",
+      "auditRationale": "UNCredited d_net.cpp 6518-6726 (+209). One contiguous run of whole functions. The span does not cross credited code.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 1444 --band shows no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Consistency marker and status gate (**6518\u20136726**) | yes |\n| Band hull (**6518\u20136726**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Desync dump | lines 6228-6517 are already credited |\n| NetUpdate | line 6727 starts the next function |\n\nMakeConsistencies stamps a nonzero marker once per duplicated tic while a map is loaded. The status gate returns before the world runs when the level is waiting or a start delay remains. A long gap marks peers missing, and only a non-authority peer lets a waiting client freeze the world. Command skipping bleeds a client lead in batches and does not starve the authority.\n\n| Managed (`VmNet1444Slice.cs`) | Native (`d_net.cpp`) |\n|-------------------------------|----------------------|\n| MakeConsistencies through UpdateStatus | **6518\u20136726** |\n| Band hull (exclusive slice) | **6518\u20136726** |\n\n### Chunk **1444** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **209** |\n| **Net headline** | **+209** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmNet1444Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "MakeConsistencies",
+          "start": 6518,
+          "end": 6726,
+          "tests": [
+            "VmNet1444SliceTests.MarkersAndStatusGates",
+            "VmNet1444SliceTests.LeadSkipThrottle"
+          ]
+        }
+      ],
+      "nativeLoc": 209,
+      "managedLoc": 229,
+      "conversionManagedCommit": "1cd6b35d2ad6e2477df2dfba63da4a11e34bd86f"
     }
   ],
   "behaviorNativeChecksum": 508086,
