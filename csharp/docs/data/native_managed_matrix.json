@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 334466
+    "managedCSharpLoc": 334701
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 153154,
+    "convertedThisRunNative": 153410,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 192646,
+    "convertedThisRunManaged": 192881,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 335718,
+    "remainingNative": 335462,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 171681,
+    "convertedBehaviorNative": 171937,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 172368,
-    "convertedBehaviorManaged": 202317,
+    "combinedBehaviorNative": 172624,
+    "convertedBehaviorManaged": 202552,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -48106,6 +48106,33 @@
         "nativeLoc": 228,
         "managedLoc": 213,
         "conversionManagedCommit": "281475358493deed8294b0787ad08fd671d7f2a8"
+      },
+      {
+        "name": "d-main-dmflags-compat-chunk1409",
+        "bucket": "conversion",
+        "note": "dmflags, dmflags2, dmflags3, compatflags, compatflags2, and compatmode from d_main.cpp (657-912).",
+        "auditSeams": "Sky init, net writes, automap stop, sound update, status bar, cheat mode, and the chasecam cheat stay callees. GetCaps starts at line 974.",
+        "auditRationale": "UNCredited d_main.cpp 657-912 (+256). This is the next function-aligned slice of the d_main.cpp hole after 422-649. The comment banner at 651-656 stays outside the function. hq4x and hq4x_asm stay later because they are generated tables. The band is not sliced further.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/d_main.cpp --start 657 --end 912 and a full tally line scan, including recognition ranges, show no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| dmflags (**657\u2013684**) | yes |\n| dmflags2 (**733\u2013767**) | yes |\n| dmflags3 (**803\u2013805**) | yes |\n| compatflags (**824\u2013830**) | yes |\n| compatflags2 (**832\u2013839**) | yes |\n| compatmode (**841\u2013912**) | yes |\n| Band hull (**657\u2013912**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| d_main.cpp **651\u2013656** | comment banner before dmflags |\n| GetCaps | starts at line 974 |\n| R_InitSkyMap, Net_WriteInt8, Net_WriteFloat, AM_Stop, S_UpdateSounds, CheckCheatmode, cht_DoCheat | callees |\n\n dmflags always reinitializes the sky. DF_NO_FREELOOK writes a center-view command. DF_NO_FOV writes a field of view only for the local authority, and a desired field of view of 0 becomes 90. dmflags2 stops the automap when DF2_NO_AUTOMAP is set and the map is active. DF2_DISALLOW_SPYING snaps the camera back to the player body, updates sounds, attaches the status bar, and shows the name during demo playback or multiplayer. The chasecam loop reads the stored dmflags2. It asks the cheat check, with false, once per in-game player only when DF2_CHASECAM is clear, and only then toggles a player who already has the chasecam cheat. The dmflags3 callback body is empty, so the port keeps the value and takes no further action. compatflags applies compatibility on every level. compatflags2 applies the second set and marks the line-side compat on every level. compatmode selects the two masks for modes 0 through 9, and any other mode uses zeros. Writing each mask runs that cvar callback.\n\n| Managed (`VmDMain1409Slice.cs`) | Native (`d_main.cpp`) |\n|----------------------------------|----------------------|\n| Deathmatch flags and compatibility mode | **657\u2013912** |\n| Band hull (exclusive slice) | **657\u2013912** |\n\n### Chunk **1409** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **256** |\n| **Net headline** | **+256** vs the prior chunk |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmDMain1409Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "dmflags",
+            "start": 657,
+            "end": 912,
+            "tests": [
+              "VmDMain1409SliceTests.DmFlagsFreelookFovSpyAndChase",
+              "VmDMain1409SliceTests.CompatModeWritesBothMasksThroughTheirCallbacks"
+            ]
+          }
+        ],
+        "nativeLoc": 256,
+        "managedLoc": 235,
+        "conversionManagedCommit": "9deea95b613d477cd61c4c105a674dd1bbb92e77"
       }
     ],
     "behaviorNativeChecksum": 508086,
