@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 151842,
+  "convertedThisRunNative": 152004,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 191317,
+  "convertedThisRunManaged": 191450,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 337030,
+  "remainingNative": 336868,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 170369,
+  "convertedBehaviorNative": 170531,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 171056,
-  "convertedBehaviorManaged": 200988,
+  "combinedBehaviorNative": 171218,
+  "convertedBehaviorManaged": 201121,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -47874,6 +47874,33 @@
       "nativeLoc": 163,
       "managedLoc": 190,
       "conversionManagedCommit": "bd8a0ccb9abd467e1efef5f4bf5d3951e129deaf"
+    },
+    {
+      "name": "system-theme-chunk1401",
+      "bucket": "conversion",
+      "note": "Windows, Linux, and macOS theme detection from system_theme.cpp (1-162).",
+      "auditSeams": "The file is the whole translation unit. Registry, gdbus, and CoreFoundation stay callees. The file ends at line 162.",
+      "auditRationale": "UNCredited system_theme.cpp 1-162 (+162). After chunk 1400 this is the unique largest hole. StackFrameStateNode.cpp 1-161 is 161. The band is shorter than 400 lines and is not sliced. It runs through end of file.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/utility/system_theme.cpp --start 1 --end 162 and a full tally line scan, including recognition ranges, show no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| pipe_read and gdbus_read (**68\u201390**) | yes |\n| GetSystemTheme (**100\u2013162**) | yes |\n| Band hull (**1\u2013162**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| RegGetValueW | callee |\n| SystemParametersInfoW | callee |\n| popen and fgets | the pipe text is supplied |\n| CoreFoundation preference copy | the preference result is supplied |\n\nThe preprocessor keeps one platform. The port runs the Windows, Linux, or macOS branch the caller selects, and the other branch returns the default theme. Windows reads AppsUseLightTheme and treats 0 as dark. Any other successful dword is light. A failed read leaves the theme at the default. High contrast is OR-ed only when the contrast call succeeds and the on flag is set. Linux runs the portal read for color-scheme and then contrast. The text uint32 1 is dark and wins over uint32 2. Contrast uint32 1 ORs the high-contrast flag. A closed pipe returns an empty string and is not closed. macOS sets dark only when AppleInterfaceStyle compares equal to Dark, then ORs high contrast from the boolean. A present preference is released after the type check. A missing preference is not released.\n\n| Managed (`VmSystemTheme1401Slice.cs`) | Native (`system_theme.cpp`) |\n|---------------------------------------|-----------------------------|\n| Theme detection | **1\u2013162** |\n| Band hull (exclusive slice) | **1\u2013162** |\n\n### Chunk **1401** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **162** |\n| **Net headline** | **+162** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmSystemTheme1401Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/utility/system_theme.cpp",
+          "symbol": "GetSystemTheme",
+          "start": 1,
+          "end": 162,
+          "tests": [
+            "VmSystemTheme1401SliceTests.WindowsAndLinuxThemeFollowTheRegistryAndThePortalText",
+            "VmSystemTheme1401SliceTests.MacReleasesPreferencesAndOtherPlatformsStayDefault"
+          ]
+        }
+      ],
+      "nativeLoc": 162,
+      "managedLoc": 133,
+      "conversionManagedCommit": "ee4e22bdc924d54c77403fc56bf51ee8784f3e0f"
     }
   ],
   "behaviorNativeChecksum": 508086,
