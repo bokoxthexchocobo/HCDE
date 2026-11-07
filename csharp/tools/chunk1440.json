@@ -1,0 +1,26 @@
+[
+  {
+    "name": "d-net-diag-echo-chunk1440",
+    "bucket": "conversion",
+    "note": "Replicated inventory through presentation-echo append in d_net_diag.cpp (319-668).",
+    "auditSeams": "Echo-string append, weapon-change flags, and the lane record are callees. The reader starts at line 671.",
+    "auditRationale": "UNCredited d_net_diag.cpp 319-668 (+350). One contiguous span. The struct, comments, and blank line inside it are non-behavior. The span does not cross credited code.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 1440 --band shows no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Replicated inventory through presentation-echo append (**319\u2013668**) | yes |\n| Band hull (**319\u2013668**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Presentation-echo reader | lines 671-791 stay outside this span |\n| Echo reset and dump | already credited at 797-812 and 813-1075 |\n| Struct, comments, and the blank line | non-behavior inside **319\u2013668** |\n\nA non-Hexen item leaves the five slots at zero. A Hexen armor item clamps each slot into 0 through 65535. Ammo replicates with a flag byte of zero. A null item has no flags. Armor amounts above the signed maximum clamp. Hexen armor copies slots and leaves the amount alone. The authority does not rewrite its own inventory. A slot other than the console player is ignored. A missing inventory class is given, then every amount is pinned. A class that is not inventory is skipped, and extras already on the client stay. The echo magic is ECHO and the version is 8. The writer's own player record is sent only when the weapon change flags are nonzero, and that send remembers the snapshot. A reserved slot writes 255 and no items. Debug mode sends the requested player list with both change bits, and a player number of 64 or more fails after the header without recording a lane. A short buffer does not rewind the cursor.\n\n| Managed (`VmNetDiag1440Slice.cs`) | Native (`d_net_diag.cpp`) |\n|-----------------------------------|---------------------------|\n| Inventory reconcile through echo append | **319\u2013668** |\n| Band hull (exclusive slice) | **319\u2013668** |\n\n### Chunk **1440** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **350** |\n| **Net headline** | **+350** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmNetDiag1440Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/d_net_diag.cpp",
+        "symbol": "HCDEReplicatedInvItem",
+        "start": 319,
+        "end": 668,
+        "tests": [
+          "VmNetDiag1440SliceTests.SlotsFlagsAndReconcile",
+          "VmNetDiag1440SliceTests.AppendEchoWire"
+        ]
+      }
+    ]
+  }
+]
