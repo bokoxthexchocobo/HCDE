@@ -1,0 +1,36 @@
+[
+  {
+    "name": "intermission-scroll-chunk1437",
+    "bucket": "conversion",
+    "note": "Scroller through NextPage in intermission.cpp (778-907 and 915-985).",
+    "auditSeams": "Super init is a callee. GetFullscreenRect is reimplemented for the scroller. Controller Start begins at line 987.",
+    "auditRationale": "UNCredited intermission.cpp 778-985 with the comment banner 908-914 left out (+201). This is the scroller and the page advance. The band is shorter than 400 lines and is not sliced.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 1437 --band shows no overlap. The comment banner 908-914 is outside both native ranges.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Scroller init, responder, and drawer (**778\u2013907**) | yes |\n| Controller constructor and NextPage (**915\u2013985**) | yes |\n| Band hull (**778\u2013985**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Comment banners | lines 771-777 and 908-914 stay uncredited |\n| Super init | callee |\n| GetFullscreenRect | callee, reimplemented for the scroller |\n\nA scroller key returns -1 and jumps the ticker to the end of the scroll unless scroll abort is on, in which case the key is consumed and returns 0. Any other event returns 0. The drawer rounds a 200-tall picture to 240 and a 400-tall picture to 480, then scales a 4:3 viewport. Horizontal motion starts the second picture off the left for a left scroll and the first picture off the left for a right scroll. Vertical motion starts the second picture above for an up scroll. An unknown direction uses the up path. The ticker is clamped to the scroll time, and a zero scroll time produces a non-numeric position. Both pictures are clipped to the fitted rectangle and the background becomes the second picture.\n\nThe controller starts at the first action, with advance clear and the first-page flag set. NextPage on the last action with no link returns the end-game flag and leaves the current screen up. A wiper sets the wipe and continues. A title returns false. Any other action copies the previous background, initializes the new screen, clears the first-page flag, and starts a cutscene only when this is a net game and not demo playback. A link deletes the owned descriptor, clears the delete flag, and continues at the linked descriptor. A missing link returns false.\n\n| Managed (`VmIntermission1437Slice.cs`) | Native (`intermission.cpp`) |\n|----------------------------------------|------------------------------|\n| Scroller and NextPage | **778\u2013907**, **915\u2013985** |\n| Band hull (exclusive slice) | **778\u2013985** |\n\n### Chunk **1437** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **201** |\n| **Net headline** | **+201** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmIntermission1437Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/intermission/intermission.cpp",
+        "symbol": "DIntermissionScreenScroller::Init",
+        "start": 778,
+        "end": 907,
+        "tests": [
+          "VmIntermission1437SliceTests.ScrollAdvanceAndHorizontal",
+          "VmIntermission1437SliceTests.ScrollVerticalAndAspect"
+        ]
+      },
+      {
+        "file": "src/intermission/intermission.cpp",
+        "symbol": "DIntermissionController::DIntermissionController",
+        "start": 915,
+        "end": 985,
+        "tests": [
+          "VmIntermission1437SliceTests.NextPageCreatesAndLinks",
+          "VmIntermission1437SliceTests.NextPageStops"
+        ]
+      }
+    ]
+  }
+]
