@@ -78,7 +78,11 @@ public class VmIntermission1436SliceTests
         };
         VmIntermission1436Slice.DrawText(raven, hex);
         Assert.Equal("11,0,107,66,320,200", raven.Glyphs[1]);
+    }
 
+    [Fact]
+    public void TextDelayAndSpeed()
+    {
         var overflow = new VmIntermission1436Slice.World { Width = 20, Height = 200 };
         var fat = new VmIntermission1436Slice.Page
         {
@@ -290,13 +294,22 @@ public class VmIntermission1436SliceTests
         VmIntermission1436Slice.DrawCast(world, fighter);
         Assert.Empty(world.Titles);
         Assert.Equal("spawn,1,16,30,4,1,65539", Assert.Single(world.Pics));
+    }
 
+    [Fact]
+    public void CastMissingDeath()
+    {
+        var see = State(0, 5, sprite: 1);
+        var body = new VmIntermission1436Slice.Body { See = see, SeeSound = 4 };
+        var world = new VmIntermission1436Slice.World();
         var bare = new VmIntermission1436Slice.Kind();
         world.Kinds["Ghost"] = bare;
         var ghost = new VmIntermission1436Slice.Page { Body = body };
         VmIntermission1436Slice.CastInit(world, ghost, 1, 0, "Ghost", "Ghost", new List<VmIntermission1436Slice.Snd>(), true);
+        Assert.Same(see, ghost.State);
         Assert.Equal(-1, VmIntermission1436Slice.CastKey(world, ghost, VmIntermission1436Slice.KeyDown));
         Assert.True(ghost.Death);
         Assert.Null(ghost.State);
+        Assert.Equal(0, ghost.CastTics);
     }
 }

@@ -17,7 +17,8 @@
         "start": 440,
         "end": 537,
         "tests": [
-          "VmIntermission1436SliceTests.TextKeysAndTypewriter"
+          "VmIntermission1436SliceTests.TextKeysAndTypewriter",
+          "VmIntermission1436SliceTests.TextDelayAndSpeed"
         ]
       },
       {
@@ -26,7 +27,8 @@
         "start": 545,
         "end": 770,
         "tests": [
-          "VmIntermission1436SliceTests.CastAdvanceSkinAndAttack"
+          "VmIntermission1436SliceTests.CastAdvanceSkinAndAttack",
+          "VmIntermission1436SliceTests.CastMissingDeath"
         ]
       }
     ]
