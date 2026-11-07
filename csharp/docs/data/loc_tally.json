@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 166007,
+  "convertedThisRunNative": 166157,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 207422,
+  "convertedThisRunManaged": 207606,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 322865,
+  "remainingNative": 322715,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 184534,
+  "convertedBehaviorNative": 184684,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 185221,
-  "convertedBehaviorManaged": 217093,
+  "combinedBehaviorNative": 185371,
+  "convertedBehaviorManaged": 217277,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -49479,6 +49479,33 @@
       "nativeLoc": 259,
       "managedLoc": 260,
       "conversionManagedCommit": "9988a49aff5b22b7545488411537132409b945e5"
+    },
+    {
+      "name": "d-net-control-capabilities-chunk1459",
+      "bucket": "conversion",
+      "note": "Bandwidth reset, lane budget end, and live control capabilities in d_net.cpp (2253-2402).",
+      "auditSeams": "Net_ResetHCDEBandwidthAutoState through HCDELiveReportIntervalElapsed. The bandwidth tick ends at 2251. The passive-resend comment starts at 2404 and that function is already credited at 2418.",
+      "auditRationale": "UNCredited d_net.cpp 2253-2402 (+150). One contiguous span of the bandwidth reset, lane budget end, capability advertisement, and the report interval. The span does not cross credited code.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 1459 --band shows no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Reset through report interval (**2253\u20132402**) | yes |\n| Band hull (**2253\u20132402**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Bandwidth tick | lines 1993-2251 are already credited |\n| Passive resend | lines 2418 onward are already credited |\n| Comment banner | lines 2404-2417 stay uncredited |\n\nA lane budget of zero, or a cursor already at the end, returns the output capacity and does not record a clamp. A short or unrecognized capability block is a legacy control. A bad version or flag clears the negotiated mask. Unknown bits are logged on every accepted control, and the session id is read only when the flag is set and the payload is the long form.\n\n| Managed (`VmNet1459Slice.cs`) | Native (`d_net.cpp`) |\n|-------------------------------|----------------------|\n| Reset through ReportElapsed | **2253\u20132402** |\n| Band hull (exclusive slice) | **2253\u20132402** |\n\n### Chunk **1459** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **150** |\n| **Net headline** | **+150** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmNet1459Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_ResetHCDEBandwidthAutoState",
+          "start": 2253,
+          "end": 2402,
+          "tests": [
+            "VmNet1459SliceTests.ResetBudgetShapeAndInterval",
+            "VmNet1459SliceTests.ApplyAcceptsExtensionAndRejectsLegacy"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 184,
+      "conversionManagedCommit": "5a7c4e034a04df4eb299753ad023b56a4974eca0"
     }
   ],
   "behaviorNativeChecksum": 508086,
