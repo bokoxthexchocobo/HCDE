@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 348406
+    "managedCSharpLoc": 348559
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 164526,
+    "convertedThisRunNative": 164759,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 206094,
+    "convertedThisRunManaged": 206247,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 324346,
+    "remainingNative": 324113,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 183053,
+    "convertedBehaviorNative": 183286,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 183740,
-    "convertedBehaviorManaged": 215765,
+    "combinedBehaviorNative": 183973,
+    "convertedBehaviorManaged": 215918,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -49333,6 +49333,33 @@
         "nativeLoc": 169,
         "managedLoc": 172,
         "conversionManagedCommit": "a54b0b274d744b4d5c50a90e3f63737c8970f6ea"
+      },
+      {
+        "name": "d-net-invasion-accessors-chunk1453",
+        "bucket": "conversion",
+        "note": "Latency and invasion accessors in d_net.cpp (9679-9911).",
+        "auditSeams": "Net_GetLatency through Net_ControlInvasion. Net_SkipCommand ends at 9676. The ZScript InvasionGetState wrappers start at 9914.",
+        "auditRationale": "UNCredited d_net.cpp 9679-9911 (+233). One contiguous span of the latency grade, invasion counters, and the control switch. The span does not cross credited code.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 1453 --band shows no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Latency and invasion accessors (**9679\u20139911**) | yes |\n| Band hull (**9679\u20139911**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| User-command skip | lines 9508-9676 are already credited |\n| ZScript export wrappers | start at line 9914 |\n\nDelay of 160 ms or more is severity 3. A local authority in countdown reports the larger of the state timer and the cutscene timer. Archvile counting ignores dead and euthanized monsters. Control does nothing unless this peer is the invasion authority and the game type is 4.\n\n| Managed (`VmNet1453Slice.cs`) | Native (`d_net.cpp`) |\n|-------------------------------|----------------------|\n| Latency through Control | **9679\u20139911** |\n| Band hull (exclusive slice) | **9679\u20139911** |\n\n### Chunk **1453** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **233** |\n| **Net headline** | **+233** vs the prior chunk |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmNet1453Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "Net_GetLatency",
+            "start": 9679,
+            "end": 9911,
+            "tests": [
+              "VmNet1453SliceTests.LatencyCountdownAndClassicMap",
+              "VmNet1453SliceTests.CountsArchvilesAndControl"
+            ]
+          }
+        ],
+        "nativeLoc": 233,
+        "managedLoc": 153,
+        "conversionManagedCommit": "c6d24f5a93218efbce7964a3a285f2eccfcf6209"
       }
     ],
     "behaviorNativeChecksum": 508086,
