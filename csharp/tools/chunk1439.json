@@ -1,0 +1,26 @@
+[
+  {
+    "name": "d-net-diag-echo-chunk1439",
+    "bucket": "conversion",
+    "note": "Echo string read through local echo compare in d_net_diag.cpp (43-316).",
+    "auditSeams": "BE16 read, actor lookup, and debug trace are callees. The replicated-item struct starts at line 319.",
+    "auditRationale": "UNCredited d_net_diag.cpp 43-316 (+274). One contiguous span. The CVAR, static slots, and comments inside it are non-behavior. The span does not cross credited code.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 1439 --band shows no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Echo string read, weapon-change flags, follow, ping, and compare (**43\u2013316**) | yes |\n| Band hull (**43\u2013316**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Replicated-item struct | lines 319-326 stay outside this span |\n| Append echo string | lines 32-41 stay outside this span |\n| CVAR, static slots, and comments | non-behavior inside **43\u2013316** |\n\nA length is big-endian. Zero copies nothing. A length above 255 is rejected after the length bytes are consumed. A short payload is rejected the same way. The first echo for a client reports a ready-class change and a forced reseat. A later ready-class change also forces a reseat. An owner that has just caught the ready weapon, a lost ready bit, or an owner change with a new state offset forces a reseat on its own. A client outside 0 through 63 is ignored. Follow runs only for the console player, only when the cvar is on, the peer is not the authority, and the change flags are nonzero. A missing class or inventory item returns before the weapon state changes. A subclass inventory item matches. A fixed sprite keeps the frame and sprite. A no-change sprite keeps the sprite. The same-frame flag keeps the frame. Compare walks to the weapon layer, logs class, state, weapon, and player mismatches, and logs view height only for the console player when the difference is greater than one.\n\n| Managed (`VmNetDiag1439Slice.cs`) | Native (`d_net_diag.cpp`) |\n|-----------------------------------|---------------------------|\n| Echo read through local compare | **43\u2013316** |\n| Band hull (exclusive slice) | **43\u2013316** |\n\n### Chunk **1439** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **274** |\n| **Net headline** | **+274** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmNetDiag1439Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/d_net_diag.cpp",
+        "symbol": "HCDEReadEchoString",
+        "start": 43,
+        "end": 316,
+        "tests": [
+          "VmNetDiag1439SliceTests.ReadFlagsAndRemember",
+          "VmNetDiag1439SliceTests.FollowReseatCompareAndPing"
+        ]
+      }
+    ]
+  }
+]
