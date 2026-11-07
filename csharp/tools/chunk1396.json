@@ -1,0 +1,26 @@
+[
+  {
+    "name": "quake-damage-chunk1396",
+    "bucket": "conversion",
+    "note": "DoQuakeDamage, GetModWave, GetModIntensity, and GetFalloff from a_quake.cpp (165-334).",
+    "auditSeams": "The tick ends at line 164. StaticGetQuakeIntensities starts at line 335. Distance2D, P_DamageMobj, pr_quake, and HitDice are callees.",
+    "auditRationale": "UNCredited a_quake.cpp 165-334 (+170). After chunk 1395 this is the unique largest hole. r_interpolate.cpp 1-169 is 169. The band is shorter than 400 lines and is not sliced.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/mapthinkers/a_quake.cpp --start 165 --end 334 and a full tally line scan, including recognition ranges, show no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| DoQuakeDamage (**174–208**) | yes |\n| GetModWave (**220–224**) | yes |\n| GetModIntensity (**234–296**) | yes |\n| GetFalloff (**306–322**) | yes |\n| Band hull (**165–334**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Tick | ends at line 164 |\n| StaticGetQuakeIntensities | starts at line 335 |\n| Distance2D | callee; the slice reads the supplied distance |\n| pr_quake and HitDice | callees |\n| P_DamageMobj | callee; the damage type is Quake |\n\nGetFalloff returns 1 when the actor is not strictly between the falloff and the radius, or when the falloff is not a positive gap inside the radius. GetModWave is a sine of the remaining time. GetModIntensity doubles the base, then scales it for scaledown, scaleup, both, the highpoint, and full intensity. DoQuakeDamage rolls damage only inside the radius and on the floor, forces at least 1 point, and thrusts unless the victim refuses thrust. A countdown that runs ahead of its start, or a zero divider, does not return.\n\n| Managed (`VmQuake1396Slice.cs`) | Native (`a_quake.cpp`) |\n|----------------------------------|------------------------|\n| Damage, wave, intensity, and falloff | **165–334** |\n| Band hull (exclusive slice) | **165–334** |\n\n### Chunk **1396** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **170** |\n| **Net headline** | **+170** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmQuake1396Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/mapthinkers/a_quake.cpp",
+        "symbol": "DEarthquake::DoQuakeDamage",
+        "start": 165,
+        "end": 334,
+        "tests": [
+          "VmQuake1396SliceTests.FalloffWaveAndIntensityFollowTheFlagBranches",
+          "VmQuake1396SliceTests.DamageAndThrustUseRadiusFloorAndTheRandomCalls"
+        ]
+      }
+    ]
+  }
+]
