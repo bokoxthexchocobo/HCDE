@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 166157,
+  "convertedThisRunNative": 166339,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 207606,
+  "convertedThisRunManaged": 207810,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 322715,
+  "remainingNative": 322533,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 184684,
+  "convertedBehaviorNative": 184866,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 185371,
-  "convertedBehaviorManaged": 217277,
+  "combinedBehaviorNative": 185553,
+  "convertedBehaviorManaged": 217481,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -49506,6 +49506,33 @@
       "nativeLoc": 150,
       "managedLoc": 184,
       "conversionManagedCommit": "5a7c4e034a04df4eb299753ad023b56a4974eca0"
+    },
+    {
+      "name": "p-acs-call-tid-sound-chunk1460",
+      "bucket": "conversion",
+      "note": "ACS call cases UniqueTID through StopSound in p_acs.cpp (5967-6148).",
+      "auditSeams": "case ACSF_UniqueTID through the StopSound break. The previous case break at 5965-5966 stays outside. ACSF_SoundVolume at 6150 is already credited. The late-join body in d_net.cpp is already partially credited and is not a contiguous 150-line hole.",
+      "auditRationale": "UNCredited p_acs.cpp 5967-6148 (+182). One contiguous run of call-function cases. The span does not cross credited code.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 1460 --band shows no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| UniqueTID through StopSound (**5967\u20136148**) | yes |\n| Band hull (**5967\u20136148**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Previous case break | lines 5965-5966 stay outside this case run |\n| SoundVolume | line 6150 is already credited |\n\nA short argument list returns 0 and records the required count unless the compat flag skips the check. Sqrt floors the integer square root. FixedSqrt and VectorLength convert through 16.16. PlaySound on tid 0 plays the activator and then the tid iterator. StopSound on tid 0 stops only the activator.\n\n| Managed (`VmAcsCall1460Slice.cs`) | Native (`p_acs.cpp`) |\n|------------------------------------|---------------------|\n| Call through ToAcs | **5967\u20136148** |\n| Band hull (exclusive slice) | **5967\u20136148** |\n\n### Chunk **1460** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **182** |\n| **Net headline** | **+182** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmAcsCall1460Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "ACSF_UniqueTID",
+          "start": 5967,
+          "end": 6148,
+          "tests": [
+            "VmAcsCall1460SliceTests.MathHudAndCvarsFollowTheCaseRules",
+            "VmAcsCall1460SliceTests.LineAttackAndSoundWalkEveryTarget"
+          ]
+        }
+      ],
+      "nativeLoc": 182,
+      "managedLoc": 204,
+      "conversionManagedCommit": "39d418db1185cb8e2f941919359f90d26d56ffee"
     }
   ],
   "behaviorNativeChecksum": 508086,
