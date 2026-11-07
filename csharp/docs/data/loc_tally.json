@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 153410,
+  "convertedThisRunNative": 153679,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 192881,
+  "convertedThisRunManaged": 193142,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 335462,
+  "remainingNative": 335193,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 171937,
+  "convertedBehaviorNative": 172206,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 172624,
-  "convertedBehaviorManaged": 202552,
+  "combinedBehaviorNative": 172893,
+  "convertedBehaviorManaged": 202813,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -48117,6 +48117,33 @@
       "nativeLoc": 256,
       "managedLoc": 235,
       "conversionManagedCommit": "9deea95b613d477cd61c4c105a674dd1bbb92e77"
+    },
+    {
+      "name": "d-main-caps-overlay-chunk1410",
+      "bucket": "conversion",
+      "note": "GetCaps, DrawPaletteTester, CalcFps, the fps stat, DrawRateStuff, DrawHCDELagHUD, DrawOverlays, and End2DAndUpdate from d_main.cpp (914-1182).",
+      "auditSeams": "Screen scale, font width, the clock, and the bench check stay callees. D_Display starts at line 1192.",
+      "auditRationale": "UNCredited d_main.cpp 914-1182 (+269). This continues the d_main.cpp hole after dmflags and compatmode. The compat flag registrations sit in front of GetCaps and stay inside this contiguous slice. hq4x and hq4x_asm stay later because they are generated tables. The band is not sliced further.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/d_main.cpp --start 914 --end 1182 and a full tally line scan, including recognition ranges, show no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| GetCaps (**974\u20131000**) | yes |\n| DrawPaletteTester (**1008\u20131029**) | yes |\n| CalcFps (**1041\u20131060**) | yes |\n| fps stat (**1062\u20131066**) | yes |\n| DrawRateStuff (**1068\u20131111**) | yes |\n| DrawHCDELagHUD (**1113\u20131164**) | yes |\n| DrawOverlays (**1166\u20131174**) | yes |\n| End2DAndUpdate (**1176\u20131182**) | yes |\n| Band hull (**914\u20131182**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| D_Display | starts at line 1192 |\n| V_IsHardwareRenderer, V_IsTrueColor, screen draws, I_GetTime, Net_GetLagHUDMetrics, CheckBench | callees |\n\n GetCaps uses the unclipped texture flag for a software renderer, plus true color or a colormap. A hardware renderer starts from the flat-sprite, model, slope, tilt, roll, material, post, brightmap, and polygonal flags, and adds true color unless the tone map is 5. Voxels are added for either renderer. DrawPaletteTester divides the height by 50 and draws a 16 by 16 grid. A palette number above 1 copies that translation. A number of 1 or below reads the base color and does not store it. CalcFps divides the millisecond delta by the time scale and ignores a non-positive truncated result. A new second stores the integer frame count divided by the elapsed seconds, times the time scale, then counts the current frame in the next window. The fps stat formats the millisecond count and the fps. DrawRateStuff draws that text only when vid_fps is set, then the ticker dots (at most 20 lit dots, the rest cleared), then the palette tester when the palette cvar is non-zero. The lag HUD is skipped when it should not draw. Red wins when the tic gate is stalled or the backlog is above 35. Gold wins when the backlog is above twice the tic dup. Otherwise the line is green. The invasion line uses the idle sentence only for the exact word disabled. DrawOverlays draws the console, the menu, the rate block, and the lag HUD, and prints the stat unless the HUD is toggled off. End2DAndUpdate ends the 2D pass, runs the bench, updates the screen, and marks the frame done. A bench failure skips the update.\n\n| Managed (`VmDMain1410Slice.cs`) | Native (`d_main.cpp`) |\n|----------------------------------|----------------------|\n| Caps, fps, lag HUD, and the overlay close | **914\u20131182** |\n| Band hull (exclusive slice) | **914\u20131182** |\n\n### Chunk **1410** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **269** |\n| **Net headline** | **+269** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmDMain1410Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "GetCaps",
+          "start": 914,
+          "end": 1182,
+          "tests": [
+            "VmDMain1410SliceTests.CapsPaletteAndFpsMatchTheRendererAndTheSecondBoundary",
+            "VmDMain1410SliceTests.RateTickerLagAndOverlayOrder"
+          ]
+        }
+      ],
+      "nativeLoc": 269,
+      "managedLoc": 261,
+      "conversionManagedCommit": "e37087f19e3f42d95acda2741f0031844bcfb065"
     }
   ],
   "behaviorNativeChecksum": 508086,
