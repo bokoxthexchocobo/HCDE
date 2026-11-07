@@ -2,7 +2,7 @@ using Xunit;
 
 namespace HCDE.Playsim.Tests;
 
-public sealed class VmNet1443SliceTests
+public class VmNet1443SliceTests
 {
     [Fact]
     public void HeartbeatAndDeadClients()
