@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 157676,
+  "convertedThisRunNative": 157916,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 198277,
+  "convertedThisRunManaged": 198507,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 331196,
+  "remainingNative": 330956,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 176203,
+  "convertedBehaviorNative": 176443,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 176890,
-  "convertedBehaviorManaged": 207948,
+  "combinedBehaviorNative": 177130,
+  "convertedBehaviorManaged": 208178,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -48576,6 +48576,33 @@
       "nativeLoc": 163,
       "managedLoc": 229,
       "conversionManagedCommit": "a596b10eebc73bfec6fe52057f81b56a62c6058f"
+    },
+    {
+      "name": "s-doomsound-origin-chunk1427",
+      "bucket": "conversion",
+      "note": "CalcSectorSoundOrg through ValidatePosVel in s_doomsound.cpp (1015-1254).",
+      "auditSeams": "Point-in-sector, closest-point, and displacement calls stay callees. Sound saving ends at line 1014. Lump reads start at line 1255.",
+      "auditRationale": "UNCredited s_doomsound.cpp 1015-1254 (+240). This continues the sound engine after serialization and stops before ReadSound. The band is shorter than 400 lines and is not sliced.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/sound/s_doomsound.cpp --start 1015 --end 1254 and a full tally line scan, including recognition ranges, show no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Sector origin (**1026\u20131065**) | yes |\n| Polyobject origin (**1078\u20131089**) | yes |\n| CalcPosVel (**1099\u20131204**) | yes |\n| Position and velocity limits (**1212\u20131253**) | yes |\n| Band hull (**1015\u20131254**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Sound saving | ends at line 1014 |\n| Lump reads | start at line 1255 |\n| Point, closest-point, and displacement bodies | callees |\n\nWithout the old sector-sound compat, a listener inside the sector uses the listener X and Y as the horizontal origin. Otherwise the closest boundary point is used. The compat path uses the sector center and does not need the primary level. A null sector or a null sector level crashes. Floor uses the lower of the floor and the listener Z. Ceiling uses the higher of the ceiling and the listener Z. Interior clamps the listener Z between them. Any other channel leaves Y alone. A polyobject origin is the closest wall point, and its height is clamped between that wall's floor and ceiling. A null poly, side, or sector crashes. A null output position skips the updater, including velocity. A camera copies its sound position and portal group. A missing camera zeroes the position and uses group 0. A velocity pointer is cleared. An unattached sound uses the point's X and Z minus the displacement, and its Y is the point Y unless the listener-Z flag selects the listener height. It does not fall through to the later listener-Z assignment. A null point, level, or hit sector crashes. An actor swaps map Y and Z into the sound vector and scales velocity by 35 with the same swap. A null actor leaves the camera position. A null actor sector crashes. A sector with the area flag uses the sector origin around the displaced listener, then removes that displacement from X and Z. Without the flag, the origin is the center minus the displacement and the local listener-Z flag is set. A polyobject uses its wall origin and then removes the displacement. After those sources, a listener-Z flag and a live camera replace Y with the listener height. The caller's flag word is not modified. Limits apply only to an actor source. A coordinate is valid from the negative limit through the positive limit. Position limit is 1048576 and velocity limit is 73400320. An invalid vector prints the red invalid-sound line with X, Z, and Y in that order. A null actor then prints a newline. A live actor prints its class and crashes when the class is missing. Both vectors are checked, and the result is the velocity check combined with the position check. Any other source type is valid without a print.\n\n| Managed (`VmDoomSound1427Slice.cs`) | Native (`s_doomsound.cpp`) |\n|-------------------------------------|---------------------------|\n| Origins and limits | **1015\u20131254** |\n| Band hull (exclusive slice) | **1015\u20131254** |\n\n### Chunk **1427** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **240** |\n| **Net headline** | **+240** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmDoomSound1427Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/sound/s_doomsound.cpp",
+          "symbol": "CalcSectorSoundOrg",
+          "start": 1015,
+          "end": 1254,
+          "tests": [
+            "VmDoomSound1427SliceTests.SectorAndPolyOrigins",
+            "VmDoomSound1427SliceTests.PositionVelocityAndLimits"
+          ]
+        }
+      ],
+      "nativeLoc": 240,
+      "managedLoc": 230,
+      "conversionManagedCommit": "219984c3112aed0e8b4799bec44029688af25d4d"
     }
   ],
   "behaviorNativeChecksum": 508086,
