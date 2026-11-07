@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 162771,
+  "convertedThisRunNative": 162984,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 203985,
+  "convertedThisRunManaged": 204216,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 326101,
+  "remainingNative": 325888,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 181298,
+  "convertedBehaviorNative": 181511,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 181985,
-  "convertedBehaviorManaged": 213656,
+  "combinedBehaviorNative": 182198,
+  "convertedBehaviorManaged": 213887,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -49101,6 +49101,33 @@
       "nativeLoc": 209,
       "managedLoc": 229,
       "conversionManagedCommit": "1cd6b35d2ad6e2477df2dfba63da4a11e34bd86f"
+    },
+    {
+      "name": "d-net-update-commands-chunk1445",
+      "bucket": "conversion",
+      "note": "NetUpdate command generation in d_net.cpp (6727-6939).",
+      "auditSeams": "Opening of NetUpdate through the local command loop. Packet assembly starts at line 6940.",
+      "auditRationale": "UNCredited d_net.cpp 6727-6939 (+213). One contiguous span ending at the command-loop brace. The span does not cross credited code.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 1445 --band shows no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Command generation (**6727\u20136939**) | yes |\n| Band hull (**6727\u20136939**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Status gate | lines 6518-6726 are already credited |\n| Packet assembly | line 6940 starts the send window |\n\nAn idle call still drains packets. The authority heartbeat ages the latency window and then the level-start gate runs. A start delay is subtracted before the send cap. Command generation stops at the backup-tic lead ceiling, skips a batch without building, and on a duplicated tic ORs buttons backward and averages the axes.\n\n| Managed (`VmNet1445Slice.cs`) | Native (`d_net.cpp`) |\n|-------------------------------|----------------------|\n| NetUpdate command loop | **6727\u20136939** |\n| Band hull (exclusive slice) | **6727\u20136939** |\n\n### Chunk **1445** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **213** |\n| **Net headline** | **+213** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmNet1445Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "NetUpdate",
+          "start": 6727,
+          "end": 6939,
+          "tests": [
+            "VmNet1445SliceTests.HeartbeatDelayAndLead",
+            "VmNet1445SliceTests.CommandDupAndButtons"
+          ]
+        }
+      ],
+      "nativeLoc": 213,
+      "managedLoc": 231,
+      "conversionManagedCommit": "1fa397549a649b2ff42308603208c997604a7815"
     }
   ],
   "behaviorNativeChecksum": 508086,
