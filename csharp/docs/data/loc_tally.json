@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 154098,
+  "convertedThisRunNative": 154422,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 193702,
+  "convertedThisRunManaged": 194115,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 334774,
+  "remainingNative": 334450,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 172625,
+  "convertedBehaviorNative": 172949,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 173312,
-  "convertedBehaviorManaged": 203373,
+  "combinedBehaviorNative": 173636,
+  "convertedBehaviorManaged": 203786,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -48198,6 +48198,33 @@
       "nativeLoc": 219,
       "managedLoc": 293,
       "conversionManagedCommit": "024ff8447b7a527f10ade4c86209339f331b210e"
+    },
+    {
+      "name": "d-main-cleanup-strife-demo-chunk1413",
+      "bucket": "conversion",
+      "note": "Error cleanup, the game loop, and the Strife demo pages in d_main.cpp (1619-1942).",
+      "auditSeams": "Quit, bot removal, demo status, buffer clear, new init, menu clear, and the VM stack stay callees. D_DoAdvanceDemo starts at line 1950.",
+      "auditRationale": "UNCredited d_main.cpp 1619-1942 (+324). D_ErrorCleanup, D_DoomLoop, D_PageTicker, D_PageDrawer, D_AdvanceDemo, and D_DoStrifeAdvanceDemo are whole functions. The comment banners between them sit inside the span. D_DoAdvanceDemo starts at line 1950. hq4x and hq4x_asm stay later because they are generated tables. The band is not sliced further.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/d_main.cpp --start 1619 --end 1942 and a full tally line scan, including recognition ranges, show no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Error cleanup (**1619\u20131657**) | yes |\n| Doom loop (**1668\u20131761**) | yes |\n| Page ticker (**1769\u20131773**) | yes |\n| Page drawer (**1781\u20131801**) | yes |\n| Advance demo flag (**1811\u20131814**) | yes |\n| Strife demo pages (**1822\u20131942**) | yes |\n| Band hull (**1619\u20131942**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| D_Display present half | ends at line 1610 |\n| D_DoAdvanceDemo | starts at line 1950 |\n| Bot removal, quit, demo status, buffer clear, new init, menu clear, frame and tic calls, display, music, command, page draw, and music start | callees |\n\nA null or empty cleanup reason becomes unspecified. The engine-shutdown reason skips both the high print and the warning, and still clears the restore flag, removes bots when a level exists, quits with the resolved reason, checks a recording or playback demo, clears buffers, runs a new init, and clears menus. Slot 0 is promoted to live only when a console player exists and slot 0 is not reserved. The trace uses the old and new player-state names. The game action becomes the fullscreen console. A demo screen closes the menu. The save flag clears and the VM stack clears. The loop traces its entry, disables interpolation, invalidates the page and advisory, clears the subtitle, and runs the cursor callback once. Each pass sets the console player's gender, starts a frame only when the tic moved forward, then sets the frame time, polls rcon, runs tics, starts a tic, processes events, displays, and updates music. The abort flag requests quickexit and stays set. A restart during a net game that is not playing a demo is ignored, names the map or the none map, and clears the request. Any other restart exits the loop. A recoverable error with an empty message is unknown and is not printed. A filesystem what() pointer is printed even when the text is empty, and a null pointer is unknown. A VM abort always prints the cleanup line, calls MaybePrintMessage, prints a non-empty stack at high priority, and always prints the stack in bold. Any other exception leaves the loop. The page ticker decrements first and advances only when the result is negative. The page drawer clears the screen, draws an existing page fullscreen without a mask and with bilinear filtering, draws an empty subtitle, and draws a valid advisory at 4,160 in 320 by 200. Advance demo only sets the flag. The Strife sequence sets the demo screen and clears the blank page, then selects the title, blank bishop page, Rogue logo, six panels, vellogo, or credits. Shareware uses the teaser voices. Teaser 2 selects d_fmintr on panel 1. A missing d_logo starts empty music. The sequence increments after the page choice: 10 stays at 11, 11 wraps to 0, and retail skips 9.\n\n| Managed (`VmDMain1413Slice.cs`) | Native (`d_main.cpp`) |\n|----------------------------------|----------------------|\n| Cleanup, loop, and Strife pages | **1619\u20131942** |\n| Band hull (exclusive slice) | **1619\u20131942** |\n\n### Chunk **1413** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **324** |\n| **Net headline** | **+324** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmDMain1413Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "D_ErrorCleanup",
+          "start": 1619,
+          "end": 1942,
+          "tests": [
+            "VmDMain1413SliceTests.CleanupAndDoomLoopCatchTheThreeFailures",
+            "VmDMain1413SliceTests.PageTickerDrawerAndStrifeDemoSequence"
+          ]
+        }
+      ],
+      "nativeLoc": 324,
+      "managedLoc": 413,
+      "conversionManagedCommit": "457c60c8c86b7d210ebbc9d7dd0b3336e02dcb6c"
     }
   ],
   "behaviorNativeChecksum": 508086,
