@@ -1,0 +1,26 @@
+[
+  {
+    "name": "net-window-chunk1394",
+    "bucket": "conversion",
+    "note": "I_NetError through I_NetDone from i_net.cpp (1639-1811).",
+    "auditSeams": "SetConnectFlow ends at line 1638 and stays outside this band. I_ClearClient starts at line 1812 and stays outside. I_NetLog, NetStartWindow, HCDERconPollListener, and the dedicated-server console helpers are callees.",
+    "auditRationale": "UNCredited i_net.cpp 1639-1811 (+173). After chunk 1393 this is the unique largest hole. sc_man.cpp 1-170 is 170. The band is shorter than 400 lines and is not sliced.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/engine/i_net.cpp --start 1639 --end 1811 and a full tally line scan, including recognition ranges, show no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| I_NetError (**1641–1649**) | yes |\n| I_NetInit (**1651–1665**) | yes |\n| I_NetMessage (**1672–1686**) | yes |\n| I_NetLoop (**1697–1728**) | yes |\n| I_NetClientConnected (**1732–1750**) | yes |\n| I_NetClientUpdated (**1753–1756**) | yes |\n| I_NetClientDisconnected (**1758–1770**) | yes |\n| I_NetUpdatePlayers (**1772–1780**) | yes |\n| I_ShouldStartNetGame (**1782–1787**) | yes |\n| I_GetKickClients and I_GetBanClients (**1789–1805**) | yes |\n| I_NetDone (**1807–1810**) | yes |\n| Band hull (**1639–1811**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| SetConnectFlow | ends at line 1638, outside this hole |\n| I_ClearClient | starts at line 1812, outside this hole |\n| I_NetLog | callee; this tree prints a carriage return and a 40-column field |\n| NetStartWindow | callee; the interactive loop returns the window result and does not call the callback |\n| HCDERconPollListener | callee; polled only while dedicated |\n\nI_NetError logs the fatal line, warns, closes the window only when the session is interactive, and does not return. I_NetInit and I_NetMessage print the NetServer or NetSession tag. The Windows dedicated status line is recorded only when that build and dedicated mode are both set. The window guard runs only for an interactive session. The headless loop polls rcon when dedicated, sleeps between failed callbacks, and a Windows dedicated abort returns before the trailing pump. A reserved slot prints the authority line and skips connect. Kick and ban clear the list, then push until the callee returns -1.\n\n| Managed (`VmNetWindow1394Slice.cs`) | Native (`i_net.cpp`) |\n|-------------------------------------|----------------------|\n| Pregame net window through I_NetDone | **1639–1811** |\n| Band hull (exclusive slice) | **1639–1811** |\n\n### Chunk **1394** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **173** |\n| **Net headline** | **+173** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmNetWindow1394Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_NetError",
+        "start": 1639,
+        "end": 1811,
+        "tests": [
+          "VmNetWindow1394SliceTests.ErrorInitMessageAndLoopFollowTheDedicatedBranch",
+          "VmNetWindow1394SliceTests.ClientFlowKickBanAndDoneUseTheWindowCallees"
+        ]
+      }
+    ]
+  }
+]
