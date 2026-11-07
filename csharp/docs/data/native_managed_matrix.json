@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 350353
+    "managedCSharpLoc": 350644
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 166542,
+    "convertedThisRunNative": 166778,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 208041,
+    "convertedThisRunManaged": 208332,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 322330,
+    "remainingNative": 322094,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 185069,
+    "convertedBehaviorNative": 185305,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 185756,
-    "convertedBehaviorManaged": 217712,
+    "combinedBehaviorNative": 185992,
+    "convertedBehaviorManaged": 218003,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -49576,6 +49576,33 @@
         "nativeLoc": 229,
         "managedLoc": 311,
         "conversionManagedCommit": "7ef38951cf91fac1f89ebc6dbcb755f2232b83ec"
+      },
+      {
+        "name": "map-spawn-scrollers-chunk1463",
+        "bucket": "conversion",
+        "note": "MapLoader::SpawnScrollers copy list and scroll thinkers in specials.cpp (1199-1434).",
+        "auditSeams": "MapLoader::SpawnScrollers from its opening line through the closing brace. The banner at 1193-1198 stays uncredited. CreateScroller starts at 1437.",
+        "auditRationale": "UNCredited specials.cpp 1199-1434 (+236). One contiguous function. The span does not cross credited or recognition lines.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 1463 --band shows no overlap. A separate scan of recognition chunks also shows no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| SpawnScrollers (**1199\u20131434**) | yes |\n| Band hull (**1199\u20131434**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Banner | lines 1193-1198 stay uncredited |\n| CreateScroller | starts at line 1437 |\n\nCopy scrollers are collected first and skipped when the front sector already has that tag. Ceiling, floor, and model lines take displacement from the linedef when that bit is set, and the floor carry keeps the sign of dx. Cardinal wall scrolls restore the special. A texture-both line with a nonzero first argument adds no thinker and leaves the special cleared.\n\n| Managed (`VmSpecials1463Slice.cs`) | Native (`specials.cpp`) |\n|-------------------------------------|------------------------|\n| Spawn | **1199\u20131434** |\n| Band hull (exclusive slice) | **1199\u20131434** |\n\n### Chunk **1463** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **236** |\n| **Net headline** | **+236** vs the prior chunk |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmSpecials1463Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/maploader/specials.cpp",
+            "symbol": "MapLoader::SpawnScrollers",
+            "start": 1199,
+            "end": 1434,
+            "tests": [
+              "VmSpecials1463SliceTests.CeilingCopiesDisplacementAndFloorCarryOnly",
+              "VmSpecials1463SliceTests.ModelOffsetsCardinalAndBoth"
+            ]
+          }
+        ],
+        "nativeLoc": 236,
+        "managedLoc": 291,
+        "conversionManagedCommit": "f6526bdd69caf24ab7195450fd52723aeb78deb3"
       }
     ],
     "behaviorNativeChecksum": 508086,
