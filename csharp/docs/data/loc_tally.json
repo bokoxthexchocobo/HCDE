@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 152476,
+  "convertedThisRunNative": 152626,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 191943,
+  "convertedThisRunManaged": 192081,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 336396,
+  "remainingNative": 336246,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 171003,
+  "convertedBehaviorNative": 171153,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 171690,
-  "convertedBehaviorManaged": 201614,
+  "combinedBehaviorNative": 171840,
+  "convertedBehaviorManaged": 201752,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -47982,6 +47982,33 @@
       "nativeLoc": 151,
       "managedLoc": 129,
       "conversionManagedCommit": "6c498491d3851cde8c94e85547ed85d302a70bc9"
+    },
+    {
+      "name": "unicode-filename-chunk1405",
+      "bucket": "conversion",
+      "note": "UTF-16 and IBM437 conversion, the case-fold flags, and UTF-8 validation from unicode.cpp (1-150).",
+      "auditSeams": "The case-fold map and the UTF-8 iterator stay callees. The file ends at line 150.",
+      "auditRationale": "UNCredited unicode.cpp 1-150 (+150). After chunk 1404 this is the next whole-file hole. codegen.cpp 3778-3933 stays uncredited because the whole functions left in that gap are under 150 lines. The band is shorter than 400 lines and is not sliced. It runs through end of file.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/filesystem/source/unicode.cpp --start 1 --end 150 and a full tally line scan, including recognition ranges, show no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| utf8_encode (**34\u201344**) | yes |\n| utf16_to_utf8 (**53\u201387**) | yes |\n| ibm437_to_utf8 (**95\u2013117**) | yes |\n| tolower_normalize (**125\u2013130**) | yes |\n| unicode_validate (**138\u2013147**) | yes |\n| Band hull (**1\u2013150**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| utf8proc_map | callee; the option bits are the arguments |\n| utf8proc_iterate | callee; a negative result is the reject |\n\nutf8_encode replaces a negative, an out-of-range scalar, or a code point from U+D800 through U+DFFE with U+FFFD. U+DFFF is encoded as written. An empty UTF-16 or IBM437 input clears the buffer and does not add a terminator. Any other input encodes through the first zero and then appends one zero byte. A high surrogate consumes the following low surrogate. Any other following unit stays for the next pass. A low surrogate alone becomes U+FFFD. IBM437 bytes from 0x80 use the 128-entry table. The case fold passes null-terminated, stable, compose, and case-fold. Validation returns false when the iterator is negative. A non-negative result does not advance the byte, so the same byte is visited again.\n\n| Managed (`VmUnicode1405Slice.cs`) | Native (`unicode.cpp`) |\n|------------------------------------|-----------------------|\n| Filename conversion and validation | **1\u2013150** |\n| Band hull (exclusive slice) | **1\u2013150** |\n\n### Chunk **1405** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **150** |\n| **Net headline** | **+150** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmUnicode1405Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/filesystem/source/unicode.cpp",
+          "symbol": "utf16_to_utf8",
+          "start": 1,
+          "end": 150,
+          "tests": [
+            "VmUnicode1405SliceTests.Utf16AndIbm437AppendATerminatorAndKeepAnUnpairedTail",
+            "VmUnicode1405SliceTests.FoldPassesTheCaseFoldFlagsAndValidateRepeatsALiveByte"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 138,
+      "conversionManagedCommit": "9fdaa2b041fa187f93e4f887acd4464757177515"
     }
   ],
   "behaviorNativeChecksum": 508086,
