@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 150662,
+  "convertedThisRunNative": 150835,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 189815,
+  "convertedThisRunManaged": 190024,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 338210,
+  "remainingNative": 338037,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 169189,
+  "convertedBehaviorNative": 169362,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 169876,
-  "convertedBehaviorManaged": 199486,
+  "combinedBehaviorNative": 170049,
+  "convertedBehaviorManaged": 199695,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -47684,6 +47684,33 @@
       "nativeLoc": 179,
       "managedLoc": 180,
       "conversionManagedCommit": "af20d1207d4d10eb44db3e5e1d5837831908cba4"
+    },
+    {
+      "name": "net-window-chunk1394",
+      "bucket": "conversion",
+      "note": "I_NetError through I_NetDone from i_net.cpp (1639-1811).",
+      "auditSeams": "SetConnectFlow ends at line 1638 and stays outside this band. I_ClearClient starts at line 1812 and stays outside. I_NetLog, NetStartWindow, HCDERconPollListener, and the dedicated-server console helpers are callees.",
+      "auditRationale": "UNCredited i_net.cpp 1639-1811 (+173). After chunk 1393 this is the unique largest hole. sc_man.cpp 1-170 is 170. The band is shorter than 400 lines and is not sliced.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/engine/i_net.cpp --start 1639 --end 1811 and a full tally line scan, including recognition ranges, show no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| I_NetError (**1641\u20131649**) | yes |\n| I_NetInit (**1651\u20131665**) | yes |\n| I_NetMessage (**1672\u20131686**) | yes |\n| I_NetLoop (**1697\u20131728**) | yes |\n| I_NetClientConnected (**1732\u20131750**) | yes |\n| I_NetClientUpdated (**1753\u20131756**) | yes |\n| I_NetClientDisconnected (**1758\u20131770**) | yes |\n| I_NetUpdatePlayers (**1772\u20131780**) | yes |\n| I_ShouldStartNetGame (**1782\u20131787**) | yes |\n| I_GetKickClients and I_GetBanClients (**1789\u20131805**) | yes |\n| I_NetDone (**1807\u20131810**) | yes |\n| Band hull (**1639\u20131811**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| SetConnectFlow | ends at line 1638, outside this hole |\n| I_ClearClient | starts at line 1812, outside this hole |\n| I_NetLog | callee; this tree prints a carriage return and a 40-column field |\n| NetStartWindow | callee; the interactive loop returns the window result and does not call the callback |\n| HCDERconPollListener | callee; polled only while dedicated |\n\nI_NetError logs the fatal line, warns, closes the window only when the session is interactive, and does not return. I_NetInit and I_NetMessage print the NetServer or NetSession tag. The Windows dedicated status line is recorded only when that build and dedicated mode are both set. The window guard runs only for an interactive session. The headless loop polls rcon when dedicated, sleeps between failed callbacks, and a Windows dedicated abort returns before the trailing pump. A reserved slot prints the authority line and skips connect. Kick and ban clear the list, then push until the callee returns -1.\n\n| Managed (`VmNetWindow1394Slice.cs`) | Native (`i_net.cpp`) |\n|-------------------------------------|----------------------|\n| Pregame net window through I_NetDone | **1639\u20131811** |\n| Band hull (exclusive slice) | **1639\u20131811** |\n\n### Chunk **1394** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **173** |\n| **Net headline** | **+173** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmNetWindow1394Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_NetError",
+          "start": 1639,
+          "end": 1811,
+          "tests": [
+            "VmNetWindow1394SliceTests.ErrorInitMessageAndLoopFollowTheDedicatedBranch",
+            "VmNetWindow1394SliceTests.ClientFlowKickBanAndDoneUseTheWindowCallees"
+          ]
+        }
+      ],
+      "nativeLoc": 173,
+      "managedLoc": 209,
+      "conversionManagedCommit": "2f19aeac69cd51f694d657a42cae0f1d212ffaf3"
     }
   ],
   "behaviorNativeChecksum": 508086,
