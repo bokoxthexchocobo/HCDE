@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 151512,
+  "convertedThisRunNative": 151679,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 190929,
+  "convertedThisRunManaged": 191127,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 337360,
+  "remainingNative": 337193,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 170039,
+  "convertedBehaviorNative": 170206,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 170726,
-  "convertedBehaviorManaged": 200600,
+  "combinedBehaviorNative": 170893,
+  "convertedBehaviorManaged": 200798,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -47820,6 +47820,33 @@
       "nativeLoc": 168,
       "managedLoc": 294,
       "conversionManagedCommit": "ba4320ab91e7afa29bfde81648709540e1e00496"
+    },
+    {
+      "name": "slopes-align-copy-chunk1399",
+      "bucket": "conversion",
+      "note": "AlignPlane, SetSlopes, and CopySlopes from slopes.cpp (422-588).",
+      "auditSeams": "The slope setup above this band ends at line 421. CopyPlane is a callee at lines 110-137. The file ends at line 588.",
+      "auditRationale": "UNCredited slopes.cpp 422-588 (+167). After chunk 1398 this is the unique largest hole. GlobalScopeStateNode.cpp 1-163 is 163. The band is shorter than 400 lines and is not sliced. It runs through end of file.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/maploader/slopes.cpp --start 422 --end 588 and a full tally line scan, including recognition ranges, show no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| AlignPlane (**439\u2013501**) | yes |\n| SetSlopes (**509\u2013539**) | yes |\n| CopySlopes (**547\u2013588**) | yes |\n| Band hull (**422\u2013588**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| CopyPlane | callee at lines 110-137 |\n| GetPlaneTexZ | callee; the sector carries the texture heights |\n| Lines before 422 | already outside this hole |\n\nAlignPlane returns immediately when the line has no back sector, after reading the sector's first vertex. The reference vertex is the first sector vertex with a strictly greater absolute cross distance from the line. which 0 selects the floor and flips a downward normal. which 1 selects the ceiling and flips an upward normal. Any other which selects the ceiling and does not flip. SetSlopes clears Plane_Align (181) and uses args bits, including ceiling bits stored in args 0 when args 1 is 0. CopySlopes clears Plane_Copy (118), calls CopyPlane for each non-zero tag, then copies floor or ceiling planes across the line from args 4.\n\n| Managed (`VmSlopes1399Slice.cs`) | Native (`slopes.cpp`) |\n|----------------------------------|----------------------|\n| Align, set, and copy | **422\u2013588** |\n| Band hull (exclusive slice) | **422\u2013588** |\n\n### Chunk **1399** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **167** |\n| **Net headline** | **+167** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmSlopes1399Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/maploader/slopes.cpp",
+          "symbol": "MapLoader::AlignPlane",
+          "start": 422,
+          "end": 588,
+          "tests": [
+            "VmSlopes1399SliceTests.AlignPlaneUsesTheFirstFurthestVertexAndFlipsCeilingNormals",
+            "VmSlopes1399SliceTests.SetSlopesAndCopySlopesFollowArgsAndThenTheSideCopy"
+          ]
+        }
+      ],
+      "nativeLoc": 167,
+      "managedLoc": 198,
+      "conversionManagedCommit": "0a6e48e69920157003e123586237d19c40e55558"
     }
   ],
   "behaviorNativeChecksum": 508086,
