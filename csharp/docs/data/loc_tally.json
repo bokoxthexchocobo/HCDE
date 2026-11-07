@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 164357,
+  "convertedThisRunNative": 164526,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 205922,
+  "convertedThisRunManaged": 206094,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 324515,
+  "remainingNative": 324346,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 182884,
+  "convertedBehaviorNative": 183053,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 183571,
-  "convertedBehaviorManaged": 215593,
+  "combinedBehaviorNative": 183740,
+  "convertedBehaviorManaged": 215765,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -49290,6 +49290,33 @@
       "nativeLoc": 279,
       "managedLoc": 371,
       "conversionManagedCommit": "bdb29a050c9e22267970461532ae99fc6099ccd8"
+    },
+    {
+      "name": "d-net-skip-usercmd-chunk1452",
+      "bucket": "conversion",
+      "note": "User-command record skipping in d_net.cpp (9508-9676).",
+      "auditSeams": "Net_TrySkipUserCmdMessage through Net_SkipCommand. Net_TrySkipCommand ends at 9506. Net_GetLatency starts at 9679.",
+      "auditRationale": "UNCredited d_net.cpp 9508-9676 (+169). One contiguous span of the user-command skippers and the fail-closed SkipCommand wrapper. The span does not cross credited code.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 1452 --band shows no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| User-command skip (**9508\u20139676**) | yes |\n| Band hull (**9508\u20139676**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Net_TrySkipCommand | lines through 9506 are already credited |\n| Invasion accessors | start at line 9679 |\n\nA user command stops the scan after its button chain and flagged axes. An event-only tail is accepted only when the caller marks it as the final record. A failed opcode skip leaves the stream cursor where it was.\n\n| Managed (`VmNet1452Slice.cs`) | Native (`d_net.cpp`) |\n|-------------------------------|----------------------|\n| TrySkipUserCmd through SkipCommand | **9508\u20139676** |\n| Band hull (exclusive slice) | **9508\u20139676** |\n\n### Chunk **1452** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **169** |\n| **Net headline** | **+169** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmNet1452Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_TrySkipUserCmdMessage",
+          "start": 9508,
+          "end": 9676,
+          "tests": [
+            "VmNet1452SliceTests.UserCmdAxesAndFailClosedSkip",
+            "VmNet1452SliceTests.RemainingRecordsAndBoundary"
+          ]
+        }
+      ],
+      "nativeLoc": 169,
+      "managedLoc": 172,
+      "conversionManagedCommit": "a54b0b274d744b4d5c50a90e3f63737c8970f6ea"
     }
   ],
   "behaviorNativeChecksum": 508086,
