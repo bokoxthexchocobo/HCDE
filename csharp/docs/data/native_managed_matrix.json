@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 341588
+    "managedCSharpLoc": 341872
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 158579,
+    "convertedThisRunNative": 158885,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 199276,
+    "convertedThisRunManaged": 199560,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 330293,
+    "remainingNative": 329987,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 177106,
+    "convertedBehaviorNative": 177412,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 177793,
-    "convertedBehaviorManaged": 208947,
+    "combinedBehaviorNative": 178099,
+    "convertedBehaviorManaged": 209231,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -48673,6 +48673,33 @@
         "nativeLoc": 394,
         "managedLoc": 374,
         "conversionManagedCommit": "e61352530e06a6ea46d7c3ad37cd574dd92b9965"
+      },
+      {
+        "name": "s-advsound-player-lookup-chunk1430",
+        "bucket": "conversion",
+        "note": "S_AddPlayerGender through S_MarkPlayerSounds in s_advsound.cpp (1454-1759).",
+        "auditSeams": "Player-sound add and the already-credited class search stay callees. SNDINFO commands end before this band. soundlinks starts at line 1767.",
+        "auditRationale": "UNCredited s_advsound.cpp 1454-1759 (+306). This is the player-class list, lookup, save, and skin comparison tail. The band is shorter than 400 lines and is not sliced.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/sound/s_advsound.cpp --start 1454 --end 1759 and a full tally line scan, including recognition ranges, show no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Gender list and shrink (**1462\u20131498**) | yes |\n| Player lookup (**1507\u20131571**) | yes |\n| Save and restore (**1582\u20131608**) | yes |\n| Equivalence and skin class (**1617\u20131759**) | yes |\n| Band hull (**1454\u20131759**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| SNDINFO commands | already credited through line 1449, with holes under 150 lines left uncredited |\n| soundlinks | starts at line 1767 |\n| Add-player-sound bodies | callees |\n\nAdding a gender reserves one hash table when that slot is empty and stores the index truncated to 16 bits. Shrinking sorts class names with ASCII case folding, marks the table sorted, and then resolves the default class. Lookup of a non-reserved sound returns that id. A missing gender slot uses the first defined gender, or the default class, or the empty sound when the class is already the default. After the table is sorted, an empty, missing, or silent-less unlinked lump falls back to male and then to the default class. A silent unlinked lump is kept. Saving appends a skin record. Restoring replays each record through the existing-alias or lump callee. Equal ids match before a validity test, so the empty id matches itself. Invalid ids do not match a different id. Alias links are followed. A random header stops. A player reserve is replaced with the skinned sound. The sound class is the skin name when the skin index sits at or above the class count and below the skin count, the skin is allowed, and the player class string is empty. Otherwise it is the player string, or the actor name, or player. Hexen actors without a player use fighter. Other games use player. The extended lookup tries name-extended and then name, case-insensitively, and then skins that id. Marking reads gender slot 0 on all four passes.\n\n| Managed (`VmAdvSound1430Slice.cs`) | Native (`s_advsound.cpp`) |\n|------------------------------------|--------------------------|\n| Player lookup and skin class | **1454\u20131759** |\n| Band hull (exclusive slice) | **1454\u20131759** |\n\n### Chunk **1430** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **306** |\n| **Net headline** | **+306** vs the prior chunk |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmAdvSound1430Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/sound/s_advsound.cpp",
+            "symbol": "S_AddPlayerGender",
+            "start": 1454,
+            "end": 1759,
+            "tests": [
+              "VmAdvSound1430SliceTests.PlayerListsSortAndFallbacks",
+              "VmAdvSound1430SliceTests.SkinsEquivalenceAndMarks"
+            ]
+          }
+        ],
+        "nativeLoc": 306,
+        "managedLoc": 284,
+        "conversionManagedCommit": "74d7dfd70352b6f8ef2057557539a0bc802ce393"
       }
     ],
     "behaviorNativeChecksum": 508086,
