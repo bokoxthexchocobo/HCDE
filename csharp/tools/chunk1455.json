@@ -1,0 +1,26 @@
+[
+  {
+    "name": "d-net-mute-controllers-chunk1455",
+    "bucket": "conversion",
+    "note": "Mute commands and settings controllers in d_net.cpp (10387-10667).",
+    "auditSeams": "CCMD mute through CCMD listsettingscontrollers. CCMD kick ends at 10385. This is the end of d_net.cpp.",
+    "auditRationale": "UNCredited d_net.cpp 10387-10667 (+281). One contiguous span of the mute commands and the settings-controller editor. The span does not cross credited code.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 1455 --band shows no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Mute and settings controllers (**10387\u201310667**) | yes |\n| Band hull (**10387\u201310667**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Ready and kick | lines 10127-10385 are already credited |\n| Lines after 10667 | the translation unit ends here |\n\nMute skips the console player and duplicate numbers. Adding a controller writes opcode 48 and removing one writes opcode 49. The authority cannot change its own controller bit, and remove reports a bad player number where add reports a bad client number.\n\n| Managed (`VmNet1455Slice.cs`) | Native (`d_net.cpp`) |\n|-------------------------------|----------------------|\n| Mute through ListControllers | **10387\u201310667** |\n| Band hull (exclusive slice) | **10387\u201310667** |\n\n### Chunk **1455** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **281** |\n| **Net headline** | **+281** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmNet1455Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "mute",
+        "start": 10387,
+        "end": 10667,
+        "tests": [
+          "VmNet1455SliceTests.MuteBitsAndList",
+          "VmNet1455SliceTests.SettingsControllers"
+        ]
+      }
+    ]
+  }
+]

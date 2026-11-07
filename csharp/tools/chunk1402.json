@@ -1,0 +1,26 @@
+[
+  {
+    "name": "stack-frame-node-chunk1402",
+    "bucket": "conversion",
+    "note": "Fake frame, protocol stack frame, and scope children from StackFrameStateNode.cpp (1-161).",
+    "auditSeams": "The file is the whole translation unit. PCToLine and the source cache stay callees. The file ends at line 161.",
+    "auditRationale": "UNCredited StackFrameStateNode.cpp 1-161 (+161). After chunk 1401 this is the unique largest hole. RuntimeEvents.cpp 1-160 is 160. The band is shorter than 400 lines and is not sliced. It runs through end of file.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/scripting/dap/Nodes/StackFrameStateNode.cpp --start 1 --end 161 and a full tally line scan, including recognition ranges, show no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Native constructor (**36–50**) | yes |\n| Frame constructor (**52–65**) | yes |\n| SerializeToProtocol (**67–109**) | yes |\n| GetChildNames (**111–125**) | yes |\n| GetChildNode (**127–160**) | yes |\n| Band hull (**1–161**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| PCToLine | callee on the script function |\n| GetSourceData | callee on the pex cache |\n| Local, register, global, and cvar constructors | the nodes are created; their bodies are other files |\n\nThe native constructor fills a fake frame, points the node at that frame, and creates only the global and cvar scopes. The frame constructor keeps the caller's frame. A non-native script gets a local scope, and every non-native function gets a register scope. Serialize returns immediately for a native function after the name. A script with a character pointer asks the cache. A positive line is copied with column 1. Line -1 uses one past the greatest line-info value. The instruction pointer is formatted only when the PC is set, including when no line is published. Child names append Local, Global, CVars, and Registers for a script. A native function still returns Global and CVars, then leaves the caller's node unchanged. A non-script function still returns its register node.\n\n| Managed (`VmStackFrame1402Slice.cs`) | Native (`StackFrameStateNode.cpp`) |\n|--------------------------------------|-------------------------------------|\n| Fake frame, protocol frame, and children | **1–161** |\n| Band hull (exclusive slice) | **1–161** |\n\n### Chunk **1402** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **161** |\n| **Net headline** | **+161** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmStackFrame1402Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/dap/Nodes/StackFrameStateNode.cpp",
+        "symbol": "StackFrameStateNode",
+        "start": 1,
+        "end": 161,
+        "tests": [
+          "VmStackFrame1402SliceTests.NativeFrameUsesTheFakeStackAndSkipsLocalScopes",
+          "VmStackFrame1402SliceTests.ScriptFramePublishesTheLineAndKeepsRegistersForAPlainFunction"
+        ]
+      }
+    ]
+  }
+]

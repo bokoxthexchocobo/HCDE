@@ -1,0 +1,26 @@
+[
+  {
+    "name": "runtime-events-chunk1403",
+    "bucket": "conversion",
+    "note": "One handler per runtime event from RuntimeEvents.cpp (1-160), copied out of the lock before it runs.",
+    "auditSeams": "The file is the whole translation unit. Debug trace formatting stays a callee. CreateStack and CleanupStack have subscribe and unsubscribe only. The file ends at line 160.",
+    "auditRationale": "UNCredited RuntimeEvents.cpp 1-160 (+160). After chunk 1402 this is the unique largest hole. codegen.cpp 3778-3933 is 156. The band is shorter than 400 lines and is not sliced. It runs through end of file.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/scripting/dap/RuntimeEvents.cpp --start 1 --end 160 and a full tally line scan, including recognition ranges, show no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Subscribe and unsubscribe macro (**39–64**, used at **66–72**) | yes |\n| EmitBreakpointChangedEvent (**77–92**) | yes |\n| EmitInstructionExecutionEvent (**93–108**) | yes |\n| EmitLogEvent (**109–124**) | yes |\n| EmitExceptionEvent (**125–140**) | yes |\n| IsDebugServerRunning (**142–154**) | yes |\n| Band hull (**1–160**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| DebugTrace::Debugf | callee; the formatted message is the result |\n| CreateStack and CleanupStack emit | the comment at **156–157** says this file does not emit them |\n\nSubscribe replaces the one handler and stores the active flag from whether that handler is set. An empty subscribe still records the subscribe message and leaves the slot inactive. Unsubscribe of an empty handle returns false and does not take the lock. Any other handle, including a different function, clears the slot when it is active and records the unsubscribe message. An inactive slot returns false and keeps the previous message. Each emit reads the flag, then copies the handler under the lock, and calls that copy after the lock is released. A clear between the two reads does not call. IsDebugServerRunning returns the copied predicate, or false when the slot is inactive or empty.\n\n| Managed (`VmRuntimeEvents1403Slice.cs`) | Native (`RuntimeEvents.cpp`) |\n|-----------------------------------------|------------------------------|\n| One handler per event and the emit copy | **1–160** |\n| Band hull (exclusive slice) | **1–160** |\n\n### Chunk **1403** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **160** |\n| **Net headline** | **+160** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmRuntimeEvents1403Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/dap/RuntimeEvents.cpp",
+        "symbol": "RuntimeEvents",
+        "start": 1,
+        "end": 160,
+        "tests": [
+          "VmRuntimeEvents1403SliceTests.SubscribeReplacesTheOnlyHandlerAndAnyLiveHandleClearsIt",
+          "VmRuntimeEvents1403SliceTests.EmitCopiesTheHandlerThenSkipsAClearedSlot"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "name": "s-advsound-setup-chunk1429",
+    "bucket": "conversion",
+    "note": "S_CheckSound through S_AddLocalSndInfo in s_advsound.cpp (251-644).",
+    "auditSeams": "Random-list, skinned-sound, player-class, lump, and SNDINFO parser calls stay callees. Declarations end at line 250. Include paths start at line 657.",
+    "auditRationale": "UNCredited s_advsound.cpp 251-644 (+394). This is the sound-table setup after the declaration block and stops before include-path resolution. The band is shorter than 400 lines and is not sliced.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/sound/s_advsound.cpp --start 251 --end 644 and a full tally line scan, including recognition ranges, show no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Recursive sound check (**258–343**) | yes |\n| Millisecond length (**355–400**) | yes |\n| Add sound (**410–462**) | yes |\n| Player sound adds (**472–544**) | yes |\n| Clear, parse, and local SNDINFO (**555–644**) | yes |\n| Band hull (**251–644**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Declarations and command names | end at line 250 |\n| Include paths | start at line 657 |\n| Class, gender, lookup, skin, and parser bodies | callees |\n\nA player-reserved sound is not walked. A sound already on the chain is accepted without a new report. A random choice that returns to the sound where the walk started prints the red random-recursion line and the orange chain from the second entry. An alias that returns to that sound prints the alias line, shrinks the chain back to its size at entry, and then pops one more entry. An empty pop does nothing. Integrity checks every sound on one shared chain, disables a failed sound by clearing its random header and linking it to the empty sound, and then readies rumble. Length follows one player-reserved skin or one plain alias and then loads that sound. A random header returns the longest choice and does not load itself. A missing sound is zero. A null load is zero. Missing sound data crashes. The action length divides milliseconds by 1000. Adding by lump name looks in the sounds namespace and drops any script pointer. An unknown name appends a sound with the current pitch mask. A known reserved sound stops with the reserved-player message, as a script error only when a scanner was passed. A compatibility sound rewrites its link target. A random definition is emptied and its owner becomes the empty sound. A near limit of -1 becomes 2 with a range of 65536. A player sound name is the class, a quoted gender digit, and the referenced name. The referenced link is stored before the new lump is added. The class and gender callees run after that add. A null reference or the empty sound returns the empty id without those callees. An existing alias registers the class and gender before that empty-id return, stores the referenced link, and saves the alias index when it comes from a skin. A duplicate player sound looks up the alias and then adds that existing id. Clearing wipes engine sounds only when an engine exists, and always clears the ambient, music, player, alias, device, and rumble tables. Parsing returns immediately when a redefine is requested and SNDINFO is locked. Otherwise it clears saved skins and the tables, forces pitch mask 0, adds { no sound } from DSEMPTY, records global SNDINFO lumps and every Strife voice lump, restores skins, hashes, shrinks, and checks integrity. Locking sets the lock. A locked local lump prints the DSDHacked sentence and returns. An unlocked local lump parses that lump, hashes, shrinks, and checks integrity.\n\n| Managed (`VmAdvSound1429Slice.cs`) | Native (`s_advsound.cpp`) |\n|------------------------------------|--------------------------|\n| Sound table setup | **251–644** |\n| Band hull (exclusive slice) | **251–644** |\n\n### Chunk **1429** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **394** |\n| **Net headline** | **+394** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmAdvSound1429Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/sound/s_advsound.cpp",
+        "symbol": "S_CheckSound",
+        "start": 251,
+        "end": 644,
+        "tests": [
+          "VmAdvSound1429SliceTests.CyclesAndLengths",
+          "VmAdvSound1429SliceTests.AddsClearsAndParse"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "name": "s-doomsound-startup-chunk1424",
+    "bucket": "conversion",
+    "note": "FindNestedMusicFile through DoomSoundEngine::StopChannel in s_doomsound.cpp (233-574).",
+    "auditSeams": "Filesystem, music, sndinfo, thinker, and base sound-engine calls stay callees. Music path matching ends at line 232. Actor-pitched sound starts at line 575.",
+    "auditRationale": "UNCredited s_doomsound.cpp 233-574 (+342). This is the next whole-function run after D_InitGame. d_main.cpp 1-421 is declarations, and D_DoomMain is already partly credited. The band is shorter than 400 lines and is not sliced.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/sound/s_doomsound.cpp --start 233 --end 574 and a full tally line scan, including recognition ranges, show no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Nested music and FindMusic (**234–255**) | yes |\n| S_Init and S_Shutdown (**265–320**) | yes |\n| S_Start, precache, and S_InitData (**331–435**) | yes |\n| Unpositioned sound and positioned start (**443–501**) | yes |\n| Cache, resolve, verify, and stop (**509–573**) | yes |\n| Band hull (**233–574**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Music path helpers | end at line 232 |\n| Actor-pitched sound | starts at line 575 |\n| Filesystem, sndinfo, and base sound-engine bodies | callees |\n\nNested music scans lumps from the last entry backward. A music path segment and a known extension must both match, ignoring case, and the first hit wins. A null music name or a null path does not match. FindMusic tries the music namespace, then the nested scan, then the full name. A null music name crashes on the namespace lookup. Init traces the call, installs the music callbacks, creates the engine only when it is missing, starts sound, and starts music when either nomusic or nosound is set. A null argument list crashes after sound init and before music. The master volume callback runs, a SNDCURVE lump is read when present, and the engine still initializes when the curve is absent. Shutdown stops music, stops every level sequence, and crashes when the level list is missing. A live engine shuts down and is cleared. The last song becomes empty. Sound closes only when the device is open. Level start runs only when both the device and the engine exist. It stops channels before reading the level, so a missing level crashes after that stop. A missing map info block still reloads global sndinfo. A local sndinfo name that differs, ignoring case, unloads sounds, parses the global set, and adds a local lump only when the full-name lookup is non-negative. A matching sndinfo with a different sequence parses only the sequence. Matching names do nothing. Precache runs only for the primary level. It marks sounds unused, calls the precache virtual on actors that have one, marks game and map sounds, and caches the marked set. A null level crashes after the unused mark. A null map-info sound list crashes after the game sounds. Init data clears both local names, parses global sndinfo, and parses sequence lump -1. Unpositioned pitch passes the listener source, a null rolloff, and the supplied pitch and start. The short sound call uses pitch 0 and start 0. A missing engine crashes. The S_Sound action keeps the low three channel bits and turns the remaining bits into flags. S_StartSound keeps the channel and flags apart. S_StartSoundAt stores the position as x, z, y. Cache skips the base cache when the player-reserve bit is set. Resolve asks for a skinned sound only in that case, and only an actor source is forwarded. Verify rejects a null actor, a dying actor, a silent sector, and a foreign level. A null sector crashes once the actor is alive. Maybe-local plus silent-pickup compat plays only for the listener. Magic silence forces the weapon channel. Stop clears an actor source when the system channel is live and the channel was not evicted, then always calls the base stop.\n\n| Managed (`VmDoomSound1424Slice.cs`) | Native (`s_doomsound.cpp`) |\n|-------------------------------------|---------------------------|\n| Startup, playback, and channel stop | **233–574** |\n| Band hull (exclusive slice) | **233–574** |\n\n### Chunk **1424** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **342** |\n| **Net headline** | **+342** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmDoomSound1424Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/sound/s_doomsound.cpp",
+        "symbol": "FindNestedMusicFile",
+        "start": 233,
+        "end": 574,
+        "tests": [
+          "VmDoomSound1424SliceTests.MusicLookupInitAndShutdown",
+          "VmDoomSound1424SliceTests.LevelStartPrecacheAndPlayback"
+        ]
+      }
+    ]
+  }
+]

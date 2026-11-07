@@ -1,0 +1,26 @@
+[
+  {
+    "name": "system-theme-chunk1401",
+    "bucket": "conversion",
+    "note": "Windows, Linux, and macOS theme detection from system_theme.cpp (1-162).",
+    "auditSeams": "The file is the whole translation unit. Registry, gdbus, and CoreFoundation stay callees. The file ends at line 162.",
+    "auditRationale": "UNCredited system_theme.cpp 1-162 (+162). After chunk 1400 this is the unique largest hole. StackFrameStateNode.cpp 1-161 is 161. The band is shorter than 400 lines and is not sliced. It runs through end of file.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/utility/system_theme.cpp --start 1 --end 162 and a full tally line scan, including recognition ranges, show no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| pipe_read and gdbus_read (**68–90**) | yes |\n| GetSystemTheme (**100–162**) | yes |\n| Band hull (**1–162**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| RegGetValueW | callee |\n| SystemParametersInfoW | callee |\n| popen and fgets | the pipe text is supplied |\n| CoreFoundation preference copy | the preference result is supplied |\n\nThe preprocessor keeps one platform. The port runs the Windows, Linux, or macOS branch the caller selects, and the other branch returns the default theme. Windows reads AppsUseLightTheme and treats 0 as dark. Any other successful dword is light. A failed read leaves the theme at the default. High contrast is OR-ed only when the contrast call succeeds and the on flag is set. Linux runs the portal read for color-scheme and then contrast. The text uint32 1 is dark and wins over uint32 2. Contrast uint32 1 ORs the high-contrast flag. A closed pipe returns an empty string and is not closed. macOS sets dark only when AppleInterfaceStyle compares equal to Dark, then ORs high contrast from the boolean. A present preference is released after the type check. A missing preference is not released.\n\n| Managed (`VmSystemTheme1401Slice.cs`) | Native (`system_theme.cpp`) |\n|---------------------------------------|-----------------------------|\n| Theme detection | **1–162** |\n| Band hull (exclusive slice) | **1–162** |\n\n### Chunk **1401** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **162** |\n| **Net headline** | **+162** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmSystemTheme1401Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/utility/system_theme.cpp",
+        "symbol": "GetSystemTheme",
+        "start": 1,
+        "end": 162,
+        "tests": [
+          "VmSystemTheme1401SliceTests.WindowsAndLinuxThemeFollowTheRegistryAndThePortalText",
+          "VmSystemTheme1401SliceTests.MacReleasesPreferencesAndOtherPlatformsStayDefault"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,36 @@
+[
+  {
+    "name": "intermission-cast-chunk1436",
+    "bucket": "conversion",
+    "note": "Text responder through cast drawer in intermission.cpp (440-537 and 545-770).",
+    "auditSeams": "Super init, responder, ticker, and drawer are callees. GetCharFromString is reimplemented for the text drawer. The scroller starts at line 778.",
+    "auditRationale": "UNCredited intermission.cpp 440-770 with the comment banner 538-544 left out (+324). This is the text typewriter and the cast call screen. The band is shorter than 400 lines and is not sliced.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 1436 --band shows no overlap. The comment banner 538-544 is outside both native ranges.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Text responder and drawer (**440\u2013537**) | yes |\n| Cast init, input, attack, ticker, and drawer (**545\u2013770**) | yes |\n| Band hull (**440\u2013770**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Comment banner | lines 538-544 stay uncredited |\n| Scroller banner | lines 771-777 stay uncredited |\n| Super init, responder, ticker, and drawer | callees |\n| GetCharFromString | callee, reimplemented for the text drawer |\n\nA key during the typewriter jumps the ticker to the end of the text and returns 1. A key after that returns -1. Any other event returns 0. The drawer scales from the 320 by 200 or 640 by 400 reference, counts newline rows, and shrinks positive row padding until the block fits. A default origin recenters when the space below is smaller than the top. A fixed origin only shrinks padding. A character that does not fit the width is consumed and not drawn. Speed 0 divides. Bytes 128 through 159 use the Windows-1252 map. Other non-ASCII bytes use the UTF-8 decoder, including its dead four-byte continuation check.\n\nCast init copies the class, the attack sounds, and the see state. A missing class clears the body and state and returns. A player advances through the missile state and uses the console player translation. Any other actor uses its own translation when that value is not zero. The see sound plays only when its id is greater than zero. A key that is not a key-down returns 0. Death already in progress returns 1. Death plus Cast is preferred, and Death alone is kept when Cast is absent. A missing label returns -1. A player death sound comes from the skin. A monster uses its death sound when that id is greater than zero. An attack sound matches the melee flag and the state index, stops every channel, and plays on the weapon channel. The ticker decrements cast tics first. A null state, a -1 tic state, a missing next state, or a self-loop during death returns -1. Reaching the advance state stops the attack and returns to the see state. Frame 12 starts an attack, alternating melee and missile for monsters and always using missile for a player. A null choice tries the other state. Frame 24 or a return to the see state while attacking also stops. A -1 tic result after the advance becomes 15. The cast title resolves a leading dollar string and centers it. A player skin replaces the sprite when the spawn sprite matches, the class is still listed, and the no-skin flag is clear. The last matching class wins.\n\n| Managed (`VmIntermission1436Slice.cs`) | Native (`intermission.cpp`) |\n|----------------------------------------|------------------------------|\n| Text and cast screens | **440\u2013537**, **545\u2013770** |\n| Band hull (exclusive slice) | **440\u2013770** |\n\n### Chunk **1436** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **324** |\n| **Net headline** | **+324** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmIntermission1436Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/intermission/intermission.cpp",
+        "symbol": "DIntermissionScreenText::Responder",
+        "start": 440,
+        "end": 537,
+        "tests": [
+          "VmIntermission1436SliceTests.TextKeysAndTypewriter",
+          "VmIntermission1436SliceTests.TextDelayAndSpeed"
+        ]
+      },
+      {
+        "file": "src/intermission/intermission.cpp",
+        "symbol": "DIntermissionScreenCast::Init",
+        "start": 545,
+        "end": 770,
+        "tests": [
+          "VmIntermission1436SliceTests.CastAdvanceSkinAndAttack",
+          "VmIntermission1436SliceTests.CastMissingDeath"
+        ]
+      }
+    ]
+  }
+]
