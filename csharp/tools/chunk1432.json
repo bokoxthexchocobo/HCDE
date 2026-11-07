@@ -1,0 +1,26 @@
+[
+  {
+    "name": "m-misc-response-chunk1432",
+    "bucket": "conversion",
+    "note": "M_FindResponseFile through M_LoadDefaults in m_misc.cpp (156-406).",
+    "auditSeams": "The comment stripper above this band is already credited and is called as a callee. The PCX header starts at line 414.",
+    "auditRationale": "UNCredited m_misc.cpp 156-406 (+251). This is response-file expansion and config save/load. The band is shorter than 400 lines and is not sliced.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/m_misc.cpp --start 156 --end 406 and a full tally line scan, including recognition ranges, show no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Response files (**156–244**) | yes |\n| Command parsing (**251–332**) | yes |\n| Config save and load (**339–406**) | yes |\n| Band hull (**156–406**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Comment stripper | already credited through line 154 |\n| PCX screenshot header | starts at line 414 |\n| File open and shell folder | callees |\n\nA response file is the argument after @. A missing file is a warning and the argument is removed. A found file is uncommented with empty lines and surrounding whitespace removed, then parsed twice: once for the count and once into the new vector. Arguments before and after the response file are kept. The scan stays on the inserted text, so nested response files expand. The 100th file prints the limit. Later files are ignored and removed. After at least one file, the command line from argument 1 is printed. Parsing skips bytes at or below space, keeps quoted text, turns a backslash quote into a quote, and stops an unquoted word at space or a quote. A null command string crashes. Saving with no config returns success. A requested filename is applied, the global archive always runs, a non-empty game name archives game data, and the same requested filename is applied again after the write. A final save repeats while the write fails and the ini-failed callee asks to retry, then drops the config. writeini with only the command name saves the current path. Failure prints the errno text. Opening the config directory saves, then opens the folder up to the last slash. Loading replaces the config and runs global setup.\n\n| Managed (`VmMisc1432Slice.cs`) | Native (`m_misc.cpp`) |\n|---------------------------------|----------------------|\n| Response files and config save | **156–406** |\n| Band hull (exclusive slice) | **156–406** |\n\n### Chunk **1432** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **251** |\n| **Net headline** | **+251** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmMisc1432Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/m_misc.cpp",
+        "symbol": "M_FindResponseFile",
+        "start": 156,
+        "end": 406,
+        "tests": [
+          "VmMisc1432SliceTests.ResponseFilesExpandAndStopAtLimit",
+          "VmMisc1432SliceTests.ConfigSaveKeepsRequestedPath"
+        ]
+      }
+    ]
+  }
+]
