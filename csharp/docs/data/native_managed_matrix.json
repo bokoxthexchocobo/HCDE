@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 343020
+    "managedCSharpLoc": 343338
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 159987,
+    "convertedThisRunNative": 160204,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 200708,
+    "convertedThisRunManaged": 201026,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 328885,
+    "remainingNative": 328668,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 178514,
+    "convertedBehaviorNative": 178731,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 179201,
-    "convertedBehaviorManaged": 210379,
+    "combinedBehaviorNative": 179418,
+    "convertedBehaviorManaged": 210697,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -48808,6 +48808,33 @@
         "nativeLoc": 186,
         "managedLoc": 255,
         "conversionManagedCommit": "44c0f4f7b40f1bf8f31f46dc763487d7ea13236b"
+      },
+      {
+        "name": "sc-man-braces-chunk1435",
+        "bucket": "conversion",
+        "note": "CheckOpen through FScriptPosition::Message in sc_man.cpp (1126-1342).",
+        "auditSeams": "GetString and Compare are callees. ParseHex starts after this band.",
+        "auditRationale": "UNCredited sc_man.cpp 1126-1342 (+217). This is symbol insertion, brace matching, and script position messages. The band is shorter than 400 lines and is not sliced.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/engine/sc_man.cpp --start 1126 --end 1342 and a full tally line scan, including recognition ranges, show no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Symbols and braces (**1126\u20131233**) | yes |\n| Script position messages (**1241\u20131342**) | yes |\n| Band hull (**1126\u20131342**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Comment banners | lines 1119-1125 and 1343-1348 stay uncredited |\n| GetString and Compare | callees |\n| ParseHex | starts at line 1350 |\n\nA closed script errors before a string is read. Integer, unsigned, and float symbols replace a same-name entry without regard to case. An unsigned value keeps its bits in the signed field. A float symbol stores the truncated integer and the full value. Skipping a block counts nested braces and stops on the brace that drops below zero. A missing string is a fatal script error. Starting braces saves the position after the opening brace, finds the matching close, then restores that saved position and returns the end index. A missing opening brace is an error and the token is put back. The end test is true once the cursor is at or past that end. A script position copies the file name and the message line, including a put-back line. Debug severities below the developer level are ignored. An optional error is a warning unless strict errors are on. An error with the error-out switch becomes fatal and does not increment the error count. Warnings and debug errors that are printed increment the warning count. Messages are green. Log lines have no color and use the log level. An unknown severity is not printed.\n\n| Managed (`VmScMan1435Slice.cs`) | Native (`sc_man.cpp`) |\n|---------------------------------|----------------------|\n| Braces and script position messages | **1126\u20131342** |\n| Band hull (exclusive slice) | **1126\u20131342** |\n\n### Chunk **1435** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **217** |\n| **Net headline** | **+217** vs the prior chunk |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmScMan1435Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/engine/sc_man.cpp",
+            "symbol": "CheckOpen",
+            "start": 1126,
+            "end": 1342,
+            "tests": [
+              "VmScMan1435SliceTests.SymbolsBracesAndOpen",
+              "VmScMan1435SliceTests.ScriptPositionMessages"
+            ]
+          }
+        ],
+        "nativeLoc": 217,
+        "managedLoc": 318,
+        "conversionManagedCommit": "eabc3067db5e9aa906d02f4041360b649cfbbcf2"
       }
     ],
     "behaviorNativeChecksum": 508086,
