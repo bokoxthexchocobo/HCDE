@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 166157,
+  "convertedThisRunNative": 166313,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 207606,
+  "convertedThisRunManaged": 207730,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 322715,
+  "remainingNative": 322559,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 184684,
+  "convertedBehaviorNative": 184840,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 185371,
-  "convertedBehaviorManaged": 217277,
+  "combinedBehaviorNative": 185527,
+  "convertedBehaviorManaged": 217401,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -49506,6 +49506,33 @@
       "nativeLoc": 150,
       "managedLoc": 184,
       "conversionManagedCommit": "5a7c4e034a04df4eb299753ad023b56a4974eca0"
+    },
+    {
+      "name": "map-sector-special-tail-chunk1461",
+      "bucket": "conversion",
+      "note": "InitSectorSpecial damage, scroll, and door tail in specials.cpp (459-614).",
+      "auditSeams": "The closing brace of the credited kill-monsters check through the end of MapLoader::InitSectorSpecial. Lines 456-458 are already credited. SpawnSpecials starts at 624.",
+      "auditRationale": "UNCredited specials.cpp 459-614 (+156). One contiguous tail of InitSectorSpecial. The span does not cross credited code.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 1461 --band shows no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| Sector special tail (**459\u2013614**) | yes |\n| Band hull (**459\u2013614**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| Kill-monsters flag | lines 456-458 are already credited |\n| SpawnSpecials | starts at line 624 |\n\nWithout MBF21 the death bit still uses the Boom damage rows. With MBF21, damage 0x200 and 0x300 become exit flags. A matching Doom special clears the low byte unless the case keeps it. The default keeps the low byte and adds a Hexen or Heretic floor scroller when the value is in those ranges.\n\n| Managed (`VmSpecials1461Slice.cs`) | Native (`specials.cpp`) |\n|-------------------------------------|------------------------|\n| InitTail | **459\u2013614** |\n| Band hull (exclusive slice) | **459\u2013614** |\n\n### Chunk **1461** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **156** |\n| **Net headline** | **+156** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmSpecials1461Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/maploader/specials.cpp",
+          "symbol": "MapLoader::InitSectorSpecial",
+          "start": 459,
+          "end": 614,
+          "tests": [
+            "VmSpecials1461SliceTests.BoomDamageAndDoomSpecials",
+            "VmSpecials1461SliceTests.HexenScrollHereticCarryAndSkyKeepOrClear"
+          ]
+        }
+      ],
+      "nativeLoc": 156,
+      "managedLoc": 124,
+      "conversionManagedCommit": "a7eb69edddef4d29bbd457127f049129e9f7b8cd"
     }
   ],
   "behaviorNativeChecksum": 508086,
