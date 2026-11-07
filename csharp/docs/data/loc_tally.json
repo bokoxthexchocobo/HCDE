@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 154944,
+  "convertedThisRunNative": 155257,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 194886,
+  "convertedThisRunManaged": 195304,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 333928,
+  "remainingNative": 333615,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 173471,
+  "convertedBehaviorNative": 173784,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 174158,
-  "convertedBehaviorManaged": 204557,
+  "combinedBehaviorNative": 174471,
+  "convertedBehaviorManaged": 204975,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -48279,6 +48279,33 @@
       "nativeLoc": 230,
       "managedLoc": 333,
       "conversionManagedCommit": "55e948505649aa5034f40613903e0ff045dff79d"
+    },
+    {
+      "name": "d-main-init-cmdline-chunk1416",
+      "bucket": "conversion",
+      "note": "Startup init, autoload files, and command-line checks in d_main.cpp (2488-2800).",
+      "auditSeams": "Response files, file collection, defaults, file search, add file, directories, config files, app-data path, nice path, mode traces, map name, map override, map data, and the dev string stay callees. StartupStatusLine starts at line 2802.",
+      "auditRationale": "UNCredited d_main.cpp 2488-2800 (+313). D_DoomInit, AddAutoloadFiles, and CheckCmdLine are whole functions. The comment banners between them sit inside the span. StartupStatusLine starts at line 2802. hq4x and hq4x_asm stay later because they are generated tables. The band is not sliced further.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/d_main.cpp --start 2488 --end 2800 and a full tally line scan, including recognition ranges, show no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| D_DoomInit (**2488\u20132505**) | yes |\n| AddAutoloadFiles (**2513\u20132586**) | yes |\n| CheckCmdLine (**2594\u20132800**) | yes |\n| Band hull (**2488\u20132800**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| SetMapxxFlag | ends at line 2480 |\n| StartupStatusLine | starts at line 2802 |\n| Response files, file collection, defaults, file search, add file, directories, config files, app-data path, nice path, mode traces, map name, map override, map data, and the dev string | callees |\n\nD_DoomInit searches response files, then collects -deh/.deh, -bex/.bex, -exec/.cfg, -playdemo/.lmp, -file, and -optfile. It sets the startup state, prints the defaults line unless the run is a batch, and loads defaults. AddAutoloadFiles appends a dot to the IWAD filter. Shareware or -noextras skips lights.pk3, brightmaps.pk3, and game_widescreen_gfx.pk3. Each of those loads when its startup value is 1, or when the value is any other non-zero number and its autoload cvar is on, and the matching block switch is absent. A hit is added as an optional checked file at position -1. Shareware, -noautoload, the disable flag, -host, a join, or a dedicated server skips the rest. Otherwise zvox.wad is searched without the look-first flag. Skins are the share directory on Unix and the program directory otherwise, for both wad and pk3 patterns. Unix also adds the app-data skins path after NicePath. Global.Autoload is loaded, then every dot whose index is greater than 0 adds that prefix plus Autoload. A dot at index 0 does not start the loop. CheckCmdLine keeps the current dmflags. The first +sv_gametype argument, or +set followed by sv_gametype, supplies the explicit type and stops the scan. Value 4 is invasion. The checking line is skipped for a batch run. -nomonsters, -respawn, and -fast set their bits. -devparm overwrites the dev flag. -altdeath sets deathmatch and the game type to 1 and sets item respawn. Otherwise -deathmatch also sets weapons stay. Otherwise -coop, except during invasion, clears deathmatch, teamplay, and the game type, sets the coop weapon and player flags, and adds local items unless the game is Hexen. Otherwise a launch that is not hosting, joining, or dedicated and has no explicit type resets those three values to 0. A trace is skipped when the value is already set. The default map is MAP01, E1M1, or the Hexen hub. A stored warp sets autostart without changing the map. -skill uses the first character. -warp reads one map number in MAPxx mode and an episode plus a map otherwise; a missing or out-of-range second number moves the episode into the map slot. +map is removed. A compatibility override replaces the name only when that map exists, and a name that fails the check still blocks the launcher-default flag. A missing map is reported and leaves an earlier warp in place. -turbo prints a rounded percent, -timer prints a singular or plural minute line, and -avg forces 20 minutes whenever its value is present. Without a start screen the function returns before the status lines. Those lines are deathmatch, no monsters, respawn, and the warp line, whose skill is one more than the stored skill.\n\n| Managed (`VmDMain1416Slice.cs`) | Native (`d_main.cpp`) |\n|----------------------------------|----------------------|\n| Startup init, autoload, and command line | **2488\u20132800** |\n| Band hull (exclusive slice) | **2488\u20132800** |\n\n### Chunk **1416** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **313** |\n| **Net headline** | **+313** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmDMain1416Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "D_DoomInit",
+          "start": 2488,
+          "end": 2800,
+          "tests": [
+            "VmDMain1416SliceTests.InitCollectsAndAutoloadPaths",
+            "VmDMain1416SliceTests.CommandLineModesWarpAndStatus"
+          ]
+        }
+      ],
+      "nativeLoc": 313,
+      "managedLoc": 418,
+      "conversionManagedCommit": "e7aa7515f57ccbb84cd23f4dd5f09e0b078568fb"
     }
   ],
   "behaviorNativeChecksum": 508086,
