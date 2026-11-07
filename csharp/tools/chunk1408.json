@@ -1,0 +1,26 @@
+[
+  {
+    "name": "d-main-timescale-render-chunk1408",
+    "bucket": "conversion",
+    "note": "i_timescale, vid_rendermode, fraglimit, wipetype, vid_cursor, the HUD toggle, and D_Render from d_main.cpp (422-649).",
+    "auditSeams": "Time freeze, the cursor texture, pitch limits, and the level interpolator stay callees. dmflags starts at line 657.",
+    "auditRationale": "UNCredited d_main.cpp 422-649 (+228). After chunk 1407 the next real-behavior hole longer than 400 lines is d_main.cpp 1-4657. hq4x and hq4x_asm stay later because they are generated tables. This slice is the first function-aligned 150-400 band of callbacks in that hole. The argument-help table before line 422 has no function boundary inside 150-400 lines. The band is not sliced further.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/d_main.cpp --start 422 --end 649 and a full tally line scan, including recognition ranges, show no overlap.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| i_timescale (**422–439**) | yes |\n| vid_rendermode (**444–464**) | yes |\n| fraglimit (**466–482**) | yes |\n| wipetype (**485–488**) | yes |\n| vid_cursor (**490–507**) | yes |\n| r_fullbright_overrides (**519–522**) | yes |\n| I_FriendlyWindowTitle (**535–538**) | yes |\n| D_ToggleHud (**594–613**) | yes |\n| togglehud (**614–617**) | yes |\n| D_Render (**629–649**) | yes |\n| Band hull (**422–649**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| d_main.cpp **1–421** | argument help and prototypes; the first function ends at line 439, so a slice from line 1 through that function is 439 lines |\n| dmflags | starts at line 657 |\n| I_FreezeTime, I_SetCursor, SendPitchLimits, ExitLevel | callees |\n\nA net game prints the net-game sentence and forces the cvar back to 1 without writing TimeScale. A value of at least 0.05 freezes time, stores TimeScale, then thaws. A smaller value prints the minimum sentence and leaves both the cvar and TimeScale alone. vid_rendermode outside 0 through 4 becomes 4. Modes 2 and 3 become 0 and 1. A user game sends pitch limits, and the texture filter is always applied. fraglimit walks all 64 player slots only in deathmatch when the limit is positive, prints TXT_FRAGLIMIT, exits with (0, false), and stops at the first hit. wipetype outside 0 through 3 becomes melt (1). vid_cursor treats any case of None with a non-empty game cursor as that picture; a failed set falls back to cursor. The fullbright callback records the value and changes nothing else. The friendly title stores the mode and refreshes the window title. D_ToggleHud flips the toggle. The hide path saves the current blocks, sprite, and messages, then forces 12, false, and false, and hides the console and menus. The show path copies the saved cvars back. togglehud calls that function. D_Render marks dynamic lights when hardware mode has gl_lights, or another mode has r_dynlights, or the level has probes, and then only if the level has lights or probes. Interpolation stores the time fraction before particles and the poly link. The action runs next. Restores run only when interpolation was requested.\n\n| Managed (`VmDMain1408Slice.cs`) | Native (`d_main.cpp`) |\n|----------------------------------|----------------------|\n| Startup callbacks and the render wrapper | **422–649** |\n| Band hull (exclusive slice) | **422–649** |\n\n### Chunk **1408** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **228** |\n| **Net headline** | **+228** vs the prior chunk |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmDMain1408Slice.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "i_timescale",
+        "start": 422,
+        "end": 649,
+        "tests": [
+          "VmDMain1408SliceTests.TimeScaleCursorAndRenderModeClamp",
+          "VmDMain1408SliceTests.HudToggleFragLimitAndRenderPass"
+        ]
+      }
+    ]
+  }
+]
