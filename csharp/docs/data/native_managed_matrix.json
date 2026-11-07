@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 331561
+    "managedCSharpLoc": 331635
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 150483,
+    "convertedThisRunNative": 150662,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 189635,
+    "convertedThisRunManaged": 189815,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4753,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 338389,
+    "remainingNative": 338210,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 169010,
+    "convertedBehaviorNative": 169189,
     "recognitionBehaviorNative": 687,
-    "combinedBehaviorNative": 169697,
-    "convertedBehaviorManaged": 199306,
+    "combinedBehaviorNative": 169876,
+    "convertedBehaviorManaged": 199486,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -47673,6 +47673,33 @@
         "nativeLoc": 180,
         "managedLoc": 207,
         "conversionManagedCommit": "9245d47f39da86fdaab75a6a19d41dd90e5fa627"
+      },
+      {
+        "name": "cmdlib-path-guid-chunk1393",
+        "bucket": "conversion",
+        "note": "FormatGUID, myasctime, CreatePath, RemoveFile, and RemoveDir from cmdlib.cpp (467-645).",
+        "auditSeams": "strbin starts at line 646 and stays outside this band. DirEntryExists, mkdir, remove, and rmdir are callees. time and localtime are callees.",
+        "auditRationale": "UNCredited cmdlib.cpp 467-645 (+179). After chunk 1392 this is the unique largest hole. i_net.cpp 1639-1811 is 173. The band is shorter than 400 lines and is not sliced.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/utility/cmdlib.cpp --start 467 --end 645 and a full tally line scan, including recognition ranges, show no overlap.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| FormatGUID (**468\u2013484**) | yes |\n| myasctime (**486\u2013511**) | yes |\n| CreatePath, both platform branches (**513\u2013615**) | yes |\n| RemoveFile and RemoveDir (**617\u2013635**) | yes |\n| strbin banner before the function (**637\u2013645**) | yes |\n| Band hull (**467\u2013645**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| strbin | starts at line 646, outside this hole |\n| DirEntryExists and mkdir | callees; the POSIX branch passes mode 0755 (493) |\n| remove and rmdir | callees; the Windows branch records a wide path |\n| time and localtime | callees; a null local time returns Unknown with a newline |\n\nFormatGUID writes lowercase hex into a buffer of the given size and keeps one byte for the terminator. myasctime stores `%F %T` in the static buffer, or `Unknown\\n` when local time is missing. The POSIX CreatePath walks each slash, creates a missing entry, and stops when mkdir returns -1. A path of `/` returns immediately. The Windows CreatePath appends a slash when the path does not already end in a separator, strips trailing separators, and creates each parent. The inner Windows `_mkdir` branch is compiled out. RemoveFile ignores the syscall result. RemoveDir returns it.\n\n| Managed (`VmCmdlib1393Slice.cs`) | Native (`cmdlib.cpp`) |\n|----------------------------------|------------------------|\n| GUID, timestamp, path create, and removal | **467\u2013645** |\n| Band hull (exclusive slice) | **467\u2013645** |\n\n### Chunk **1393** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **179** |\n| **Net headline** | **+179** vs the prior chunk |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmCmdlib1393Slice.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/utility/cmdlib.cpp",
+            "symbol": "FormatGUID",
+            "start": 467,
+            "end": 645,
+            "tests": [
+              "VmCmdlib1393SliceTests.FormatGuidWritesLowerHexAndAscTimeUsesTheStaticBuffer",
+              "VmCmdlib1393SliceTests.CreatePathBuildsParentsAndRemoveUsesThePlatformCall"
+            ]
+          }
+        ],
+        "nativeLoc": 179,
+        "managedLoc": 180,
+        "conversionManagedCommit": "af20d1207d4d10eb44db3e5e1d5837831908cba4"
       }
     ],
     "behaviorNativeChecksum": 508086,
