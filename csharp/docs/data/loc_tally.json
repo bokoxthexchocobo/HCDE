@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 156250,
+  "convertedThisRunNative": 156413,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 196577,
+  "convertedThisRunManaged": 196821,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 332622,
+  "remainingNative": 332459,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 174777,
+  "convertedBehaviorNative": 174940,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 175464,
-  "convertedBehaviorManaged": 206248,
+  "combinedBehaviorNative": 175627,
+  "convertedBehaviorManaged": 206492,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -48414,6 +48414,33 @@
       "nativeLoc": 203,
       "managedLoc": 292,
       "conversionManagedCommit": "4dd3c67692583236a91c9c15762cfee1032aef19"
+    },
+    {
+      "name": "d-main-init-boot-chunk1421",
+      "bucket": "conversion",
+      "note": "The first phase of D_InitGame, through the startup flags, in d_main.cpp (3856-4018).",
+      "auditSeams": "Server mode, screen init, RNG, config, exec, filesystem, and sound calls stay callees. Startup type selection starts at line 4020. D_InitGame closes at line 4499.",
+      "auditRationale": "UNCredited d_main.cpp 3856-4018 (+163). D_InitGame runs from line 3856 through line 4499, which is 644 lines, so this slice stops after the startup flags. The startup screen and the launch tail stay for the following slices. The band is not sliced further.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/d_main.cpp --start 3856 --end 4018 and a full tally line scan, including recognition ranges, show no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| IWAD check and server init (**3856\u20133876**) | yes |\n| Dummy screen and gameinfo (**3878\u20133896**) | yes |\n| RNG seed (**3898\u20133912**) | yes |\n| Config, autoload, and exec (**3914\u20133938**) | yes |\n| Wad scan and lump filters (**3940\u20133967**) | yes |\n| Filesystem init and resource parse (**3969\u20133994**) | yes |\n| Sound init and startup flags (**3996\u20134018**) | yes |\n| Band hull (**3856\u20134018**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| D_InitGame comment banner | ends at line 3854 |\n| Startup type selection | starts at line 4020 |\n| Server, screen, RNG, config, exec, filesystem, and sound bodies | callees |\n\nA missing IWAD stops with the game-IWAD message before any other work. Server init stores the IWAD name. A debug value or vm_debug clears both JIT flags. Unless this is a restart, a client builds the dummy framebuffer and a dedicated server clears the screen. The save folder and game info are copied from the IWAD. A seed argument is parsed with atoi, stored as the static seed, and printed unless this is a batch run. Otherwise the made seed is used and the static flag stays clear. The seed is passed to srand and the random table is cleared. Callbacks are disabled, the game config is set up, and autoload files are added. Autoexec is skipped when noautoexec is set. Exec files and plus commands build the exec list, and a non-null list pulls wads. Batch runs skip the wad and sound prints. Lump filters add Raven, DoomStrifeChex, and DoomChex when the game type bits match, then the game name and the IWAD filter. A filter containing doom.id.doom also adds doom.doom plus the tail after 12 characters. A null game name crashes. Pwad names move onto the wad list and the source slots are left empty. Duplicate names are removed unless duplicates are allowed. No mounted entries stops with the no-files message and does not run the postprocess. A successful mount runs the postprocess, clears and shrinks the wad list, then marks mapxx, eternity, EDF, DEFCVARS, and the palette. The sound trace always runs. A texture guess above 0 becomes the greater of four times that guess and 4096. A guess of 0 or less uses 4096. The per-shader progress is 0. The startup screen is skipped for batch, restart, join, dedicated join, host, dedicated, or norun. Video init and the first shader stay false.\n\n| Managed (`VmDMain1421Slice.cs`) | Native (`d_main.cpp`) |\n|----------------------------------|----------------------|\n| D_InitGame boot through startup flags | **3856\u20134018** |\n| Band hull (exclusive slice) | **3856\u20134018** |\n\n### Chunk **1421** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **163** |\n| **Net headline** | **+163** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmDMain1421Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "D_InitGame",
+          "start": 3856,
+          "end": 4018,
+          "tests": [
+            "VmDMain1421SliceTests.FatalDebugScreenAndRng",
+            "VmDMain1421SliceTests.FilesFiltersAndProgress"
+          ]
+        }
+      ],
+      "nativeLoc": 163,
+      "managedLoc": 244,
+      "conversionManagedCommit": "c936073f59c541ff0616846910fef5f158a104de"
     }
   ],
   "behaviorNativeChecksum": 508086,
