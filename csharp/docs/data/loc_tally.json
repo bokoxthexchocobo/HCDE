@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 154714,
+  "convertedThisRunNative": 154944,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 194553,
+  "convertedThisRunManaged": 194886,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 334158,
+  "remainingNative": 333928,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 173241,
+  "convertedBehaviorNative": 173471,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 173928,
-  "convertedBehaviorManaged": 204224,
+  "combinedBehaviorNative": 174158,
+  "convertedBehaviorManaged": 204557,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -48252,6 +48252,33 @@
       "nativeLoc": 292,
       "managedLoc": 438,
       "conversionManagedCommit": "abe44d2ad59d818c37694a4ebc6b378165dc89a4"
+    },
+    {
+      "name": "d-main-gameinfo-mapxx-chunk1415",
+      "bucket": "conversion",
+      "note": "Patch arguments, exec files, command-line wads, GAMEINFO, and the MAPxx flag in d_main.cpp (2251-2480).",
+      "auditSeams": "File search, DeHackEd load, exec parse, wild-file add, directory existence, file insert, filesystem init, and color parse stay callees. D_DoomInit starts at line 2488.",
+      "auditRationale": "UNCredited d_main.cpp 2251-2480 (+230). ConsiderPatches, D_MultiExec, GetCmdLineFiles, ParseGameInfo, GetReserved, CheckGameInfo, and SetMapxxFlag are whole functions. The comment banners between them sit inside the span. D_DoomInit starts at line 2488. hq4x and hq4x_asm stay later because they are generated tables. The band is not sliced further.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/d_main.cpp --start 2251 --end 2480 and a full tally line scan, including recognition ranges, show no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| ConsiderPatches (**2251\u20132267**) | yes |\n| D_MultiExec (**2275\u20132282**) | yes |\n| GetCmdLineFiles (**2284\u20132309**) | yes |\n| ParseGameInfo (**2311\u20132435**) | yes |\n| GetReserved (**2437\u20132443**) | yes |\n| CheckGameInfo (**2445\u20132465**) | yes |\n| SetMapxxFlag (**2473\u20132480**) | yes |\n| Band hull (**2251\u20132480**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| ParseCVarInfo | ends at line 2241 |\n| D_DoomInit | starts at line 2488 |\n| File search, DeHackEd, exec parse, wild add, directory check, file insert, init, and color parse | callees |\n\nConsiderPatches searches each argument for a .deh file and then a .bex file, loads the first hit with lump 0, and returns whether any argument was present. MultiExec parses each argument and threads the exec list through. Command-line files start at the current wad count unless the call is for optional files, which start at 0. Newly added files are forced non-optional. GAMEINFO opens as that script. An IWAD key is stored unless the launcher is showing, in which case the value is skipped as an unknown property. LOAD inserts a same-directory path when that path exists and the bare name otherwise. The insert position advances only when the add succeeds. nospriterename is true only for the text true. Startup title, colors, type, song, lights, brightmaps, widescreen, and Steam are stored. Discord is read and not stored. Unknown keys consume a comma-separated value list. CheckGameInfo builds the reserved filter, and only a successful init reads the newest global GAMEINFO. SetMapxxFlag sets the MAPxx bit when MAP01, maps/map01.wad, or maps/map01.map is in the IWAD. A negative IWAD number matches any container. Other flag bits stay set.\n\n| Managed (`VmDMain1415Slice.cs`) | Native (`d_main.cpp`) |\n|----------------------------------|----------------------|\n| Patches, GAMEINFO, and MAPxx | **2251\u20132480** |\n| Band hull (exclusive slice) | **2251\u20132480** |\n\n### Chunk **1415** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **230** |\n| **Net headline** | **+230** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmDMain1415Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "ConsiderPatches",
+          "start": 2251,
+          "end": 2480,
+          "tests": [
+            "VmDMain1415SliceTests.PatchesExecFilesAndMapFlag",
+            "VmDMain1415SliceTests.GameInfoParseAndCheck"
+          ]
+        }
+      ],
+      "nativeLoc": 230,
+      "managedLoc": 333,
+      "conversionManagedCommit": "55e948505649aa5034f40613903e0ff045dff79d"
     }
   ],
   "behaviorNativeChecksum": 508086,
