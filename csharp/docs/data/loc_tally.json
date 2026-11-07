@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 152626,
+  "convertedThisRunNative": 152776,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 192081,
+  "convertedThisRunManaged": 192218,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4753,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 336246,
+  "remainingNative": 336096,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 171153,
+  "convertedBehaviorNative": 171303,
   "recognitionBehaviorNative": 687,
-  "combinedBehaviorNative": 171840,
-  "convertedBehaviorManaged": 201752,
+  "combinedBehaviorNative": 171990,
+  "convertedBehaviorManaged": 201889,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -48009,6 +48009,33 @@
       "nativeLoc": 150,
       "managedLoc": 138,
       "conversionManagedCommit": "9fdaa2b041fa187f93e4f887acd4464757177515"
+    },
+    {
+      "name": "cmdlib-file-probes-chunk1406",
+      "bucket": "conversion",
+      "note": "copystring, FileExists, RecursiveFileExists, FileReadable, DirExists, and DirEntryExists from cmdlib.cpp (92-241).",
+      "auditSeams": "WideString, stat, access, and ScanDirectory stay callees. GetFileInfo starts at line 242.",
+      "auditRationale": "UNCredited cmdlib.cpp 92-241 (+150). After chunk 1405 this is the next whole-function hole of at least 150 lines. codegen.cpp 3778-3933 and p_user.cpp 2395-2544 stay uncredited because the whole functions left in each gap are under 150 lines. The band is shorter than 400 lines and is not sliced.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/common/utility/cmdlib.cpp --start 92 --end 241 and a full tally line scan, including recognition ranges, show no overlap.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| copystring (**101\u2013116**) | yes |\n| FileExists (**135\u2013140**) | yes |\n| RecursiveFileExists (**151\u2013172**) | yes |\n| FileReadable (**182\u2013190**) | yes |\n| DirExists (**200\u2013205**) | yes |\n| DirEntryExists (**215\u2013232**) | yes |\n| Band hull (**92\u2013241**) | yes |\n\n**Excluded (zero credit)**\n\n| Native | Reason |\n|--------|--------|\n| FixPathSeperator | ends at line 91, already credited |\n| GetFileInfo | starts at line 242, outside this hole |\n| WideString, stat, _wstat64, access, _waccess, ScanDirectory | callees |\n\ncopystring of a null pointer allocates a one-byte empty string. Any other string is copied through the first zero and keeps that terminator. FileExists is a successful stat whose mode lacks S_IFDIR (0x4000). DirExists is a successful stat whose mode has that bit. A null or empty path returns false before stat and leaves the directory flag false. After stat, the directory flag is written from the mode even when stat failed. A null directory pointer skips that write. FileReadable compares access mode 4 (R_OK, and the Windows mode) with zero. The Windows branch passes the string through WideString first, and a null pointer becomes an empty wide string. The POSIX branch passes the original pointer. RecursiveFileExists checks path/file first. A miss scans the path with match \"*\", nosubdir false, and readhidden false. It returns the first non-hidden, non-system directory whose child file exists. The search does not call ScanDirectory again.\n\n| Managed (`VmCmdlib1406Slice.cs`) | Native (`cmdlib.cpp`) |\n|-----------------------------------|---------------------|\n| String copy and path probes | **92\u2013241** |\n| Band hull (exclusive slice) | **92\u2013241** |\n\n### Chunk **1406** gross vs net\n\n| | Value |\n|--|------:|\n| Row nativeLoc | **150** |\n| **Net headline** | **+150** vs the prior chunk |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmCmdlib1406Slice.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/utility/cmdlib.cpp",
+          "symbol": "copystring",
+          "start": 92,
+          "end": 241,
+          "tests": [
+            "VmCmdlib1406SliceTests.CopyStringKeepsTheTerminatorAndProbesReadTheModeAfterStat",
+            "VmCmdlib1406SliceTests.RecursiveSearchChecksTheBaseThenVisibleDirectories"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 137,
+      "conversionManagedCommit": "229cce652139e62c8a9b831c818f3413cf7ecaab"
     }
   ],
   "behaviorNativeChecksum": 508086,
